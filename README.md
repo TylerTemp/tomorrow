@@ -1,6 +1,6 @@
 # tomorrow
 
-website code for [tomorrow.comes.today](http://tomorrow.comes.today)
+website code for [tomorrow.becomes.today](http://tomorrow.becomes.today)
 
 Note it's developing and hasn't finished.
 
