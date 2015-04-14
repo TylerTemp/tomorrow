@@ -58,3 +58,4 @@ target/
 
 # my personal infomation of the site
 .info
+nginx.conf
