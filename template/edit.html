@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block body%}
+<form>
+  <div>
+    <!-- editor -->
+    {% module WysiwygEditor(content) %}
+    <div id='editor_error' class="error"></div>
+  </div>
+  <button id="submit" type="submit">提交</button>
+</form>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/edit.js"></script>
+{% end %}

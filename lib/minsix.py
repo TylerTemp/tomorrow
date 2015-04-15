@@ -28,7 +28,7 @@ if not py3:
             raise FileExistError("[Errno 17] File exists: '%s'" % file)
 
         return codecs.open(filename=file, mode=mode, encoding=encoding,
-                    errors=errors, buffering=buffering)
+                           errors=errors, buffering=buffering)
 else:
     open = open     # for import
     FileExistsError = FileExistsError    # for import

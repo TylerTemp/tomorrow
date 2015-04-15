@@ -18,6 +18,7 @@ else:
 
 _tmp_stream = StringIO()
 
+
 def print_exc_plus(stream=sys.stdout):
     '''print normal traceback information with some local arg values'''
     # code of this mothod is mainly from <Python Cookbook>
@@ -40,19 +41,20 @@ def print_exc_plus(stream=sys.stdout):
         write(u('\n\n'))
     finally:
         flush()
-        
+
     write(u('Locals by frame, innermost last\n'))
     for frame in stack:
         write(u('\nFrame %s in %s at line %s\n' % (frame.f_code.co_name,
-                                                             frame.f_code.co_filename,
-                                                             frame.f_lineno)))
+                                                   frame.f_code.co_filename,
+                                                   frame.f_lineno)))
     for key, value, in frame.f_locals.items():
         write(u('\t%20s = ' % key))
         try:
-            write(u('%s\n'%value))
+            write(u('%s\n' % value))
         except:
             write(u('<ERROR WHILE PRINTING VALUE>\n'))
     flush()
+
 
 def get_exc_plus():
     _tmp_stream.seek(0)
@@ -60,6 +62,7 @@ def get_exc_plus():
     print_exc_plus(_tmp_stream)
     _tmp_stream.seek(0)
     return _tmp_stream.read()
+
 
 if __name__ == '__main__':
     def zero_error():

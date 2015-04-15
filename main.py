@@ -19,13 +19,18 @@ import tornado.options
 
 from lib.bashlog import stdoutlogger
 from lib.bashlog import filelogger
-from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.config import Config
+
+from lib.hdlr.notfound import AddSlashOr404Handler
+from lib.hdlr.edit import EditHandler
+
+from lib.ui.editor import MdWysiwygEditorModule
+from lib.ui.editor import MdEditorModule
+from lib.ui.editor import EditorModule
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
     tornadologger.removeHandler(_hdlr)
-
     for _filter in tornadologger.filters:
         tornadologger.removeFilter(_filter)
 
@@ -35,11 +40,13 @@ logger = logging.getLogger()
 
 rootdir = os.path.dirname(__file__)
 
+
 class Application(tornado.web.Application):
     config = Config()
 
     def __init__(self):
         handlers = (
+            (r'/edit/', EditHandler),
             (r'.*', AddSlashOr404Handler),
         )
 
@@ -47,6 +54,11 @@ class Application(tornado.web.Application):
             'template_path': os.path.join(rootdir, 'template'),
             'static_path': os.path.join(rootdir, 'static'),
             'debug': self.config.debug,
+            'ui_modules': {
+                'Editor': EditorModule,
+                'WysiwygEditor': MdWysiwygEditorModule,
+                'MdEditor': MdEditorModule,
+                },
         }
 
         super(Application, self).__init__(handlers, **settings)
