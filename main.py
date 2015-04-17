@@ -25,6 +25,7 @@ from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.edit import EditHandler
+from lib.hdlr.blacklist import BlackListHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
@@ -49,6 +50,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = (
             (r'/edit/', EditHandler),
+            (r'/xmlrpc\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
         )
 
