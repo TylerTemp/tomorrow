@@ -16,9 +16,11 @@ import tornado
 import tornado.web
 import tornado.httpserver
 import tornado.options
+import tornado.locale
+import tornado.autoreload
 
-from lib.bashlog import stdoutlogger
-from lib.bashlog import filelogger
+from lib.tool.bashlog import stdoutlogger
+from lib.tool.bashlog import filelogger
 from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
@@ -65,6 +67,10 @@ class Application(tornado.web.Application):
 
 
 def main(port):
+    tornado.locale.load_translations(
+        os.path.join(rootdir, "translations"))
+    tornado.locale.set_default_locale('zh_CN')
+    tornado.autoreload.watch(os.path.join(rootdir, 'translations', 'zh_CN.csv'))
     http_server = tornado.httpserver.HTTPServer(Application(), xheaders=True)
     http_server.listen(port)
     logger.info('[port: %s]Sever started.', port)

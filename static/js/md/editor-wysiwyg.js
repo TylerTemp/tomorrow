@@ -21,7 +21,7 @@
         }
         return html;
     };
-    $.fn.markdownEditor = function(userOptions)
+    $.fn.wysiwygEditor = function(userOptions)
     {
         var editor = this;
         var options = $.extend({}, $.fn.markdownEditor.defaults, userOptions);
@@ -60,7 +60,7 @@
                             });
                             break;
                         case 'insertimage':
-                            options.insertImage().done(function(url, title, alt)
+                            options.insertImage().success(function(url, title, alt)
                             {
                                 var titleHTML = title? ' title="'+title+'" ': ' ';
                                 var altHTML = alt? ' alt="'+alt+'" ': ' ';
@@ -68,32 +68,6 @@
                                 document.execCommand('insertHTML', false, imgHTML);
                             });
                             break;
-                        // not work as expected
-                        // case 'codeblock':
-                        //     document.execCommand('formatBlock', false, '<code>');
-                        //     // document.execCommand('formatBlock', false, '<pre>');
-                        // case 'code':
-                        //     var sel, range;
-                        //     // var html = $($.parseHTML('<div>'+getSelectionHtml()+'</div>')[0]).text();
-                        //     var html = $('<div>'+getSelectionHtml()+'</div>').text();
-                        //     if (!html) break;
-                        //     if (window.getSelection)
-                        //     {
-                        //         sel = window.getSelection();
-                        //         if (sel.rangeCount)
-                        //         {
-                        //             range = sel.getRangeAt(0);
-                        //             range.deleteContents();
-                        //             range.insertNode($.parseHTML('<code>'+html+'</code>')[0]);
-                        //         }
-                        //     }
-                        //     else if (document.selection && document.selection.createRange)
-                        //     {
-                        //         range = document.selection.createRange();
-                        //         console.log('else: ', range);
-                        //         range.text = replacementText;
-                        //     }
-                        //     break;
                         default:
                             document.execCommand($(this).data('role'), false, null);
                             break;
@@ -107,12 +81,12 @@
         editor.convertToMarkdown = function(){ editor.html(options.toMarkdown(editor.html())); };
         if (options.fromMarkdown)
             editor.convertToHtml();
-        bindToolbar($("#markdownEditorToolbar"), options);
+        bindToolbar($("#wysiwygEditorToolbar"), options);
         editor.attr('contenteditable', true);
 
         return editor;
     };
-    $.fn.markdownEditor.defaults = {
+    $.fn.wysiwygEditor.defaults = {
         fromMarkdown: false,    // the original data is markdown? if so, trans to html
         toHtml: function(text){return markdown.toHTML(text);},
         toMarkdown: function(text){return md(text);},

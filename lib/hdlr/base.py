@@ -7,17 +7,22 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.tracemore import get_exc_plus
+from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)
 
 
 class BaseHandler(tornado.web.RequestHandler):
 
-    def initialize(self):
-        self.DEBUG = self.application.settings['debug']
+    @property
+    def db(self):    # lazy-load
+        return self.application.settings['db']
+
+    def get_user_locale(self):
+        # todo: able to change
+        return tornado.locale.get('zh_CN')
 
     def write_error(self, status_code, **kwargs):
-        if self.DEBUG:
+        if self.application.settings['debug']:
             self.write('''
                 <html>
                     <head>

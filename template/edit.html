@@ -1,16 +1,37 @@
 {% extends "base.html" %}
 
+{% block neck %}
+<link rel="stylesheet" href="/static/css/editor.css">
+{% end %}
 {% block body%}
 <form>
-  <div>
-    <!-- editor -->
+  <div id="wysiwyg_area">
+    <div class="am-g">
+      <div class="am-u-sm">
+        <button class="am-btn am-btn-secondary am-fr" id="swith_to_md">{{ _("swith to MarkDown Editor") }}</button>
+      </div>
+    </div>
     {% module WysiwygEditor(content) %}
-    <div id='editor_error' class="error"></div>
   </div>
-  <button id="submit" type="submit">提交</button>
+
+  <div id="md_area" style="display:none">
+    <div class="am-g">
+      <div class="am-u-sm">
+        <button class="am-btn am-btn-secondary am-fr" id="swith_to_wysiwyg">{{ _("swith to WYSIWYG Editor") }}</button>
+      </div>
+    </div>
+    {% module MdEditor(content) %}
+  </div>
+
+  <button id="submit" type="submit">{{ _("submit") }}</button>
 </form>
 {% end %}
 
 {% block butt %}
+<script src="/static/js/jquery-textrange/src/jquery-textrange.min.js"></script>
+<script src="/static/js/md/html2md.min.js"></script>
+<script src="/static/js/md/md2html.min.js"></script>
+<script src="/static/js/md/editor-wysiwyg.js"></script>
+<script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/edit.js"></script>
 {% end %}

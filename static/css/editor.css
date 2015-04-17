@@ -1,0 +1,10 @@
+#wysiwygEditor, #mdEditor {
+    /*margin-left: 20px;*/
+    /*margin-right: 20px;*/
+    margin-top: 2px;
+    resize: vertical;
+    overflow: auto;
+    min-height: 300px;
+    padding: 1em;
+    width: 100%;
+}

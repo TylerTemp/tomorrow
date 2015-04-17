@@ -16,19 +16,10 @@ class MdWysiwygEditorModule(tornado.web.UIModule):
             content=content,
         )
 
-    def embedded_css(self):
-        return '''#markdownEditor {
-                resize:vertical;
-                overflow:auto;
-                min-height:100px;
-                padding:1em;
-            }'''
-
-    def javascript_files(self):
-        return ('/static/js/md/html2md.min.js',
-                '/static/js/md/md2html.min.js',
-                '/static/js/md/editor-wysiwyg.js')
-
-
 class MdEditorModule(tornado.web.UIModule):
-    pass
+
+    def render(self, content=''):
+        return self.render_string(
+            'uimodule/editor-md.html',
+            content=content,
+        )

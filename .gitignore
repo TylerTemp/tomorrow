@@ -55,6 +55,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# pyenv
+.python-version
+
 # my personal infomation of the site
 .info
 nginx.conf
