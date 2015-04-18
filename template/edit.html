@@ -5,22 +5,13 @@
 {% end %}
 {% block body%}
 <form>
+  {% module UploadImage() %}
   <div id="wysiwyg_area">
-    <div class="am-g">
-      <div class="am-u-sm">
-        <button class="am-btn am-btn-secondary am-fr" id="swith_to_md">{{ _("swith to MarkDown Editor") }}</button>
-      </div>
-    </div>
-    {% module WysiwygEditor(content) %}
+    {% module WysiwygEditor(switch=True, content=content) %}
   </div>
 
   <div id="md_area" style="display:none">
-    <div class="am-g">
-      <div class="am-u-sm">
-        <button class="am-btn am-btn-secondary am-fr" id="swith_to_wysiwyg">{{ _("swith to WYSIWYG Editor") }}</button>
-      </div>
-    </div>
-    {% module MdEditor(content) %}
+    {% module MdEditor(switch=True, content=content) %}
   </div>
 
   <button id="submit" type="submit">{{ _("submit") }}</button>

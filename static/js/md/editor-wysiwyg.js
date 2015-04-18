@@ -43,22 +43,22 @@
                         case 'p':
                             document.execCommand('formatBlock', false, '<' + $(this).data('role') + '>');
                             break;
-                        case 'createlink':
-                            // ugly but works
-                            // a bug: it will detect the selection outside editor
-                            var text = getSelectionHtml();
-                            if (text)
-                                var defer = options.createLink(text);
-                            else
-                                var defer = options.createLink();
-                            defer.done(function(url, text)
-                            {
-                                if (text == undefined)
-                                    document.execCommand('createLink', false, url);
-                                else
-                                    document.execCommand('insertHTML', false, '<a href="'+url+'">'+text+'</a>');
-                            });
-                            break;
+                        // case 'createlink':
+                        //     ugly but works
+                        //     a bug: it will detect the selection outside editor
+                        //     var text = getSelectionHtml();
+                        //     if (text)
+                        //         var defer = options.createLink(text);
+                        //     else
+                        //         var defer = options.createLink();
+                        //     defer.done(function(url, text)
+                        //     {
+                        //         if (text == undefined)
+                        //             document.execCommand('createLink', false, url);
+                        //         else
+                        //             document.execCommand('insertHTML', false, '<a href="'+url+'">'+text+'</a>');
+                        //     });
+                        //     break;
                         case 'insertimage':
                             options.insertImage().success(function(url, title, alt)
                             {

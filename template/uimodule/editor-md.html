@@ -32,10 +32,15 @@
 			<button class="am-btn am-btn-primary" data-role='h6' data-am-popover="{content: '{{ _('Heading Level 6') }}', trigger: 'hover focus'}"><i class="am-icon-header">6</i></button>
 			<button class="am-btn am-btn-primary" data-role='p' data-am-popover="{content: '{{ _('Paragraph') }}', trigger: 'hover focus'}"><i class="am-icon-paragraph"></i></button>
 		</div>
-		<div class='am-btn-group'>
+		<!-- <div class='am-btn-group'>
 			<button class="am-btn am-btn-primary" data-role='undo' data-am-popover="{content: '{{ _('Undo') }}', trigger: 'hover focus'}"><i class="am-icon-reply"></i></button>
 			<button class="am-btn am-btn-primary" data-role='redo' data-am-popover="{content: '{{ _('Redo') }}', trigger: 'hover focus'}"><i class="am-icon-share"></i></button>
+		</div> -->
+		{% if switch %}
+		<div class="am-btn-group">
+			<button class="am-btn am-btn-success" id="swith_to_wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><i class="am-icon-pencil-square-o"></i></button>
 		</div>
+		{% end %}
 	</div>
 </div>
 

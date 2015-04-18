@@ -12,7 +12,16 @@
 			<button class="am-btn am-btn-primary" data-role='insertOrderedList' data-am-popover="{content: '{{ _('Insert Ordered List') }}', trigger: 'hover focus'}"><i class="am-icon-list-ol"></i></button>
 		</div>
 		<div class='am-btn-group'>
-			<button class="am-btn am-btn-primary" data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
+			<div class="am-dropdown" data-am-dropdown>
+				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
+				<div class="am-dropdown-content">
+					<label for="wysiwyg-url">{{ _("URL") }}</label>
+					<input class="am-form-field" id="wysiwyg-url">
+					<label for="wysiwyg-url-text">{{ _("shown text") }}</label>
+					<input class="am-form-field" id="wysiwyg-url-text">
+					<button class="am-btn am-btn-secondary">{{ _("insert") }}</button>
+				</div>
+			</div>
 			<button class="am-btn am-btn-primary" data-role='unlink' data-am-popover="{content: '{{ _('Remove Link') }}', trigger: 'hover focus'}"><i class="am-icon-chain-broken"></i></button>
 			<button class="am-btn am-btn-primary" data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
 			<button class="am-btn am-btn-primary" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
@@ -31,6 +40,11 @@
 			<button class="am-btn am-btn-primary" data-role='undo' data-am-popover="{content: '{{ _('Undo') }}', trigger: 'hover focus'}"><i class="am-icon-reply"></i></button>
 			<button class="am-btn am-btn-primary" data-role='redo' data-am-popover="{content: '{{ _('Redo') }}', trigger: 'hover focus'}"><i class="am-icon-share"></i></button>
 		</div>
+		{% if switch %}
+		<div class="am-btn-group">
+			<button class="am-btn am-btn-success" id="swith_to_md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><b>[M&#11015;]</b></button>
+		</div>
+		{% end %}
 	</div>
 </div>
 

@@ -29,7 +29,8 @@ from lib.hdlr.blacklist import BlackListHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
-from lib.ui.editor import EditorModule
+from lib.ui.upload import UploadImageModule
+from lib.ui.upload import UploadFileModule
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
@@ -59,9 +60,10 @@ class Application(tornado.web.Application):
             'static_path': os.path.join(rootdir, 'static'),
             'debug': self.config.debug,
             'ui_modules': {
-                'Editor': EditorModule,
                 'WysiwygEditor': MdWysiwygEditorModule,
                 'MdEditor': MdEditorModule,
+                'UploadFile': UploadFileModule,
+                'UploadImage': UploadImageModule,
                 },
         }
 

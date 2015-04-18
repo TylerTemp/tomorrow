@@ -22,6 +22,8 @@ class BaseHandler(tornado.web.RequestHandler):
         return tornado.locale.get('zh_CN')
 
     def write_error(self, status_code, **kwargs):
+        r = self.request
+        logger.debug('%s - %s' % (r.remote_ip, r.host))
         if self.application.settings['debug']:
             self.write('''
                 <html>
