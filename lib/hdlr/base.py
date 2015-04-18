@@ -10,6 +10,8 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)
 
+logger = logging.getLogger("base")
+
 
 class BaseHandler(tornado.web.RequestHandler):
 
