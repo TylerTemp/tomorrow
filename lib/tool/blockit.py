@@ -11,9 +11,9 @@ from lib.tool import bashlog
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-logger = bashlog.filelogger('/tmp/block.log', logger, bashlog.debug)
+logger = bashlog.filelogger('/tmp/block.log', logger, bashlog.DEBUG)
 
-blackfile = open('/tmp/blacklist', 'r', encoding='utf-8')
+blackfile = open('/tmp/blacklist', 'r+', encoding='utf-8')
 
 
 def run():
@@ -29,7 +29,7 @@ def run():
     for line in collect:
         sub = sp.call(['iptables', '-A', 'INPUT', '-s', 'line',  '-j', 'DROP'])
         if sub != 0:
-            logger.error('failed : %', line)
+            logger.error('failed : %s', line)
         else:
             logger.info('blocked: %s', line)
 
@@ -43,6 +43,7 @@ def loop(scd):
 
 @atexit.register
 def close():
+    logger.debug('exit')
     blackfile.close()
 
 
