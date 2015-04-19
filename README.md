@@ -21,4 +21,5 @@ python3 main.py -p 8000 -l debug
 * `lib/bashlog.py` from `tornado.logging`
 * `static/js/html2md.js` from [github: neocotic/html.md](https://github.com/neocotic/html.md)
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
-* jquery-textrange from [dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange)
+* jquery-textrange from [github:dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange)
+* `static/js/jquery/jquery.cookie.js` from [github:carhartl/jquery-cookie](https://github.com/carhartl/jquery-cookie)

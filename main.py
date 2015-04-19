@@ -12,6 +12,7 @@ Options:
 
 import logging
 import os
+import time
 import tornado
 import tornado.web
 import tornado.httpserver
@@ -25,6 +26,8 @@ from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.edit import EditHandler
+from lib.hdlr.auth import LoginHandler
+from lib.hdlr.auth import SigninHandler
 from lib.hdlr.blacklist import BlackListHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
@@ -51,7 +54,10 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = (
             (r'/edit/', EditHandler),
+            (r'/login/', LoginHandler),
+            (r'/signin/', SigninHandler),
             (r'/xmlrpc\.php', BlackListHandler),
+            (r'/wp-login\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
         )
 
@@ -59,6 +65,7 @@ class Application(tornado.web.Application):
             'template_path': os.path.join(rootdir, 'template'),
             'static_path': os.path.join(rootdir, 'static'),
             'debug': self.config.debug,
+            'login_url': '/login/',
             'ui_modules': {
                 'WysiwygEditor': MdWysiwygEditorModule,
                 'MdEditor': MdEditorModule,
@@ -67,10 +74,19 @@ class Application(tornado.web.Application):
                 },
         }
 
+        if self.config.secret_cookie:
+            # while self.config.secret is None:
+            #     logger.debug('waitting for cookie secret')
+            #     time.sleep(0.5)
+            secret = self.config.secret
+            logger.debug('set secret %s', secret)
+            settings['cookie_secret'] = secret
+
         super(Application, self).__init__(handlers, **settings)
 
 
 def main(port):
+    Config.set_port(port)
     tornado.locale.load_translations(
         os.path.join(rootdir, "translations"))
     tornado.locale.set_default_locale('zh_CN')

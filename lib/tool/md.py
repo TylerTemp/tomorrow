@@ -33,8 +33,9 @@ extend = (
 
 
 white_tags = list(bleach.ALLOWED_TAGS)
-white_tags.extend((u'span', u'table', u'tr', u'td', u'th', u'height', u'width'))
-attributes = {'*': (u'href', u'src', u'title', u'name', u'alt') }
+white_tags.extend(('span', 'table', 'tr', 'td', 'th', 'height', 'width'))
+attributes = {'*': ('href', 'src', 'title', 'name', 'alt')}
+
 
 def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
     if extensions is None:
@@ -43,8 +44,10 @@ def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
                              smart_emphasis=smart_emphasis, safemode=safemode,
                              extensions=extensions)
 
+
 def html2md(html):
     return html2text.html2text(html)
+
 
 def escape(content):
     return bleach.clean(content, tags=white_tags, attributes=attributes)

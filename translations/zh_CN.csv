@@ -5,6 +5,11 @@ Added Content,新增内容
 Delete,删除线
 Indent,缩进
 Dedent,反缩进
+URL,地址
+Enter url here,输入地址
+Enter shown text here,输入显示文字
+shown text,显示文字
+insert,插入
 Insert Horizontal,插入水平线
 Insert Unordered List,插入无序列表
 Insert Ordered List,插入有序列表
@@ -26,3 +31,19 @@ Redo,重做
 Switch to MarkDown Editor,切换到MarkDown编辑器
 Switch to WYSIWYG Editor,切换到所见即所得编辑器
 Can not find the page you request,没有找到你要的页面
+Login,登录
+Signin,注册
+User Name,用户名
+Email,邮箱
+UserName/Email,用户名/邮箱
+Password,密码
+Enter your user user name,输入用户名
+Enter your email,输入邮箱
+Enter your user name or email,输入用户名或密码
+Enter your password,输入密码
+Confirm Password,确认密码
+Re-enter your password,再次输入你的密码
+Forget your password,忘了密码
+Remember me,记住我
+Already have an account?,已有账号?
+"Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.","抱歉，站点暂时不支持SSL安全数据传输。请确保您的网络环境是安全的。"

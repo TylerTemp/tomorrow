@@ -84,8 +84,8 @@
                             break;
                         case "inserthorizontalrule":
                             return editor.textrange("replace", "\n* * * * * * * * * * ");
-                        case 'createlink':
-                            return;
+                        // case 'createlink':
+                        //     return;
                         case 'insertimage':
                             options.insertImage().success(function(url, title, alt)
                             {});
@@ -103,15 +103,31 @@
                 }
             });
         };
-        // use editor.val() if you want the source str.
         editor.getHtml = function(){ return options.toHtml(editor.val()); };
-        // editor.getMarkdown = function(){ return options.toMarkdown(editor.val()); };
-        // editor.convertToHtml = function(){ editor.html(options.toHtml(editor.html())); };
-        // editor.convertToMarkdown = function(){ editor.html(options.toMarkdown(editor.html())); };
-        // if (!options.fromMarkdown)
-        //     editor.convertToMarkdown();
         bindToolbar($("#mdEditorToolbar"), options);
-
+        options.createLinkUrlInput.change(function(evt)
+        {
+            var text = options.createLinkTextInput;
+            if (!text.val())
+            {
+                text.val($(this).val());
+                text.select();
+            }
+        });
+        options.createLinkInsert.click(function(evt)
+        {
+            var url = options.createLinkUrlInput;
+            var text = options.createLinkTextInput;
+            var urlstr = url.val();
+            if (urlstr)
+            {
+                var textstr = text.val() || urlstr;
+                editor.textrange('insert', '['+textstr+']('+urlstr+')');
+                url.val('');
+                text.val('');
+                options.createLinkDropper.dropdown('close');
+            }
+        });
         return editor;
     };
     $.fn.markdownEditor.defaults = {
@@ -132,30 +148,10 @@
             defer.resolve(url, title, alt);
             return defer.promise();
         },
-        createLink: function(selectedText)
-        {
-            var defer = $.Deferred();
-            var url = prompt("请输入连接地址", "http://");
-            if (url == null)    // cancel
-            {
-                defer.reject();
-                return defer.promise();
-            }
-            if (!selectedText)    // no selected text
-            {
-                var text = prompt("请输入文字", url);    // content text
-                if (text == null) defer.reject();    // cancel
-                else
-                {
-                    // text is empty, and the selected is also empty
-                    // so reject
-                    if ((text === "") && (!selectedText)) defer.reject();
-                    else defer.resolve(url, text);
-                }
-            }
-            else    // user selected text. insert directly
-                defer.resolve(url, undefined);
-            return defer.promise();
-        }
+        createLinkUrlInput: $("#md-url"),
+        createLinkTextInput: $("#md-url-text"),
+        createLinkInsert: $("#md-url-insert"),
+        createLinkDropper: $("#md-url-dropdown"),
+        uploadImageUrl: '/img/'
     };
 }(window.jQuery));

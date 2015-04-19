@@ -14,8 +14,32 @@
 			<button class="am-btn am-btn-primary" data-role='insertOrderedList' data-am-popover="{content: '{{ _('Insert Ordered List') }}', trigger: 'hover focus'}"><i class="am-icon-list-ol"></i></button>
 		</div>
 		<div class='am-btn-group'>
-			<button class="am-btn am-btn-primary" data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
-			<button class="am-btn am-btn-primary" data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
+			<!-- insert url -->
+			<div class="am-dropdown" id="md-url-dropdown" data-am-dropdown>
+				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
+				<div class="am-dropdown-content">
+					<label for="md-url">{{ _("URL") }}</label>
+					<input class="am-form-field" id="md-url" placeholder="{{ _('Enter url here') }}">
+					<label for="md-url-text">{{ _("shown text") }}</label>
+					<input class="am-form-field" id="md-url-text" placeholder="{{ _('Enter shown text here') }}">
+					<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
+				</div>
+			</div>
+			<!-- upload image -->
+			<div class="am-dropdown" id="md-img-dropdown" data-am-dropdown>
+				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
+				<div class="am-dropdown-content">
+					<label for="md-img-url">{{ _("Image URL") }}</label>
+					<input class="am-form-field" id="md-img-url" placeholder="{{ _('Enter image url here') }}">
+					<button class="am-btn am-btn-secondary">{{ _("insert") }}</button>
+					{% if upload_img %}
+						<br>
+						<label for="md-img-text">{{ _("or upload an image") }}</label>
+						<input type="file" class="am-form-field" id="md-img-text">
+						<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
+					{% end %}
+				</div>
+			</div>
 			<button class="am-btn am-btn-primary" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
 		</div>
 		<div class='am-btn-group'>

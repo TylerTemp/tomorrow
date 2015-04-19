@@ -78,7 +78,7 @@ class ColorFormatter(logging.Formatter):
 
     DEFAULT_FORMAT = (
         '%(all)s%(color)s'
-        '[%(levelname)1.1s %(lineno)3d %(module)s:%(funcName)s]'
+        '[%(levelname)1.1s %(lineno)3d %(asctime)s %(module)s:%(funcName)s]'
         '%(end_color)s %(message)s')
     DEFAULT_DATE_FORMAT = '%y%m%d %H:%M:%S'
     DEFAULT_COLORS = {

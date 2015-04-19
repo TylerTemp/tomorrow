@@ -7,11 +7,11 @@
 <form>
   {% module UploadImage() %}
   <div id="wysiwyg_area">
-    {% module WysiwygEditor(switch=True, content=content) %}
+    {% module WysiwygEditor(switch=True, upload_img=True, content=content) %}
   </div>
 
   <div id="md_area" style="display:none">
-    {% module MdEditor(switch=True, content=content) %}
+    {% module MdEditor(switch=True, upload_img=True, content=content) %}
   </div>
 
   <button id="submit" type="submit">{{ _("submit") }}</button>
@@ -19,7 +19,7 @@
 {% end %}
 
 {% block butt %}
-<script src="/static/js/jquery-textrange.min.js"></script>
+<script src="/static/js/jquery/jquery-textrange.min.js"></script>
 <script src="/static/js/md/html2md.min.js"></script>
 <script src="/static/js/md/md2html.min.js"></script>
 <script src="/static/js/md/editor-wysiwyg.js"></script>

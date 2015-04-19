@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ _("Login") }}{% end %}
+{% block neck %}
+<style>
+  .header {
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 200%;
+    color: #333;
+    margin-top: 30px;
+  }
+  .header p {
+    font-size: 14px;
+  }
+</style>
+{% end %}
+
+{% block body %}
+<div class="header">
+  <div class="am-g">
+    <h1>{{ _('Tomorrow Becomes Today') }}</h1>
+  </div>
+  <hr />
+</div>
+<div class="am-g">
+  <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+    <h3>{{ _('Login') }}</h3>
+    <hr>
+    <!-- <div class="am-btn-group">
+    </div>
+    <br>
+    <br> -->
+
+    <form method="post" class="am-form">
+      <label for="email">{{ _('UserName/Email') }}:</label>
+      <input type="email" name="" id="email" placehold="{{ _('Enter your user name or email') }}">
+      <br>
+      <label for="password">{{ _('Password') }}:</label>
+      <input type="password" name="" id="password" placehold="{{ _('Enter your password') }}">
+      <br>
+      <label for="remember-me">
+        <input id="remember-me" type="checkbox">
+        {{ _('Remember me') }}
+      </label>
+      <br />
+      <div class="am-cf">
+        <input type="submit" name="" value="{{ _('Login') }}" class="am-btn am-btn-primary am-btn-sm am-fl">
+        <input type="submit" name="" value="{{ _('Forget your password') }} ^_^? " class="am-btn am-btn-default am-btn-sm am-fr">
+      </div>
+    </form>
+    <hr>
+    <p>© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
+  </div>
+</div>
+{% end %}

@@ -9,6 +9,7 @@ class UploadFileModule(tornado.web.UIModule):
             'uimodule/uploadfile.html'
         )
 
+
 class UploadImageModule(tornado.web.UIModule):
 
     def render(self):

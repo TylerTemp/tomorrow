@@ -61,6 +61,7 @@ class User(object):
             return 'User(%s)' % self.user
         return repr(self.user_info)
 
+
 class Article(object):
     _article = db.article
     board = ('jolla', 'blog')
@@ -100,7 +101,8 @@ if __name__ == '__main__':
     stdoutlogger(logger, level=DEBUG)
 
     user = User('tylertemp')
-    print(user.add('tylertempdev@gmail.com', 'password', user.admin, 'TylerTemp'))
+    print(user.add('tylertempdev@gmail.com', 'password',
+          user.admin, 'TylerTemp'))
     print(user)
     print(user.remove())
     print(user)
