@@ -64,7 +64,14 @@ var check_repwd = function()
 {
     var repwd = $("#re-password");
     var pwd   = $("#password");
-    if (pwd.val() != repwd.val())
+    var reval = repwd.val();
+    var pwdval=  pwd.val();
+    if ((reval == '') && (pwdval == ''))
+    {
+        set_error(repwd);
+        return false;
+    }
+    if (reval != pwdval)
     {
         set_error(repwd, _("Re-entered password is not the same"), "warning");
         return false;
@@ -82,12 +89,33 @@ $(document).ready(function(){
     user.blur(check_user);
     email.blur(check_email);
     pwd.blur(check_pwd);
+    user.keyup(function(evt)
+    {
+        if (evt.keyCode == 13)
+            $('form').submit();
+    });
+    email.keyup(function(evt)
+    {
+        if (evt.keyCode == 13)
+            $('form').submit();
+    });
+    pwd.keyup(function(evt)
+    {
+        if (evt.keyCode == 13)
+            $('form').submit();
+    });
+    repwd.keyup(function(evt)
+    {
+        if (evt.keyCode == 13)
+            $('form').submit();
+    });
     repwd.on('input', check_repwd);
     pwd.on('input', function()
     {
         if (repwd.val())
             check_repwd();
     });
+    submit.click(function(evt){$('form').submit();});
     $('form').submit(function(evt)
     {
         var u = check_user(), e = check_email(), p = check_pwd(), r = check_repwd();
@@ -106,7 +134,7 @@ $(document).ready(function(){
                 'beforeSend': function(jqXHR, settings){
                     jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
                     submit.prop("disabled", true);
-                    submit.button(_("Submiting...."));
+                    submit.button(_("loading"));
                 }
             }
         ).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
