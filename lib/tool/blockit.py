@@ -1,4 +1,3 @@
-import tornado.web
 import sys
 import os
 import atexit

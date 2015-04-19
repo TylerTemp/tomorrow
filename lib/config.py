@@ -25,7 +25,7 @@ class Config(object):
     def __new__(cls):
         if cls._ins is None:
             ins = super(Config, cls).__new__(cls)
-            ins.debug = True
+            ins.debug = False
             cls._ins = ins
             cls._secret = None
             cls.secret_cookie = True

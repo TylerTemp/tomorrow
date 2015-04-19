@@ -13,7 +13,13 @@ var I18N = {
         "unordered list item": "无序列表内容",
         "ordered list item": "有序列表内容",
         "inline code": "行内代码",
-        "code block": "代码块"
+        "code block": "代码块",
+
+        "User Name should not be empty": "用户名不能为空",
+        "Email should not be empty": "邮箱不能为空",
+        "Password should not be empty": "密码不能为空",
+        "Re-entered password is not the same": "两次输入的密码不一致",
+        "Wrong email format": "邮箱格式错误"
     }
 };
 
