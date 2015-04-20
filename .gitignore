@@ -64,3 +64,7 @@ nginx.conf
 tomorrow.p12
 ca.pem
 sub.class1.server.ca.pem
+mongodb.conf
+
+# store the uploaded file
+static/file

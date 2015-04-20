@@ -35,7 +35,7 @@ Login,登录
 Signin,注册
 User Name,用户名
 Email,邮箱
-UserName/Email,用户名/邮箱
+User Name or Email,用户名或邮箱
 Password,密码
 Enter your user user name,输入用户名
 Enter your email,输入邮箱
@@ -44,7 +44,8 @@ Enter your password,输入密码
 Confirm Password,确认密码
 Re-enter your password,再次输入你的密码
 Forget your password,忘了密码
-Remember me,记住我
+Remember me forever,记住我一万年
 Already have an account?,已有账号?
 "Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.","抱歉，站点暂时不支持SSL安全数据传输。请确保您的网络环境是安全的。"
 Signing...,注册中…
+Logining...,注册中…

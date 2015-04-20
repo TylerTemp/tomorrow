@@ -28,6 +28,7 @@ from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
+from lib.hdlr.auth import LogoutHandler
 from lib.hdlr.blacklist import BlackListHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
@@ -56,6 +57,7 @@ class Application(tornado.web.Application):
             (r'/edit/', EditHandler),
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
+            (r'/logout/', LogoutHandler),
             (r'/xmlrpc\.php', BlackListHandler),
             (r'/wp-login\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),

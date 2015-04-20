@@ -25,32 +25,50 @@
 </div>
 <div class="am-g">
   <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
-    <h3>{{ _('Login') }}</h3>
+    <h2>{{ _('Login') }}</h2>
     <hr>
-    <!-- <div class="am-btn-group">
-    </div>
-    <br>
-    <br> -->
 
-    <form method="post" class="am-form">
-      <label for="email">{{ _('UserName/Email') }}:</label>
-      <input type="email" name="" id="email" placehold="{{ _('Enter your user name or email') }}">
-      <br>
-      <label for="password">{{ _('Password') }}:</label>
-      <input type="password" name="" id="password" placehold="{{ _('Enter your password') }}">
-      <br>
-      <label for="remember-me">
-        <input id="remember-me" type="checkbox">
-        {{ _('Remember me') }}
-      </label>
-      <br />
+    {% if not ssl %}
+    <div class="am-alert am-alert-danger" data-am-alert>
+      <button type="button" class="am-close">&times;</button>
+      <p>{{ _("Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.") }}</p>
+    </div>
+    {% end %}
+
+    <form method="post" class="am-form" action="{{ request.uri }}">
+      {% raw xsrf_form_html() %}
+      <div class="am-form-group">
+        <label for="user-or-email">{{ _('User Name or Email') }}:</label>
+        <input type="text" name="user" id="user-or-email" placeholder="{{ _('Enter your user name or email') }}">
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-form-group">
+        <label for="pwd">{{ _('Password') }}:</label>
+        <input type="password" name="pwd" id="pwd" placeholder="{{ _('Enter your password') }}">
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-alert am-alert-danger" id="server-error" style="display:none">
+      </div>
       <div class="am-cf">
-        <input type="submit" name="" value="{{ _('Login') }}" class="am-btn am-btn-primary am-btn-sm am-fl">
-        <input type="submit" name="" value="{{ _('Forget your password') }} ^_^? " class="am-btn am-btn-default am-btn-sm am-fr">
+        <label for="remember-me">
+          <input name="remember" id="remember-me" type="checkbox">
+          {{ _("Remember me forever") }}
+        </label>
+        <button type="button" id="submit"
+            class="am-btn am-btn-primary am-btn-sm am-fr"
+            data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _("Logining...") }}', resetText: '{{ _("Login") }}'}">
+          {{ _('Login') }}
+        </botton>
       </div>
     </form>
+
     <hr>
-    <p>© 2014 AllMobilize, Inc. Licensed under MIT license.</p>
   </div>
 </div>
+{% end %}
+
+
+{% block butt %}
+<script src="/static/js/login.js"></script>
+<script src="/static/js/jquery/jquery.cookie.js"></script>
 {% end %}

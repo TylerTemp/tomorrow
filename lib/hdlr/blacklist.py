@@ -5,9 +5,10 @@ import atexit
 import logging
 
 logger = logging.getLogger('blacklist')
-
-blacklist = open('/tmp/blacklist', 'r+', encoding='utf-8')
-
+try:
+    blacklist = open('/tmp/blacklist', 'r+', encoding='utf-8')
+except FileNotFoundError:
+    blacklist = open('/tmp/blacklist', 'w+', encoding='utf-8')
 # in multi process, it does not works so fine in fact
 collect = set()
 for line in blacklist:
@@ -26,6 +27,9 @@ class BlackListHandler(tornado.web.RequestHandler):
             blacklist.write('%s\n'%ip)
             blacklist.flush()
             logger.info('%s - %s' % (ip, host))
+            if len(collect) >= 1000:
+                logger.warning('too many blacklist. Clean')
+                collect.clear()
         return self.redirect(ip, True)
 
     post = get

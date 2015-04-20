@@ -49,14 +49,16 @@
         <label class="error-panel" style="display:none"></label>
       </div>
       <div class="am-form-group">
-        <label for="password">{{ _('Password') }}:</label>
-        <input type="password" name="password" id="password" placeholder="{{ _('Enter your password') }}">
+        <label for="pwd">{{ _('Password') }}:</label>
+        <input type="password" name="pwd" id="pwd" placeholder="{{ _('Enter your password') }}">
         <label class="error-panel" style="display:none"></label>
       </div>
       <div class="am-form-group">
         <label for="password">{{ _('Confirm Password') }}:</label>
-        <input type="password" id="re-password" placeholder="{{ _('Re-enter your password') }}">
+        <input type="password" id="re-pwd" placeholder="{{ _('Re-enter your password') }}">
         <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-alert am-alert-danger" id="server-error" style="display:none">
       </div>
       <div class="am-cf">
         <label>{{ _("Already have an account?") }} <a href="{{ login }}">{{ _("Login") }}</a></label>
@@ -74,9 +76,6 @@
 {% end %}
 
 {% block butt %}
-<script>
-  var EMAIL_RE = /{{ email_re }}/;
-</script>
 <script src="/static/js/signin.js"></script>
 <script src="/static/js/jquery/jquery.cookie.js"></script>
 {% end %}
