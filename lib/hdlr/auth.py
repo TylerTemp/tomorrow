@@ -17,8 +17,12 @@ from lib.hdlr.base import BaseHandler
 from lib.db import User
 sys.path.pop(0)
 
+logger = logging.getLogger('auth')
 
-# todo: ... a lot todo...
+# todo: 1. email verify
+#       2. find back password
+#       3. work without js
+
 
 class _Handler(BaseHandler):
     EMAIL_RE_STR = r'^[\w\d.+-]+@([\w\d.]+\.)+\w{2,}$'
@@ -50,12 +54,16 @@ class LoginHandler(_Handler):
     def get(self):
         redirect = self.get_argument('next', None)
 
+        logger.error('next: %s', redirect)
+
         if self.get_current_user():
-            return self.redirect(redirect or '/')
+            return self.redirect(
+                self.safe_redirect(redirect) if redirect is not None else '/')
 
         self.xsrf_token
         if redirect:
-            signin = '/signin/?' + urlencode({'next': redirect})
+            signin = '/signin/?' + urlencode(
+                {'next': self.safe_redirect(redirect)})
         else:
             signin = '/signin/'
         return super(LoginHandler, self).render(
@@ -101,7 +109,8 @@ class LoginHandler(_Handler):
                 redirect = ''.join((self.request.uri, '?', urlencode(result)))
             return self.redirect(redirect)
 
-        result['redirect'] = redirect or '/'
+        result['redirect'] = (
+            self.safe_redirect(redirect) if redirect is not None else '/')
         return self.write(json.dumps(result))
 
 
@@ -172,6 +181,7 @@ class LogoutHandler(_Handler):
 
     def get(self):
         self.logout()
+        return self.flush()
 
     post = get
 

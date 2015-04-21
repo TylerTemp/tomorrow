@@ -81,7 +81,8 @@ class Application(tornado.web.Application):
             #     logger.debug('waitting for cookie secret')
             #     time.sleep(0.5)
             secret = self.config.secret
-            logger.debug('set secret %s', secret)
+            assert secret is not None
+            logger.debug('set secret')
             settings['cookie_secret'] = secret
 
         super(Application, self).__init__(handlers, **settings)

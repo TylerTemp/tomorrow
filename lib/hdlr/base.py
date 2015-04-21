@@ -2,6 +2,12 @@
 provide some convenient methods'''
 import tornado.web
 import logging
+try:
+    from urllib.parse import urlsplit
+    from urllib.parse import urlunsplit
+except ImportError:
+    from urlparse import urlparse
+    from urlparse import urlunsplit
 
 import sys
 import os
@@ -34,6 +40,16 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_cookie('name', user, **kwd)
         self.set_secure_cookie('user', user[::-1], **kwd)
         self.set_secure_cookie('type', str(type), **kwd)
+
+    def safe_redirect(self, url):
+        split = urlsplit(url)
+        host = self.request.host
+        if split.netloc != host:
+            logger.warning('prevent: %s -> %s', split.netloc, host)
+            split = list(split)
+            split[1] = host
+            return urlunsplit(split)
+        return url
 
     def logout(self):
         self.clear_cookie("name")
