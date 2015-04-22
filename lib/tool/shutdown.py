@@ -22,7 +22,6 @@ sys.path.pop(0)
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
 config.autodelete = False
 cfg = config.Config()
-mainfile = os.path.join(rootdir, 'main.py')
 
 
 def main():

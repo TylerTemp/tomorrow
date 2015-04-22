@@ -28,9 +28,9 @@ var set_user_error = function(error, is_email)
             break;
         case 'notexist':
             if (is_email)
-                set_error(user_obj, _("This email hasn't <a href='/signin/'>signin</a>."), "error");
+                set_error(user_obj, _("This email hasn't <a href='/signin/'>signin</a>"), "error");
             else
-                set_error(user_obj, _("This user name hasn't <a href='/signin/'>signin</a>."), "error");
+                set_error(user_obj, _("This user name hasn't <a href='/signin/'>signin</a>"), "error");
             break;
         default:
             set_error(user_obj);
@@ -46,7 +46,7 @@ var set_pwd_error = function(error)
             set_error(pwd_obj, _("Password should not be empty"), "error");
             break;
         case 'wrong':
-            set_error(pwd_obj, _("Password incorrect."), "error");
+            set_error(pwd_obj, _("Password incorrect"), "error");
             break;
         default:
             set_error(pwd_obj);
@@ -129,7 +129,7 @@ $(document).ready(function(){
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
             server_error_panel.text(
-                _("Sorry, a server error occured, please refresh and retry.") +
+                _("Sorry, a server error occured, please refresh and retry") +
                 " (" +
                 jqXHR.status +
                 ": " +

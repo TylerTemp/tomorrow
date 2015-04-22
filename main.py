@@ -29,7 +29,10 @@ from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
+from lib.hdlr.jollatask import TaskHandler
+from lib.hdlr.upload import UploadHandler
 from lib.hdlr.blacklist import BlackListHandler
+from lib.hdlr.base import BaseHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
@@ -58,6 +61,19 @@ class Application(tornado.web.Application):
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
             (r'/logout/', LogoutHandler),
+            (r'/hi/(?P<user>[^/]+)/', BareHandler),
+            (r'/hi/(?P<user>[^/]+)/(?P<to>file|img)/', UploadHandler),
+            (r'/jolla/', BareHandler),
+            (r'/jolla/blog/', BareHandler),
+            (r'/jolla/blog/(?P<title>[^/]+)/', BareHandler),
+            (r'/jolla/translate/', BareHandler),
+            (r'/jolla/translate/(?P<title>[^/]+)/', BareHandler),
+            (r'/jolla/task/', TaskHandler),
+            (r'/jolla/task/(?P<title>[^/]+)/', TaskHandler),
+
+            (r'/blog/(?P<board>[^/]+)/', BareHandler),
+            (r'/edit/', BareHandler),
+            (r'/edit/(?P<board>[^/]+)/', BareHandler),
             (r'/xmlrpc\.php', BlackListHandler),
             (r'/wp-login\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
@@ -88,12 +104,21 @@ class Application(tornado.web.Application):
         super(Application, self).__init__(handlers, **settings)
 
 
+class BareHandler(BaseHandler):
+
+    def get(self, *a, **k):
+        self.write('''Sorry, this page is building...<br>
+            a: %s<br>
+            k: %s''' % (a, k))
+
+
 def main(port):
     Config.set_port(port)
     tornado.locale.load_translations(
         os.path.join(rootdir, "translations"))
     tornado.locale.set_default_locale('zh_CN')
-    tornado.autoreload.watch(os.path.join(rootdir, 'translations', 'zh_CN.csv'))
+    tornado.autoreload.watch(
+        os.path.join(rootdir, 'translations', 'zh_CN.csv'))
     http_server = tornado.httpserver.HTTPServer(Application(), xheaders=True)
     http_server.listen(port)
     logger.info('[port: %s]Sever started.', port)

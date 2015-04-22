@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+    {{  _("Edit Translation Original Post") if title else _("New Translation Original Post") }}
+
+{% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/editor.css">
+<style>
+#load {
+  float: left;
+}
+#wysiwygEditor, #mdEditor {
+  min-height: 450px;
+}
+</style>
+{% end %}
+
+{% block body %}
+
+<div class="header">
+  <div class="am-g">
+  {% if title %}
+    <h1>{{ _("Edit Translation Post") }}</h1>
+    <p>{{ _("Edit the content and format of this original article") }}</p>
+  {% else %}
+    <h1>{{ _("New Translation Post") }}</h1>
+    <p>{{ _("Post a new translation original article") }}<br>
+       {{ _('Note you can paste the url and click "Load" to let server load the content') }}
+    </p>
+  {% end %}
+
+  </div>
+  <hr />
+</div>
+
+<form class="am-form am-form-horizontal">
+  <fieldset>
+    <legend>{{ _("Article Information") }}</legend>
+
+    <!-- link -->
+    <div class="am-form-group">
+      <label for="url" class="am-u-sm-3 am-form-label">{{ _("Source Link")}}</label>
+      <div class="am-u-sm-8">
+        <input type="text" id="url" placeholder="{{ _('Enter the link of the original content') }}" />
+      </div>
+      <div class="am-u-sm-1">
+        <button type="button" id="load"
+            class="am-btn am-btn-primary am-btn-sm am-fr"
+            data-am-loading="{spinner: 'spinner', loadingText: '', resetText: '{{ _("Load") }}'}">
+          {{ _('Load') }}
+        </botton>
+      </div>
+    </div>
+
+    <!-- title -->
+    <div class="am-form-group">
+      <label for="title" class="am-u-sm-3 am-form-label">{{ _("Title")}}</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="title" value="{{ title }}" placeholder="{{ _('Enter the title of the original content') }}" />
+      </div>
+    </div>
+
+    <div id="wysiwyg-area" style="display:none">
+      {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, content=html) %}
+    </div>
+
+    <div id="md-area">
+      {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, content=md) %}
+      <div class="am-form-group">
+        <div class="am-u-sm-12">
+          <p>{{ _("What is") }} <a href="/about/markdown/" target="_blank">MarkDown</a>?</p>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</form>
+{% end %}
+
+{% block butt %}
+<script>
+  var IMGUPLOADURL = "{{ img_upload_url }}";
+  var FILEUPLOADURL = "{{ file_upload_url }}";
+  var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
+</script>
+<script src="/static/js/jquery/jquery.cookie.js"></script>
+<script src="/static/js/jquery/jquery-textrange.min.js"></script>
+<script src="/static/js/md/html2md.min.js"></script>
+<script src="/static/js/md/md2html.min.js"></script>
+<script src="/static/js/md/editor-wysiwyg.js"></script>
+<script src="/static/js/md/editor-md.js"></script>
+<script src="/static/js/jollatask.js"></script>
+{% end %}

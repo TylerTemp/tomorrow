@@ -24,8 +24,11 @@ db = client['tomorrow']
 
 class User(object):
     _user = db.user
-    admin = 0
+
+    block = 0
     normal = 1
+    admin = 2
+    root = 3
 
     # user
     # email
@@ -42,15 +45,21 @@ class User(object):
             self.user = self.user_info['user']
             self.email = self.user_info['email']
 
-    def add(self, **kwd):
-        kwd['pwd'] = sha256_crypt.encrypt(kwd['pwd'])
-        kwd.setdefault('user', self.user)
-        kwd.setdefault('email', self.email)
-        assert kwd['user'] and kwd['email']
-        logger.info('new user %s', kwd['user'])
-        if 'type' not in kwd:
-            kwd['type'] = self.normal
-        self.user_info = kwd
+    def add(self, user=None, email=None, pwd=None, show_email=False, type=None):
+        assert pwd
+        pwd = sha256_crypt.encrypt(pwd)
+        user = user or self.user
+        email = email or self.email
+        assert user and email
+        logger.info('new user %s', user)
+        type = self.normal if type is None else type
+        self.user_info = {
+            'user': user,
+            'email': email,
+            'pwd': pwd,
+            'show_email': show_email,
+            'type': type,
+        }
         self.user_info['_id'] = self.save()
         self.new = False
         return self.user_info
@@ -70,13 +79,16 @@ class User(object):
 
     def remove(self):
         logger.info('remove user %s', self.user_info)
-        self._user.remove(self.user_info)
+        self._user.delete_one(self.user_info)
         # self._user.remove({'user': self.user})
         self.new = True
-        self.user_info = {}
+        self.user_info = None
 
     def save(self):
         return self._user.save(self.user_info)
+
+    def get(self):
+        return self.user_info
 
     def __str__(self):
         if self.new:
@@ -89,9 +101,18 @@ class User(object):
         return repr(self.user_info)
 
 
+class Board(object):
+    _board = db.board
+
+    @classmethod
+    def all(self):
+        return self._board.find({})
+
+
 class Article(object):
     _article = db.article
-    board = ('jolla', 'blog')
+    board = {'jolla'}
+    board.update(Board.all())
 
     def __init__(self, title=None):
         self.article_info = self.find_user(user)

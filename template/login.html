@@ -1,20 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{{ _("Login") }}{% end %}
-{% block neck %}
-<style>
-  .header {
-    text-align: center;
-  }
-  .header h1 {
-    font-size: 200%;
-    color: #333;
-    margin-top: 30px;
-  }
-  .header p {
-    font-size: 14px;
-  }
-</style>
-{% end %}
 
 {% block body %}
 <div class="header">
@@ -54,6 +39,8 @@
           <input name="remember" id="remember-me" type="checkbox">
           {{ _("Remember me forever") }}
         </label>
+        <br>
+        <label><a href="{{ signin }}">{{ _("Signin") }}</a></label>
         <button type="button" id="submit"
             class="am-btn am-btn-primary am-btn-sm am-fr"
             data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _("Logining...") }}', resetText: '{{ _("Login") }}'}">

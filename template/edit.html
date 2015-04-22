@@ -5,7 +5,6 @@
 {% end %}
 {% block body%}
 <form>
-  {% module UploadImage() %}
   <div id="wysiwyg_area">
     {% module WysiwygEditor(switch=True, upload_img=True, content=content) %}
   </div>

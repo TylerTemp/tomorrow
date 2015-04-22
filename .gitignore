@@ -67,4 +67,4 @@ sub.class1.server.ca.pem
 mongodb.conf
 
 # store the uploaded file
-static/file
+static/upload

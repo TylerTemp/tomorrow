@@ -18,29 +18,68 @@
 			<div class="am-dropdown" id="md-url-dropdown" data-am-dropdown>
 				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
 				<div class="am-dropdown-content">
-					<label for="md-url">{{ _("URL") }}</label>
-					<input class="am-form-field" id="md-url" placeholder="{{ _('Enter url here') }}">
-					<label for="md-url-text">{{ _("shown text") }}</label>
-					<input class="am-form-field" id="md-url-text" placeholder="{{ _('Enter shown text here') }}">
+					<div class="am-form-group">
+						<label for="md-url">{{ _("URL") }}</label>
+						<input class="am-form-field" id="md-url" placeholder="{{ _('Enter url here') }}" value="http://">
+					</div>
+					<div class="am-form-group">
+						<label for="md-url-text">{{ _("shown text") }}</label>
+						<input class="am-form-field" id="md-url-text" placeholder="{{ _('Enter shown text here') }}">
+					</div>
 					<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
 				</div>
 			</div>
 			<!-- upload image -->
 			<div class="am-dropdown" id="md-img-dropdown" data-am-dropdown>
 				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
+
+				<!-- insert image url -->
 				<div class="am-dropdown-content">
-					<label for="md-img-url">{{ _("Image URL") }}</label>
-					<input class="am-form-field" id="md-img-url" placeholder="{{ _('Enter image url here') }}">
-					<button class="am-btn am-btn-secondary">{{ _("insert") }}</button>
-					{% if upload_img %}
-						<br>
-						<label for="md-img-text">{{ _("or upload an image") }}</label>
-						<input type="file" class="am-form-field" id="md-img-text">
-						<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
+					<div class="am-form-group">
+							<div class="am-form-group">
+								<label for="md-img-url">{{ _("Image URL") }}</label>
+								<input type="text" class="am-form-field" id="md-img-url" placeholder="{{ _('Enter image url here') }}">
+							<button class="am-btn am-btn-secondary" id="md-img-url-insert">{{ _("insert") }}</button>
+							<button class="am-btn am-btn-success" id="md-img-url-preview">{{ _("preview") }}</button>
+							</div>
+					</div>
+					{% if upload_img is not None %}
+						{% if upload_img %}
+							<!-- select an uploaded image -->
+							<div class="am-form-group">
+								<label for="md-img-select">{{ _("Select an uploaded file") }}</label>
+								<select id="md-img-select">
+								{% for name, link in upload_img.items() %}
+									<option value="{{ link }}">{{ name }}</option>
+								{% end %}
+								</select>
+								<button class="am-btn am-btn-secondary" id="md-img-select-insert">{{ _("insert") }}</button>
+							</div>
+						{% end %}
+						<!-- upload an image -->
+						<div class="am-form-group">
+							<label for="md-img-upload">{{ _("Upload an image") }}</label>
+							<input type="file" class="am-form-field" id="md-img-upload">
+							<div class="am-progress am-progress-striped nobottom">
+								<div class="am-progress-bar am-progress-bar-success" id="md-img-upload-bar" style="width: 0%"></div>
+							</div>
+							<button class="am-btn am-btn-secondary"
+									id="md-img-upload-insert"
+									data-am-loading="{spinner: 'gear', loadingText: '', resetText: '{{ _("insert") }}'}">
+								{{ _("insert") }}
+							</button>
+						</div>
 					{% end %}
+					<div id="md-img-error-panel">
+					</div>
+					<div id="md-img-preview">
+					</div>
 				</div>
 			</div>
-			<button class="am-btn am-btn-primary" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
+			<!-- Upload file -->
+			{% if upload_file is not None %}
+				<button class="am-btn am-btn-primary" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
+			{% end %}
 		</div>
 		<div class='am-btn-group'>
 			<button class="am-btn am-btn-primary" data-role='codeinline' data-am-popover="{content: '{{ _('Code Inline') }}', trigger: 'hover focus'}"><i class="am-icon-code"></i></button>
@@ -62,16 +101,15 @@
 		</div> -->
 		{% if switch %}
 		<div class="am-btn-group">
-			<button class="am-btn am-btn-success" id="swith_to_wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><i class="am-icon-pencil-square-o"></i></button>
+			<button class="am-btn am-btn-success" id="swith-to-wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><i class="am-icon-pencil-square-o"></i></button>
 		</div>
 		{% end %}
 	</div>
 </div>
 
-<!-- editor	make it focusable  -->
-<!-- add the following line by hand -->
+<!-- editor make it focusable  -->
 <div class="am-g">
 	<div class="am-u-sm-12">
-		<textarea class="am-form-field" id="mdEditor" tabindex="0" contentEditable="true">{% raw content %}</textarea>
+		<textarea class="am-form-field" id="mdEditor" tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">{% raw content %}</textarea>
 	</div>
 </div>

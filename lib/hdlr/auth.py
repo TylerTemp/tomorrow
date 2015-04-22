@@ -54,8 +54,6 @@ class LoginHandler(_Handler):
     def get(self):
         redirect = self.get_argument('next', None)
 
-        logger.error('next: %s', redirect)
-
         if self.get_current_user():
             return self.redirect(
                 self.safe_redirect(redirect) if redirect is not None else '/')
@@ -166,7 +164,10 @@ class SigninHandler(_Handler):
         if not self.is_ajax():
             # ok
             if flag == 0:
-                return self.redirect(redirect or '/')
+                return self.redirect(
+                    self.safe_redirect(redirect)
+                        if redirect is not None
+                    else '/hi/%s/' % quote(user.user))
 
             if redirect is not None:
                 result['next'] = redirect

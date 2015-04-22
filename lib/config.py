@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..')))
 from lib.tool.minsix import open
 from lib.tool.minsix import py3
 from lib.tool.minsix import FileExistsError
+from lib.db import User
 sys.path.pop(0)
 
 logger = logging.getLogger('config')
@@ -25,10 +26,14 @@ class Config(object):
     def __new__(cls):
         if cls._ins is None:
             ins = super(Config, cls).__new__(cls)
-            ins.debug = False
+            ins.debug = True
             cls._ins = ins
             cls._secret = None
             cls.secret_cookie = True
+            cls.img_allow = ('jpg', 'jpeg', 'png', 'gif')
+            cls.size_limit = {User.block: 0, User.normal: 0,
+                              User.admin: 5 * 1024 * 1024,
+                              User.root: float('inf')}
 
         return cls._ins
 
@@ -57,14 +62,13 @@ class Config(object):
             if 'secret' not in obj:
                 secret = cls.generate()
                 obj['secret'] = secret
-                logger.debug('secret: %s', secret)
 
-            if cls._secret is None:
-                cls._secret = obj['secret']
+            cls._secret = obj['secret']
 
         f.seek(0)
         f.truncate()
         json.dump(obj, f, indent=4)
+        f.close()
         logger.debug('pid: %s; port: %s', pid, port)
 
     # call `set_port` before use this method
@@ -89,7 +93,6 @@ def del_file():
             os.unlink(tempf)
         except BaseException as e:
             logger.debug('failed: %s', e)
-            pass
         else:
             logger.debug('removed')
 

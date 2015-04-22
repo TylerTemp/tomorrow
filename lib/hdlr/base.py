@@ -3,16 +3,19 @@ provide some convenient methods'''
 import tornado.web
 import logging
 try:
+    from urllib.parse import quote
     from urllib.parse import urlsplit
     from urllib.parse import urlunsplit
 except ImportError:
-    from urlparse import urlparse
+    from urlparse import quote
+    from urlparse import urlsplit
     from urlparse import urlunsplit
 
 import sys
 import os
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
+rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
+sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)
 
@@ -22,34 +25,40 @@ logger = logging.getLogger("base")
 class BaseHandler(tornado.web.RequestHandler):
 
     def get_current_user(self):
-        name = self.get_cookie("name")
-        user = self.get_secure_cookie("user")
+        user = self.get_cookie("user")
+        verify = self.get_secure_cookie("verify")
         level = self.get_secure_cookie('type')
-        if user is None:
+        if verify is None:
             return None
-        user = user.decode('utf-8')[::-1]
-        if user != name:
+        verify = verify.decode('utf-8')[::-1]
+        if user != verify:
             return None
-        return {'user': name, 'type': int(level)}
+        return {'user': user, 'type': int(level)}
 
     def set_user(self, user, type, temp=False):
         if temp:
             kwd = {'expires_days': None}
         else:
             kwd = {}
-        self.set_cookie('name', user, **kwd)
-        self.set_secure_cookie('user', user[::-1], **kwd)
+        self.set_cookie('user', user, **kwd)
+        self.set_secure_cookie('verify', user[::-1], **kwd)
         self.set_secure_cookie('type', str(type), **kwd)
 
     def safe_redirect(self, url):
         split = urlsplit(url)
         host = self.request.host
-        if split.netloc != host:
+        if split.netloc and (split.netloc != host):
             logger.warning('prevent: %s -> %s', split.netloc, host)
             split = list(split)
             split[1] = host
             return urlunsplit(split)
         return url
+
+    def get_user_path(self, user):
+        return os.path.join(rootdir, 'static', 'upload', user)
+
+    def get_user_url(self, user):
+        return '/static/upload/%s/' % quote(user)
 
     def logout(self):
         self.clear_cookie("name")

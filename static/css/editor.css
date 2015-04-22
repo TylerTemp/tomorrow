@@ -9,16 +9,44 @@
     width: 100%;
 }
 
+#mdEditorToolbar {
+    width: 100%;
+}
+
+#md-img-preview img {
+    width: 100%;
+    margin-top: 5px;
+}
+
+
+
 #wysiwyg-url,
 #wysiwyg-url-text,
 #md-url,
 #md-url-text,
 #md-img-url {
-    min-width: 250px;
+    min-width: 350px;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-#md-img-url{
+#md-img-url {
     margin-bottom: 0px;
+}
+
+#swith_to_md, #swith_to_wysiwyg {
+    float: right;
+}
+
+.nobottom {
+    margin-bottom: 0px;
+}
+
+
+#md-img-url-preview,
+#md-img-url-insert,
+#md-img-select-insert,
+#md-img-upload-insert,
+#md-url-insert {
+    float: right;
 }

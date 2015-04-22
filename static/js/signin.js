@@ -23,19 +23,19 @@ var set_user_error = function(error)
     var user_obj = $("#user");
     switch(error){
         case 'empty':
-            set_error(user_obj, _("User Name should not be empty."), "error");
+            set_error(user_obj, _("User Name should not be empty"), "error");
             break;
         case 'dot':
-            set_error(user_obj, _("User Name should not be '.' or '..'."), "error");
+            set_error(user_obj, _("User Name should not be '.' or '..'"), "error");
             break;
         case 'length':
-            set_error(user_obj, _("User Name should not longer than") + " " + USER_MAX_LEN + " " + _("characters."), "error");
+            set_error(user_obj, _("User Name should not longer than") + " " + USER_MAX_LEN + " " + _("characters"), "error");
             break;
         case 'format':
-            set_error(user_obj, _("User Name should only contain English characters, Chinese characters, number, space, underbar, minus, dot, and can not only be '.' or '..'."), "error");
+            set_error(user_obj, _("User Name should only contain English characters, Chinese characters, number, space, underbar, minus, dot, and can not only be '.' or '..'"), "error");
             break;
         case 'exists':
-            set_error(user_obj, _("User Name is taken. Please try another one."), "error");
+            set_error(user_obj, _("User Name is taken. Please try another one"), "error");
             break;
         default:
             set_error(user_obj);
@@ -83,7 +83,7 @@ var set_email_error = function(error)
             set_error(email_obj, _("Wrong email format"), "error");
             break;
         case 'exists':
-            set_error(email_obj, _('Email exists. Please <a href="/login/">login</a> directly or <a href="/lost/">find your password</a>.'), "error");
+            set_error(email_obj, _('Email exists. Please <a href="/login/">login</a> directly or <a href="/lost/">find your password</a>'), "error");
             break;
         default:
             set_error(email_obj);
@@ -236,7 +236,7 @@ $(document).ready(function(){
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
             server_error_panel.text(
-                _("Sorry, a server error occured, please refresh and retry.") +
+                _("Sorry, a server error occured, please refresh and retry") +
                 " (" +
                 jqXHR.status +
                 ": " +
