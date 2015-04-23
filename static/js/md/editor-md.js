@@ -358,6 +358,132 @@
                 options.insertImageDropper.dropdown('close');
             }
         });
+
+        options.uploadFileSelect.change(function(evt)
+        {
+            options.uploadFileShow.html(
+                _("URL") + ': <a target="_blank" href="'+this.value+'">'+this.value+'</a>'
+            );
+        });
+        options.uploadFile.change(function(evt)
+        {
+            var status = {
+                'setError': function(msg, error)
+                {
+                    var level = error? "danger": "warning";
+                    if (msg)
+                    {
+                        options.uploadFileErrorPanel.html(
+                            '<div class="am-alert am-alert-'+ level + '" data-am-alert>' +
+                                '<button type="button" class="am-close">&times;</button>' +
+                                '<p>' + msg + '</p>' +
+                            '</div>'
+                        );
+                        return options.uploadFileBar.removeClass("am-progress-bar-success").addClass("am-progress-bar-"+level);
+                    }
+                    options.uploadFileErrorPanel.html('');
+                    options.uploadFileBar.removeClass("am-progress-bar-danger").removeClass("am-progress-bar-warning").addClass("am-progress-bar-success");
+                },
+                'setProcess': function(process)
+                {
+                    options.uploadFileBar.css("width", ""+process+"%");
+                }
+            };
+
+            if (this.type === 'file' && this.files && this.files.length > 0)
+            {
+                var fileInfo = evt.target.files[0];
+                // var fileType = fileInfo.type;
+                // var mainType = fileType.split('/')[0];
+                // var subType = fileType.split('/')[1];
+                // var acceptType = options.imageTypes;
+                var maxSize = options.sizeLimit;
+
+                if (maxSize !== undefined && fileInfo.size > maxSize)
+                    return status.setError(
+                        fileInfo.name +
+                        " (" + unitSatisfy(fileInfo.size, 'b', 2).join(" ") + ") " +
+                        _(" out of supported max file size") +
+                        " (" + unitSatisfy(maxSize, 'b', 2).join(" ") + ") ",
+                        false
+                    );
+                status.setProcess(0);
+                status.setError();
+
+
+                readFileIntoDataurl(fileInfo)
+                .fail(function(e, name, size, type)
+                {
+                    status.setError(_("Oops, failed to read the file"));
+                })
+                .progress(function(loaded, total, name, size, type)
+                {
+                    var process = Math.round((loaded * 100 / total) * 0.9);
+                    status.setProcess(process);
+                })
+                .done(function(dataUrl, name, size, type)
+                {
+                    status.setProcess(90);
+                    $.ajax(
+                        url = options.uploadFileUrl,
+                        settings = {
+                            'data': {
+                                'urldata': dataUrl,
+                                'name': name,
+                            },
+                            'type': 'post',
+                            'beforeSend': function(jqXHR, settings){
+                                ImageUpload.setProcess(95);
+                                jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                            }
+                        }
+                    ).done(function(data, textStatus, jqXHR)
+                    {
+                        var obj = $.parseJSON(data);
+                        if (obj.error == 0)
+                        {
+                            options.uploadFileSelect.prepend(
+                                '<option value="'+obj.url+'">'+obj.name+'</option>'
+                            );
+                            return options.uploadFileShow.html(
+                                _("URL") + ': <a target="_blank" href="'+obj.url+'">'+obj.url+'</a>'
+                            );
+                        }
+                        var errors = [];
+
+                        if (obj.error & MASK_NO_PERMISSION)
+                            errors.push(_("you don't have permission to upload an image"))
+                        if (obj.error & MASK_FILE_TOO_BIG)
+                            errors.push(_("file too big"))
+                        if (obj.error & MASK_FILE_DUPLICATED_NAME)
+                            errors.push(_("you already uploaded a file with the same name, server can't rename it"));
+                        if (obj.error & MASK_FILE_DECODE_ERROR)
+                            errors.push(_("server can't decode your file"));
+                        var errmsg = errors.join('; ') || obj.error.toString();
+                        status.setError(_("Oops, error occured:") + " " + errmsg, true);
+
+                    }).fail(function(jqXHR, textStatus, errorThrown)
+                    {
+                        status.setError(
+                            _("Sorry, a server error occured, please refresh and retry") +
+                            " (" +
+                            jqXHR.status +
+                            ": " +
+                            errorThrown +
+                            ")", true
+                        );
+                    }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+                    {
+                        status.setProcess(100);
+                    });
+                });
+            }
+        });
+        // : $("#md-file-upload"),
+        // uploadFileBar: $("#md-file-bar"),
+        // uploadFileErrorPanel: $("#md-file-error-panel"),
+        // uploadFileSelect: $("#md-file-select"),
+        // uploadFileShow: $("#md-file-show"),
         // insertImageUrlPreviewPanel: $("#md-img-preview"),
         // insertImageUrlErrorPanel: $("#md-img-error-panel"),
         return editor;
@@ -381,6 +507,11 @@
         createLinkTextInput: $("#md-url-text"),
         createLinkInsert: $("#md-url-insert"),
         createLinkDropper: $("#md-url-dropdown"),
+        uploadFile: $("#md-file-upload"),
+        uploadFileBar: $("#md-file-bar"),
+        uploadFileErrorPanel: $("#md-file-error-panel"),
+        uploadFileSelect: $("#md-file-select"),
+        uploadFileShow: $("#md-file-show"),
         uploadImageUrl: '.',
         uploadFileUrl: '.',
         sizeLimit: undefined,

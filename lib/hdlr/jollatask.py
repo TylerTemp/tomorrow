@@ -63,7 +63,7 @@ class TaskHandler(BaseHandler):
             for name in imgs}
 
         file_name_and_link = {
-            name: urljoin(link, 'img/%s' % quote(name))
+            name: urljoin(link, 'file/%s' % quote(name))
             for name in files}
 
         return img_name_and_link, file_name_and_link

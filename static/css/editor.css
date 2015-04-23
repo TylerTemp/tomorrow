@@ -24,7 +24,8 @@
 #wysiwyg-url-text,
 #md-url,
 #md-url-text,
-#md-img-url {
+#md-img-url,
+#md-file-select {
     min-width: 350px;
     margin-top: 10px;
     margin-bottom: 10px;
