@@ -22,7 +22,7 @@ from lib.tool.minsix import open
 sys.path.pop(0)
 
 cfg = Config()
-logger = logging.getLogger('upload')
+logger = logging.getLogger('tomorrow.upload')
 
 class UploadHandler(BaseHandler):
     NO_PERMISSION = 1

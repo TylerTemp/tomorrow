@@ -44,9 +44,10 @@ def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
                              smart_emphasis=smart_emphasis, safemode=safemode,
                              extensions=extensions)
 
-
+_parser = html2text.HTML2Text()
+_parser.body_width = 0
 def html2md(html):
-    return html2text.html2text(html)
+    return _parser.handle(html)
 
 
 def escape(content):

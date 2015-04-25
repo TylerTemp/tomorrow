@@ -15,7 +15,7 @@ from lib.tool.minsix import FileExistsError
 from lib.db import User
 sys.path.pop(0)
 
-logger = logging.getLogger('config')
+logger = logging.getLogger('tomorrow.config')
 tempf = os.path.join(tempfile.gettempdir(), 'tomorrow.pid')
 autodelete = True
 
@@ -26,7 +26,7 @@ class Config(object):
     def __new__(cls):
         if cls._ins is None:
             ins = super(Config, cls).__new__(cls)
-            ins.debug = False
+            ins.debug = True
             cls._ins = ins
             cls._secret = None
             cls.secret_cookie = True

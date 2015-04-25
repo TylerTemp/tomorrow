@@ -4,8 +4,10 @@ main.py [options]
 
 Options:
 -p --port=<port>          listen to this port[default: 8000]
--l --logging=<level>      log level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50[default: INFO]
--f --log-file=<file>      log target file
+--tmr-level=<level>       site logic code logging level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50[default: INFO]
+--tnd-level=<level>       request/response logging level.[default: INFO]
+--tmr-file=<file>         site logic code file logger.[default: /tmp/tomorrow.log]
+--tnd-file=<file>         request/response file logger.[default: /tmp/tornado.log]
 -h --help                 show this message
 '''
 
@@ -31,6 +33,7 @@ from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
 from lib.hdlr.jollatask import TaskHandler
 from lib.hdlr.upload import UploadHandler
+from lib.hdlr.load import LoadHandler
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
@@ -45,9 +48,9 @@ for _hdlr in tornadologger.handlers:
     for _filter in tornadologger.filters:
         tornadologger.removeFilter(_filter)
 
-tornado.options.options.logging = None
+# tornado.options.options.logging = None
 
-logger = logging.getLogger()
+logger = logging.getLogger('tomorrow')
 
 rootdir = os.path.dirname(__file__)
 
@@ -74,6 +77,10 @@ class Application(tornado.web.Application):
             (r'/blog/(?P<board>[^/]+)/', BareHandler),
             (r'/edit/', BareHandler),
             (r'/edit/(?P<board>[^/]+)/', BareHandler),
+
+            (r'/api/load/', LoadHandler),
+
+
             (r'/xmlrpc\.php', BlackListHandler),
             (r'/wp-login\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
@@ -112,6 +119,17 @@ class BareHandler(BaseHandler):
             k: %s''' % (a, k))
 
 
+def get_level(level):
+    level = level.strip()
+    if level.isdigit():
+        level = int(level)
+    else:
+        level = dict(debug=logging.DEBUG,
+                     info=logging.INFO,
+                     warning=logging.WARNING,
+                     critical=logging.CRITICAL)[level.lower()]
+
+
 def main(port):
     Config.set_port(port)
     tornado.locale.load_translations(
@@ -130,19 +148,11 @@ if __name__ == "__main__":
 
     args = docopt(__doc__, help=True)
 
-    level = args['--logging']
-    if level.isdigit():
-        level = int(level)
-    else:
-        level = dict(debug=logging.DEBUG,
-                     info=logging.INFO,
-                     warning=logging.WARNING,
-                     critical=logging.CRITICAL)[level.lower()]
 
-    stdoutlogger(logger, level, True)
+    stdoutlogger(logging.getLogger(), logging.DEBUG, True)
 
-    logfile = args['--log-file']
-    if logfile:
-        filelogger(logfile, logger)
+    filelogger(args['--tmr-file'], logger)
+    filelogger(args['--tnd-file'], logger)
+
 
     main(int(args['--port']))

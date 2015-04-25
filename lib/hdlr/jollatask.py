@@ -19,6 +19,7 @@ from lib.db import User
 sys.path.pop(0)
 
 cfg = Config()
+logger = logging.getLogger('tomorrow.task')
 
 
 class TaskHandler(BaseHandler):

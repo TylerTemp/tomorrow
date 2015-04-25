@@ -16,7 +16,7 @@ import pymongo
 import logging
 from passlib.hash import sha256_crypt
 
-logger = logging.getLogger('db')
+logger = logging.getLogger('tomorrow.db')
 
 client = pymongo.MongoClient()
 db = client['tomorrow']

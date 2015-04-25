@@ -4,7 +4,7 @@ import os
 import atexit
 import logging
 
-logger = logging.getLogger('blacklist')
+logger = logging.getLogger('tomorrow.blacklist')
 try:
     blacklist = open('/tmp/blacklist', 'r+', encoding='utf-8')
 except FileNotFoundError:

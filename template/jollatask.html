@@ -45,6 +45,8 @@
       <label for="url" class="am-u-sm-3 am-form-label">{{ _("Source Link")}}</label>
       <div class="am-u-sm-8">
         <input type="text" id="url" placeholder="{{ _('Enter the link of the original content') }}" />
+        <div id="load-error-panel">
+        </div>
       </div>
       <div class="am-u-sm-1">
         <button type="button" id="load"
@@ -71,6 +73,14 @@
       </div>
     </div>
 
+    <!-- title image -->
+    <div class="am-form-group">
+      <label for="headimg" class="am-u-sm-3 am-form-label">{{ _("Heading Image")}}</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="headimg" placeholder="{{ _('Enter the URL of heading image of the original content') }}" />
+      </div>
+    </div>
+
     <div id="wysiwyg-area">
       {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, content=html) %}
     </div>
@@ -83,6 +93,14 @@
         </div>
       </div>
     </div>
+
+    <div class="am-cf">
+      <div class="am-u-sm-12">
+        <button class="am-btn am-btn-primary am-fr">{{ _("Submit") }}</button>
+        <button class="am-btn am-btn-success am-fr">{{ _("Preview") }}</button>
+      </div>
+    </div>
+
   </fieldset>
 </form>
 {% end %}

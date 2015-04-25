@@ -17,7 +17,7 @@ from lib.hdlr.base import BaseHandler
 from lib.db import User
 sys.path.pop(0)
 
-logger = logging.getLogger('auth')
+logger = logging.getLogger('tomorrow.auth')
 
 # todo: 1. email verify
 #       2. find back password

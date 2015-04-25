@@ -1,3 +1,4 @@
+
 '''The basic handler of all tornado request
 provide some convenient methods'''
 import tornado.web
@@ -19,7 +20,7 @@ sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)
 
-logger = logging.getLogger("base")
+logger = logging.getLogger("tomorrow.base")
 
 
 class BaseHandler(tornado.web.RequestHandler):
