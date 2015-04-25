@@ -3,13 +3,19 @@ $(document).ready(function(evt)
     var toMarkdown = function(text){return md(text);}
     var toHtml = function(text){return markdown.toHTML(text);};
     var wysiwygEditor = $("#wysiwygEditor").wysiwygEditor({
-        fromMarkdown: false
+        'fromMarkdown': false,
+        'toHtml': toHtml,
+        'toMarkdown': toMarkdown,
+        'uploadImageUrl': IMGUPLOADURL,
+        'uploadFileUrl': FILEUPLOADURL,
+        'sizeLimit': SIZELIMIT,
+        'imageTypes': IMG_ALLOW
     });
     var mdEditor = $("#mdEditor").markdownEditor({
-        uploadImageUrl: IMGUPLOADURL,
-        uploadFileUrl: FILEUPLOADURL,
-        sizeLimit: SIZELIMIT,
-        imageTypes: IMG_ALLOW
+        'uploadImageUrl': IMGUPLOADURL,
+        'uploadFileUrl': FILEUPLOADURL,
+        'sizeLimit': SIZELIMIT,
+        'imageTypes': IMG_ALLOW
     });
 
 

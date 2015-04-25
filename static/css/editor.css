@@ -13,19 +13,27 @@
     width: 100%;
 }
 
-#md-img-preview img {
+#wysiwygEditor img {
+    max-width: 450px;
+    height: auto;
+}
+
+#md-img-preview img,
+#wys-img-preview img {
     width: 100%;
     margin-top: 5px;
 }
 
 
 
-#wysiwyg-url,
-#wysiwyg-url-text,
 #md-url,
+#wys-url,
 #md-url-text,
+#wys-url-text,
 #md-img-url,
-#md-file-select {
+#wys-img-url,
+#md-file-select,
+#wys-file-select {
     min-width: 350px;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -45,9 +53,14 @@
 
 
 #md-img-url-preview,
+#wys-img-url-preview,
 #md-img-url-insert,
+#wys-img-url-insert,
 #md-img-select-insert,
+#wys-img-select-insert,
 #md-img-upload-insert,
-#md-url-insert {
+#wys-img-upload-insert,
+#md-url-insert,
+#wys-url-insert {
     float: right;
 }

@@ -13,7 +13,7 @@
   float: left;
 }
 #wysiwygEditor, #mdEditor {
-  min-height: 450px;
+  height: 450px;
 }
 </style>
 {% end %}
@@ -63,11 +63,19 @@
       </div>
     </div>
 
-    <div id="wysiwyg-area" style="display:none">
+    <!-- author -->
+    <div class="am-form-group">
+      <label for="author" class="am-u-sm-3 am-form-label">{{ _("Author")}}</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="author" value="{{ title }}" placeholder="{{ _('Enter the author of the original content') }}" />
+      </div>
+    </div>
+
+    <div id="wysiwyg-area">
       {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, content=html) %}
     </div>
 
-    <div id="md-area">
+    <div id="md-area" style="display:none">
       {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, content=md) %}
       <div class="am-form-group">
         <div class="am-u-sm-12">

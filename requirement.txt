@@ -2,3 +2,7 @@ tornado
 docopt
 pymongo
 passlib
+bleach
+html2text
+markdown
+markdown_newtab

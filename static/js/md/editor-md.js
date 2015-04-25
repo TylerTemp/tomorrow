@@ -91,10 +91,6 @@
                             else
                                 container.show();
                             return;
-                        // case 'insertimage':
-                        //     options.insertImage().success(function(url, title, alt)
-                        //     {});
-                        //     return;
                         case 'upload':
                             return;
                         default:
@@ -110,7 +106,7 @@
         };
         editor.getHtml = function(){ return options.toHtml(editor.val()); };
         bindToolbar($("#mdEditorToolbar"), options);
-        // insertUrl
+        // insert URL
         options.createLinkTextInput.focusin(function(evt)
         {
             self = $(this);
@@ -153,6 +149,7 @@
                 options.createLinkDropper.dropdown('close');
             }
         });
+        // insert URL | end
         // insert Image function
         var insertImage = function(url, alt)
         {
@@ -191,11 +188,13 @@
             options.insertImageDropper.dropdown('close');
         });
         // insert uploaded img
-        options.insertImageSelect.change(function(evt)
+        options.insertImageSelect.click(function(evt)
         {
-            options.insertImagePreviewPanel.html(
-                '<img src="' + this.value + '">'
-            );
+            var val = this.value;
+            if (val)
+                options.insertImagePreviewPanel.html(
+                    '<img src="' + this.value + '">'
+                );
         });
         options.insertImageSelectInsert.click(function(evt)
         {
@@ -230,7 +229,8 @@
                 options.insertImageUploadBar.css("width", ""+process+"%");
             }
 
-        }
+        };
+
         options.insertImageUpload.change(function(evt)
         {
             ImageUpload.setProcess(0);
@@ -359,11 +359,13 @@
             }
         });
 
-        options.uploadFileSelect.change(function(evt)
+        options.uploadFileSelect.click(function(evt)
         {
-            options.uploadFileShow.html(
-                _("URL") + ': <a target="_blank" href="'+this.value+'">'+this.value+'</a>'
-            );
+            var val = this.value;
+            if (val)
+                options.uploadFileShow.html(
+                    _("URL") + ': <a target="_blank" href="'+val+'">'+val+'</a>'
+                );
         });
         options.uploadFile.change(function(evt)
         {
@@ -479,13 +481,7 @@
                 });
             }
         });
-        // : $("#md-file-upload"),
-        // uploadFileBar: $("#md-file-bar"),
-        // uploadFileErrorPanel: $("#md-file-error-panel"),
-        // uploadFileSelect: $("#md-file-select"),
-        // uploadFileShow: $("#md-file-show"),
-        // insertImageUrlPreviewPanel: $("#md-img-preview"),
-        // insertImageUrlErrorPanel: $("#md-img-error-panel"),
+
         return editor;
     };
     $.fn.markdownEditor.defaults = {

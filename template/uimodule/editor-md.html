@@ -30,20 +30,18 @@
 					<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
 				</div>
 			</div>
-			<!-- upload image -->
+			<!-- insert image -->
 			<div class="am-dropdown" id="md-img-dropdown" data-am-dropdown>
 				<button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
 
 				<!-- insert image url -->
 				<div class="am-dropdown-content">
-					<div class="am-form-group">
-							<div class="am-form-group">
-								<label for="md-img-url">{{ _("Image URL") }}</label>
-								<input type="text" class="am-form-field" id="md-img-url" placeholder="{{ _('Enter image url here') }}">
+						<div class="am-form-group">
+							<label for="md-img-url">{{ _("Image URL") }}</label>
+							<input type="text" class="am-form-field" id="md-img-url" placeholder="{{ _('Enter image url here') }}">
 							<button class="am-btn am-btn-secondary" id="md-img-url-insert">{{ _("insert") }}</button>
 							<button class="am-btn am-btn-success" id="md-img-url-preview">{{ _("preview") }}</button>
-							</div>
-					</div>
+						</div>
 					{% if upload_img is not None %}
 						<!-- select an uploaded image -->
 						<div class="am-form-group">
@@ -107,8 +105,9 @@
 
 				</div>
 			</div>
-		</div>
 			{% end %}
+
+		</div>
 		<div class='am-btn-group'>
 			<button class="am-btn am-btn-primary" data-role='codeinline' data-am-popover="{content: '{{ _('Code Inline') }}', trigger: 'hover focus'}"><i class="am-icon-code"></i></button>
 			<button class="am-btn am-btn-primary" data-role='codeblock' data-am-popover="{content: '{{ _('Code Block') }}', trigger: 'hover focus'}"><i class="am-icon-terminal"></i></button>

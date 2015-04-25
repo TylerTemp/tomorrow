@@ -34,7 +34,6 @@ class UploadHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self, user, to):
         # todo: block the non-allowed account
-        logger.info("get...")
         self.check_xsrf_cookie()
 
         flag = 0
@@ -48,17 +47,17 @@ class UploadHandler(BaseHandler):
 
         urldata = self.get_argument('urldata')
         filename = self.get_argument('name')
-        folder = self.get_user_path(user)
+        folder = os.path.join(self.get_user_path(user), to)
         if not os.path.isdir(folder):
             os.makedirs(folder)
         mainurl = self.get_user_url(user)
 
-        if os.path.exists(os.path.join(folder, to, filename)):
+        if os.path.exists(os.path.join(folder, filename)):
             ext = os.path.splitext(filename)[-1]
             mainname = time.strftime('%y-%m-%d-%H-%M-%S',time.localtime(time.time()))
             filename = mainname + ext
 
-            if os.path.exists(os.path.join(folder, to, filename)):
+            if os.path.exists(os.path.join(folder, filename)):
                 return self.write(json.dumps({'error': self.DUPLICATED_NAME}))
 
         _, data64 = urldata.split(',', 1)
@@ -67,7 +66,7 @@ class UploadHandler(BaseHandler):
         except binascii.Error:
             return self.write(json.dumps({'error': self.DECODE_ERROR}))
 
-        with open(os.path.join(folder, to, filename), 'wb') as f:
+        with open(os.path.join(folder, filename), 'wb') as f:
             f.write(bindata)
 
         return self.write(json.dumps({
