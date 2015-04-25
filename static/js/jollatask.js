@@ -18,7 +18,6 @@ $(document).ready(function(evt)
         'imageTypes': IMG_ALLOW
     });
 
-
     $("#swith-to-md").click(function(evt)
     {
         evt.preventDefault();
@@ -36,7 +35,7 @@ $(document).ready(function(evt)
 
     });
 
-
+    // try to let the server deal the content
     $("#load").click(function(evt)
     {
         var btn = $(this);
@@ -54,10 +53,9 @@ $(document).ready(function(evt)
                 '</div>'
             );
         }
-        // $btn.button('loading');
-        // $btn.button('reset');
+
         requesturl = input.val();
-        if (!url)
+        if (!requesturl)
             return seterror(_("Source link should not be empty"), false);
         $.ajax(
             url = '/api/load/',
@@ -67,6 +65,7 @@ $(document).ready(function(evt)
                 },
                 'type': 'get',
                 'beforeSend': function(jqXHR, settings){
+                    $("#fieldset").prop("disabled", true);
                     btn.prop("disabled", true).button('loading');
                     jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
                 }
@@ -94,8 +93,93 @@ $(document).ready(function(evt)
             );
         }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
         {
+            $("#fieldset").prop("disabled", false);
             btn.prop("disabled", false).button("reset");
         });
 
+    });
+
+    var submiterror = function(msg)
+    {
+        if (!msg)
+            return $("#submit-error-panel").html('');
+        return $("#submit-error-panel").html(
+            '<div class="am-alert am-alert-danger" data-am-alert>' +
+                '<button type="button" class="am-close">&times;</button>' +
+                '<p>' + msg + '</p>' +
+            '</div>'
+        );
+    }
+    // try to submit
+    $("#submit").click(function(evt)
+    {
+        submiterror();
+        evt.preventDefault();
+        var btn = $(this);
+        var errors = [];
+        var sorcelink = $("#url").val();
+        if (!sorcelink)
+            errors.push(_("Source link should not be empty"));
+        var title = $("#title").val();
+        if (!title)
+            errors.push(_("Title should not be empty"));
+        var author = $("#author").val();
+        if (!author)
+            errors.push(_("Author should not be empty"));
+        if ($("#wysiwyg-area:visible"))
+        {
+            console.log("from wys");
+            var content = wysiwygEditor.getHtml();
+            var format = 'html';
+        }
+        else
+        {
+            console.log("from md");
+            var content = mdEditor.val();
+            var format = 'md';
+        }
+        if (!content)
+            errors.push(_("Content should not be empty"));
+
+
+        if (errors.length != 0)
+            return submiterror(_("Oops: ") + errors.join("; "));
+
+        $.ajax(
+            url = '.',
+            settings = {
+                'data':{
+                    'link': sorcelink,
+                    'title': title,
+                    'author': author,
+                    'content': content,
+                    'format': format,
+                    'headimg': $("#headimg").val()
+                },
+            'type': 'post',
+            'beforeSend': function(jqXHR, settings){
+                $("#fieldset").prop("disabled", true);
+                btn.prop("disabled", true).button('loading');
+                jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+            }
+        }).done(function(data, textStatus, jqXHR)
+        {
+            console.log(data);
+            var obj = $.parseJSON(data);
+        }).fail(function(jqXHR, textStatus, errorThrown)
+        {
+            submiterror(
+                _("Sorry, a server error occured") +
+                " (" +
+                jqXHR.status +
+                ": " +
+                errorThrown +
+                ")", true
+            );
+        }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+        {
+            $("#fieldset").prop("disabled", false);
+            btn.prop("disabled", false).button("reset");
+        });
     });
 });

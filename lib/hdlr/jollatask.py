@@ -51,6 +51,20 @@ class TaskHandler(BaseHandler):
             size_limit=cfg.size_limit[usertype]
         )
 
+    @tornado.web.authenticated
+    def post(self, url=None):
+        self.check_xsrf_cookie()
+        link = self.get_argument('link')
+        title = self.get_argument('title')
+        author = self.get_argument('author')
+        content = self.get_argument('content')
+        format = self.get_argument('format')
+        headimg = self.get_argument('headimg', None)
+
+        user_info = self.get_current_user()
+        username = user_info['user']
+        usertype = user_info['type']
+
     def get_imgs_and_files(self, user, type):
         allow_update = (type >= User.admin)
         if not allow_update:

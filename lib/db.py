@@ -14,6 +14,7 @@ Options:
 
 import pymongo
 import logging
+from bson.objectid import ObjectId
 from passlib.hash import sha256_crypt
 
 logger = logging.getLogger('tomorrow.db')
@@ -45,7 +46,7 @@ class User(object):
             self.user = self.user_info['user']
             self.email = self.user_info['email']
 
-    def add(self, user=None, email=None, pwd=None, show_email=False, type=None):
+    def add(self, user=None, email=None, pwd=None, type=None):
         assert pwd
         pwd = sha256_crypt.encrypt(pwd)
         user = user or self.user
@@ -57,7 +58,7 @@ class User(object):
             'user': user,
             'email': email,
             'pwd': pwd,
-            'show_email': show_email,
+            # 'show_email': show_email,
             'type': type,
         }
         self.user_info['_id'] = self.save()
@@ -109,34 +110,101 @@ class Board(object):
         return self._board.find({})
 
 
+class Jolla(object):
+    _jolla = db.jolla
+
+    # link: source url
+    # title: source title
+    # url: title.replace(' ', '-')(Unique)
+    # author: source author
+    # content: source content in markdown format
+    # headimg
+    # translated: True/False
+    # trusted_translation: url
+
+
 class Article(object):
     _article = db.article
-    board = {'jolla'}
-    board.update(Board.all())
+    PUB_LICENSE = 0
+    CC_LICENSE = 1
 
-    def __init__(self, title=None):
-        self.article_info = self.find_user(user)
+    # title
+    # url: title.replace(" ", "-")(Unique)
+    # board
+    # content
+    # license(int)
+    # author
+    # email
+    # show_email: True/False
+    # transinfo: Jolla translation only
+    # transinfo = {link: , author: , url: , title: , headimg}; same as Jolla
+
+    # if url exists, then add "-by-"+username
+    # if still exists, then add "-1", "-2", etc.
+
+    def __init__(self, url=None):
+        if url is None:
+            self.article_info = None
+        else:
+            self.article_info = self.find_url(user)
+
         self.new = (self.article_info is None)
         if self.new:
-            self.title = user
+            self.url = None
         else:
-            self.title = self.user_info['user']
+            self.url = self.article_info['url']
 
-    def add(self, **kwd):
-        assert kwd['board'] in self.board
-        logger.info('new article %s', self.title)
-        kwd['title'] = self.title
-        self.article_info = kwd
+    def add(self, board, title, content, author, email,
+            show_email=True, license=CC_LICENSE, transinfo=None):
+        if board == 'jolla':
+            assert trans_url is not None
+        if self.url is None:
+            if transinfo is not None:
+                url = self.mkurl(transinfo['title'], author)
+            else:
+                url = self.mkurl(title)
+        else:
+            url = self.url
+
+        info = {
+            'board': board,
+            'title': title,
+            'url': url,
+            'content': content,
+            'author': author,
+            'email': email,
+            'show_email': show_email,
+            'license': license,
+            'transinfo': transinfo
+        }
+
+        self.article_info = info
         self.article_info['_id'] = self.save()
         self.new = False
+        logger.info("New article %s", title)
         return self.user_info
 
     @classmethod
-    def find_title(cls, title):
-        return cls._article.find_one({'title': titile})
+    def find_url(cls, url):
+        return cls._article.find_one({'url': url})
 
     def save(self):
         return self._article.save(self.article_info)
+
+    def mkurl(self, title, author):
+        url = title.replace(' ', '-')
+        if self.find_url(url) is None:
+            return url
+        url = '%s-by-%s' % (url, author)
+        if self.find_url(url) is None:
+            return url
+
+        idx = 0
+        while True:
+            idx += 1
+            theurl = '%s-%s' % (url, idx)
+            if self.find_url(theurl) is None:
+                return theurl
 
 
 if __name__ == '__main__':
