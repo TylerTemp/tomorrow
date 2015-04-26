@@ -44,7 +44,7 @@
     <div class="am-form-group">
       <label for="url" class="am-u-sm-3 am-form-label">{{ _("Source Link")}}</label>
       <div class="am-u-sm-8">
-        <input type="text" id="url" placeholder="{{ _('Enter the link of the original content') }}" />
+        <input type="text" id="url" value="{{ link }}" placeholder="{{ _('Enter the link of the original content') }}" />
         <div id="load-error-panel">
         </div>
       </div>
@@ -69,7 +69,7 @@
     <div class="am-form-group">
       <label for="author" class="am-u-sm-3 am-form-label">{{ _("Author")}}</label>
       <div class="am-u-sm-9">
-        <input type="text" id="author" value="{{ title }}" placeholder="{{ _('Enter the author of the original content') }}" />
+        <input type="text" id="author" value="{{ author }}" placeholder="{{ _('Enter the author of the original content') }}" />
       </div>
     </div>
 
@@ -77,7 +77,7 @@
     <div class="am-form-group">
       <label for="headimg" class="am-u-sm-3 am-form-label">{{ _("Heading Image")}}</label>
       <div class="am-u-sm-9">
-        <input type="text" id="headimg" placeholder="{{ _('[Optional] Enter the URL of heading image of the original content') }}" />
+        <input type="text" id="headimg" value="{{ headimg }}" placeholder="{{ _('[Optional] Enter the URL of heading image of the original content') }}" />
       </div>
     </div>
 

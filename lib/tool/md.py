@@ -5,6 +5,8 @@ import markdown
 import markdown_newtab
 # from ..markdown_gridtables import mdx_grid_tables
 
+__all__ = ['md2html', 'html2md', 'escape']
+
 extend = (
     # define attributes, {: #someid .someclass somekey='some value' }
     # 'markdown.extensions.attr_list',
@@ -31,23 +33,31 @@ extend = (
     # 'markdown.extensions.wikilinks',
 )
 
-
+# 'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
+# 'i', 'li', 'ol', 'strong', 'ul'
 white_tags = list(bleach.ALLOWED_TAGS)
-white_tags.extend(('span', 'table', 'tr', 'td', 'th', 'height', 'width'))
-attributes = {'*': ('href', 'src', 'title', 'name', 'alt')}
+white_tags.extend(('span', 'table', 'tr', 'td', 'th',
+                   'ins', 'del', 'center', 'pre', 'u',
+                   'h2', 'h3', 'h4', 'h5', 'h6',
+                   'video'))
 
+attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
+                    'border', 'text-align')}
 
-def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
-    if extensions is None:
-        extensions = extend
-    return markdown.markdown(md, output_format='html5',
-                             smart_emphasis=smart_emphasis, safemode=safemode,
-                             extensions=extensions)
+_md = markdown.Markdown(smart_emphasis=False, safemode=False,
+    output_format='html5', extensions=extend)
+
+md2html = _md.convert
+# def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
+#     if extensions is None:
+#         extensions = extend
+#     return markdown.markdown(md, output_format='html5',
+#                              smart_emphasis=smart_emphasis, safemode=safemode,
+#                              extensions=extensions)
 
 _parser = html2text.HTML2Text()
 _parser.body_width = 0
-def html2md(html):
-    return _parser.handle(html)
+html2md = _parser.handle
 
 
 def escape(content):

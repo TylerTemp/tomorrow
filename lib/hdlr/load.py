@@ -20,6 +20,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import html2md
 from lib.tool.md import md2html
+from lib.db import Jolla
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.load')
@@ -40,6 +41,19 @@ class LoadHandler(BaseHandler):
         if host not in self.SUPPORTED_HOST:
             logger.debug("not support %s", url)
             self.write(json.dumps({'error': 1}))
+            return self.finish()
+
+        fromdb = Jolla.find_link(url)
+        if fromdb is not None:
+            result = {
+                'title': fromdb['title'],
+                'author': fromdb['author'],
+                'headimg': fromdb['headimg'],
+                'md': fromdb['content'],
+                'html': md2html(fromdb['content']),
+            }
+            result['error'] = 0
+            self.write(json.dumps(result))
             return self.finish()
 
         client = tornado.httpclient.AsyncHTTPClient()

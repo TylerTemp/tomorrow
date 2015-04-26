@@ -113,7 +113,7 @@ class Board(object):
 class Jolla(object):
     _jolla = db.jolla
 
-    # link: source url
+    # link: source url (Unique)
     # title: source title
     # url: title.replace(' ', '-')(Unique)
     # author: source author
@@ -121,6 +121,65 @@ class Jolla(object):
     # headimg
     # translated: True/False
     # trusted_translation: url
+
+    def __init__(self, url=None):
+        if url is None:
+            self.jolla_info = None
+        else:
+            self.jolla_info = self.find_url(url)
+
+        self.new = (self.jolla_info is None)
+
+    def add(self, link, title, author, content, url=None, headimg=None):
+        if url is None:
+            url = self.mkurl(title, author)
+
+        info = {
+            'link': link,
+            'title': title,
+            'author': author,
+            'content': content,
+            'url': url,
+            'headimg': headimg,
+        }
+
+        self.jolla_info = info
+        self.jolla_info['_id'] = self.save()
+        self.new = False
+        return self.jolla_info
+
+    def save(self):
+        return self._jolla.save(self.jolla_info)
+
+    def get(self):
+        return self.jolla_info
+
+    def mkurl(self, title, author):
+        url = title.replace(' ', '-')
+        if self.find_url(url) is None:
+            logger.debug('url as %s', url)
+            return url
+        url = '%s-by-%s' % (url, author.replace(' ', '-'))
+        if self.find_url(url) is None:
+            logger.debug('url as %s', url)
+            return url
+
+        idx = 0
+        while True:
+            idx += 1
+            theurl = '%s-%s' % (url, idx)
+            logger.debug('searching %s', theurl)
+            if self.find_url(theurl) is None:
+                logger.debug('url as %s', theurl)
+                return theurl
+
+    @classmethod
+    def find_url(cls, url):
+        return cls._jolla.find_one({'url': url})
+
+    @classmethod
+    def find_link(cls, link):
+        return cls._jolla.find_one({'link': link})
 
 
 class Article(object):
@@ -149,22 +208,16 @@ class Article(object):
             self.article_info = self.find_url(user)
 
         self.new = (self.article_info is None)
-        if self.new:
-            self.url = None
-        else:
-            self.url = self.article_info['url']
 
-    def add(self, board, title, content, author, email,
+    def add(self, board, title, content, author, email, url=None,
             show_email=True, license=CC_LICENSE, transinfo=None):
         if board == 'jolla':
             assert trans_url is not None
-        if self.url is None:
+        if url is None:
             if transinfo is not None:
                 url = self.mkurl(transinfo['title'], author)
             else:
-                url = self.mkurl(title)
-        else:
-            url = self.url
+                url = self.mkurl(title, author)
 
         info = {
             'board': board,
@@ -195,7 +248,7 @@ class Article(object):
         url = title.replace(' ', '-')
         if self.find_url(url) is None:
             return url
-        url = '%s-by-%s' % (url, author)
+        url = '%s-by-%s' % (url, author.replace(' ', '-'))
         if self.find_url(url) is None:
             return url
 

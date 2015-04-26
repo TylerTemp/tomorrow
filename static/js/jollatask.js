@@ -166,8 +166,10 @@ $(document).ready(function(evt)
             }
         }).done(function(data, textStatus, jqXHR)
         {
-            console.log(data);
             var obj = $.parseJSON(data);
+            if (obj.error == 0)
+                return window.location.href = obj.redirect;
+            submiterror(_("Sorry, a server error occured") + ": " + obj.error);
         }).fail(function(jqXHR, textStatus, errorThrown)
         {
             submiterror(
