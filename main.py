@@ -43,14 +43,14 @@ from lib.hdlr.base import BaseHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
-from lib.ui.upload import UploadImageModule
-from lib.ui.upload import UploadFileModule
+# from lib.ui.upload import UploadImageModule
+# from lib.ui.upload import UploadFileModule
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
     tornadologger.removeHandler(_hdlr)
-    for _filter in tornadologger.filters:
-        tornadologger.removeFilter(_filter)
+for _filter in tornadologger.filters:
+    tornadologger.removeFilter(_filter)
 
 # tornado.options.options.logging = None
 
@@ -98,8 +98,8 @@ class Application(tornado.web.Application):
             'ui_modules': {
                 'WysiwygEditor': MdWysiwygEditorModule,
                 'MdEditor': MdEditorModule,
-                'UploadFile': UploadFileModule,
-                'UploadImage': UploadImageModule,
+                # 'UploadFile': UploadFileModule,
+                # 'UploadImage': UploadImageModule,
                 },
         }
 
@@ -154,14 +154,12 @@ if __name__ == "__main__":
     tnd_file = args['--tnd-file'] or config.tnd_file
 
     if tmr_file is None:
-        rootlogger.warning("%s not exists, tomorrow file logger disabled",
-                            tmr_file)
+        rootlogger.warning("tomorrow file logger disabled")
     else:
         filelogger(tmr_file, logger, tmr_level)
 
     if tnd_file is None:
-        rootlogger.warning("%s not exists, tornado file logger disabled",
-                            tnd_file)
+        rootlogger.warning("tornado file logger disabled")
     else:
         filelogger(tnd_file, tornadologger, tnd_level)
 

@@ -221,7 +221,7 @@ class Article(object):
     def add(self, board, title, content, author, email, url=None,
             show_email=True, license=CC_LICENSE, transinfo=None):
         if board == 'jolla':
-            assert trans_url is not None
+            assert transinfo is not None
         if url is None:
             if transinfo is not None:
                 url = self.mkurl(transinfo['title'], author)

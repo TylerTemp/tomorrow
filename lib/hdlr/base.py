@@ -94,8 +94,6 @@ class BaseHandler(tornado.web.RequestHandler):
                 </html>''' % (status_code, status_code, get_exc_plus()))
             return self.flush()
 
-        if status_code == 404:
-            return self.render('404.html')
         else:
             logging.error('%s' % get_exc_plus())
             # uncomment this line for py2
