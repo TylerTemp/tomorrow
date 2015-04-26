@@ -162,6 +162,20 @@ def streamlogger(stream, logger=None, level=None, color=True):
 
 getlogger = stdoutlogger
 
+
+def parse_level(level):
+    if isinstance(level, int):
+        return level
+    level = level.strip()
+    if level.isdigit():
+        level = int(level)
+    else:
+        level = dict(debug=logging.DEBUG,
+                     info=logging.INFO,
+                     warning=logging.WARNING,
+                     critical=logging.CRITICAL)[level.lower()]
+    return level
+
 if __name__ == '__main__':
     logger = getlogger('test1', DEBUG)
     logger.debug('debug')

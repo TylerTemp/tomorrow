@@ -18,12 +18,14 @@ $(document).ready(function(evt)
         'imageTypes': IMG_ALLOW
     });
 
+    var _editor_status = 'wysiwyg';
     $("#swith-to-md").click(function(evt)
     {
         evt.preventDefault();
         mdEditor.val(wysiwygEditor.getMarkdown());
         $("#wysiwyg-area").fadeOut(400, function()
         {$("#md-area").fadeIn(400);});
+        _editor_status = 'md';
 
     });
     $("#swith-to-wysiwyg").click(function(evt)
@@ -32,7 +34,7 @@ $(document).ready(function(evt)
         wysiwygEditor.html(mdEditor.getHtml());
         $("#md-area").fadeOut(400, function()
         {$("#wysiwyg-area").fadeIn(400);});
-
+        _editor_status = 'wysiwyg';
     });
 
     // try to let the server deal the content
@@ -126,7 +128,7 @@ $(document).ready(function(evt)
         var author = $("#author").val();
         if (!author)
             errors.push(_("Author should not be empty"));
-        if ($("#wysiwyg-area:visible"))
+        if (_editor_status == 'wysiwyg')
         {
             console.log("from wys");
             var content = wysiwygEditor.getHtml();

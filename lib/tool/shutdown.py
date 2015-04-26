@@ -25,14 +25,18 @@ cfg = config.Config()
 
 
 def main():
-    if not os.path.exists(config.tempf):
+    if not os.path.exists(cfg.info_path):
         return logger.error('file(%s) not exits.')
 
-    with open(config.tempf, 'r+', encoding='utf-8') as f:
+    with open(cfg.info_path, 'r+', encoding='utf-8') as f:
         obj = json.load(f)
-    os.unlink(config.tempf)
+    os.unlink(cfg.info_path)
 
-    piddict = obj['pid2port']
+    piddict = obj.get('pid2port', None)
+
+    if piddict is None:
+        logger.info('no port info, nothing to kill')
+        return
     logger.info(piddict)
 
     for pid, port in piddict.items():

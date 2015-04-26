@@ -4,10 +4,10 @@ main.py [options]
 
 Options:
 -p --port=<port>          listen to this port[default: 8000]
---tmr-level=<level>       site logic code logging level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50[default: INFO]
---tnd-level=<level>       request/response logging level.[default: INFO]
---tmr-file=<file>         site logic code file logger.[default: /tmp/tomorrow.log]
---tnd-file=<file>         request/response file logger.[default: /tmp/tornado.log]
+--tmr-level=<level>       site logic code logging level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50(default: INFO)
+--tnd-level=<level>       request/response logging level.(default: INFO)
+--tmr-file=<file>         site logic code file logger.(default: /tmp/tomorrow.log)
+--tnd-file=<file>         request/response file logger.(default: /tmp/tornado.log)
 -h --help                 show this message
 '''
 
@@ -24,6 +24,7 @@ import tornado.autoreload
 
 from lib.tool.bashlog import stdoutlogger
 from lib.tool.bashlog import filelogger
+from lib.tool.bashlog import parse_level
 from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
@@ -99,14 +100,14 @@ class Application(tornado.web.Application):
                 },
         }
 
-        if self.config.secret_cookie:
-            # while self.config.secret is None:
-            #     logger.debug('waitting for cookie secret')
-            #     time.sleep(0.5)
+        if self.config.set_secret:
             secret = self.config.secret
             assert secret is not None
             logger.debug('set secret')
             settings['cookie_secret'] = secret
+
+        if self.config.debug:
+            logger.warning('debug is on')
 
         super(Application, self).__init__(handlers, **settings)
 
@@ -119,17 +120,6 @@ class BareHandler(BaseHandler):
             k: %s''' % (a, k))
 
 
-def get_level(level):
-    level = level.strip()
-    if level.isdigit():
-        level = int(level)
-    else:
-        level = dict(debug=logging.DEBUG,
-                     info=logging.INFO,
-                     warning=logging.WARNING,
-                     critical=logging.CRITICAL)[level.lower()]
-
-
 def main(port):
     Config.set_port(port)
     tornado.locale.load_translations(
@@ -137,6 +127,8 @@ def main(port):
     tornado.locale.set_default_locale('zh_CN')
     tornado.autoreload.watch(
         os.path.join(rootdir, 'translations', 'zh_CN.csv'))
+    tornado.autoreload.watch(
+        os.path.join(rootdir, 'config.conf'))
     http_server = tornado.httpserver.HTTPServer(Application(), xheaders=True)
     http_server.listen(port)
     logger.info('[port: %s]Sever started.', port)
@@ -146,13 +138,29 @@ def main(port):
 if __name__ == "__main__":
     from docopt import docopt
 
+    config = Config()
+
     args = docopt(__doc__, help=True)
 
+    rootlogger = logging.getLogger()
+    stdoutlogger(rootlogger, logging.DEBUG, True)
 
-    stdoutlogger(logging.getLogger(), logging.DEBUG, True)
+    tmr_level = parse_level(args['--tmr-level'] or config.tmr_level)
+    tnd_level = parse_level(args['--tnd-level'] or config.tnd_level)
+    tmr_file = args['--tmr-file'] or config.tmr_file
+    tnd_file = args['--tnd-file'] or config.tnd_file
 
-    filelogger(args['--tmr-file'], logger)
-    filelogger(args['--tnd-file'], logger)
+    if tmr_file is None:
+        rootlogger.warning("%s not exists, tomorrow file logger disabled",
+                            tmr_file)
+    else:
+        filelogger(tmr_file, logger, tmr_level)
+
+    if tnd_file is None:
+        rootlogger.warning("%s not exists, tornado file logger disabled",
+                            tnd_file)
+    else:
+        filelogger(tnd_file, tornadologger, tnd_level)
 
 
     main(int(args['--port']))

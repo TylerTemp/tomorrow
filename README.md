@@ -23,3 +23,4 @@ python3 main.py -p 8000 -l debug
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
 * jquery-textrange from [github:dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange)
 * `static/js/jquery/jquery.cookie.js` from [github:carhartl/jquery-cookie](https://github.com/carhartl/jquery-cookie)
+* `lib/tool/filelock.py` edit from [github: dmfrey/ FileLock](https://github.com/dmfrey/FileLock)

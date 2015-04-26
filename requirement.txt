@@ -6,3 +6,5 @@ bleach
 html2text
 markdown
 markdown_newtab
+BeautifulSoup4
+git+git://github.com/aleray/mdx_del_ins.git
