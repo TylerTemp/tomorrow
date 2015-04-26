@@ -68,7 +68,7 @@ class TaskHandler(BaseHandler):
             title = author = md = html = headimg = link = ''
 
         return self.render(
-            'jollatask.html',
+            'jolla/task.html',
             imgs=imgs,
             files=files,
 

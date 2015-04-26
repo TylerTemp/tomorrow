@@ -141,6 +141,8 @@ class Jolla(object):
             'content': content,
             'url': url,
             'headimg': headimg,
+            'createtime': time.time(),
+            'edittime': time.time(),
         }
 
         self.jolla_info = info
@@ -148,7 +150,8 @@ class Jolla(object):
         self.new = False
         return self.jolla_info
 
-    def save(self):
+    def save(self, t=None):
+        self.jolla_info['edittime'] = t or time.time()
         return self._jolla.save(self.jolla_info)
 
     def get(self):
@@ -172,6 +175,11 @@ class Jolla(object):
             if self.find_url(theurl) is None:
                 logger.debug('url as %s', theurl)
                 return theurl
+
+    # todo: order by time/...
+    @classmethod
+    def all(cls):
+        return cls._jolla.find({})
 
     @classmethod
     def find_url(cls, url):
@@ -228,7 +236,9 @@ class Article(object):
             'email': email,
             'show_email': show_email,
             'license': license,
-            'transinfo': transinfo
+            'transinfo': transinfo,
+            'createtime': time.time(),
+            'edittime': time.time(),
         }
 
         self.article_info = info
@@ -241,7 +251,8 @@ class Article(object):
     def find_url(cls, url):
         return cls._article.find_one({'url': url})
 
-    def save(self):
+    def save(self, t):
+        self.article_info['edittime'] = t or time.time()
         return self._article.save(self.article_info)
 
     def mkurl(self, title, author):
