@@ -45,14 +45,15 @@ attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
                     'border', 'text-align')}
 
 _md = markdown.Markdown(smart_emphasis=False, safemode=False,
-    output_format='html5', extensions=extend)
+                        output_format='html5', extensions=extend)
 
 md2html = _md.convert
 # def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
 #     if extensions is None:
 #         extensions = extend
 #     return markdown.markdown(md, output_format='html5',
-#                              smart_emphasis=smart_emphasis, safemode=safemode,
+#                              smart_emphasis=smart_emphasis,
+#                              safemode=safemode,
 #                              extensions=extensions)
 
 _parser = html2text.HTML2Text()

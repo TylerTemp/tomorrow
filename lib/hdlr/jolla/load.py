@@ -16,7 +16,9 @@ except ImportError:
 
 import sys
 import os
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
+sys.path.insert(
+    0,
+    os.path.normpath(os.path.join(__file__, '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import html2md
 from lib.tool.md import md2html
@@ -132,7 +134,6 @@ class LoadHandler(BaseHandler):
         article.find(True, {'class': 'post-foot'}).extract()
         article.find(True, id='nav-below').extract()
 
-
         # content = ''.join(map(str, all_content))
         mdcontent = html2md(str(article))
         htmlcontent = md2html(mdcontent)
@@ -186,7 +187,8 @@ class LoadHandler(BaseHandler):
 
 
 if __name__ == '__main__':
-    url = 'http://www.jollatides.com/2014/12/08/jolla-tablet-campaign-last-chance-to-order-juicy-perks/'
+    url = ('http://www.jollatides.com/2014/12/08/'
+           'jolla-tablet-campaign-last-chance-to-order-juicy-perks/')
     host = LoadHandler.host(url)
     with open('/tmp/source.html', 'r', encoding='utf-8') as f:
         parsed = LoadHandler.parse_jollatides(BeautifulSoup(f.read()))

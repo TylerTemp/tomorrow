@@ -24,12 +24,12 @@ sys.path.pop(0)
 cfg = Config()
 logger = logging.getLogger('tomorrow.upload')
 
+
 class UploadHandler(BaseHandler):
     NO_PERMISSION = 1
     SIZE_TOO_BIG = 2
     DUPLICATED_NAME = 4
     DECODE_ERROR = 8
-
 
     @tornado.web.authenticated
     def post(self, user, to):
@@ -54,7 +54,8 @@ class UploadHandler(BaseHandler):
 
         if os.path.exists(os.path.join(folder, filename)):
             ext = os.path.splitext(filename)[-1]
-            mainname = time.strftime('%y-%m-%d-%H-%M-%S',time.localtime(time.time()))
+            mainname = time.strftime('%y-%m-%d-%H-%M-%S',
+                                     time.localtime(time.time()))
             filename = mainname + ext
 
             if os.path.exists(os.path.join(folder, filename)):
@@ -72,5 +73,5 @@ class UploadHandler(BaseHandler):
         return self.write(json.dumps({
             'error': 0,
             'name': filename,
-            'url': urljoin(mainurl, '%s/%s' %(to, filename))
+            'url': urljoin(mainurl, '%s/%s' % (to, filename))
         }))

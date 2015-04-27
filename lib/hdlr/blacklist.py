@@ -24,7 +24,7 @@ class BlackListHandler(tornado.web.RequestHandler):
         host = self.request.host
         if ip not in collect:
             collect.add(ip)
-            blacklist.write('%s\n'%ip)
+            blacklist.write('%s\n' % ip)
             blacklist.flush()
             logger.info('%s - %s' % (ip, host))
             if len(collect) >= 1000:
@@ -33,6 +33,7 @@ class BlackListHandler(tornado.web.RequestHandler):
         return self.redirect(ip, True)
 
     post = get
+
 
 @atexit.register
 def close():

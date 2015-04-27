@@ -69,7 +69,7 @@ $(document).ready(function(evt)
                 'beforeSend': function(jqXHR, settings){
                     $("#fieldset").prop("disabled", true);
                     btn.prop("disabled", true).button('loading');
-                    jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                    jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
                 }
             }
         ).done(function(data, textStatus, jqXHR)

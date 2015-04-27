@@ -134,9 +134,11 @@
 	</div>
 </div>
 
+{% if area %}
 <!-- editor make it focusable  -->
 <div class="am-g">
 	<div class="am-u-sm-12">
 		<textarea class="am-form-field" id="mdEditor" tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">{% raw content %}</textarea>
 	</div>
 </div>
+{% end %}

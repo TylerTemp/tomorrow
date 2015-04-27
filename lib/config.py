@@ -102,9 +102,7 @@ class Config(object):
             f.truncate()
             json.dump(obj, f, indent=4)
 
-
         logger.debug('pid: %s; port: %s at %s', pid, port, cls.info_path)
-
 
     @staticmethod
     def generate():

@@ -67,8 +67,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.clear_cookie('type')
 
     def is_ajax(self):
-        return (self.request.headers.get('X-Requested-With', None)
-                == "XMLHttpRequest")
+        return (self.request.headers.get('X-Requested-With', None) ==
+                "XMLHttpRequest")
 
     @property
     def db(self):    # lazy-load

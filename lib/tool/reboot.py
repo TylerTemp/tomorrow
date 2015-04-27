@@ -40,11 +40,16 @@ def main():
             logger.info('done')
             return
 
-
     with FileLock(cfg.info_path),\
             open(cfg.info_path, 'r+', encoding='utf-8') as f:
         obj = json.load(f)
-        os.unlink(cfg.info_path)
+
+        if 'secret' in obj:
+            f.seek(0)
+            f.truncate()
+            json.dump({'secret': obj['secret']}, f)
+        else:
+            os.unlink(cfg.info_path)
 
     if 'pid2port' in obj:
         for pid, port in obj['pid2port'].items():

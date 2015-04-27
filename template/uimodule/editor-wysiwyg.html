@@ -136,9 +136,11 @@
 	</div>
 </div>
 
+{% if area %}
 <!-- editor	make it focusable  -->
 <div class="am-g">
 	<div class="am-u-sm-12">
 		<div class="am-form-field needsclick" id="wysiwygEditor" tabindex="0" contentEditable="true">{% raw content %}</div>
 	</div>
 </div>
+{% end %}

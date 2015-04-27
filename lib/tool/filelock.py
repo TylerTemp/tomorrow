@@ -182,7 +182,8 @@ class BaseFileLock(object):
 
                 if self.is_locked():
                     break
-                elif timeout is not None and time.time() - start_time > timeout:
+                elif (timeout is not None and
+                        time.time() - start_time > timeout):
                     raise Timeout(self._lock_file)
                 else:
                     time.sleep(poll_intervall)
@@ -194,7 +195,7 @@ class BaseFileLock(object):
             raise
         return self
 
-    def release(self, force = False):
+    def release(self, force=False):
         """
         Releases the file lock.
 
@@ -230,7 +231,7 @@ if msvcrt:
     class FileLock(BaseFileLock):
 
         def _acquire(self):
-            open_mode = os.O_RDWR | os.O_CREAT #| os.O_TRUNC
+            open_mode = os.O_RDWR | os.O_CREAT  # | os.O_TRUNC
 
             try:
                 fd = os.open(self._lock_file, open_mode)
@@ -263,7 +264,7 @@ elif fcntl:
     class FileLock(BaseFileLock):
 
         def _acquire(self):
-            open_mode = os.O_RDWR | os.O_CREAT #| os.O_TRUNC
+            open_mode = os.O_RDWR | os.O_CREAT  # | os.O_TRUNC
             fd = os.open(self._lock_file, open_mode)
 
             try:

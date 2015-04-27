@@ -200,7 +200,7 @@ $(document).ready(function(){
                 },
                 'type': 'post',
                 'beforeSend': function(jqXHR, settings){
-                    jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                    jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
                     submit.prop("disabled", true);
                     submit.button("loading");
                     server_error_panel.hide(400);

@@ -166,7 +166,7 @@ class SigninHandler(_Handler):
             if flag == 0:
                 return self.redirect(
                     self.safe_redirect(redirect)
-                        if redirect is not None
+                    if redirect is not None
                     else '/hi/%s/' % quote(user.user))
 
             if redirect is not None:

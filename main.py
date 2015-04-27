@@ -36,8 +36,9 @@ from lib.hdlr.auth import LogoutHandler
 # from lib.hdlr.jolla.list import ListHandler
 from lib.hdlr.jolla import TaskHandler
 from lib.hdlr.jolla import ListHandler
+from lib.hdlr.jolla import LoadHandler
+from lib.hdlr.jolla import TranslateHandler
 from lib.hdlr.upload import UploadHandler
-from lib.hdlr.load import LoadHandler
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
@@ -74,7 +75,7 @@ class Application(tornado.web.Application):
             (r'/jolla/blog/', BareHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', BareHandler),
             (r'/jolla/translate/', ListHandler),
-            (r'/jolla/translate/(?P<url>[^/]+)/', BareHandler),
+            (r'/jolla/translate/(?P<url>[^/]+)/', TranslateHandler),
             (r'/jolla/task/', TaskHandler),
             (r'/jolla/task/(?P<url>[^/]+)/', TaskHandler),
 
@@ -162,6 +163,5 @@ if __name__ == "__main__":
         rootlogger.warning("tornado file logger disabled")
     else:
         filelogger(tnd_file, tornadologger, tnd_level)
-
 
     main(int(args['--port']))
