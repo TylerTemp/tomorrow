@@ -8,11 +8,34 @@ Note it's developing and hasn't finished.
 
 Require python >= 3.3
 
+It may or may not run on python2.7 (not test)
+
 ```bash
 git clone https://github.com/TylerTemp/tomorrow.git
 cd tomorrow
 pip3 install -r requirement.txt
-python3 main.py -p 8000 -l debug
+```
+# run
+
+run in single process:
+
+```bash
+cd path/to/tomorrow
+python3 main.py -p 8000
+```
+
+you can run 4 processes on port 8001~8004(can't change) by
+
+```bash
+python3 lib/tool/reboot.py
+```
+
+this can also help you reboot the server.
+
+you can also shutdown the server by
+
+```bash
+python3 lib/tool/shutdown.py
 ```
 
 ## reference

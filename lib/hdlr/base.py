@@ -7,10 +7,12 @@ try:
     from urllib.parse import quote
     from urllib.parse import urlsplit
     from urllib.parse import urlunsplit
+    from urllib.parse import urljoin
 except ImportError:
     from urlparse import quote
     from urlparse import urlsplit
     from urlparse import urlunsplit
+    from urlparse import urljoin
 
 import sys
 import os
@@ -18,6 +20,7 @@ import os
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
+from lib.db import User
 sys.path.pop(0)
 
 logger = logging.getLogger("tomorrow.base")
@@ -78,7 +81,33 @@ class BaseHandler(tornado.web.RequestHandler):
         # todo: able to change
         # return tornado.locale.get('zh_CN')
 
+    def get_imgs_and_files(self, user, type):
+        allow_update = (type >= User.admin)
+        if not allow_update:
+            return None, None
+        path = self.get_user_path(user)
+        link = self.get_user_url(user)
+        imgs = self._list_path(os.path.join(path, 'img'))
+        files = self._list_path(os.path.join(path, 'file'))
+        img_name_and_link = {
+            name: urljoin(link, 'img/%s' % quote(name))
+            for name in imgs}
+
+        file_name_and_link = {
+            name: urljoin(link, 'file/%s' % quote(name))
+            for name in files}
+
+        return img_name_and_link, file_name_and_link
+
+    def _list_path(self, path):
+        if not os.path.exists(path):
+            return []
+        for dirpath, dirnames, filenames in os.walk(path):
+            return list(filenames)
+
     def write_error(self, status_code, **kwargs):
+        if status_code == 404:
+            return self.render('404.html')
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))
         if self.application.settings['debug']:

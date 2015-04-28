@@ -47,7 +47,7 @@ class User(object):
             self.user = self.user_info['user']
             self.email = self.user_info['email']
 
-    def add(self, user=None, email=None, pwd=None, type=None):
+    def add(self, user=None, email=None, pwd=None, type=None, show_email=True):
         assert pwd
         pwd = sha256_crypt.encrypt(pwd)
         user = user or self.user
@@ -59,7 +59,7 @@ class User(object):
             'user': user,
             'email': email,
             'pwd': pwd,
-            # 'show_email': show_email,
+            'show_email': show_email,
             'type': type,
         }
         self.user_info['_id'] = self.save()
@@ -120,7 +120,6 @@ class Jolla(object):
     # author: source author
     # content: source content in markdown format
     # headimg
-    # translated: True/False
     # trusted_translation: url
 
     def __init__(self, url=None):
@@ -129,9 +128,8 @@ class Jolla(object):
         else:
             self.jolla_info = self.find_url(url)
 
-        self.new = (self.jolla_info is None)
-
-    def add(self, link, title, author, content, url=None, headimg=None):
+    def add(self, link, title, author, content, url=None, headimg=None,
+            trusted_translation=None):
         if url is None:
             url = self.mkurl(title, author)
 
@@ -144,11 +142,11 @@ class Jolla(object):
             'headimg': headimg,
             'createtime': time.time(),
             'edittime': time.time(),
+            'trusted_translation': trusted_translation,
         }
 
         self.jolla_info = info
         self.jolla_info['_id'] = self.save()
-        self.new = False
         return self.jolla_info
 
     def save(self, t=None):
@@ -204,6 +202,8 @@ class Article(object):
     # author
     # email
     # show_email: True/False
+    # transref: Jolla translation only
+    # transref: same as Jolla.url
     # transinfo: Jolla translation only
     # transinfo = {link: , author: , url: , title: , headimg}; same as Jolla
 
@@ -216,12 +216,9 @@ class Article(object):
         else:
             self.article_info = self.find_url(user)
 
-        self.new = (self.article_info is None)
-
     def add(self, board, title, content, author, email, url=None,
-            show_email=True, license=CC_LICENSE, transinfo=None):
-        if board == 'jolla':
-            assert transinfo is not None
+            show_email=True, license=CC_LICENSE, transref=None, transinfo=None):
+
         if url is None:
             if transinfo is not None:
                 url = self.mkurl(transinfo['title'], author)
@@ -242,15 +239,31 @@ class Article(object):
             'edittime': time.time(),
         }
 
+        if transref is not None:
+            assert transinfo is not None
+            info['transref'] = transref
+            info['transinfo'] = transinfo
+
         self.article_info = info
         self.article_info['_id'] = self.save()
-        self.new = False
         logger.info("New article %s", title)
-        return self.user_info
+        return self.article_info
 
     @classmethod
     def find_url(cls, url):
         return cls._article.find_one({'url': url})
+
+    @classmethod
+    def find_ref_of_user(cls, refurl, user):
+        return cls._article.find_one({'transref': refurl, 'author': user})
+
+    @classmethod
+    def find_ref_of_email(cls, refurl, email):
+        return cls._article.find_one({'transref': refurl, 'email': email})
+
+
+    def get(self):
+        return self.article_info
 
     def save(self, t):
         self.article_info['edittime'] = t or time.time()

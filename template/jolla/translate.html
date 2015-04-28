@@ -1,5 +1,151 @@
 {% extends "../base.html" %}
 
 {% block title %}
-  {{ _("Translate") }}: {{ title }}
+  {{ _("Translate") }}: {{ translate['title'] }}
+{% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/editor.css">
+<style>
+#article-area,
+#mdEditor,
+#wysiwygEditor {
+  height: 600px;
+}
+
+
+#title {
+  margin-bottom: 5px;
+}
+</style>
+{% end %}
+{% block body %}
+
+<div class="header">
+  <div class="am-g">
+    <h1>{{ _("Translate") }}: {{ translate['title'] }}</h1>
+  </div>
+  <hr />
+</div>
+
+
+<div class="am-g">
+  <div class="am-u-sm-12">
+    {{ _("Title") }}:
+    <label for="title">{{ translate['title'] }}</label>
+    <input type="text" class="am-form-field" id="title" placeholder="{{ _('Enter the translation of the title') }}">
+  </div>
+</div>
+
+
+<div class="am-g">
+  <div class="am-u-sm-6">
+    <label>{{ _("Original Content") }}: </label>
+  </div>
+  <div class="am-u-sm-6">
+    <label>{{ _("Translate Here") }}: </label>
+  </div>
+  <!-- <hr data-am-widget="divider" style="" class="am-divider am-divider-default" /> -->
+</div>
+
+
+<!-- toolbar -->
+<div id="wys-toolbar-area" {{ 'style=display:none' if md else '' }}>
+  {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
+</div>
+
+<div id="md-toolbar-area" {{ '' if md else 'style=display:none' }}>
+  {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
+</div>
+
+
+<div class="am-g">
+  <!-- original content -->
+  <div class="am-u-sm-6">
+    <div class="am-scrollable-vertical" id="article-area">
+      <div id="article-wys" {% raw 'style="display:none"' if md else '' %}>
+        {% raw translate['html'] %}
+      </div>
+      <pre id="article-md" {% raw '' if md else 'style="display:none"' %}>
+        {% raw translate['md'] %}
+      </pre>
+    </div>
+    <div class="am-cf">
+      <button class="am-btn am-btn-success am-fr" id="article-switch" data-role="{{'md' if md else 'wys'}}">{{ _("Switch to") }} {{ _("normal view" if md else "MarkDown")}}</button>
+      {% if edit_task_url %}
+      <a class="am-btn am-btn-default am-fr" href="{{ edit_task_url }}" target="_blank">{{ _("Edit") }}</a>
+      {% end %}
+    </div>
+  </div>
+  <!-- translated area -->
+  <div class="am-u-sm-6">
+    <div class="am-form-field needsclick" id="wysiwygEditor" {% raw 'style="display:none"' if md else '' %} tabindex="0" contentEditable="true">
+      {% raw translated['html'] or translate['html'] %}
+    </div>
+    <textarea class="am-form-field" id="mdEditor" {% raw '' if md else 'style="display:none"' %} tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">
+      {{ translated['md'] or translate['md'] }}
+    </textarea>
+  </div>
+  <div class="am-cf">
+    <button type="button"
+            class="am-btn am-btn-success am-fr"
+            id="submit"
+            data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _("Submitting...") }}', resetText: '{{ _("Submit") }}'}">
+      {{ _("Submit") }}
+    </button>
+  </div>
+</div>
+
+<div id="submit-error-panel">
+</div>
+
+
+{% if not user %}
+
+<hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
+
+<div class="am-g">
+  <div class="am-u-sm-1">
+    <label for="name">{{ _("Name") }}:</label>
+  </div>
+  <div class="am-u-sm-5">
+    <input type="text" class="am-form-field" id="name" placeholder="{{ _('Your name as translator') }}">
+  </div>
+  <div class="am-u-sm-1">
+    <label for="email">{{ _("Email") }}:</label>
+  </div>
+  <div class="am-u-sm-5">
+    <input type="email" class="am-form-field" id="email" placeholder="{{ _('Your email') }}">
+  </div>
+</div>
+
+<br />
+<div class="am-g">
+  <div class="am-u-sm-12">
+  <label>
+    <input type="checkbox" class="am-checkbox-inline" id="hide-email" checked>
+    {{ _("Hide my email") }}
+  </label>
+  </div>
+</div>
+
+<br />
+{% end %}
+
+{% end %}
+
+{% block butt %}
+<script>
+  var IMGUPLOADURL = "{{ img_upload_url }}";
+  var FILEUPLOADURL = "{{ file_upload_url }}";
+  var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
+  var _editor_status = "{{ 'md' if md else 'wysiwyg' }}";
+  var USER = {% raw '"%s"' % user if user else 'null' %};
+</script>
+<script src="/static/js/jquery/jquery-textrange.min.js"></script>
+<script src="/static/js/md/html2md.min.js"></script>
+<script src="/static/js/md/md2html.min.js"></script>
+<script src="/static/js/md/editor-wysiwyg.js"></script>
+<script src="/static/js/md/editor-md.js"></script>
+<script src="/static/js/jollatranslate.js"></script>
 {% end %}
