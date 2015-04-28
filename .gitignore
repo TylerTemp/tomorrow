@@ -65,6 +65,7 @@ tomorrow.p12
 ca.pem
 sub.class1.server.ca.pem
 mongodb.conf
+lib/tool/gitpull.py
 
 # store the uploaded file
 static/upload

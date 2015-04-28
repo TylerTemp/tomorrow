@@ -13,7 +13,21 @@ sys.path.pop(0)
 conffile = os.path.join(rootdir, 'config.conf')
 with open(conffile, 'r+', encoding='utf-8') as f:
     obj = json.load(f)
-    obj.pop('mail', None)
+    obj['mail'] = {
+        "zh_CN": {
+            "url": "mail.example.com",
+            "host": "smtp.example.cn",
+            "user": "example@example.cn",
+            "password": "example"
+        },
+        "default": {
+            "url": "mail.example.com",
+            "host": "smtp.example.com",
+            "user": "example@example.com",
+            "password": "example"
+        }
+    }
+    obj['debug'] = False
     f.seek(0)
     f.truncate()
     json.dump(obj, f, indent=4)

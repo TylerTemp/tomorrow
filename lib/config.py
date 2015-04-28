@@ -28,7 +28,9 @@ class Config(object):
 
     def __new__(cls):
         if cls._ins is None:
+            # store info in class, not instance. Maybe not a good idea
             ins = super(Config, cls).__new__(cls)
+
             cfgpath = os.path.join(rootdir, 'config.conf')
             if os.path.exists(cfgpath):
                 with open(cfgpath, 'r', encoding='utf-8') as f:
@@ -37,6 +39,7 @@ class Config(object):
                 cfg = {}
 
             cls.debug = cfg.get('debug', False)
+            # get/set secret
             cls.set_secret = cfg.get('set_secret', True)
             cls.info_path = cls.format_folder(
                 cfg.get('info_path',
@@ -74,6 +77,28 @@ class Config(object):
                 cls.tnd_file = None
             else:
                 cls.tnd_file = cls.format_folder(tnd_f)
+
+            # get/set email
+            cls.mail = cfg.get(
+                "mail",
+                {
+                    "zh_CN": {
+                        "url": "mail.example.cn",
+                        "host": "smtp.example.cn",
+                        "user": "example@example.cn",
+                        "password": "example"
+                    },
+                    "default": {
+                        "url": "mail.example.com",
+                        "host": "smtp.example.com",
+                        "user": "example@example.com",
+                        "password": "example"
+                    }
+                }
+            )
+
+            # get Chinese email list
+            cls.zh_mail_list = cfg.get("zh_mail", [])
 
             cls.img_allow = ('jpg', 'jpeg', 'png', 'gif')
             cls.size_limit = {User.block: 0, User.normal: 0,
