@@ -154,8 +154,8 @@ def remove():
 if __name__ == '__main__':
     with open(os.path.join(rootdir, 'config.conf'),
               'w', encoding='utf-8') as f:
-        f.write('''
-{
+        f.write(
+'''{
     # logic logging file
     "tomorrow_log_file": "{TMPDIR}/tomorrow.log",
 
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     "mail": {
 
         # send for Chinese mail
-        # for some mail like gmail send to Chinese mail may have a long delay
+        # for some mails like gmail send to Chinese mail may have a long delay
         "zh_CN":  {
             "url": "mail.example.cn",
             "host": "smtp.example.cn",

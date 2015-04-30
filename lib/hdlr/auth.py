@@ -93,8 +93,11 @@ class LoginHandler(_Handler):
                 flag |= self.PWD_WRONG
 
             else:
+                user_info = user.get()
+                email = user_info['email']
+                type = user_info['type']
                 temp = (not self.get_argument('remember', False))
-                self.set_user(user.user, user.user_info['type'], temp=temp)
+                self.set_user(user.user, email, type, temp=temp)
 
         result = {'error': flag}
 

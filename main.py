@@ -32,6 +32,7 @@ from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
+from lib.hdlr.user import UserHandler
 # from lib.hdlr.jolla.task import TaskHandler
 # from lib.hdlr.jolla.list import ListHandler
 from lib.hdlr.jolla import TaskHandler
@@ -69,7 +70,7 @@ class Application(tornado.web.Application):
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
             (r'/logout/', LogoutHandler),
-            (r'/hi/(?P<user>[^/]+)/', BareHandler),
+            (r'/hi/(?P<user>[^/]+)/', UserHandler),
             (r'/hi/(?P<user>[^/]+)/(?P<to>file|img)/', UploadHandler),
             (r'/jolla/', BareHandler),
             (r'/jolla/blog/', BareHandler),

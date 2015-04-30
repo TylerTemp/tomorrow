@@ -48,19 +48,21 @@ class Email(object):
             logger.debug('sending...')
             self.smtp.sendmail(me, [to], msg.as_string())
             logger.debug('finished')
-            return True
-        except Exception as e:
+        except BaseException as e:
             logger.error('failed to send mail: %s', e)
             return False
+        else:
+            try:
+                self.smtp.close()
+            except BaseException as e:
+                logger.error(e)
+
+            return True
 
     @classmethod
     def is_zh_mail(cls, mail):
         return any(to.endswith(suffix) for suffix in cls.config.zh_mail_list)
 
-
-@atexit.register
-def close():
-    Email.smtp.close()
 
 
 if __name__ == '__main__':

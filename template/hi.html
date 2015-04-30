@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}
+Hi, {{ user }}
+{% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/admin.css">
+{% end %}
+
+{% block body %}
+
+<!--[if lte IE 9]>
+<p class="browsehappy">
+
+{% raw _("""You are using a browser which is <strong>out of date</strong> and we can't handle it correctly. Please <a href="http://updatemybrowser.org/" target="_blank">update your browser</a>, THX!""") %}
+
+</p>
+<![endif]-->
+
+
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <strong>{{ _("Tomorrow Becomes Today") }}</strong> | <small>{{ _("I'm") }} {{ user }}</small>
+  </div>
+</header>
+
+<div class="am-cf admin-main">
+  <!-- sidebar start -->
+  <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+    <div class="am-offcanvas-bar admin-offcanvas-bar">
+      <ul class="am-list admin-sidebar-list">
+        <li><a href="admin-index.html"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- sidebar end -->
+
+  <!-- content start -->
+  <div class="admin-content">
+
+    <div class="am-cf am-padding">
+      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">{{ _("Main Page")}}</strong> / <small>{{ _("Summary") }}</small></div>
+    </div>
+  </div>
+  <!-- content end -->
+
+</div>
+
+<a class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+{% end %}
+
+{% block butt %}
+<!--[if lt IE 9]>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="/static/js/polyfill/rem.min.js"></script>
+<script src="/static/js/polyfill/respond.min.js"></script>
+<script src="/static/js/amazeui.legacy.js"></script>
+<![endif]-->
+{% end %}

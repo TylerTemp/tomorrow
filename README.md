@@ -49,7 +49,7 @@ python lib/config.py
 
 this `config.conf` is in json format. Read the comment for details
 
-Note you can shadow those settings by pass args to `main.py` or `lib/tool/reboot.py` in command line
+Note you can shadow those settings by passing args to `main.py` or `lib/tool/reboot.py` in command line
 
 ## reference
 * UI by [amazeUI](http://amazeui.org/)

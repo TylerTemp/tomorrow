@@ -86,6 +86,9 @@ class User(object):
         self.new = True
         self.user_info = None
 
+    def set_img(self, url):
+        self.user_info['img'] = url
+
     def save(self):
         return self._user.save(self.user_info)
 
