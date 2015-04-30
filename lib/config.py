@@ -152,6 +152,60 @@ def remove():
             pass
 
 if __name__ == '__main__':
-    cfg = Config()
-    cfg.set_port('test')
-    print(cfg.secret)
+    with open(os.path.join(rootdir, 'config.conf'),
+              'w', encoding='utf-8') as f:
+        f.write('''
+{
+    # logic logging file
+    "tomorrow_log_file": "{TMPDIR}/tomorrow.log",
+
+    # store cookie secret and pid/port file
+    "info_path": "{TMPDIR}/tomorrow.info",
+
+    "debug": false,
+
+    # tornado logging level
+    "tornado_log_level": "DEBUG",
+
+    # the mail you use to send a mail
+    "mail": {
+
+        # send for Chinese mail
+        # for some mail like gmail send to Chinese mail may have a long delay
+        "zh_CN":  {
+            "url": "mail.example.cn",
+            "host": "smtp.example.cn",
+            "user": "example@example.cn",
+            "password": "example"
+        },
+
+        # the default mail you use to send a mail
+        "default": {
+            "url": "mail.example.com",
+            "host": "smtp.example.com",
+            "user": "example@example.com",
+            "password": "example"
+        }
+    },
+
+    # tornado logging file
+    "tornado_log_file": "{TMPDIR}/tornado.log",
+
+    # whether to set a cookie secret or not
+    "set_secret": true,
+
+    # logic logging level
+    "tomorrow_log_level": "DEBUG",
+
+    # mail end with this is regarded as Chinese email
+    "zh_mail": [
+        "163.com",
+        "189.cn",
+        "yeah.net",
+        "126.net",
+        "qq.com",
+        "sina.com",
+        "sogou.com"
+    ]
+}'''
+                )

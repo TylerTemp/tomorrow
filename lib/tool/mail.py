@@ -24,7 +24,7 @@ class Email(object):
         self.lang = lang
 
     def send(self, to, sub, content, subtype='plain'):
-        if self.is_zh_mail(to):
+        if  'zh_ch' in self.config.mail and self.is_zh_mail(to):
             logger.debug('send by zh mail')
             mailinfo = self.config.mail['zh_CN']
         else:

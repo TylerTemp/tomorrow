@@ -15,7 +15,8 @@ git clone https://github.com/TylerTemp/tomorrow.git
 cd tomorrow
 pip3 install -r requirement.txt
 ```
-# run
+
+# Run
 
 run in single process:
 
@@ -37,6 +38,18 @@ you can also shutdown the server by
 ```bash
 python3 lib/tool/shutdown.py
 ```
+
+# Configuration
+
+run the following command will generate a `config.conf` file in main folder
+
+```bash
+python lib/config.py
+```
+
+this `config.conf` is in json format. Read the comment for details
+
+Note you can shadow those settings by pass args to `main.py` or `lib/tool/reboot.py` in command line
 
 ## reference
 * UI by [amazeUI](http://amazeui.org/)
