@@ -41,10 +41,6 @@ class Email(object):
         msg['From'] = me
         msg['To'] = to
 
-        logger.debug(sub)
-        logger.debug(content)
-        return True
-
         try:
             logger.debug('connecting %s', host)
             self.smtp.connect(host)
