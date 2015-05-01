@@ -29,15 +29,12 @@ logger = logging.getLogger("tomorrow.base")
 class BaseHandler(tornado.web.RequestHandler):
 
     def get_current_user(self):
-        user = self.get_cookie("user")
-        verify = self.get_secure_cookie("verify")
-        if verify is None:
+        user = self.get_secure_cookie("user")
+
+        if user is None:
             return None
 
-        verify = verify.decode('utf-8')[::-1]
-        if user != verify:
-            return None
-
+        user = user.decode('utf-8')
         email = self.get_secure_cookie('email').decode('utf-8')
         level = self.get_secure_cookie('type')
 
@@ -48,10 +45,9 @@ class BaseHandler(tornado.web.RequestHandler):
             kwd = {'expires_days': None}
         else:
             kwd = {}
-        self.set_cookie('user', user, **kwd)
-        self.set_secure_cookie('verify', user[::-1], **kwd)
-        self.set_secure_cookie('type', str(type), **kwd)
+        self.set_secure_cookie('user', user, **kwd)
         self.set_secure_cookie('email', email, **kwd)
+        self.set_secure_cookie('type', str(type), **kwd)
 
     def safe_redirect(self, url):
         '''replace the host of url to request's host'''
@@ -71,10 +67,8 @@ class BaseHandler(tornado.web.RequestHandler):
         return '/static/upload/%s/' % quote(user)
 
     def logout(self):
-        self.clear_cookie("name")
         self.clear_cookie("user")
         self.clear_cookie('type')
-        self.clear_cookie('verify')
         self.clear_cookie('email')
 
 

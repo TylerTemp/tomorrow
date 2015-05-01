@@ -58,5 +58,4 @@ Note you can shadow those settings by passing args to `main.py` or `lib/tool/reb
 * `static/js/html2md.js` from [github: neocotic/html.md](https://github.com/neocotic/html.md)
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
 * jquery-textrange from [github:dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange)
-* `static/js/jquery/jquery.cookie.js` from [github:carhartl/jquery-cookie](https://github.com/carhartl/jquery-cookie)
 * `lib/tool/filelock.py` edit from [github: dmfrey/ FileLock](https://github.com/dmfrey/FileLock)

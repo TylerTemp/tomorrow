@@ -24,7 +24,7 @@ class AddSlashOr404Handler(BaseHandler):
         if not splited.path.endswith('/'):
             to_list = list(splited)
             to_list[2] = splited.path + '/'
-            return self.redirect(urlunsplit(to_list))
+            return self.redirect(urlunsplit(to_list), True)
         self.clear()
         self.set_status(404)
         return self.render('404.html')

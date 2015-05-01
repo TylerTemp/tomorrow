@@ -27,10 +27,18 @@ db = client['tomorrow']
 class User(object):
     _user = db.user
 
-    block = 0
-    normal = 1
-    admin = 2
-    root = 3
+    normal = 0
+    admin = 1
+    root = 2
+
+    NEWEMAIL = 0
+    CHANGEEMAIL = 1
+    CHANGEPWD = 2
+
+    OK = 0
+    ERROR_NOT_APPLY = 1
+    ERROR_WRONG = 2
+    ERROR_OUT_OF_TIME = 3
 
     # user
     # email
@@ -39,15 +47,15 @@ class User(object):
     # type
     def __init__(self, user_or_email):
         self.user_info = self.find_user(user_or_email)
-        self.new = (self.user_info is None)
-        if self.new:
+        if self.user_info is None:
             self.user = user_or_email if '@' not in user_or_email else None
             self.email = user_or_email if '@' in user_or_email else None
         else:
             self.user = self.user_info['user']
             self.email = self.user_info['email']
 
-    def add(self, user=None, email=None, pwd=None, type=None, show_email=True):
+    def add(self, user=None, email=None, pwd=None, type=None,
+            show_email=True, active=False):
         assert pwd
         pwd = sha256_crypt.encrypt(pwd)
         user = user or self.user
@@ -61,9 +69,8 @@ class User(object):
             'pwd': pwd,
             'show_email': show_email,
             'type': type,
+            'active': active
         }
-        self.user_info['_id'] = self.save()
-        self.new = False
         return self.user_info
 
     def verify(self, pwd):
@@ -83,17 +90,42 @@ class User(object):
         logger.info('remove user %s', self.user_info)
         self._user.delete_one(self.user_info)
         # self._user.remove({'user': self.user})
-        self.new = True
         self.user_info = None
 
     def set_img(self, url):
         self.user_info['img'] = url
 
     def save(self):
-        return self._user.save(self.user_info)
+        result = self._user.save(self.user_info)
+        self.user_info['_id'] = result
+        return result
 
     def get(self):
         return self.user_info
+
+    def set_new_mail(self, code):
+        info = self.user_info
+        assert info
+        info['verify'] = {
+            'for': self.NEWEMAIL,
+            'value': code
+        }
+
+    def verify_new_mail(self, code, remove=True):
+        info = self.user_info
+        verify = info.get('verify', None)
+        if verify is None or verify['for'] != self.NEWEMAIL:
+            return self.ERROR_NOT_APPLY
+        if (verify['value'] == code):
+            return self.ERROR_WRONG
+
+        if remove:
+            self.user_info.pop('verify')
+        return self.OK
+
+    @property
+    def new(self):
+        return self.get() is None
 
     def __str__(self):
         if self.new:

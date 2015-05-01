@@ -15,6 +15,8 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.db import User
+from lib.tool.mail import Email
+from lib.tool.generate import generate
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.auth')
@@ -71,12 +73,13 @@ class LoginHandler(_Handler):
 
     def post(self):
         self.check_xsrf_cookie()
-        redirect = self.get_argument('next', None)
 
         flag = 0
 
         user_or_email = self.get_argument('user')
         pwd = self.get_argument('pwd')
+        redirect = self.get_argument('next', None)
+
         if not user_or_email:
             flag |= self.USER_EMPTY
         if not pwd:
@@ -94,10 +97,11 @@ class LoginHandler(_Handler):
 
             else:
                 user_info = user.get()
+                user = user_info['user']
                 email = user_info['email']
                 type = user_info['type']
                 temp = (not self.get_argument('remember', False))
-                self.set_user(user.user, email, type, temp=temp)
+                self.set_user(user, email, type, temp=temp)
 
         result = {'error': flag}
 
@@ -130,12 +134,15 @@ class SigninHandler(_Handler):
             login=login,
         )
 
+    @tornado.web.asynchronous
+    @tornado.gen.engine
     def post(self):
         self.check_xsrf_cookie()
+
         user = self.get_argument('user')
         email = self.get_argument('email')
         pwd = self.get_argument('pwd')
-        redirect = self.get_argument('next', None)
+        redirect = '/hi/%s/' % quote(user)
         flag = 0
 
         if not user:
@@ -149,36 +156,49 @@ class SigninHandler(_Handler):
 
         # todo verify email
         if flag == 0:
+
             user = User(user)
             if not user.new:
                 flag |= self.USER_EXISTS
+
             email_or_none = User.find_user(email)
             if email_or_none is not None:
                 flag |= self.EMAIL_EXISTS
 
             if flag == 0:
+
                 user.add(email=email, pwd=pwd)
-                self.set_user(user=user.user,
-                              type=user.user_info['type'],
+
+                secret = generate()
+                user.set_new_mail(secret)
+                user.save()
+
+                user_info = user.get()
+                self.set_user(user=user_info['user'],
+                              email=user_info['email'],
+                              type=user_info['type'],
                               temp=True)
+
+                mailman = Email(self.locale.code)
+                url = '/hi/%s/verify/newmail/%s/' % (quote(user_info['user']),
+                                                     quote(secret))
+                yield mailman.verify_new_mail(email, user_info['user'], url)
 
         result = {'error': flag}
 
         if not self.is_ajax():
             # ok
             if flag == 0:
-                return self.redirect(
-                    self.safe_redirect(redirect)
-                    if redirect is not None
-                    else '/hi/%s/' % quote(user.user))
+                self.redirect(redirect)
+                return self.finish()
 
-            if redirect is not None:
-                result['next'] = redirect
             redirect = ''.join((self.request.uri, '?', urlencode(result)))
-            return self.redirect(redirect)
+            self.redirect(redirect)
+            return self.finish()
 
-        result['redirect'] = redirect or '/'
-        return self.write(json.dumps(result))
+        result['redirect'] = redirect
+        self.write(json.dumps(result))
+        return self.finish()
 
 
 class LogoutHandler(_Handler):

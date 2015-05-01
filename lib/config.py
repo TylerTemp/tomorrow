@@ -16,6 +16,7 @@ from lib.tool.minsix import py3
 from lib.tool.minsix import FileExistsError
 from lib.tool.filelock import FileLock
 from lib.tool.bashlog import parse_level
+from lib.tool.generate import generate
 from lib.db import User
 sys.path.pop(0)
 
@@ -54,7 +55,7 @@ class Config(object):
                         # so, x or w is not nessary
                         val = f.read()
                         if not val:    # empty
-                            secret = cls.generate()
+                            secret = generate()
                             json.dump({'secret': secret}, f, indent=4)
                             f.flush()
                         else:
@@ -101,7 +102,7 @@ class Config(object):
             cls.zh_mail_list = cfg.get("zh_mail", [])
 
             cls.img_allow = ('jpg', 'jpeg', 'png', 'gif')
-            cls.size_limit = {User.block: 0, User.normal: 0,
+            cls.size_limit = {User.normal: 0,
                               User.admin: 5 * 1024 * 1024,
                               User.root: float('inf')}
             cls._ins = ins
@@ -128,14 +129,6 @@ class Config(object):
             json.dump(obj, f, indent=4)
 
         logger.debug('pid: %s; port: %s at %s', pid, port, cls.info_path)
-
-    @staticmethod
-    def generate():
-        s = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
-        if py3:
-            s = s.decode('utf-8')
-
-        return s
 
     @staticmethod
     def format_folder(name):

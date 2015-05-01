@@ -18,7 +18,7 @@ for line in blacklist:
 
 
 class BlackListHandler(tornado.web.RequestHandler):
-    def get(self):
+    def get(self, *a, **k):
         global collect
         ip = self.request.remote_ip
         host = self.request.host

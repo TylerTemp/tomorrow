@@ -16,8 +16,8 @@ sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.user')
 
-class UserHandler(BaseHandler):
 
+class UserHandler(BaseHandler):
 
     def get(self, user):
 
@@ -25,13 +25,15 @@ class UserHandler(BaseHandler):
 
         userinfo = self.get_current_user()
 
-        if user.lower() != userinfo['user'].lower():
+        if userinfo is None or user.lower() != userinfo['user'].lower():
             # show person's information
+            logger.debug(userinfo)
             return self.show_info(user)
 
         return self.render(
             'hi.html',
             user=userinfo['user']
         )
+
     def show_info(self, user):
         assert False

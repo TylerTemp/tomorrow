@@ -89,6 +89,11 @@ class Application(tornado.web.Application):
 
             (r'/xmlrpc\.php', BlackListHandler),
             (r'/wp-login\.php', BlackListHandler),
+            (r'/phpMyAdmin/scripts/setup\.php', BlackListHandler),
+            (r'/phpmyadmin/scripts/setup\.php', BlackListHandler),
+            (r'/pma/scripts/setup\.php', BlackListHandler),
+            (r'/myadmin/scripts/setup\.php', BlackListHandler),
+            (r'/MyAdmin/scripts/setup\.php', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
         )
 

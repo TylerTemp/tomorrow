@@ -16,6 +16,7 @@ sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.email')
 
+
 class Email(object):
     config = Config()
     smtp = smtplib.SMTP()
@@ -23,8 +24,8 @@ class Email(object):
     def __init__(self, lang='zh_CN'):
         self.lang = lang
 
-    def send(self, to, sub, content, subtype='plain'):
-        if  'zh_ch' in self.config.mail and self.is_zh_mail(to):
+    def send(self, to, sub, content, subtype='html'):
+        if 'zh_ch' in self.config.mail and self.is_zh_mail(to):
             logger.debug('send by zh mail')
             mailinfo = self.config.mail['zh_CN']
         else:
@@ -39,6 +40,10 @@ class Email(object):
         msg['Subject'] = sub
         msg['From'] = me
         msg['To'] = to
+
+        logger.debug(sub)
+        logger.debug(content)
+        return True
 
         try:
             logger.debug('connecting %s', host)
@@ -59,10 +64,46 @@ class Email(object):
 
             return True
 
+    def verify_new_mail(self, email, user, url):
+        if self.lang.lower().startswith('en'):
+            # english
+            title = 'Welcome, {user} | tomorrow.becomes.today'
+            content = '''\
+<h2>Verify Your Email</h2>
+<p>Hi, {user}. You've just registered at
+    <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>.
+</p>
+<p>Click the following link to active your account:<br/>
+    <a href="http://tomorrow.becomes.today{url}">
+        http://tomorrow.becomes.today{url}
+    </a>
+</p>
+<p>If you can't click the url above, please copy the following text and paste
+in you browser.</p>
+<code>http://tomorrow.becomes.today{url}</code>'''
+        else:
+            title = '{user}，欢迎加入 | tomorrow.becomes.today'
+            content = '''\
+<h2>验证你的邮箱</h2>
+<p>{user}，你好。你刚注册了
+    <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>。
+</p>
+<p>请点击以下链接来激活你的账户<br/>
+    <a href="http://tomorrow.becomes.today{url}">
+        http://tomorrow.becomes.today{url}
+    </a>
+</p>
+<p>如果你无法点击上面的链接，请将下方文字粘贴到浏览器地址栏</p>
+<code>http://tomorrow.becomes.today{url}</code>'''
+
+        title = title.format(user=user)
+        content = content.format(user=user, url=url)
+
+        return self.send(email, title, content)
+
     @classmethod
     def is_zh_mail(cls, mail):
         return any(to.endswith(suffix) for suffix in cls.config.zh_mail_list)
-
 
 
 if __name__ == '__main__':
