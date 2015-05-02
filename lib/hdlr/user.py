@@ -27,13 +27,30 @@ class UserHandler(BaseHandler):
 
         if userinfo is None or user.lower() != userinfo['user'].lower():
             # show person's information
-            logger.debug(userinfo)
+            logger.debug('show info for %s', userinfo)
             return self.show_info(user)
+
+        user = User(userinfo['user'])
+        userinfo = user.get()
+
+        verify_mail = ('verify' in userinfo and
+                       userinfo['verify']['for'] == user.NEWEMAIL)
 
         return self.render(
             'hi.html',
-            user=userinfo['user']
+            user=userinfo['user'],
+            active=userinfo['active'],
+            verify_mail=verify_mail,
+            usertype = self.user_type(userinfo['type']),
         )
 
     def show_info(self, user):
         assert False
+
+    def user_type(self, tp):
+        if tp == User.normal:
+            return self.locale.translate('Registered User')
+        if tp == User.admin:
+            return self.locale.translate('Administor')
+        if tp == User.root:
+            return self.locale.translate('Super User')

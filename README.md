@@ -41,7 +41,7 @@ python3 lib/tool/shutdown.py
 
 # Configuration
 
-run the following command will generate a `config.conf` file in main folder
+run the following command to generate a `config.conf` file in the main folder
 
 ```bash
 python lib/config.py
@@ -52,8 +52,8 @@ this `config.conf` is in json format. Read the comment for details
 Note you can shadow those settings by passing args to `main.py` or `lib/tool/reboot.py` in command line
 
 ## reference
-* UI by [amazeUI](http://amazeui.org/)
-* `lib/tracemore.py` from &#60;Python Cockbook&#62;
+* UI powered by [amazeUI](http://amazeui.org/)
+* `lib/tracemore.py` from [*Python Cockbook*](http://www.amazon.com/Python-Cookbook-Third-David-Beazley/dp/1449340377/ref=sr_1_1?ie=UTF8&qid=1430528366&sr=8-1&keywords=python+cookbook)
 * `lib/bashlog.py` from `tornado.logging`
 * `static/js/html2md.js` from [github: neocotic/html.md](https://github.com/neocotic/html.md)
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)

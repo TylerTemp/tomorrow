@@ -4,6 +4,11 @@ import os
 import atexit
 import logging
 
+sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
+from lib.tool.minsix import open
+from lib.tool.minsix import FileNotFoundError
+sys.path.pop(0)
+
 logger = logging.getLogger('tomorrow.blacklist')
 try:
     blacklist = open('/tmp/blacklist', 'r+', encoding='utf-8')
@@ -30,7 +35,7 @@ class BlackListHandler(tornado.web.RequestHandler):
             if len(collect) >= 1000:
                 logger.warning('too many blacklist. Clean')
                 collect.clear()
-        return self.redirect(ip, True)
+        return self.redirect('//'+ip, True)
 
     post = get
 

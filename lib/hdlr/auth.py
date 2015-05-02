@@ -190,16 +190,18 @@ class SigninHandler(_Handler):
             # ok
             if flag == 0:
                 self.redirect(redirect)
-                return self.finish()
+                self.finish()
+                return
 
             redirect = ''.join((self.request.uri, '?', urlencode(result)))
             self.redirect(redirect)
-            return self.finish()
+            self.finish()
+            return
 
         result['redirect'] = redirect
         self.write(json.dumps(result))
-        return self.finish()
-
+        self.finish()
+        return
 
 class LogoutHandler(_Handler):
 

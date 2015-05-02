@@ -43,7 +43,8 @@ class LoadHandler(BaseHandler):
         if host not in self.SUPPORTED_HOST:
             logger.debug("not support %s", url)
             self.write(json.dumps({'error': 1}))
-            return self.finish()
+            self.finish()
+            return
 
         fromdb = Jolla.find_link(url)
         if fromdb is not None:
@@ -56,7 +57,8 @@ class LoadHandler(BaseHandler):
             }
             result['error'] = 0
             self.write(json.dumps(result))
-            return self.finish()
+            self.finish()
+            return
 
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield tornado.gen.Task(client.fetch, url)
@@ -74,7 +76,8 @@ class LoadHandler(BaseHandler):
             func = self.parse_jollatides
         else:
             self.write(json.dumps({'error': 1}))
-            return self.finish()
+            self.finish()
+            return
 
         result = func(soup)
         result['error'] = 0

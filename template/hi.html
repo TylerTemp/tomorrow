@@ -30,7 +30,19 @@ Hi, {{ user }}
   <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
     <div class="am-offcanvas-bar admin-offcanvas-bar">
       <ul class="am-list admin-sidebar-list">
-        <li><a href="admin-index.html"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
+      <li><a href="#"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
+      <li><a href="#"><span class="am-icon-user"></span> {{ _("Personal Info")}} </a></li>
+      <li><a href="#"><span class="am-icon-lock"></span> {{ _("Security")}} </a></li>
+      <li><a href="#"><span class="am-icon-list-alt"></span> {{ _("Article")}} </a></li>
+
+      <li class="admin-parent">
+        <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+        <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
+          <li><a href="#" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Image")}}</a></li>
+          <li><a href="#"><span class="am-icon-file"></span> {{ _("File")}}</a></li>
+        </ul>
+
+      <li><a href="#"><span class="am-icon-sign-out"></span> {{ _("Logout")}} </a></li>
       </ul>
     </div>
   </div>
@@ -42,6 +54,25 @@ Hi, {{ user }}
     <div class="am-cf am-padding">
       <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">{{ _("Main Page")}}</strong> / <small>{{ _("Summary") }}</small></div>
     </div>
+
+    {% if not active%}
+    <div class="am-g am-padding">
+      <div class="am-u-sm-12 am-alert am-alert-warning" data-am-alert>
+        <button type="button" class="am-close">&times;</button>
+        <p>{{ _("Your account is not active") }}</p>
+      </div>
+    </div>
+    {% end %}
+
+    {% if verify_mail %}
+    <div class="am-g am-padding">
+      <div class="am-u-sm-12 am-alert am-alert-success" data-am-alert>
+        <button type="button" class="am-close">&times;</button>
+        <p>{{ _("Please verify your email to active your account") }}</p>
+      </div>
+    </div>
+    {% end %}
+
   </div>
   <!-- content end -->
 

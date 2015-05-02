@@ -63,7 +63,7 @@ def main():
             args = ['-p', str(port)]
             args.extend(sys.argv[1:])
             run(args)
-            time.sleep(1)    # wait process to fully run
+            time.sleep(4)    # wait process to fully run
     else:
         logger.info('no port to kill, start new')
         for port in range(8001, 8005):
