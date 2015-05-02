@@ -28,6 +28,7 @@ cfg = Config()
 
 class TranslateHandler(BaseHandler):
 
+    @tornado.web.authenticated
     def get(self, url):
         url = unquote(url)
         to_translate = Jolla.find_url(url)
@@ -84,40 +85,66 @@ class TranslateHandler(BaseHandler):
             md=self.get_argument('md', False),
         )
 
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
+    # @tornado.web.asynchronous
+    # @tornado.gen.coroutine
+    @tornado.web.authenticated
     def post(self, url):
         self.check_xsrf_cookie()
 
         title = self.get_argument('title')
         format = self.get_argument('format')
         content = self.get_argument('content')
+        show_email = self.get_argument('show_email', True)
 
         url = unquote(url)
-        to_translate = Jolla.find_url(url)
-        if to_translate is None:
+        to_translate = Jolla(url)
+        if to_translate.new:
             raise tornado.web.HTTPError(404,
-                                        "the article to translate not found")
+                                        "the article to translate not found: %s", url)
+
+        user_info = self.get_current_user()
 
         if format != 'md':
             content = html2md(content)
         else:
             content = escape(content)
 
-        if self.get_current_user() is None:
-            self.save_anonymous()
+        to_trans_info = to_translate.get()
+        trans_info = {
+            'board': 'jolla',
+            'title': title,
+            'content': content,
+            'author': user_info['user'],
+            'email': user_info['email'],
+            'show_email': show_email,
+            'transinfo': {
+                'link': to_trans_info['link'],
+                'author': to_trans_info['author'],
+                'url': to_trans_info['url'],
+                'title': to_trans_info['title'],
+                'headimg': to_trans_info['headimg'],
+            }
+        }
+
+        translated = Article()
+        translated_info = translated.find_trans_url_translator(
+            url, user_info['user'])
+
+        if translated_info is None:
+            translated.add(**trans_info)
         else:
-            self.save_logged()
+            translated_info.update(trans_info)
+            translated.set(translated_info)
 
-        if translated is None:
-            translated = Article()
+        translated.save()
+        this_url = translated.get()['url']
+        old_url = to_trans_info['trusted_translation']
+        if old_url is None and user_info['type'] >= User.admin:
+            to_trans_info['trusted_translation'] = translated.get()['url']
+            to_translate.save()
 
-            # board, title, content, author, email, url=None,
-            # show_email=True, license=CC_LICENSE, transref=None, transinfo=None
-
-
-    def save_anonymous(self):
-        pass
-
-    def save_logged(self):
-        pass
+        result = {
+            'error': 0,
+            'redirect': '/jolla/blog/' + this_url,
+        }
+        return self.write(json.dumps(result))

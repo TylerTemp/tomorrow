@@ -181,15 +181,20 @@ class Jolla(object):
         }
 
         self.jolla_info = info
-        self.jolla_info['_id'] = self.save()
         return self.jolla_info
 
     def save(self, t=None):
         self.jolla_info['edittime'] = t or time.time()
-        return self._jolla.save(self.jolla_info)
+        result  = self._jolla.save(self.jolla_info)
+        self.jolla_info['_id'] = result
+        return result
 
     def get(self):
         return self.jolla_info
+
+    @property
+    def new(self):
+        return self.jolla_info is None
 
     def mkurl(self, title, author):
         url = title.replace(' ', '-')
@@ -252,7 +257,7 @@ class Article(object):
             self.article_info = self.find_url(user)
 
     def add(self, board, title, content, author, email, url=None,
-            show_email=True, license=CC_LICENSE, transref=None, transinfo=None):
+            show_email=True, license=CC_LICENSE, transinfo=None):
 
         if url is None:
             if transinfo is not None:
@@ -269,18 +274,15 @@ class Article(object):
             'email': email,
             'show_email': show_email,
             'license': license,
-            'transinfo': transinfo,
             'createtime': time.time(),
             'edittime': time.time(),
         }
 
-        if transref is not None:
-            assert transinfo is not None
-            info['transref'] = transref
+        if transinfo is not None:
             info['transinfo'] = transinfo
+            info['transref'] = transinfo['url']
 
         self.article_info = info
-        self.article_info['_id'] = self.save()
         logger.info("New article %s", title)
         return self.article_info
 
@@ -296,11 +298,17 @@ class Article(object):
     def find_ref_of_email(cls, refurl, email):
         return cls._article.find_one({'transref': refurl, 'email': email})
 
+    @classmethod
+    def find_trans_url_translator(cls, url, author):
+        return cls._article.find_one({'transref': url, 'author': author})
 
     def get(self):
         return self.article_info
 
-    def save(self, t):
+    def set(self, info):
+        self.article_info = info
+
+    def save(self, t=None):
         self.article_info['edittime'] = t or time.time()
         return self._article.save(self.article_info)
 

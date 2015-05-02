@@ -106,6 +106,7 @@ class TaskHandler(BaseHandler):
 
         article = Jolla(url)
         article.add(link, title, author, content, url=url, headimg=headimg)
+        article.save()
 
         red_url = article.get()['url']
         redirect = '/jolla/translate/' + red_url

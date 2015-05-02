@@ -99,27 +99,6 @@
 <div id="submit-error-panel">
 </div>
 
-
-{% if not user %}
-
-<hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-
-<div class="am-g">
-  <div class="am-u-sm-1">
-    <label for="name">{{ _("Name") }}:</label>
-  </div>
-  <div class="am-u-sm-5">
-    <input type="text" class="am-form-field" id="name" placeholder="{{ _('Your name as translator') }}">
-  </div>
-  <div class="am-u-sm-1">
-    <label for="email">{{ _("Email") }}:</label>
-  </div>
-  <div class="am-u-sm-5">
-    <input type="email" class="am-form-field" id="email" placeholder="{{ _('Your email') }}">
-  </div>
-</div>
-
-<br />
 <div class="am-g">
   <div class="am-u-sm-12">
   <label>
@@ -129,8 +108,6 @@
   </div>
 </div>
 
-<br />
-{% end %}
 
 {% end %}
 
@@ -140,7 +117,6 @@
   var FILEUPLOADURL = "{{ file_upload_url }}";
   var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
   var _editor_status = "{{ 'md' if md else 'wysiwyg' }}";
-  var USER = {% raw '"%s"' % user if user else 'null' %};
 </script>
 <script src="/static/js/jquery/jquery-textrange.min.js"></script>
 <script src="/static/js/md/html2md.min.js"></script>
