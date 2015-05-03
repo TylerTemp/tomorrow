@@ -62,7 +62,7 @@ class TaskHandler(BaseHandler):
             author = article['author']
             md = article['content']
             html = md2html(md)
-            headimg = article['content']
+            headimg = article['headimg']
             link = article['link']
         else:
             title = author = md = html = headimg = link = ''
