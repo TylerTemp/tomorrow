@@ -234,6 +234,9 @@ class Article(object):
     PUB_LICENSE = 0
     CC_LICENSE = 1
 
+    AWAIT = 0
+    TRUSTED = 1
+    REJECT = 2
     # title
     # url: title.replace(" ", "-")(Unique)
     # board
@@ -245,7 +248,9 @@ class Article(object):
     # transref: Jolla translation only
     # transref: same as Jolla.url
     # transinfo: Jolla translation only
-    # transinfo = {link: , author: , url: , title: , headimg}; same as Jolla
+    # transinfo = {link: , author: , url: , title: ,
+    #              headimg:, status:, reprint: };
+    # same as Jolla. status: AWAIT/TRUSTED/REJECT
 
     # if url exists, then add "-by-"+username
     # if still exists, then add "-1", "-2", etc.
@@ -254,7 +259,7 @@ class Article(object):
         if url is None:
             self.article_info = None
         else:
-            self.article_info = self.find_url(user)
+            self.article_info = self.find_url(url)
 
     def add(self, board, title, content, author, email, url=None,
             show_email=True, license=CC_LICENSE, transinfo=None):
@@ -312,6 +317,10 @@ class Article(object):
         self.article_info['edittime'] = t or time.time()
         return self._article.save(self.article_info)
 
+    @property
+    def new(self):
+        return self.article_info is None
+
     def mkurl(self, title, author):
         url = title.replace(' ', '-')
         if self.find_url(url) is None:
@@ -326,6 +335,10 @@ class Article(object):
             theurl = '%s-%s' % (url, idx)
             if self.find_url(theurl) is None:
                 return theurl
+
+    @classmethod
+    def find_jollas(cls):
+        return cls._article.find({'board': 'jolla'})
 
 
 if __name__ == '__main__':

@@ -34,17 +34,20 @@ from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
 from lib.hdlr.user import UserHandler
 # from lib.hdlr.jolla.task import TaskHandler
-# from lib.hdlr.jolla.list import ListHandler
 from lib.hdlr.jolla import TaskHandler
 from lib.hdlr.jolla import ListHandler
 from lib.hdlr.jolla import LoadHandler
 from lib.hdlr.jolla import TranslateHandler
+from lib.hdlr.jolla import BlogHandler
+from lib.hdlr.jolla import ArticleHandler
 from lib.hdlr.upload import UploadHandler
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
+from lib.ui.license import LicenseModule
+from lib.ui.author import AuthorModule
 # from lib.ui.upload import UploadImageModule
 # from lib.ui.upload import UploadFileModule
 
@@ -73,8 +76,8 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/', UserHandler),
             (r'/hi/(?P<user>[^/]+)/(?P<to>file|img)/', UploadHandler),
             (r'/jolla/', BareHandler),
-            (r'/jolla/blog/', BareHandler),
-            (r'/jolla/blog/(?P<url>[^/]+)/', BareHandler),
+            (r'/jolla/blog/', BlogHandler),
+            (r'/jolla/blog/(?P<url>[^/]+)/', ArticleHandler),
             (r'/jolla/translate/', ListHandler),
             (r'/jolla/translate/(?P<url>[^/]+)/', TranslateHandler),
             (r'/jolla/task/', TaskHandler),
@@ -103,6 +106,8 @@ class Application(tornado.web.Application):
             'ui_modules': {
                 'WysiwygEditor': MdWysiwygEditorModule,
                 'MdEditor': MdEditorModule,
+                'License': LicenseModule,
+                'Author': AuthorModule,
                 # 'UploadFile': UploadFileModule,
                 # 'UploadImage': UploadImageModule,
                 },

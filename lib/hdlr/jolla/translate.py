@@ -16,6 +16,7 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
+from lib.tool.md import html2md
 from lib.tool.md import escape
 from lib.db import Jolla
 from lib.db import Article
@@ -24,6 +25,7 @@ from lib.config import Config
 sys.path.pop(0)
 
 cfg = Config()
+logger = logging.getLogger('tomorrow.jolla.translate')
 
 
 class TranslateHandler(BaseHandler):
@@ -45,20 +47,15 @@ class TranslateHandler(BaseHandler):
         }
 
         userinfo = self.get_current_user()
-        if userinfo is None:
-            translated = None
-            imgs = files = None
-            username = usertype = None
-            edit_task_url = None
+
+        username = userinfo['user']
+        usertype = userinfo['type']
+        translated = Article.find_ref_of_user(url, username)
+        imgs, files = self.get_imgs_and_files(username, usertype)
+        if usertype >= User.admin:
+            edit_task_url = '/jolla/task/' + quote(url)
         else:
-            username = userinfo['user']
-            usertype = userinfo['type']
-            translated = Article.find_ref_of_user(url, username)
-            imgs, files = self.get_imgs_and_files(username, usertype)
-            if usertype >= User.admin:
-                edit_task_url = '/jolla/task/' + quote(url)
-            else:
-                edit_task_url = None
+            edit_task_url = None
 
         if translated is None:
             translated = {k: '' for k in translate.keys()}
@@ -123,6 +120,7 @@ class TranslateHandler(BaseHandler):
                 'url': to_trans_info['url'],
                 'title': to_trans_info['title'],
                 'headimg': to_trans_info['headimg'],
+                'status': Article.AWAIT
             }
         }
 
@@ -131,17 +129,23 @@ class TranslateHandler(BaseHandler):
             url, user_info['user'])
 
         if translated_info is None:
+            trans_info['transinfo']['reprint'] = {}
             translated.add(**trans_info)
+            logger.info('New translate %s', to_trans_info['url'])
         else:
             translated_info.update(trans_info)
             translated.set(translated_info)
+            logger.info('Renew translate %s', translated_info['url'])
 
-        translated.save()
         this_url = translated.get()['url']
         old_url = to_trans_info['trusted_translation']
         if old_url is None and user_info['type'] >= User.admin:
+            logger.debug('trust %s as translation of %s', this_url, old_url)
             to_trans_info['trusted_translation'] = translated.get()['url']
+            translated.get()['transinfo']['status'] = translated.TRUSTED
             to_translate.save()
+
+        translated.save()
 
         result = {
             'error': 0,

@@ -1,0 +1,113 @@
+{% extends "../base.html" %}
+
+{% block title %}
+  {{ article['translated']['title'] }} | Jolla Blog
+{% end %}
+
+{% block neck %}
+<style>
+  body {
+    background-image: url("http://7xi8a5.com1.z0.glb.clouddn.com/blog_bg_top.jpg"),
+                      url("http://7xi8a5.com1.z0.glb.clouddn.com/blog_bg_base.jpg");
+    background-repeat: no-repeat, repeat;
+    background-size: 100% auto, auto auto;
+    background-position: right top;
+    background-color: #5BA2A1;
+  }
+
+  header {
+    text-align: center;
+    padding: 30px 0px 45px;
+    /*margin: 0px auto;*/
+  }
+
+  header img {
+    width: 100%;
+    height: auto;
+    max-width: 400px;
+  }
+
+  #title-img {
+    width: 100%;
+    height: auto;
+  }
+
+  #white-bg-box {
+    background-color: #FFF;
+  }
+
+  article h1 {
+    text-align: center;
+  }
+
+  /*article {
+    padding: 100px 100px 100px;
+  }*/
+
+  #page-box {
+    padding-top: 50px;
+    max-width: 600px;
+
+  }
+
+  /*#original-author {
+    max-width: 700px;
+  }*/
+  .am-article-bd p {
+    text-indent: 2em;
+  }
+
+  .footnote p,
+  #original-author p {
+    text-indent: 0em;
+  }
+
+</style>
+{% end %}
+
+{% block body %}
+
+<header>
+  <div class="am-g">
+    <div class="am-u-sm-12">
+      <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
+    </div>
+  </div>
+</header>
+
+<div class="am-u-sm-centered am-g-fixed">
+  {% if article['headimg'] %}
+    <img src="{{ article['headimg'] }}" id="title-img">
+  {% end %}
+  <div class="am-g" id="white-bg-box">
+    <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
+      <article class="am-article">
+        <div class="am-article-hd">
+          <h1 class="am-article-title">{{ article['translated']['title'] }}</h1>
+          <p class="am-article-meta">
+            {% raw article['translated']['author'] %}
+            {% raw article['translated'].get('emaillink', '') %}
+          </p>
+          <p class="am-article-meta">{% raw article['createtime'] %}<p>
+        </div>
+
+        <hr class="am-article-divider">
+        <div class="am-article-bd">
+          {% raw article['translated']['content'] %}
+          <!-- Jolla blog author translation -->
+          {% module Author(article['original']['author']) %}
+        </div>
+
+        <hr class="am-article-divider">
+        <footer>
+          <div id="license">
+            <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
+            <p>{% module License(article['license']) %}</p>
+          </div>
+        </footer>
+      </article>
+    </div>
+  </div>
+</div>
+
+{% end %}

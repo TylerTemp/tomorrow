@@ -33,7 +33,7 @@
   <div class="am-u-sm-12">
     {{ _("Title") }}:
     <label for="title">{{ translate['title'] }}</label>
-    <input type="text" class="am-form-field" id="title" placeholder="{{ _('Enter the translation of the title') }}">
+    <input type="text" class="am-form-field" id="title" value="{{ translated['title'] }}" placeholder="{{ _('Enter the translation of the title') }}">
   </div>
 </div>
 
@@ -105,6 +105,11 @@
     <input type="checkbox" class="am-checkbox-inline" id="hide-email" checked>
     {{ _("Hide my email") }}
   </label>
+  <p>{{ _("By submitting you agree to publish this article under") }}
+    <a href="https://creativecommons.org/licenses/by/2.0/legalcode" target="_blank">
+        <span class="am-icon-cc"> CC {{ _("license") }}</span>
+    </a>
+  </p>
   </div>
 </div>
 

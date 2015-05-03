@@ -1,7 +1,7 @@
 import tornado.web
 import logging
 
-logger = logging.getLogger('ui.editor')
+logger = logging.getLogger('romorrow.ui.editor')
 
 
 class MdWysiwygEditorModule(tornado.web.UIModule):

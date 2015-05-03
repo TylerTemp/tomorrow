@@ -36,9 +36,13 @@ extend = (
 # 'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
 # 'i', 'li', 'ol', 'strong', 'ul'
 white_tags = list(bleach.ALLOWED_TAGS)
-white_tags.extend(('span', 'table', 'tr', 'td', 'th',
+white_tags.extend(('span',
+                   'table', 'caption', 'thead', 'tbody', 'tfoot',
+                   'tr', 'td', 'th',
                    'ins', 'del', 'center', 'pre', 'u',
+                   'em', 'strong', 'code', 'del', 'abbr',
                    'h2', 'h3', 'h4', 'h5', 'h6',
+                   'dl', 'dt', 'dd',
                    'video'))
 
 attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
