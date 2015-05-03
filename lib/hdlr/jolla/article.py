@@ -52,7 +52,7 @@ class ArticleHandler(BaseHandler):
             'headimg': info['transinfo']['headimg'],
             'license': info['license'],
             'createtime': info['createtime'],
-            'reprint': info['reprint'],
+            'reprint': info['transinfo']['reprint'],
             'await': info['transinfo']['status'] == Article.AWAIT,
             'reject': info['transinfo']['status'] == Article.REJECT,
         }
