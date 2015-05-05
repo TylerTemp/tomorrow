@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-user"> <strong class="am-text-primary am-text-lg">{{ _("Personal Infomation") }}</strong></span> / <small>{{ _("Anything about you") }}</small>{% end %}
+
+{% block content %}
+<div class="am-g am-padding">
+  <h2>{{ _('Hi') }}, {{ user_name }}</h2>
+  <small>&#62; {{ _('You can change your name, email and password in "Security" panel.') }}</small>
+</div>
+
+<hr>
+
+<div class="am-g am-padding">
+  <div class="am-u-sm-12 am-u-md-3">
+    <p>
+      <img id="avatar" class="am-circle am-img-thumbnail" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+    </p>
+  </div>
+  <form class="am-form am-u-sm-12 am-u-md-9" action="{{ request.uri }}"  method="POST">
+    <fieldset>
+      <legend>{{ _("My Personal Infomation")}}</legend>
+    </fieldset>
+    {% module xsrf_form_html() %}
+    <div class="am-form-group">
+      <label><span class="am-icon-user"> {{ _("Name") }}</span></label>: {{ user_name }} &nbsp; &nbsp; &nbsp;<a class="am-btn  am-btn-default" href="{{ main_url }}/secure/">{{ _("Change") }}</a>
+    </div>
+    <div class="am-form-group">
+      <label><span class="am-icon-users"> {{ _("User Group") }}</span></label>:
+      {% if user_type == NORMAL %}
+        {{ _("User") }}
+      {% elif user_type == ADMIN %}
+        {{ _("Administor") }}
+      {% elif user_type == ROOT %}
+        {{ _("Root") }}
+      {% else %}
+        ???
+      {% end %}
+    </div>
+    <div class="am-form-group">
+      <label><span class="am-icon-envelope"> {{ _("Email") }}</span></label>: {{ user_email }} &nbsp; &nbsp; &nbsp;<a class="am-btn  am-btn-default" href="{{ main_url }}/secure/">{{ _("Change") }}</a>
+    </div>
+    <div class="am-form-group">
+      <label><span class="{{ 'am-icon-eye' if show_email else 'am-icon-eye-slash'}}"> {{ _("Show Email") }}</span></label>:
+      <label><input id="show_email" name="show_email" type="checkbox" value="show_email" {{ 'checked' if show_email else ''}}> {{ _("Show my email when someone visits my homepage") }}</label>
+    </div>
+    <div class="am-form-group">
+      <label for="url-avatar"><span class="am-icon-instagram"> {{ _("Change") if user_img else _("Set") }} {{ _("Avatar (URL):") }}</span></label>
+      <input type="text" id="url-avatar" name="img_url" placeholder="{{ _("Enter the url of your avatar image") }}" value="{{ user_img if user_img else ''}}">
+      <button class="am-btn am-btn-default am-btn-xs" id="preview-avatar">{{ _("Preview") }}</button>
+      <small>
+        {{ "You havn't set avatar yet." if not user_img else "" }}
+        {% if user_type == NORMAL %}
+          {{ _("Enter the url of your avatar image") }}
+        {% else %}
+          Need upload? Visit "<a href='{{ main_url }}/img/'>Image</a>" panel
+        {% end %}
+      </small>
+    </div>
+    <div id="error-panel">
+    </div>
+    <div class="am-form-group am-cf">
+      <button class="am-btn am-btn-success am-fr" type="submit" id="submit" data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _('Saving...')}}', resetText: '{{ _('Save') }}'}">
+        {{ _("Save") }}
+      </button>
+    </div>
+  </form>
+</div>
+
+<hr>
+<div class="am-g am-padding">
+{% if user_type == NORMAL %}
+  <p>{{ _('In Group "User" means you can:') }}</p>
+  <ul>
+    <li>{{ _('Translate a Jolla article.') }}</li>
+  </ul>
+{% elif user_type == ADMIN %}
+<p>{{ _('In Group "Administor" means you can:') }}</p>
+  <ul>
+    <li>{{ _('Post a new Jolla translating task.') }}</li>
+    <li>{{ _('Translate a Jolla article.') }}</li>
+    <li>{{ _('Change a trusted translation for a Jolla translating task.') }}</li>
+    <li>{{ _('Upload images/files up to %s.') % size_limit }}</li>
+  </ul>
+{% elif user_type == ROOT %}
+  <p>{{ _('Oh Root user. You know what you can do.') }} :)</p>
+  <ul>
+    <li>{{ _('Post a new Jolla translating task.') }}</li>
+    <li>{{ _('Translate a Jolla article.') }}</li>
+    <li>{{ _('Change a trusted translation for a Jolla translating task.') }}</li>
+    <li>{{ _("Unlimited images/files size upload. (Note it will still be limited by the server proxy setting)") }}</li>
+    <li>...</li>
+  </ul>
+{% else %}
+  <p>{{ _("Oops, we don't know which user group you are from. Outter space?") }}</p>
+{% end %}
+</div>
+
+{% end %}
+
+{% block leg %}
+<script>
+$(document).ready(function()
+{
+  var avater = $("#url-avatar");
+  var avater_btn = $("#preview-avatar");
+  var avater_display = $("#avatar");
+  var show_email_box = $("#show_email");
+  avater_btn.click(function(evt)
+  {
+    evt.preventDefault();
+    var url = avater.val();
+    if (!url)
+      return avater.parent().addClass("am-form-error");
+    avater.parent().removeClass("am-form-error");
+    avater_display.prop("src", url);
+  });
+
+  var set_info = function(msg, error)
+  {
+    var cls = error? 'danger': 'success';
+    $("#error-panel").html(
+      '<div class="am-alert am-alert-' + cls + '" data-am-alert>' +
+        '<button type="button" class="am-close">&times;</button>' +
+        '<p>' + msg + '</p>' +
+      '</div>'
+    );
+  }
+
+  $("#submit").click(function(evt)
+  {
+    var submit = $(this);
+    var url = avater.val();
+    console.log(url);
+    if (url)
+      avater_btn.click();
+
+    $.ajax(
+      settings = {
+        'data': {
+          'show_email': show_email_box.prop('checked'),
+          'img_url': url
+        },
+        'type': 'post',
+        'beforeSend': function(jqXHR, settings){
+          jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
+          submit.prop("disabled", true).button("loading");
+        }
+      }
+    ).done(function(data, textStatus, jqXHR)
+    {
+      var obj = $.parseJSON(data);
+      set_info(_('Done. Refresh to check the result.'), false);
+    }).fail(function(jqXHR, textStatus, errorThrown)
+    {
+      set_info(
+        _("Sorry, a server error occured, please refresh and retry") +
+        " (" +
+        jqXHR.status +
+        ": " +
+        errorThrown +
+        ")",
+        true
+      )
+    }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+    {
+      submit.prop("disabled", false).button("reset");
+    });
+    return false;
+  });
+
+});
+</script>
+{% end %}

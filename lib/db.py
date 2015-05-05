@@ -56,8 +56,8 @@ class User(object):
 
     def add(self, user=None, email=None, pwd=None, type=None,
             show_email=True, active=False):
-        assert pwd
-        pwd = sha256_crypt.encrypt(pwd)
+        if pwd:  # allow user inviting. So no pwd before active
+            pwd = sha256_crypt.encrypt(pwd)
         user = user or self.user
         email = email or self.email
         assert user and email
@@ -339,6 +339,10 @@ class Article(object):
     @classmethod
     def find_jollas(cls):
         return cls._article.find({'board': 'jolla'})
+
+    @classmethod
+    def num_by(cls, user):
+        return cls._article.find({'author': user}).count()
 
 
 if __name__ == '__main__':

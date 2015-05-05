@@ -1,11 +1,13 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block title %}
-Hi, {{ user }}
+Hi, {{ user_name }}{% block subtitle %}{% end %}
 {% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="/static/css/admin.css">
+{% block throat %}
+{% end %}
 {% end %}
 
 {% block body %}
@@ -21,7 +23,7 @@ Hi, {{ user }}
 
 <header class="am-topbar admin-header">
   <div class="am-topbar-brand">
-    <strong>{{ _("Tomorrow Becomes Today") }}</strong> | <small>{{ _("I'm") }} {{ user }}</small>
+    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small>{{ _("I'm") }} <a href="{{ main_url }}/">{{ user_name }}</a></small>
   </div>
 </header>
 
@@ -30,19 +32,23 @@ Hi, {{ user }}
   <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
     <div class="am-offcanvas-bar admin-offcanvas-bar">
       <ul class="am-list admin-sidebar-list">
-      <li><a href="#"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
-      <li><a href="#"><span class="am-icon-user"></span> {{ _("Personal Info")}} </a></li>
-      <li><a href="#"><span class="am-icon-lock"></span> {{ _("Security")}} </a></li>
-      <li><a href="#"><span class="am-icon-list-alt"></span> {{ _("Article")}} </a></li>
+      <li><a href="{{ main_url }}/"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
+      <li><a href="{{ main_url }}/info/"><span class="am-icon-user"></span> {{ _("Personal Info")}} </a></li>
+      <li><a href="{{ main_url }}/secure/"><span class="am-icon-lock"></span> {{ _("Security")}} </a></li>
+      <li><a href="{{ main_url }}/article/"><span class="am-icon-list-alt"></span> {{ _("Article")}} </a></li>
+      <li><a href="{{ main_url }}/message/"><span class="am-icon-comment"></span> {{ _("Message")}} </a></li>
 
+      {% if user_type != NORMAL %}
       <li class="admin-parent">
         <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
-          <li><a href="#" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Image")}}</a></li>
-          <li><a href="#"><span class="am-icon-file"></span> {{ _("File")}}</a></li>
+          <li><a href="{{ main_url }}/img/" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Image")}}</a></li>
+          <li><a href="{{ main_url }}/file/"><span class="am-icon-file"></span> {{ _("File")}}</a></li>
         </ul>
+      </li>
+      {% end %}
 
-      <li><a href="#"><span class="am-icon-sign-out"></span> {{ _("Logout")}} </a></li>
+      <li><a href="#" id="signout"><span class="am-icon-sign-out"></span> {{ _("Logout")}} </a></li>
       </ul>
     </div>
   </div>
@@ -52,26 +58,10 @@ Hi, {{ user }}
   <div class="admin-content">
 
     <div class="am-cf am-padding">
-      <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">{{ _("Main Page")}}</strong> / <small>{{ _("Summary") }}</small></div>
+      <div class="am-fl am-cf">{% block guide %}{% end %}</div>
     </div>
 
-    {% if not active%}
-    <div class="am-g am-padding">
-      <div class="am-u-sm-12 am-alert am-alert-warning" data-am-alert>
-        <button type="button" class="am-close">&times;</button>
-        <p>{{ _("Your account is not active") }}</p>
-      </div>
-    </div>
-    {% end %}
-
-    {% if verify_mail %}
-    <div class="am-g am-padding">
-      <div class="am-u-sm-12 am-alert am-alert-success" data-am-alert>
-        <button type="button" class="am-close">&times;</button>
-        <p>{{ _("Please verify your email to active your account") }}</p>
-        <p>{{ _('Visit "Security" panel for more detail') }}</p>
-      </div>
-    </div>
+    {% block content %}
     {% end %}
 
   </div>
@@ -89,4 +79,5 @@ Hi, {{ user }}
 <script src="/static/js/polyfill/respond.min.js"></script>
 <script src="/static/js/amazeui.legacy.js"></script>
 <![endif]-->
+{% block leg %}{% end %}
 {% end %}

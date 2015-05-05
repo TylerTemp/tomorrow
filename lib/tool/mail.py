@@ -1,7 +1,7 @@
 # coding: utf-8
 
+import tornado.gen
 import logging
-import atexit
 import smtplib
 from email.mime.text import MIMEText
 
@@ -25,7 +25,7 @@ class Email(object):
         self.lang = lang
 
     def send(self, to, sub, content, subtype='html'):
-        if 'zh_ch' in self.config.mail and self.is_zh_mail(to):
+        if 'zh_CN' in self.config.mail and self.is_zh_mail(to):
             logger.debug('send by zh mail')
             mailinfo = self.config.mail['zh_CN']
         else:
@@ -60,6 +60,7 @@ class Email(object):
 
             return True
 
+    @tornado.gen.coroutine
     def verify_new_mail(self, email, user, url):
         if self.lang.lower().startswith('en'):
             # english
@@ -95,11 +96,11 @@ in you browser.</p>
         title = title.format(user=user)
         content = content.format(user=user, url=url)
 
-        return self.send(email, title, content)
+        raise tornado.gen.Return(self.send(email, title, content))
 
     @classmethod
     def is_zh_mail(cls, mail):
-        return any(to.endswith(suffix) for suffix in cls.config.zh_mail_list)
+        return any(mail.endswith(suffix) for suffix in cls.config.zh_mail_list)
 
 
 if __name__ == '__main__':

@@ -33,6 +33,11 @@ class ArticleHandler(BaseHandler):
         return self.render(
             'jolla/article.html',
             article=result,
+            headimg=result.pop('headimg'),
+            license=result.pop('license'),
+            createtime=result.pop('createtime'),
+            await=result.pop('await'),
+            reject=result.pop('reject'),
         )
 
     def parse_article(self, info):

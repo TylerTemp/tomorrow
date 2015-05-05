@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-home"> <strong class="am-text-primary am-text-lg">{{ _("Main Page") }}</strong></span> / <small>{{ _("Some basic information") }}</small>{% end %}
+
+
+{% block content %}
+{% if user_type == ADMIN %}
+  {% set type_name = _("Administor") %}
+{% elif user_type == ROOT %}
+  {% set type_name = _("Super User") %}
+{% else %}
+  {% set type_name = _("friend") %}
+{% end %}
+
+{% if not active %}
+<div class="am-g">
+  <div class="am-u-sm-12 am-alert am-alert-warning" data-am-alert>
+    <button type="button" class="am-close">&times;</button>
+    <p>{{ _("Your account is deactive") }}</p>
+  </div>
+</div>
+{% end %}
+
+{% if verify_mail %}
+<div class="am-g">
+  <div class="am-u-sm-12 am-alert am-alert-success" data-am-alert>
+    <button type="button" class="am-close">&times;</button>
+    <p>{{ _("Please verify your email to active your account") }}</p>
+    <p>{{ _('Visit "Security" panel for more detail') }}</p>
+  </div>
+</div>
+{% end %}
+
+<!-- user info -->
+<div class="am-g am-padding admin-content-list">
+  <div class="am-u-sm-12 am-u-md-3">
+    <p>
+      <img class="am-circle am-img-thumbnail" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+    </p>
+  </div>
+  <div class="am-u-sm-12 am-u-md-9">
+    <h2>{{ _("Hi %(user)s, my %(type)s, welcome back :)") % {'user': user_name, 'type': type_name} }}</h2>
+    <table class="am-table am-table-striped am-table-hover am-table-compact">
+      <tbody>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-user"> {{ _("Name") }}</span></td>
+          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/secure/">{{ user_name }}</a></td>
+        </tr>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-envelope"> {{ _("Email") }}</span></td>
+          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/secure/">{{ user_email }}</a></td>
+        </tr>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-eye"> {{ _("Show My Email") }}</span></td>
+          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/info/"><span class="{{ 'am-icon-check' if showe_mail else 'am-icon-times' }}"></span></a></td>
+        </tr>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-instagram"> {{ _("Avatar") }}</span></td>
+          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/info/">{% raw '<span class="am-icon-check"></span>' if user_img else '<span class="am-icon-times"> (%s)</span>' % _('Not Set') %}</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- collection -->
+<ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
+  <li><a href="{{ main_url }}/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
+  <li><a href="{{ main_url }}/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>0</a></li>
+  <li><a href="{{ main_url }}/img/" class="am-text-danger"><span class="am-icon-btn am-icon-image"></span><br/>{{ _("Images") }}<br/>{{ img_num }}</a></li>
+  <li><a href="{{ main_url }}/file/" class="am-text-secondary"><span class="am-icon-btn am-icon-folder-o"></span><br/>{{ _("Files") }}<br/>{{ file_num }}</a></li>
+</ul>
+{% end %}

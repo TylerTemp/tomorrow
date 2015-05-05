@@ -59,3 +59,5 @@ Note you can shadow those settings by passing args to `main.py` or `lib/tool/reb
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
 * jquery-textrange from [github:dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange)
 * `lib/tool/filelock.py` edit from [github: dmfrey/ FileLock](https://github.com/dmfrey/FileLock)
+
+Note for the file `static/img/user.jpg`, I can not find the source, nor do I know the copyright. If you know the source/copyright, or it has infringed your right, please tell me at <tylertempdev@gmail.com>.

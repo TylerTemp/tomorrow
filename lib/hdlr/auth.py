@@ -33,17 +33,18 @@ class _Handler(BaseHandler):
     USER_RE = re.compile(USER_RE_STR)
     USER_MAX_LEN = 100
 
-    USER_EMPTY = 1
-    USER_TOO_LONG = int('10', 2)
-    USER_FORMAT = int('100', 2)
-    EMAIL_EMPTY = int('1000', 2)
-    EMAIL_FORMAT = int('10000', 2)
-    PWD_EMPTY = int('100000', 2)
-    USER_EXISTS = int('1000000', 2)
-    USER_NOT_EXISTS = int('1000000', 2)
-    EMAIL_EXISTS = int('10000000', 2)
-    EMAIL_NOT_EXISTS = int('10000000', 2)
-    PWD_WRONG = int('100000000', 2)
+    USER_EMPTY = 1  # login/signin
+    USER_TOO_LONG = int('10', 2)  # signin
+    USER_FORMAT = int('100', 2)  # signin
+    EMAIL_EMPTY = int('1000', 2)  # signin
+    EMAIL_FORMAT = int('10000', 2)  # signin
+    PWD_EMPTY = int('100000', 2)  # login/signin
+    USER_EXISTS = int('1000000', 2)  # signin
+    USER_NOT_EXISTS = int('1000000', 2)  # login
+    EMAIL_EXISTS = int('10000000', 2)  # signin
+    EMAIL_NOT_EXISTS = int('10000000', 2)  # login
+    PWD_WRONG = int('100000000', 2)  # login
+    SEND_EMAIL_FAILED = int('100000000', 2)  # signin
 
     def render(self, template_name, **kwargs):
         if 'ssl' not in kwargs:
@@ -142,7 +143,7 @@ class SigninHandler(_Handler):
         user = self.get_argument('user')
         email = self.get_argument('email')
         pwd = self.get_argument('pwd')
-        redirect = '/hi/%s/' % quote(user)
+        redirect = '/am/%s/' % quote(user)
         flag = 0
 
         if not user:
@@ -182,13 +183,17 @@ class SigninHandler(_Handler):
                 mailman = Email(self.locale.code)
                 url = '/hi/%s/verify/newmail/%s/' % (quote(user_info['user']),
                                                      quote(secret))
-                yield mailman.verify_new_mail(email, user_info['user'], url)
+                sended = yield mailman.verify_new_mail(
+                    email, user_info['user'], url)
+                if not sended:
+                    logger.error('failed to send main to %s', user_info['user'])
+                    flag |= self.SEND_EMAIL_FAILED
 
         result = {'error': flag}
 
         if not self.is_ajax():
             # ok
-            if flag == 0:
+            if flag == 0 or flag & self.SEND_EMAIL_FAILED:
                 self.redirect(redirect)
                 self.finish()
                 return
@@ -231,6 +236,7 @@ if __name__ == '__main__':
         'MASK_EMAIL_NOT_EXISTS': _Handler.EMAIL_NOT_EXISTS,
         'MASK_PWD_EMPTY': _Handler.PWD_EMPTY,
         'MASK_PWD_WRONG': _Handler.PWD_WRONG,
+        'MAST_SEND_EMAIL_FAILED': _Handler.SEND_EMAIL_FAILED,
     }
     for k, v in dic.items():
         print('var %s = %s;' % (k, v))

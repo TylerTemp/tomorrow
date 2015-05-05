@@ -96,8 +96,9 @@ class TranslateHandler(BaseHandler):
         url = unquote(url)
         to_translate = Jolla(url)
         if to_translate.new:
-            raise tornado.web.HTTPError(404,
-                                        "the article to translate not found: %s", url)
+            raise tornado.web.HTTPError(
+                404,
+                "the article to translate not found: %s", url)
 
         user_info = self.get_current_user()
 
@@ -120,7 +121,7 @@ class TranslateHandler(BaseHandler):
                 'url': to_trans_info['url'],
                 'title': to_trans_info['title'],
                 'headimg': to_trans_info['headimg'],
-                'status': Article.AWAIT
+                'status': Article.AWAIT,
             }
         }
 
@@ -151,4 +152,5 @@ class TranslateHandler(BaseHandler):
             'error': 0,
             'redirect': '/jolla/blog/' + this_url,
         }
+
         return self.write(json.dumps(result))
