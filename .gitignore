@@ -66,6 +66,7 @@ ca.pem
 sub.class1.server.ca.pem
 mongodb.conf
 config.conf
+*.psd
 
 # store the uploaded file
 static/upload

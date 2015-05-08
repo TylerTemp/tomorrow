@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-lock"> <strong class="am-text-primary am-text-lg">{{ _("Verify") }}</strong></span> / <small>{{ _(subtitle) }}</small>{% end %}
+
+{% block content %}
+
+{% if error %}
+<div class="am-alert am-padding am-alert-{{ 'success' if error=='succeed' else 'danger' }}" data-am-alert>
+  {% if error == 'nouser' %}
+    <h1>{{ _('Emm... Who are you?')}}</h1>
+    <p>{{ _("That's weird. We can't find you (%s) as a member. Sorry.") % user_name }}</p>
+  {% elif error == 'noapply' %}
+    <h1>{{ _("Emm... You didn't request for anything")}}</h1>
+    <p>{{ _("You didn't request for changing anything. This may because the verifying code is expired") }}</p>
+  {% elif error == 'notapply' %}
+    <h1>{{ _("Emm... You didn't request for this") }}</h1>
+    <p>{{ _("You can only request for one thing each time. Check your email for the new request") }}</p>
+  {% elif error == 'expire' %}
+    <h1>He's Dead, Jim!</h1>
+    <p>{{ _("Oops, your expire code is expired already") }}</p>
+  {% elif error == 'wrongcode' %}
+    <h1>{{ _('Wrong verify code') }}</h1>
+    <p>{{ _("Verify code is incorrect") }}</p>
+  {% elif error == 'succeed' %}
+    <h1>{{ _('Verify successfully') }}</h1>
+    <p><u><a href="{{ main_url }}/">{{ _("Click here for more!") }}</a></u></p>
+  {% end %}
+</div>
+{% else %}
+<!-- info panel -->
+<div class="am-g" id="info-panel">
+  {% if user_pwd is None and not ssl %}
+  <div class="am-u-sm-12 am-alert am-alert-warning" data-am-alert>
+    <button type="button" class="am-close">&times;</button>
+    <p>{{ _("Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.") }}</p>
+  </div>
+  {% end %}
+</div>
+<!-- info panel | end -->
+
+<!-- detail form -->
+<form class="am-form am-form-horizontal">
+
+  {% raw xsrf_form_html() %}
+
+  <div class="am-form-group">
+    <label for="name" class="am-u-sm-2 am-form-label">{{ _('Name') }}:</label>
+    <div class="am-u-sm-10">
+      {% if user_name is None %}
+        <input type="text" id="name" placeholder="{{ _('Enter your user name') }}">
+      {% elif for_ == 'user' %}
+        <input type="text" id="name" value="{{ user_name }}" placeholder="{{ _('Enter your user name') }}">
+      {% else %}
+        <input type="text" id="name" value="{{ user_name }}" disabled>
+      {% end %}
+    </div>
+  </div>
+
+  <div class="am-form-group">
+    {% if for_ == 'email' %}
+      <label for="email" class="am-u-sm-2 am-form-label">{{ _('New Email') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="email" id="email" value="{{ user_email }}">
+      </div>
+    {% else %}
+      <label for="email" class="am-u-sm-2 am-form-label">{{ _('Email') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="email" id="email" value="{{ user_email }}" disabled>
+      </div>
+    {% end %}
+  </div>
+
+  {% if user_pwd is None or for_ == 'pwd' %}
+  <div class="am-form-group">
+    <label for="pwd" class="am-u-sm-2 am-form-label">{{ _('New Password') }}:</label>
+    <div class="am-u-sm-10">
+      <input type="password" id="pwd" placeholder="{{ _('Enter your password') }}">
+    </div>
+  </div>
+  <div class="am-form-group">
+    <label for="re-pwd" class="am-u-sm-2 am-form-label">{{ _('Confirm Password') }}:</label>
+    <div class="am-u-sm-10">
+      <input type="password" id="re-pwd" placeholder="{{ _('Re-enter your password') }}">
+    </div>
+  </div>
+  {% else %}
+  <div class="am-hide">
+    <input type="password" id="pwd" value="********" disabled>
+    <input type="password" id="re-pwd" value="********" disabled>
+  </div>
+  {% end %}
+
+  <div class="am-form-group">
+    <div class="am-u-sm-10 am-u-sm-offset-2">
+      <button type="submit" class="am-btn am-btn-default" id="submit">{{ _('Submit') }}</button>
+    </div>
+  </div>
+
+</form>
+
+<!-- detail form | end -->
+{% end %}
+
+{% end %}

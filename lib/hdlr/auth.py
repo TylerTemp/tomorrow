@@ -171,7 +171,7 @@ class SigninHandler(_Handler):
                 user.add(email=email, pwd=pwd)
 
                 secret = generate()
-                user.set_new_mail(secret)
+                user.set_code(for_=user, code=secret)
                 user.save()
 
                 user_info = user.get()
@@ -181,10 +181,10 @@ class SigninHandler(_Handler):
                               temp=True)
 
                 mailman = Email(self.locale.code)
-                url = '/hi/%s/verify/newmail/%s/' % (quote(user_info['user']),
+                url = '/am/%s/verify/newmail/%s/' % (quote(user_info['user']),
                                                      quote(secret))
                 sended = yield mailman.verify_new_mail(
-                    email, user_info['user'], url)
+                    email, user_info['user'], secret, url)
                 if not sended:
                     logger.error('failed to send main to %s', user_info['user'])
                     flag |= self.SEND_EMAIL_FAILED

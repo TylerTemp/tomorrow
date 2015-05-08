@@ -34,6 +34,7 @@ class User(object):
     NEWEMAIL = 0
     CHANGEEMAIL = 1
     CHANGEPWD = 2
+    CHANGEUSER = 3
 
     OK = 0
     ERROR_NOT_APPLY = 1
@@ -60,7 +61,7 @@ class User(object):
             pwd = sha256_crypt.encrypt(pwd)
         user = user or self.user
         email = email or self.email
-        assert user and email
+        assert email  # when inviting, only email is used
         logger.info('new user %s', user)
         type = self.normal if type is None else type
         self.user_info = {
@@ -103,25 +104,15 @@ class User(object):
     def get(self):
         return self.user_info
 
-    def set_new_mail(self, code):
+    def set_code(self, for_, code, expire=None):
         info = self.user_info
         assert info
         info['verify'] = {
-            'for': self.NEWEMAIL,
-            'value': code
+            'for': for_,
+            'code': code
         }
-
-    def verify_new_mail(self, code, remove=True):
-        info = self.user_info
-        verify = info.get('verify', None)
-        if verify is None or verify['for'] != self.NEWEMAIL:
-            return self.ERROR_NOT_APPLY
-        if (verify['value'] == code):
-            return self.ERROR_WRONG
-
-        if remove:
-            self.user_info.pop('verify')
-        return self.OK
+        if expire is not None:
+            info['verify']['expire'] = expire
 
     @property
     def new(self):

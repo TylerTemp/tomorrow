@@ -35,6 +35,8 @@ from lib.hdlr.auth import LogoutHandler
 from lib.hdlr.dash import InformationHandler
 from lib.hdlr.dash import DashboardHandler
 from lib.hdlr.dash import InfoHandler
+from lib.hdlr.dash import SecureHandler
+from lib.hdlr.dash import VerifyHandler
 # from lib.hdlr.jolla.task import TaskHandler
 from lib.hdlr.jolla import TaskHandler
 from lib.hdlr.jolla import ListHandler
@@ -78,7 +80,11 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/', InformationHandler),
             (r'/am/(?P<user>[^/]+)/', DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', InfoHandler),
+            (r'/am/(?P<user>[^/]+)/secure/', SecureHandler),
             (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', UploadHandler),
+            (r'/am/(?P<user>[^/]+)/verify/'
+             r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
+             r'(?P<code>[^/]+)/', VerifyHandler),
             (r'/jolla/', BareHandler),
             (r'/jolla/blog/', BlogHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', ArticleHandler),

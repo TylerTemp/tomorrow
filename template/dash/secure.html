@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-lock"> <strong class="am-text-primary am-text-lg">{{ _("Security Settings") }}</strong></span> / <small>{{ _("Anything about your account") }}</small>{% end %}
+
+{% block content %}
+
+<hr>
+<div class="am-padding">
+  <h2>{{ _("Security Info") }}</h2>
+  <small class="am-padding">&#62;  {{ _("Note changing user name or email may cause unexpected result.") }}</small>
+  <br>
+  <small class="am-padding">&#62;  {{ _("Each time you can only change one thing.") }}</small>
+</div>
+<hr>
+
+<div class="am-g am-padding" style="{{ '' if verify_mail else 'display:none'}}">
+  <div class="am-u-sm-12" id="info-panel">
+    {% if verify_mail %}
+    <div class="am-alert" data-am-alert>
+      <button type="button" class="am-close">&times;</button>
+      <p>{{ _('Please check your email "%s" to active your account') % user_email }}</p>
+    </div>
+    {% end %}
+  </div>
+</div>
+
+
+{% if verify_mail %}
+<!-- name -->
+<div class="am-padding">
+  <div class="am-u-sm-4">
+    <label><span class="am-icon-user"> {{ _("Name") }}:</span></label>
+  </div>
+  <div class="am-u-sm-3">
+    <p>{{ user_name }} </p>
+  </div>
+  <div class="am-u-sm-5 am-cf">
+    <p class="am-text-warning am-fr">{{ _("Please verify your email first") }}</p>
+  </div>
+</div>
+<!-- name | end -->
+
+<!-- email -->
+<div class="am-padding">
+  <div class="am-g">
+    <div class="am-u-sm-4">
+      <label><span class="am-icon-envelope"> {{ _("Email") }}:</span></label>
+    </div>
+    <div class="am-u-sm-8">
+      <input class="am-form-field am-inline am-input-sm" id="email-input" value="{{ user_email }}" style="width:65%">
+      <button class="am-btn am-btn-success am-btn-xs" id="email-btn" data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Send Confirm Mail") }}'}">{{ _("Send Confirm Mail") }}</button>
+    </div>
+  </div>
+</div>
+<!-- email | end -->
+
+<!-- password -->
+<div class="am-g am-padding">
+  <div class="am-u-sm-4">
+    <label><span class="am-icon-lock"> {{ _("Password") }}:</span></label>
+  </div>
+  <div class="am-u-sm-3">
+    <p>{{ user_name }} </p>
+  </div>
+  <div class="am-u-sm-5 am-cf">
+    <p class="am-text-warning am-fr">{{ _("Please verify your email first") }}</p>
+  </div>
+</div>
+<!-- password | end -->
+
+{% else %}
+
+<div class="am-padding">
+  <!-- name -->
+  <div class="am-g">
+    <div class="am-u-sm-4">
+      <label><span class="am-icon-user"> {{ _("Name") }}:</span></label>
+    </div>
+    <div class="am-u-sm-4">
+      {{ user_name }}
+    </div>
+    <div class="am-u-sm-4 am-cf">
+      <button class="am-btn am-btn-success am-btn-xs am-fr" id="name-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
+    </div>
+  </div>
+  <!-- name | end-->
+</div>
+
+<div class="am-padding">
+  <!-- email -->
+  <div class="am-g">
+    <div class="am-u-sm-4">
+      <label><span class="am-icon-envelope"> {{ _("Email") }}:</span></label>
+    </div>
+    <div class="am-u-sm-8 am-cf">
+      {{ user_email }}
+      <button class="am-btn am-btn-success am-btn-xs am-fr" id="email-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
+    </div>
+  </div>
+  <!-- email | end -->
+</div>
+
+<div class="am-g am-padding">
+  <div class="am-u-sm-4">
+    <label><span class="am-icon-lock"> {{ _("Password") }}:</span></label>
+  </div>
+  <div class="am-u-sm-8 am-cf">
+    ********
+    <button class="am-btn am-btn-success am-btn-xs am-fr" id="pwd-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
+  </div>
+</div>
+
+{% end %}
+
+<div class="am-g am-padding">
+  <div class="am-u-sm-4">
+    <label><span class="am-icon-child"> {{ _("Active") }}:</span></label>
+  </div>
+  <div class="am-u-sm-8">
+    <span class="{{ 'am-text-success am-icon-check' if active else 'am-text-danger am-icon-times' }}"></span>
+  </div>
+</div>
+
+
+<div class="am-g am-padding">
+  <div class="am-u-sm-12">
+    <p class="am-fr">{{ _("Doesn't recive the email? Try this:") }} &nbsp;
+      <button class="am-btn am-btn-primary" id="resend-btn">{{ _('Resend') }}</button>
+    </p>
+  </div>
+</div>
+
+{% end %}
+
+{% block leg %}
+<script src="/static/js/secure.js"></script>
+{% end %}

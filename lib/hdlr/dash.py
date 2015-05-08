@@ -1,6 +1,7 @@
 import tornado.web
 import logging
 import json
+import time
 try:
     from urllib.parse import unquote
     from urllib.parse import quote
@@ -16,6 +17,8 @@ from lib.hdlr.base import BaseHandler
 from lib.config import Config
 from lib.db import User
 from lib.db import Article
+from lib.tool.generate import generate
+from lib.tool.mail import Email
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.user')
@@ -39,10 +42,10 @@ class _Handler(BaseHandler):
 
     def render(self, template_name, **kwargs):
         user_info = self.get_current_user()
-        user_name = user_info['user']
-        kwargs['main_url'] = '/am/%s' % quote(user_name)
+        if 'main_url' not in kwargs:
+            kwargs['main_url'] = '/am/%s' % quote(user_info['user'])
         if 'user_name' not in kwargs:
-            kwargs['user_name'] = user_name
+            kwargs['user_name'] = user_info['user']
 
         if 'user_type' not in kwargs:
             kwargs['user_type'] = user_info['type']
@@ -75,8 +78,16 @@ class DashboardHandler(_Handler):
                        user_info['verify']['for'] == user.NEWEMAIL)
 
         folder_path = self.get_user_path(user_name)
-        file_num = len(os.listdir(os.path.join(folder_path, 'file')))
-        img_num = len(os.listdir(os.path.join(folder_path, 'img')))
+        file_path = os.path.join(folder_path, 'file')
+        if os.path.exists(file_path):
+            file_num = len(os.listdir(file_path))
+        else:
+            file_num = 0
+        img_path = os.path.join(folder_path, 'img')
+        if os.path.exists(img_path):
+            img_num = len(os.listdir(img_path))
+        else:
+            img_num = 0
 
         return self.render(
             'dash/home.html',
@@ -115,6 +126,9 @@ class InfoHandler(_Handler):
 
     @tornado.web.authenticated
     def post(self, user):
+
+        self.check_xsrf_cookie()
+
         userinfo = self.get_current_user()
         urluser = unquote(user)
         if userinfo is None or userinfo['user'] != urluser:
@@ -148,6 +162,229 @@ class InfoHandler(_Handler):
             appropriate_size >>= 10
             index += 1
         return (appropriate_size / 1024, units[index])
+
+
+class SecureHandler(_Handler):
+
+    ERROR_NOT_VERIFY_EMAIL = 1
+    ERROR_FAILED_SEND_EMAIL = 2
+    ERROR_NOTHING_TO_SEND = 3
+
+    @its_myself
+    @tornado.web.authenticated
+    def get(self, user):
+
+        self.xsrf_token
+
+        user = User(self.get_current_user()['user'])
+        user_info = user.get()
+        verify_mail = ('verify' in user_info and
+                       user_info['verify']['for'] == user.NEWEMAIL)
+
+        return self.render(
+            'dash/secure.html',
+            verify_mail=verify_mail,
+            user_email=user_info['email'],
+            active=user_info['active'],
+        )
+
+    @tornado.web.asynchronous
+    @tornado.gen.engine
+    @tornado.web.authenticated
+    def post(self, user):
+
+        userinfo = self.get_current_user()
+        urluser = unquote(user)
+        if userinfo['user'] != urluser:
+            raise tornado.web.HTTPError(500, 'user %s try to modefy user %s',
+                                        userinfo['user'], urluser)
+
+        action = self.get_argument('action')  # name/email/pwd/resend
+        flag = 0
+        user = User(userinfo['user'])
+        user_info = user.get()
+        if action in ('name', 'pwd'):
+            if ('verify' in user_info and
+                    user_info['verify']['for'] == user.NEWEMAIL):
+                self.write(json.dumps({'error': self.ERROR_NOT_VERIFY_EMAIL}))
+                self.finish()
+                return
+            email = user_info['email']
+            for_ = {'name': User.CHANGEUSER, 'pwd': User.CHANGEPWD}[action]
+            expire = time.time() + 60 * 60 * 24
+            code = generate()
+        elif action == 'email':
+            if ('verify' in user_info and
+                    user_info['verify']['for'] == user.NEWEMAIL):
+                for_ = user.NEWEMAIL
+                expire = None
+                email = self.get_argument('email', None)
+                if email is None:
+                    email = user_info['email']
+                else:
+                    user_info['email'] = email
+                code = user_info['verify']['code']
+            else:
+                email = user_info['email']
+                for_ = user.CHANGEEMAIL
+                expire = time.time() + 60 * 60 * 24
+                code = generate()
+        elif action == 'resend':
+            if 'verify' not in user_info:
+                self.write(json.dumps({'error': self.ERROR_NOTHING_TO_SEND}))
+                self.finish()
+                return
+            for_ = user_info['verify']['for']
+            expire = user_info['verify'].get('expire', None)
+            email = user_info['email']
+            code = user_info['verify']['code']
+        else:
+            raise tornado.web.HTTPError(500, 'Unknown action %s', action)
+
+        logger.info('email: %s; for: %s, expire: %s, code: %s',
+                    email, action, expire, code)
+
+        user.set_code(for_=for_, code=code, expire=expire)
+        user.save()
+
+        mail_man = Email(self.locale.code)
+        args = {'email': email, 'user': user_info['user'], 'code': code}
+        if for_ == user.NEWEMAIL:
+            args['url']='/am/%s/verify/newmail/%s/' % (quote(user_info['user']),
+                                                       quote(code))
+            func = mail_man.verify_new_mail
+        elif for_ == user.CHANGEEMAIL:
+            args['expire']=expire
+            args['url']='/am/%s/verify/changemail/%s/' % (
+                quote(user_info['user']),
+                quote(code))
+            func = mail_man.verify_change_mail
+        elif for_ == user.CHANGEUSER:
+            args['expire']=expire
+            args['url']='/am/%s/verify/changeuser/%s/' % (
+                quote(user_info['user']),
+                quote(code))
+            func = mail_man.verify_change_user
+        elif for_ == user.CHANGEPWD:
+            args['expire']=expire
+            args['url']='/am/%s/verify/changepwd/%s/' % (
+                quote(user_info['user']),
+                quote(code))
+            func = main_man.verify_change_pwd
+
+        sent = yield func(**args)
+        if not sent:
+            flag = self.ERROR_FAILED_SEND_EMAIL
+
+        self.write(json.dumps({'error': flag, 'email': email}))
+        self.finish()
+        return
+
+
+class VerifyHandler(_Handler):
+    act2code = {
+        'newuser': User.NEWEMAIL,
+        'newmail': User.NEWEMAIL,
+        'changemail': User.CHANGEEMAIL,
+        'changeuser': User.CHANGEPWD,
+        'changepwd': User.CHANGEUSER,
+    }
+
+    def get(self, user, act, code):
+        code = unquote(code)
+        urluser = unquote(user)
+        main_url = '/am/%s' % urluser
+        user = User(urluser)
+        subtitle = {
+            'newuser': 'setup new user',
+            'newmail': 'setup new user',
+            'changemail': 'change your email',
+            'changeuser': 'change your user',
+            'changepwd': 'change your password',
+        }[act]
+        expected = self.act2code[act]
+        kwargs = {'main_url': main_url,
+                  'subtitle': subtitle,
+                  'user_name': urluser,
+                  'user_type': user.normal,
+                  'error': None}
+        if user.new:
+            logger.debug('user %s not found', urluser)
+            kwargs['error'] = 'nouser'
+            return self.render(
+                'dash/verify.html',
+                **kwargs
+            )
+
+        user_info = user.get()
+        kwargs['user_name'] = user_info['user']
+        kwargs['user_type'] = user_info['type']
+        kwargs['user_pwd'] = user_info['pwd']
+        kwargs['user_email'] = user_info['email']
+        if user_info['user'] is not None:
+            kwargs['main_url'] = '/am/%s' % quote(user_info['user'])
+        else:
+            kwargs['main_url'] = '/am/%s' % quote(user_info['email'])
+        if 'verify' not in user_info:
+            kwargs['error'] = 'noapply'
+            logger.debug('no apply')
+            return self.render(
+                'dash/verify.html',
+                **kwargs
+            )
+        elif user_info['verify']['for'] != expected:
+            kwargs['error'] = 'notapply'
+            logger.debug('not apply')
+            return self.render(
+                'dash/verify.html',
+                **kwargs
+            )
+        # don't change the compare order!
+        elif time.time() > user_info['verify'].get('expire', time.time()):
+            kwargs['error'] = 'expire'
+            logger.debug('expire')
+            return self.render(
+                'dash/verify.html',
+                **kwargs
+            )
+        elif user_info['verify']['code'] != code:
+            kwargs['error'] = 'wrongcode'
+            logger.debug('wrongcode')
+            return self.render(
+                'dash/verify.html',
+                **kwargs
+            )
+
+        if expected == User.NEWEMAIL:
+            kwargs.update(self.new_user(user))
+        elif expected == User.CHANGEEMAL:
+            kwargs['for_'] = 'email'
+        elif expected == User.CHANGEPWD:
+            kwargs['for_'] = 'pwd'
+            kwargs['ssl'] = (self.request.protocol == 'https')
+        elif expected == User.CHANGEUSER:
+            kwargs['for_'] = 'user'
+
+        logger.debug(kwargs)
+
+        return self.render(
+            'dash/verify.html',
+            **kwargs
+        )
+
+    def new_user(self, user):
+        user_info = user.get()
+        verify_info = user_info['verify']
+
+        if user_info['user'] is not None:
+            user_info.pop('verify')
+            user_info['active'] = True
+            user.save()
+            self.set_user(user_info['user'], user_info['email'],
+                          user_info['type'], temp=True)
+            return {'error': 'succeed'}
+
+        return {'for_': None, 'ssl': (self.request.protocol == 'https')}
 
 class InformationHandler(_Handler):
 

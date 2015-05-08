@@ -2,6 +2,7 @@
 
 import tornado.gen
 import logging
+import time
 import smtplib
 from email.mime.text import MIMEText
 
@@ -61,7 +62,7 @@ class Email(object):
             return True
 
     @tornado.gen.coroutine
-    def verify_new_mail(self, email, user, url):
+    def verify_new_mail(self, email, user, code, url):
         if self.lang.lower().startswith('en'):
             # english
             title = 'Welcome, {user} | tomorrow.becomes.today'
@@ -70,6 +71,7 @@ class Email(object):
 <p>Hi, {user}. You've just registered at
     <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>.
 </p>
+<p>Your verifying code is <code>{code}</code></p>
 <p>Click the following link to active your account:<br/>
     <a href="http://tomorrow.becomes.today{url}">
         http://tomorrow.becomes.today{url}
@@ -77,31 +79,106 @@ class Email(object):
 </p>
 <p>If you can't click the url above, please copy the following text and paste
 in you browser.</p>
-<code>http://tomorrow.becomes.today{url}</code>'''
+<p><code>http://tomorrow.becomes.today{url}</code></p>'''
         else:
             title = '{user}，欢迎加入 | tomorrow.becomes.today'
             content = '''\
 <h2>验证你的邮箱</h2>
-<p>{user}，你好。你刚注册了
+<p>嘿，{user}！你刚注册了
     <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>。
 </p>
-<p>请点击以下链接来激活你的账户<br/>
+<p>你的激活码是{code}</p>
+<p>猛戳下方链接来激活你的账户:<br/>
     <a href="http://tomorrow.becomes.today{url}">
         http://tomorrow.becomes.today{url}
     </a>
 </p>
-<p>如果你无法点击上面的链接，请将下方文字粘贴到浏览器地址栏</p>
-<code>http://tomorrow.becomes.today{url}</code>'''
+<p>戳不了？把下面这行复制到浏览器地址栏也行 :)</p>
+<p><code>http://tomorrow.becomes.today{url}</code></p>'''
 
         title = title.format(user=user)
-        content = content.format(user=user, url=url)
+        content = content.format(user=user, url=url, code=code)
 
         raise tornado.gen.Return(self.send(email, title, content))
+
+    def _verify_change(self, email, user, code, url, expire, for_):
+        if self.lang.lower().startswith('en'):
+
+            title = 'Change your %s | tomorrow.becomes.today' % for_
+            content = '''\
+<h2>Change your {for}</h2>
+<p>Hi, {user}! You request for changing your {for}.</p>
+<p>Your verifying code is <code>{code}</code>. Use it before {time}</p>
+<p>Click the following link to change {for}:<br/>
+    <a href="http://tomorrow.becomes.today{url}">
+        http://tomorrow.becomes.today{url}
+    </a>
+</p>
+<p>If you can't click the url above, please copy the following text and paste
+in you browser.</p>
+<p><code>http://tomorrow.becomes.today{url}</code></p>'''
+        else:
+            title = '修改你的%s | tomorrow.becomes.today' % for_
+            content = '''\
+<h2>修改你的{for}</h2>
+<p>嘿，{user}！ 你申请修改{for}.</p>
+<p>你的验证码是：<code>{code}</code>。该验证码在{time}前有效</p>
+<p>猛戳下方连接完成修改：<br/>
+    <a href="http://tomorrow.becomes.today{url}">
+        http://tomorrow.becomes.today{url}
+    </a>
+</p>
+<p>点不动？把下面这行复制到浏览器地址栏吧</p>
+<p><code>http://tomorrow.becomes.today{url}</code></p>'''
+
+        content = content.format(**{'for': for_, 'user': user, 'code': code,
+                                    'url': url, 'time': expire})
+        return self.send(email, title, content)
+
+    @tornado.gen.coroutine
+    def verify_change_mail(self, email, user, code, url, expire):
+        if self.is_en():
+            for_ = 'email'
+        else:
+            for_ = '邮箱'
+
+        raise tornado.gen.Return(self._verify_change(email, user, code, url,
+                                                     self.format_time(expire),
+                                                     for_))
+
+    @tornado.gen.coroutine
+    def verify_change_user(self, email, user, code, url, expire):
+        if self.is_en():
+            for_ = 'user name'
+        else:
+            for_ = '用户名'
+
+        raise tornado.gen.Return(self._verify_change(email, user, code, url,
+                                                     self.format_time(expire),
+                                                     for_))
+
+    @tornado.gen.coroutine
+    def verify_change_pwd(self, email, user, code, url, expire):
+        if self.is_en():
+            for_ = 'password'
+        else:
+            for_ = '密码'
+
+        raise tornado.gen.Return(self._verify_change(email, user, code, url,
+                                                     self.format_time(expire),
+                                                     for_))
 
     @classmethod
     def is_zh_mail(cls, mail):
         return any(mail.endswith(suffix) for suffix in cls.config.zh_mail_list)
 
+    def is_en(self):
+        return self.lang.lower().startswith('en')
+
+    def format_time(self, t):
+        if self.is_en():
+            return time.ctime(t)
+        return time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
 
 if __name__ == '__main__':
     bashlog.stdoutlogger(logger=logger, level=bashlog.DEBUG, color=True)

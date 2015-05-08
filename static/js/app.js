@@ -48,6 +48,13 @@ var _ = function(string)
     return result;
 };
 
+String.prototype.format = function(){
+    var args = arguments;
+    return this.replace(/\{(\d+)\}/g,
+        function(m,i){
+            return args[i];
+        });    
+}
 
 // read file, return $.Deferred
 var readFileIntoDataurl = function(fileInfo)
