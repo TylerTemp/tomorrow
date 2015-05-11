@@ -20,10 +20,51 @@ logger = logging.getLogger('tomorrow.email')
 
 class Email(object):
     config = Config()
-    smtp = smtplib.SMTP()
+    # smtp = smtplib.SMTP()
 
     def __init__(self, lang='zh_CN'):
         self.lang = lang
+
+    def _send_gmail(self, user, pwd, tos, msg):
+        logger.info('send using %s', user)
+        try:
+            logger.info('connect to goole')
+            smtp = smtplib.SMTP('smtp.gmail.com:587')
+            logger.info('say EHLO')
+            smtp.ehlo()
+            logger.info('starttls')
+            smtp.starttls()
+            logger.info('login...')
+            smtp.login(user, pwd)
+            logger.info('sending...')
+            smtp.sendmail(user, tos, msg)
+        except BaseException as e:
+            logger.error('failed to send mail: %s', e)
+            return False
+        else:
+            return True
+
+    def _send_normal(self, host, user, pwd, tos, msg):
+        logger.info('send using %s', user)
+        smtp = smtplib.SMTP()
+        try:
+            logger.debug('connecting %s', host)
+            smtp.connect(host)
+            logger.debug('logging...')
+            smtp.login(user, pwd)
+            logger.debug('sending...')
+            smtp.sendmail(user, tos, msg)
+            logger.debug('finished')
+        except BaseException as e:
+            logger.error('failed to send mail: %s', e)
+            return False
+        else:
+            try:
+                smtp.close()
+            except BaseException as e:
+                logger.error(e)
+
+            return True
 
     def send(self, to, sub, content, subtype='html'):
         if 'zh_CN' in self.config.mail and self.is_zh_mail(to):
@@ -42,24 +83,10 @@ class Email(object):
         msg['From'] = me
         msg['To'] = to
 
-        try:
-            logger.debug('connecting %s', host)
-            self.smtp.connect(host)
-            logger.debug('logging...')
-            self.smtp.login(me, pwd)
-            logger.debug('sending...')
-            self.smtp.sendmail(me, [to], msg.as_string())
-            logger.debug('finished')
-        except BaseException as e:
-            logger.error('failed to send mail: %s', e)
-            return False
-        else:
-            try:
-                self.smtp.close()
-            except BaseException as e:
-                logger.error(e)
+        if me.endswith('gmail.com'):
+            return self._send_gmail(me, pwd, [to], msg.as_string())
 
-            return True
+        return self._send_normal(host, me, pwd, [to], msg.as_string())
 
     @tornado.gen.coroutine
     def verify_new_mail(self, email, user, code, url):
@@ -183,7 +210,7 @@ in you browser.</p>
 
 if __name__ == '__main__':
     bashlog.stdoutlogger(logger=logger, level=bashlog.DEBUG, color=True)
-    email = Email()
+    email = Email('zh')
     email.send(to=email.config.mail['default']['user'],
                sub="Tomorrow Becomes Today",
                content="Here we go")
