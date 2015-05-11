@@ -47,11 +47,11 @@
     <label for="name" class="am-u-sm-2 am-form-label">{{ _('Name') }}:</label>
     <div class="am-u-sm-10">
       {% if user_name is None %}
-        <input type="text" id="name" placeholder="{{ _('Enter your user name') }}">
+        <input type="text" id="user" placeholder="{{ _('Enter your user name') }}">
       {% elif for_ == 'user' %}
-        <input type="text" id="name" value="{{ user_name }}" placeholder="{{ _('Enter your user name') }}">
+        <input type="text" id="user" value="{{ user_name }}" placeholder="{{ _('Enter your user name') }}">
       {% else %}
-        <input type="text" id="name" value="{{ user_name }}" disabled>
+        <input type="text" id="user" value="{{ user_name }}" disabled>
       {% end %}
     </div>
   </div>
@@ -85,14 +85,19 @@
   </div>
   {% else %}
   <div class="am-hide">
-    <input type="password" id="pwd" value="********" disabled>
-    <input type="password" id="re-pwd" value="********" disabled>
+    <div>    <!-- avoid parent class modify problem -->
+      <input type="password" id="pwd" value="********" disabled>
+      <input type="password" id="re-pwd" value="********" disabled>
+    </div>
   </div>
   {% end %}
 
   <div class="am-form-group">
     <div class="am-u-sm-10 am-u-sm-offset-2">
-      <button type="submit" class="am-btn am-btn-default" id="submit">{{ _('Submit') }}</button>
+      <button type="submit" class="am-btn am-btn-default" id="submit"
+          data-am-loading="{spinner: 'cog', loadingText: '', resetText: '{{ _('Submit') }}'}">
+        {{ _('Submit') }}
+      </button>
     </div>
   </div>
 
@@ -101,4 +106,9 @@
 <!-- detail form | end -->
 {% end %}
 
+{% end %}
+
+
+{% block leg %}
+<script src="/static/js/verify.js"></script>
 {% end %}

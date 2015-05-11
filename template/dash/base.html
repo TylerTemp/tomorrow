@@ -74,10 +74,17 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
 
 {% block butt %}
 <!--[if lt IE 9]>
+{% if ssl %}
+<script src="https://dn-tomorrow.qbox.me/modernizr.2.8.3.js"></script>
+<script src="https://dn-tomorrow.qbox.me/rem.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/respond.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/amazeui.legacy.2.3.0.min.js"></script>
+{% else %}
 <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-<script src="/static/js/polyfill/rem.min.js"></script>
-<script src="/static/js/polyfill/respond.min.js"></script>
-<script src="/static/js/amazeui.legacy.js"></script>
+<script src="http://7xizua.com1.z0.glb.clouddn.com/rem.min.js"></script>
+<script src="http://7xizua.com1.z0.glb.clouddn.com/respond.min.js"></script>
+<script src="http://cdn.amazeui.org/amazeui/2.3.0/js/amazeui.legacy.min.js"></script>
+{% end %}
 <![endif]-->
 {% block leg %}{% end %}
 {% end %}

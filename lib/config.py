@@ -2,8 +2,6 @@ import tempfile
 import os
 import sys
 import atexit
-import base64
-import uuid
 import json
 import logging
 import time
@@ -21,8 +19,7 @@ from lib.db import User
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.config')
-autodelete = True
-
+auto_clean = True
 
 class Config(object):
     _ins = None
@@ -38,46 +35,54 @@ class Config(object):
                     cfg = json.load(f)
             else:
                 cfg = {}
-
-            cls.debug = cfg.get('debug', False)
+            # wait time (for reload.py)
+            ins.sleep = cfg.get('wait_bootup', 3)
+            # ports (for reload.py)
+            ins.ports = set(cfg.get('ports', (8001, 8002, 8003, 8004)))
+            ins.port = cfg.get('port', 8000)
+            # debug
+            ins.debug = cfg.get('debug', False)
             # get/set secret
-            cls.set_secret = cfg.get('set_secret', True)
-            cls.info_path = cls.format_folder(
-                cfg.get('info_path',
-                        os.path.join('{TMPDIR}', 'tomorrow.info')))
+            ins.set_secret = cfg.get('set_secret', True)
+            ins.pids_file = cls.format_folder(
+                cfg.get('pids_file',
+                        os.path.join('{TMPDIR}', 'tomorrow.pids')))
+            ins.sec_file = cls.format_folder(
+                cfg.get('secret_file',
+                        os.path.join('{TMPDIR}', 'tomorrow.sec')))
 
-            if cls.set_secret:
+            if ins.set_secret:
                 secret = cfg.get('secret', None)
                 if secret is None:
-                    with FileLock(cls.info_path), \
-                            open(cls.info_path, 'r+', encoding='utf-8') as f:
+                    with FileLock(ins.sec_file), \
+                            open(ins.sec_file, 'r+', encoding='utf-8') as f:
                         # if not exists, it will create by the locker
                         # so, x or w is not nessary
                         val = f.read()
                         if not val:    # empty
                             secret = generate()
-                            json.dump({'secret': secret}, f, indent=4)
+                            f.write(secret)
                             f.flush()
                         else:
-                            secret = json.loads(val)['secret']
+                            secret = val
 
-            cls.secret = secret
+            ins.secret = secret
 
             # logging level
-            cls.tmr_level = parse_level(cfg.get("tomorrow_log_level", "DEBUG"))
-            cls.tnd_level = parse_level(cfg.get("tornado_log_level", "DEBUG"))
+            ins.tmr_level = parse_level(cfg.get("tomorrow_log_level", "DEBUG"))
+            ins.tnd_level = parse_level(cfg.get("tornado_log_level", "DEBUG"))
             # logging file
             tmr_f = cfg.get("tomorrow_log_file", None)
             if tmr_f is None:
-                cls.tmr_file = None
+                ins.tmr_file = None
             else:
-                cls.tmr_file = cls.format_folder(tmr_f)
+                ins.tmr_file = cls.format_folder(tmr_f)
 
             tnd_f = cfg.get("tornado_log_file", None)
             if tnd_f is None:
-                cls.tnd_file = None
+                ins.tnd_file = None
             else:
-                cls.tnd_file = cls.format_folder(tnd_f)
+                ins.tnd_file = cls.format_folder(tnd_f)
 
             # get/set email
             cls.mail = cfg.get(
@@ -99,36 +104,35 @@ class Config(object):
             )
 
             # get Chinese email list
-            cls.zh_mail_list = cfg.get("zh_mail", [])
+            ins.zh_mail_list = cfg.get("zh_mail", [])
 
-            cls.img_allow = ('jpg', 'jpeg', 'png', 'gif')
-            cls.size_limit = {User.normal: 0,
+            ins.img_allow = ('jpg', 'jpeg', 'png', 'gif')
+            ins.size_limit = {User.normal: 0,
                               User.admin: 5 * 1024 * 1024,
                               User.root: float('inf')}
             cls._ins = ins
 
         return cls._ins
 
-    @classmethod
-    def set_port(cls, port):
+    # @classmethod
+    def set_port(self, port):
         pid = os.getpid()
 
-        with FileLock(cls.info_path),\
-                open(cls.info_path, 'r+', encoding='utf-8') as f:
+        with FileLock(self.pids_file),\
+                open(self.pids_file, 'r+', encoding='utf-8') as f:
 
             val = f.read()
             if not val:
-                obj = {}
+                piddict = {}
             else:
-                obj = json.loads(val)
-            piddict = obj.setdefault('pid2port', {})
+                piddict = json.loads(val)
             piddict[pid] = port
 
             f.seek(0)
             f.truncate()
-            json.dump(obj, f, indent=4)
+            json.dump(piddict, f, indent=4)
 
-        logger.debug('pid: %s; port: %s at %s', pid, port, cls.info_path)
+        logger.debug('pid: %s; port: %s at %s', pid, port, self.pids_file)
 
     @staticmethod
     def format_folder(name):
@@ -137,12 +141,20 @@ class Config(object):
 
 @atexit.register
 def remove():
-    global autodelete
-    if autodelete:
-        try:
-            os.remove(Config().info_path)
-        except:
-            pass
+    if auto_clean:
+        cfg = Config()
+        with FileLock(cfg.pids_file),\
+                open(cfg.pids_file, 'r+', encoding='utf-8') as f:
+            val = f.read()
+            if val:
+                piddict = json.loads(val)
+            else:
+                return os.unlink(cfg.pids_file)
+
+            piddict.pop(os.getpid())
+            f.seek(0)
+            f.truncate()
+            json.dump(piddict, f, indent=4)
 
 if __name__ == '__main__':
     with open(os.path.join(rootdir, 'config.conf'),
@@ -152,8 +164,23 @@ if __name__ == '__main__':
     # logic logging file
     "tomorrow_log_file": "{TMPDIR}/tomorrow.log",
 
-    # store cookie secret and pid/port file
-    "info_path": "{TMPDIR}/tomorrow.info",
+    # store pid/port file
+    "pids_file": "{TMPDIR}/tomorrow.pids",
+
+    # store secret file. Delete this file if you want to refresh secret
+    "secret_file": "{TMPDIR}/tomorrow.sec",
+
+    # used by `reboot.py`
+    # time period after start up a process and before kill next process
+    "wait_bootup": 3,
+
+    # used by `reboot.py`
+    # which ports you want to run
+    "ports": [8001, 8002, 8003, 8004],
+
+    # used by `main.py`
+    # which port you want to run. No effect if you run by `reboot.py`
+    "port": 8001.
 
     "debug": false,
 

@@ -29,7 +29,7 @@ var set_user_error = function(error)
       set_error(user_obj, _("User Name should not be '.' or '..'"), "error");
       break;
     case 'length':
-      set_error(user_obj, _("User Name should not longer than") + " " + USER_MAX_LEN + " " + _("characters"), "error");
+      set_error(user_obj, _("User Name should not longer than {0} characters").format(USER_MAX_LEN), "error");
       break;
     case 'format':
       set_error(user_obj, _("User Name should only contain English characters, Chinese characters, number, space, underbar, minus, dot, and can not only be '.' or '..'"), "error");
@@ -245,11 +245,7 @@ $(document).ready(function(){
     {
       server_error_panel.text(
         _("Sorry, a server error occured, please refresh and retry") +
-        " (" +
-        jqXHR.status +
-        ": " +
-        errorThrown +
-        ")"
+        " ({0}: {1})".format(jqXHR.status, errorThrown)
       );
       server_error_panel.show(400);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)

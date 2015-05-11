@@ -3,7 +3,7 @@ Usage:
 main.py [options]
 
 Options:
--p --port=<port>          listen to this port[default: 8000]
+-p --port=<port>          listen to this port(default: 8000)
 --tmr-level=<level>       site logic code logging level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50(default: INFO)
 --tnd-level=<level>       request/response logging level.(default: INFO)
 --tmr-file=<file>         site logic code file logger.(default: /tmp/tomorrow.log)
@@ -32,7 +32,6 @@ from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
-from lib.hdlr.dash import InformationHandler
 from lib.hdlr.dash import DashboardHandler
 from lib.hdlr.dash import InfoHandler
 from lib.hdlr.dash import SecureHandler
@@ -77,7 +76,7 @@ class Application(tornado.web.Application):
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
             (r'/logout/', LogoutHandler),
-            (r'/hi/(?P<user>[^/]+)/', InformationHandler),
+            (r'/hi/(?P<user>[^/]+)/', BareHandler),
             (r'/am/(?P<user>[^/]+)/', DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', InfoHandler),
             (r'/am/(?P<user>[^/]+)/secure/', SecureHandler),
@@ -144,12 +143,12 @@ class BareHandler(BaseHandler):
 
 
 def main(port):
-    Config.set_port(port)
+    Config().set_port(port)
     tornado.locale.load_translations(
         os.path.join(rootdir, "translations"))
-    tornado.locale.set_default_locale('zh_CN')
+    tornado.locale.set_default_locale('zh')
     tornado.autoreload.watch(
-        os.path.join(rootdir, 'translations', 'zh_CN.csv'))
+        os.path.join(rootdir, 'translations', 'zh.csv'))
     tornado.autoreload.watch(
         os.path.join(rootdir, 'config.conf'))
     http_server = tornado.httpserver.HTTPServer(Application(), xheaders=True)
@@ -183,4 +182,10 @@ if __name__ == "__main__":
     else:
         filelogger(tnd_file, tornadologger, tnd_level)
 
-    main(int(args['--port']))
+    port = args['--port']
+    if port is None:
+        port = config.port
+    else:
+        port = int(port)
+
+    main(port)

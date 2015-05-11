@@ -25,21 +25,7 @@ cd path/to/tomorrow
 python3 main.py -p 8000
 ```
 
-you can run 4 processes on port 8001~8004(can't change) by
-
-```bash
-python3 lib/tool/reboot.py
-```
-
-this can also help you reboot the server.
-
-you can also shutdown the server by
-
-```bash
-python3 lib/tool/shutdown.py
-```
-
-# Configuration
+# Configuration & multiprocess
 
 run the following command to generate a `config.conf` file in the main folder
 
@@ -47,9 +33,21 @@ run the following command to generate a `config.conf` file in the main folder
 python lib/config.py
 ```
 
-this `config.conf` is in json format. Read the comment for details
+(this `config.conf` is in json format. Read the comment for details)
+
+open `config.conf`, change `"ports": [8001, 8002, 8003, 8004]` to
+any ports you want to run
+
+then run multiprocess by
+
+```bash
+python3 lib/tool/reboot.py
+```
 
 Note you can shadow those settings by passing args to `main.py` or `lib/tool/reboot.py` in command line
+
+`reboot.py` accept the same command line args except `-p`,
+use `python main.py --help` for more detail
 
 ## reference
 * UI powered by [amazeUI](http://amazeui.org/)

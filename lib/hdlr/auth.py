@@ -102,7 +102,8 @@ class LoginHandler(_Handler):
                 email = user_info['email']
                 type = user_info['type']
                 temp = (not self.get_argument('remember', False))
-                self.set_user(user, email, type, temp=temp)
+                self.set_user(user, email, type,
+                              user_info.get('lang', None), temp=temp)
 
         result = {'error': flag}
 
@@ -171,13 +172,14 @@ class SigninHandler(_Handler):
                 user.add(email=email, pwd=pwd)
 
                 secret = generate()
-                user.set_code(for_=user, code=secret)
+                user.set_code(for_=user.NEWEMAIL, code=secret)
                 user.save()
 
                 user_info = user.get()
                 self.set_user(user=user_info['user'],
                               email=user_info['email'],
                               type=user_info['type'],
+                              lang=user_info.get('lang', 'zh_CN'),
                               temp=True)
 
                 mailman = Email(self.locale.code)

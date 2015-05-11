@@ -2,6 +2,7 @@
 provide some convenient methods'''
 
 import tornado.web
+import tornado.locale
 import logging
 try:
     from urllib.parse import quote
@@ -28,6 +29,15 @@ logger = logging.getLogger("tomorrow.base")
 
 class BaseHandler(tornado.web.RequestHandler):
 
+    def render(self, template_name, **kwargs):
+        # add ssl var
+        # override this method pls use `super`
+        kwargs['ssl'] = self.is_ssl()
+
+        return super(BaseHandler, self).render(
+            template_name,
+            **kwargs
+        )
     def get_current_user(self):
         user = self.get_secure_cookie("user")
 
@@ -40,7 +50,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return {'user': user, 'email': email, 'type': int(level)}
 
-    def set_user(self, user, email, type, temp=False):
+    def set_user(self, user, email, type, lang=None, temp=False):
         if temp:
             kwd = {'expires_days': None}
         else:
@@ -48,6 +58,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie('user', user, **kwd)
         self.set_secure_cookie('email', email, **kwd)
         self.set_secure_cookie('type', str(type), **kwd)
+        if lang is not None:
+            self.set_cookie('lang', lang)
 
     def safe_redirect(self, url):
         '''replace the host of url to request's host'''
@@ -70,19 +82,27 @@ class BaseHandler(tornado.web.RequestHandler):
         self.clear_cookie("user")
         self.clear_cookie('type')
         self.clear_cookie('email')
+        self.clear_cookie('lang')
 
 
     def is_ajax(self):
         return (self.request.headers.get('X-Requested-With', None) ==
                 "XMLHttpRequest")
 
+    def is_ssl(self):
+        return (self.request.protocol == 'https')
+
     @property
     def db(self):    # lazy-load
         return self.application.settings['db']
 
-    # def get_user_locale(self):
-        # todo: able to change
-        # return tornado.locale.get('zh_CN')
+    def get_user_locale(self):
+        code = self.get_argument('lang', self.get_cookie('lang', None))
+        logger.debug(code)
+        if code is None:
+            return None
+        return tornado.locale.get(code)
+
 
     def get_imgs_and_files(self, user, type):
         allow_update = (type >= User.admin)

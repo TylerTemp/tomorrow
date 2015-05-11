@@ -17,7 +17,7 @@ from lib import config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-config.autodelete = False
+config.auto_clean = False
 cfg = config.Config()
 mainfile = os.path.join(rootdir, 'main.py')
 
@@ -28,51 +28,53 @@ def run(argv):    # won't wait
     logger.info('start: %s', args)
     return sp.Popen(args)
 
+def directly_run(ports):
+    for port in ports:
+        args = ['-p', str(port)]
+        args.extend(sys.argv[1:])
+        run(args)
+
 
 def main():
-    if not os.path.exists(cfg.info_path):
-        logger.error('file(%s) not exits. Start directly')
-        for port in range(8001, 8005):
-            args = ['-p', str(port)]
-            args.extend(sys.argv[1:])
-            run(args)
-        else:
-            logger.info('done')
-            return
+    if not os.path.exists(cfg.pids_file):
+        logger.error('file(%s) not exits. Start directly', cfg.pids_file)
+        directly_run(cfg.ports)
+        logger.info('done')
+        return
 
-    with FileLock(cfg.info_path),\
-            open(cfg.info_path, 'r+', encoding='utf-8') as f:
-        obj = json.load(f)
+    with FileLock(cfg.pids_file),\
+            open(cfg.pids_file, 'r+', encoding='utf-8') as f:
+        val = f.read()
+        if not val:
+            return directly_run(cfg.ports)
 
-        if 'secret' in obj:
-            f.seek(0)
-            f.truncate()
-            json.dump({'secret': obj['secret']}, f)
-        else:
-            os.unlink(cfg.info_path)
+        pid2port = json.loads(val)
 
-    if 'pid2port' in obj:
-        for pid, port in obj['pid2port'].items():
-            sub = sp.call(['kill', pid])    # wait and check
-            if sub != 0:
-                logger.error('failed to kill pid %s of port %s', pid, port)
-                continue
+    os.unlink(cfg.pids_file)
 
-            logger.info('killed pid %s, port %s', pid, port)
+    port2pid = {port: pid for pid, port in pid2port.items()}
 
-            args = ['-p', str(port)]
-            args.extend(sys.argv[1:])
-            run(args)
-            time.sleep(4)    # wait process to fully run
-    else:
-        logger.info('no port to kill, start new')
-        for port in range(8001, 8005):
-            args = ['-p', str(port)]
-            args.extend(sys.argv[1:])
-            run(args)
-        else:
-            logger.info('done')
-            return
+    all_ports = cfg.ports
+    reboot_ports = all_ports.intersection(port2pid)
+    new_ports = all_ports.difference(port2pid)
+    kill_ports = set(port2pid).difference(all_ports)
+
+    directly_run(new_ports)
+    for reboot in reboot_ports:
+        sub = sp.call(['kill', port2pid[reboot]])
+        if sub != 0:
+            logger.error('failed to kill pid %s of port %s',
+                         port2pid[reboot], reboot)
+            continue
+        run(['-p', str(reboot)] + sys.argv[1:])
+        logger.debug('sleep %s', cfg.sleep)
+        time.sleep(cfg.sleep)
+
+    for kill in kill_ports:
+        sub = sp.call(['kill', pid])
+        if sub != 0:
+            logger.error('failed to kill pid %s of port %s', pid, port)
+            continue
 
 
 if __name__ == '__main__':

@@ -67,6 +67,9 @@ sub.class1.server.ca.pem
 mongodb.conf
 config.conf
 *.psd
+*.crt
+*.key
+tomorrow.becomes.today_sha256_cn.zip
 
 # store the uploaded file
 static/upload

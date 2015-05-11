@@ -60,7 +60,7 @@
     <label><span class="am-icon-lock"> {{ _("Password") }}:</span></label>
   </div>
   <div class="am-u-sm-3">
-    <p>{{ user_name }} </p>
+    <p>********</p>
   </div>
   <div class="am-u-sm-5 am-cf">
     <p class="am-text-warning am-fr">{{ _("Please verify your email first") }}</p>
@@ -125,7 +125,9 @@
 <div class="am-g am-padding">
   <div class="am-u-sm-12">
     <p class="am-fr">{{ _("Doesn't recive the email? Try this:") }} &nbsp;
-      <button class="am-btn am-btn-primary" id="resend-btn">{{ _('Resend') }}</button>
+      <button class="am-btn am-btn-primary" id="resend-btn"
+      data-am-loading="{spinner: 'refresh', loadingText: '', resetText: '{{ _('Resend') }}'}">
+        {{ _('Resend') }}</button>
     </p>
   </div>
 </div>

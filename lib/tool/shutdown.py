@@ -20,23 +20,22 @@ from lib import config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-config.autodelete = False
+config.auto_clean = False
 cfg = config.Config()
 
 
 def main():
-    if not os.path.exists(cfg.info_path):
+    if not os.path.exists(cfg.pids_file):
         return logger.error('file(%s) not exits.')
 
-    with open(cfg.info_path, 'r+', encoding='utf-8') as f:
-        obj = json.load(f)
-    os.unlink(cfg.info_path)
-
-    piddict = obj.get('pid2port', None)
+    with open(cfg.pids_file, 'r+', encoding='utf-8') as f:
+        piddict = json.load(f)
+    os.unlink(cfg.pids_file)
 
     if piddict is None:
         logger.info('no port info, nothing to kill')
         return
+
     logger.info(piddict)
 
     for pid, port in piddict.items():
@@ -46,6 +45,9 @@ def main():
             continue
 
         logger.info('killed pid %s, port %s', pid, port)
+
+    else:
+        logger.info('all done')
 
 
 if __name__ == '__main__':

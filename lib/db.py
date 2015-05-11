@@ -298,15 +298,22 @@ class Article(object):
     def find_trans_url_translator(cls, url, author):
         return cls._article.find_one({'transref': url, 'author': author})
 
+    @classmethod
+    def find_by(cls, author):
+        return cls._article.find({'author': author})
+
     def get(self):
         return self.article_info
 
     def set(self, info):
         self.article_info = info
 
-    def save(self, t=None):
-        self.article_info['edittime'] = t or time.time()
+    def save(self):
         return self._article.save(self.article_info)
+
+    @classmethod
+    def get_collect(cls):
+        return cls._article
 
     @property
     def new(self):
