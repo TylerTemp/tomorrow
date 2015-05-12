@@ -201,7 +201,7 @@ $(document).ready(function(){
         'type': 'post',
         'beforeSend': function(jqXHR, settings){
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          submit.prop("disabled", true).button("loading");
+          submit.button("loading");
           server_error_panel.hide(400);
         }
       }
@@ -250,7 +250,7 @@ $(document).ready(function(){
       server_error_panel.show(400);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
-      submit.prop("disabled", false).button('reset');
+      submit.button('reset');
     });
     return false;
   });

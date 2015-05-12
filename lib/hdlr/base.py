@@ -84,7 +84,6 @@ class BaseHandler(tornado.web.RequestHandler):
         self.clear_cookie('email')
         self.clear_cookie('lang')
 
-
     def is_ajax(self):
         return (self.request.headers.get('X-Requested-With', None) ==
                 "XMLHttpRequest")

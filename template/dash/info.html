@@ -13,7 +13,7 @@
 <div class="am-g am-padding">
   <div class="am-u-sm-12 am-u-md-3">
     <p>
-      <img id="avatar" class="am-circle am-img-thumbnail" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+      <img id="avatar" class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
     </p>
   </div>
   <form class="am-form am-u-sm-12 am-u-md-9" action="{{ request.uri }}"  method="POST">

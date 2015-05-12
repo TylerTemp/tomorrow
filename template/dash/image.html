@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-image"> <strong class="am-text-primary am-text-lg">{{ _("Gallery") }}</strong></span> / <small>{{ _("All images you uploaded") }}</small>{% end %}
+
+{% block content %}
+
+<div class="am-padding am-g">
+  <div class="am-u-sm-3 am-text-right">
+    <span class="am-icon-cloud-upload"> {{_("Upload")}}:</span>
+  </div>
+  <div class="am-u-sm-9">
+    <input type="file" id="file" class="am-form-field am-input-sm">
+    <div class="am-progress am-progress-striped am-progress-sm am-active">
+      <div class="am-progress-bar am-progress-bar-secondary" id="bar"></div>
+    </div>
+  </div>
+</div>
+
+<div class="am-padding am-g" id="info-panel">
+</div>
+
+<ul class="am-avg-sm-1 am-avg-md-4 am-margin gallery-list" id="list">
+  {% for file in files %}
+  <li>
+    <div class="am-panel am-panel-default">
+      <figure data-am-widget="figure" class="am am-figure am-figure-default"
+      data-am-figure="{  pureview: 'true' }">
+        <img src="{{ file['url'] }}"
+        alt="{{ file['name'] }}" />
+        <figcaption class="am-figure-capition-btm">{{ file['name'] }} / <small>{{ file['size'] }}</small></figcaption>
+      </figure>
+      <div class="am-cf">
+        <button type="button" class="am-btn am-btn-warning am-btn-xs am-fr delete"
+          data-am-loading="{spinner: 'times-circle-o', loadingText: '{{ _("Deleting...") }}', resetText: '<span class=&quot;am-icon-trash&quot;></span>'}"
+          data-name="{{ file['name'] }}">
+            <span class="am-icon-trash"></span>
+        </button>
+      </div>
+    </div>
+  </li>
+  {% end %}
+</ul>
+
+{% end %}
+
+{% block leg %}
+<script>
+  var IMG_ONLY = true;
+  var MAX_SIZE = {{ 'undefined' if size_limit == float('inf') else size_limit }};
+  var mknode = function(url, name, size, icon)
+  {
+    return $(
+      ('<li>' +
+        '<div class="am-panel am-panel-default">' +
+          '<figure data-am-widget="figure" class="am am-figure am-figure-default"' +
+          'data-am-figure="{  pureview: \'true\' }">' +
+            '<img src="{0}"' +
+            'alt="{1}" />' +
+            '<figcaption class="am-figure-capition-btm">{1} / <small>{2}</small></figcaption>' +
+          '</figure>' +
+          '<div class="am-cf">' +
+            '<button type="button" class="am-btn am-btn-warning am-btn-xs am-fr delete"' +
+              'data-am-loading="{spinner: \'times-circle-o\', loadingText: \'{{ _("Deleting...") }}\', resetText: \'<span class=&quot;am-icon-trash&quot;></span>\'}"' +
+              'data-name="{1}">' +
+                '<span class="am-icon-trash"></span>' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</li>').format(url, name, size, icon)
+    );
+  }
+</script>
+<script src="/static/js/file.js"></script>
+{% end %}

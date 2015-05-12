@@ -28,7 +28,7 @@ from lib.tool.bashlog import parse_level
 from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
-from lib.hdlr.edit import EditHandler
+# from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
 from lib.hdlr.auth import LogoutHandler
@@ -36,6 +36,7 @@ from lib.hdlr.dash import DashboardHandler
 from lib.hdlr.dash import InfoHandler
 from lib.hdlr.dash import SecureHandler
 from lib.hdlr.dash import VerifyHandler
+from lib.hdlr.dash import FileHandler
 # from lib.hdlr.jolla.task import TaskHandler
 from lib.hdlr.jolla import TaskHandler
 from lib.hdlr.jolla import ListHandler
@@ -43,7 +44,7 @@ from lib.hdlr.jolla import LoadHandler
 from lib.hdlr.jolla import TranslateHandler
 from lib.hdlr.jolla import BlogHandler
 from lib.hdlr.jolla import ArticleHandler
-from lib.hdlr.upload import UploadHandler
+# from lib.hdlr.upload import UploadHandler
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
@@ -72,7 +73,7 @@ class Application(tornado.web.Application):
 
     def __init__(self):
         handlers = (
-            (r'/edit/', EditHandler),
+            # (r'/edit/', EditHandler),
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
             (r'/logout/', LogoutHandler),
@@ -80,7 +81,7 @@ class Application(tornado.web.Application):
             (r'/am/(?P<user>[^/]+)/', DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', InfoHandler),
             (r'/am/(?P<user>[^/]+)/secure/', SecureHandler),
-            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', UploadHandler),
+            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', FileHandler),
             (r'/am/(?P<user>[^/]+)/verify/'
              r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
              r'(?P<code>[^/]+)/', VerifyHandler),
@@ -146,7 +147,8 @@ def main(port):
     Config().set_port(port)
     tornado.locale.load_translations(
         os.path.join(rootdir, "translations"))
-    tornado.locale.set_default_locale('zh')
+    # set this tornado will ignore the borwser `Accept-Language` head, why?
+    # tornado.locale.set_default_locale('zh')
     tornado.autoreload.watch(
         os.path.join(rootdir, 'translations', 'zh.csv'))
     tornado.autoreload.watch(

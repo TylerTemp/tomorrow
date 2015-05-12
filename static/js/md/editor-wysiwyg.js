@@ -272,7 +272,7 @@
                             'type': 'post',
                             'beforeSend': function(jqXHR, settings){
                                 ImageUpload.setProcess(95);
-                                jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                                jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
                             }
                         }
                     ).done(function(data, textStatus, jqXHR)
@@ -413,7 +413,7 @@
                             'type': 'post',
                             'beforeSend': function(jqXHR, settings){
                                 ImageUpload.setProcess(95);
-                                jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                                jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
                             }
                         }
                     ).done(function(data, textStatus, jqXHR)

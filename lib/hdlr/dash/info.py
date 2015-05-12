@@ -16,6 +16,7 @@ from lib.db import User
 from lib.config import Config
 from lib.hdlr.dash.base import its_myself
 from lib.hdlr.dash.base import BaseHandler
+from lib.tool.unitsatisfy import unit_satisfy
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.dash.info')
@@ -32,7 +33,7 @@ class InfoHandler(BaseHandler):
         user_info = user.get()
         size_limit = self.config.size_limit[user_info['type']]
         if size_limit != float('inf'):
-            size_limit = '%.2f %s' % self.unit_satisfy(size_limit)
+            size_limit = '%.2f %s' % unit_satisfy(size_limit)
 
         return self.render(
             'dash/info.html',
@@ -69,15 +70,3 @@ class InfoHandler(BaseHandler):
         user.save()
 
         return self.write(json.dumps({'error': 0}))
-
-    @classmethod
-    def unit_satisfy(cls, b):
-        appropriate_size = b
-        appropriate_unit = 'B'
-        units = ('B', 'KB', 'MB', 'GB', 'TB')
-        index = 0
-
-        while (appropriate_size >> 10) >= 1024 and index < len(units) - 1:
-            appropriate_size >>= 10
-            index += 1
-        return (appropriate_size / 1024, units[index])

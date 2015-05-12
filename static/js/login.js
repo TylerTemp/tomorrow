@@ -28,9 +28,9 @@ var set_user_error = function(error, is_email)
       break;
     case 'notexist':
       if (is_email)
-        set_error(user_obj, _("This email hasn't <a href='/signin/'>signin</a>"), "error");
+        set_error(user_obj, _("This email hasn't <a href='/signin/'>registered</a>"), "error");
       else
-        set_error(user_obj, _("This user name hasn't <a href='/signin/'>signin</a>"), "error");
+        set_error(user_obj, _("This user name hasn't <a href='/signin/'>registered</a>"), "error");
       break;
     default:
       set_error(user_obj);
@@ -100,7 +100,7 @@ $(document).ready(function(){
         'type': 'post',
         'beforeSend': function(jqXHR, settings){
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          submit.prop("disabled", true).button("loading");
+          submit.button("loading");
           server_error_panel.hide(400);
         }
       }
@@ -138,7 +138,7 @@ $(document).ready(function(){
       server_error_panel.show(400);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
-      submit.prop("disabled", false).button('reset');
+      submit.button('reset');
     });
     return false;
   });

@@ -1,5 +1,5 @@
 var I18N = {
-  'zh_CN':
+  'zh':
   {
     "heading level 1": "一级标题",
     "heading level 2": "二级标题",

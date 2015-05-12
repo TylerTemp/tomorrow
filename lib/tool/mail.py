@@ -28,7 +28,7 @@ class Email(object):
     def _send_gmail(self, user, pwd, tos, msg):
         logger.info('send using %s', user)
         try:
-            logger.info('connect to goole')
+            logger.info('connect to google')
             smtp = smtplib.SMTP('smtp.gmail.com:587')
             logger.info('say EHLO')
             smtp.ehlo()
@@ -59,11 +59,6 @@ class Email(object):
             logger.error('failed to send mail: %s', e)
             return False
         else:
-            try:
-                smtp.close()
-            except BaseException as e:
-                logger.error(e)
-
             return True
 
     def send(self, to, sub, content, subtype='html'):

@@ -23,7 +23,7 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
 
 <header class="am-topbar admin-header">
   <div class="am-topbar-brand">
-    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small>{{ _("I'm") }} <a href="{{ main_url }}/">{{ user_name }}</a></small>
+    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
   </div>
 </header>
 
@@ -42,7 +42,7 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
       <li class="admin-parent">
         <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
-          <li><a href="{{ main_url }}/img/" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Image")}}</a></li>
+          <li><a href="{{ main_url }}/img/" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Gallery")}}</a></li>
           <li><a href="{{ main_url }}/file/"><span class="am-icon-file"></span> {{ _("File")}}</a></li>
         </ul>
       </li>
@@ -86,5 +86,17 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
 <script src="http://cdn.amazeui.org/amazeui/2.3.0/js/amazeui.legacy.min.js"></script>
 {% end %}
 <![endif]-->
+<script>
+  $("#signout").click(function(evt)
+  {
+    evt.preventDefault();
+    var cookie = $.AMUI.utils.cookie;
+    cookie.unset('user', '/');
+    cookie.unset('type', '/');
+    cookie.unset('email', '/');
+    cookie.unset('lang', '/');
+    return window.location.href = '/';
+  });
+</script>
 {% block leg %}{% end %}
 {% end %}
