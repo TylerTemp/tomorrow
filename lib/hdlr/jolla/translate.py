@@ -61,6 +61,7 @@ class TranslateHandler(BaseHandler):
 
         if translated is None:
             translated = {k: '' for k in translate.keys()}
+            translated['reprint'] = {}
         else:
             translated = {
                 'title': translated['title'],
