@@ -90,11 +90,7 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
   $("#signout").click(function(evt)
   {
     evt.preventDefault();
-    var cookie = $.AMUI.utils.cookie;
-    cookie.unset('user', '/');
-    cookie.unset('type', '/');
-    cookie.unset('email', '/');
-    cookie.unset('lang', '/');
+    logout();
     return window.location.href = '/';
   });
 </script>

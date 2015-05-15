@@ -42,8 +42,21 @@
 
   .blog-box {
     background-color: #FFF;
-    /*margin-left: 1.5rem;*/
-    /*margin-right: -3rem;*/
+  }
+
+  #bread-crumbs {
+    color: #fff;
+  }
+
+  #bread-crumbs a:link {
+    color: #fff;
+  }
+  #bread-crumbs a:visited {
+    color: #fff;
+  }
+  #bread-crumbs a:hover {
+    color: #fff;
+    text-decoration:underline;
   }
 
 </style>
@@ -59,7 +72,15 @@
   </div>
 </header>
 
+
+
 <div class="am-u-sm-centered am-g-fixed" id="blog">
+  <div class="am-g" id="bread-crumbs">
+    <div class="am-u-sm-12" style="text-align: left">
+      <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
+      <span class="am-icon-caret-right">{{ _('Blog')}}</span>
+    </div>
+  </div>
   <!-- first article -->
   {% try %}
     {% set each = next(articles) %}

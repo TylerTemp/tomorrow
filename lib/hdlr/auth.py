@@ -17,6 +17,7 @@ from lib.hdlr.base import BaseHandler
 from lib.db import User
 from lib.tool.mail import Email
 from lib.tool.generate import generate
+from lib.tool.ensure import EnsureSsl
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.auth')
@@ -54,6 +55,7 @@ class _Handler(BaseHandler):
 
 class LoginHandler(_Handler):
 
+    @EnsureSsl(permanent=True)
     def get(self):
         redirect = self.get_argument('next', None)
 
@@ -67,11 +69,13 @@ class LoginHandler(_Handler):
                 {'next': self.safe_redirect(redirect)})
         else:
             signin = '/signin/'
+
         return super(LoginHandler, self).render(
             'login.html',
-            signin=signin,
+            signin=self.get_ssl(signin),
         )
 
+    @EnsureSsl(permanent=True)
     def post(self):
         self.check_xsrf_cookie()
 
@@ -102,27 +106,30 @@ class LoginHandler(_Handler):
                 email = user_info['email']
                 type = user_info['type']
                 temp = (not self.get_argument('remember', False))
-                self.set_user(user, email, type,
+                self.set_user(user, email, type, user_info['active'],
                               user_info.get('lang', None), temp=temp)
 
         result = {'error': flag}
 
         if not self.is_ajax():
             if flag == 0:
-                redirect = redirect or '/'
+                redirect = self.get_non_ssl(redirect or '/')
             else:
                 if redirect:
                     result['next'] = redirect
                 redirect = ''.join((self.request.uri, '?', urlencode(result)))
             return self.redirect(redirect)
 
-        result['redirect'] = (
-            self.safe_redirect(redirect) if redirect is not None else '/')
+        redirect = self.safe_redirect(redirect) if redirect is not None else '/'
+        if flag == 0:
+            redirect = self.get_non_ssl(redirect)
+        result['redirect'] = redirect
         return self.write(json.dumps(result))
 
 
 class SigninHandler(_Handler):
 
+    @EnsureSsl(permanent=True)
     def get(self):
         self.xsrf_token
         redirect = self.get_argument('next', None)
@@ -133,9 +140,10 @@ class SigninHandler(_Handler):
 
         return super(SigninHandler, self).render(
             'signin.html',
-            login=login,
+            login=self.get_ssl(login),
         )
 
+    @EnsureSsl(permanent=True)
     @tornado.web.asynchronous
     @tornado.gen.engine
     def post(self):
@@ -156,7 +164,6 @@ class SigninHandler(_Handler):
         if not pwd:
             flag |= self.PWD_EMPTY
 
-        # todo verify email
         if flag == 0:
 
             user = User(user)
@@ -179,6 +186,7 @@ class SigninHandler(_Handler):
                 self.set_user(user=user_info['user'],
                               email=user_info['email'],
                               type=user_info['type'],
+                              active=user_info['active'],
                               lang=user_info.get('lang', 'zh_CN'),
                               temp=True)
 

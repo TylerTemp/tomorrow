@@ -7,7 +7,28 @@
 {% block neck %}
 <link rel="stylesheet" href="/static/css/editor.css">
 <style>
-#article-area,
+body {
+  background-image: url("http://7xi8a5.com1.z0.glb.clouddn.com/blog_bg_top.jpg"),
+                    url("http://7xi8a5.com1.z0.glb.clouddn.com/blog_bg_base.jpg");
+  background-repeat: no-repeat, repeat;
+  background-size: 100% auto, auto auto;
+  background-position: right top;
+  background-color: #5BA2A1;
+}
+
+header {
+  text-align: center;
+}
+
+header img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+}
+
+/*#article-area,*/
+#article-wys,
+#article-md,
 #mdEditor,
 #wysiwygEditor {
   height: 600px;
@@ -17,102 +38,188 @@
 #title {
   margin-bottom: 5px;
 }
+
+#white-box {
+  background-color: #fff;
+}
+
+#bread-crumbs {
+  color: #fff;
+}
+
+#bread-crumbs a:link {
+  color: #fff;
+}
+#bread-crumbs a:visited {
+  color: #fff;
+}
+#bread-crumbs a:hover {
+  color: #fff;
+  text-decoration:underline;
+}
+
 </style>
 {% end %}
 {% block body %}
-
-<div class="header">
-  <div class="am-g">
-    <h1>{{ _("Translate") }}: {{ translate['title'] }}</h1>
+<header>
+  <div class="am-g am-center">
+    <div class="am-u-sm-12" style="text-align:center">
+      <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
+    </div>
   </div>
-  <hr />
-</div>
+</header>
 
-
-<div class="am-g">
-  <div class="am-u-sm-12">
-    {{ _("Title") }}:
-    <label for="title">{{ translate['title'] }}</label>
-    <input type="text" class="am-form-field" id="title" value="{{ translated['title'] }}" placeholder="{{ _('Enter the translation of the title') }}">
+<div class="am-g" id="bread-crumbs">
+  <div class="am-u-sm-12" style="text-align: left">
+    <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
+    <span class="am-icon-angle-right"><a href="/jolla/translate/">{{ _('Translate')}}</a></span> &nbsp;
+    <span class="am-icon-caret-right">{{ translate['title'] }}</span>
   </div>
 </div>
 
-
-<div class="am-g">
-  <div class="am-u-sm-6">
-    <label>{{ _("Original Content") }}: </label>
-  </div>
-  <div class="am-u-sm-6">
-    <label>{{ _("Translate Here") }}: </label>
-  </div>
-  <!-- <hr data-am-widget="divider" style="" class="am-divider am-divider-default" /> -->
-</div>
-
-
-<!-- toolbar -->
-<div id="wys-toolbar-area" {{ 'style=display:none' if md else '' }}>
-  {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
-</div>
-
-<div id="md-toolbar-area" {{ '' if md else 'style=display:none' }}>
-  {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
-</div>
-
-
-<div class="am-g">
-  <!-- original content -->
-  <div class="am-u-sm-6">
-    <div class="am-scrollable-vertical" id="article-area">
-      <div id="article-wys" {% raw 'style="display:none"' if md else '' %}>
-        {% raw translate['html'] %}
+<div>
+  <div class="am-margin" id="white-box">
+    <div class="header">
+      <div class="am-g">
+        <h1>{{ _("Translate") }}: {{ translate['title'] }}</h1>
       </div>
-      <pre id="article-md" {% raw '' if md else 'style="display:none"' %}>
-        {% raw translate['md'] %}
-      </pre>
+      <hr />
     </div>
-    <div class="am-cf">
-      <button class="am-btn am-btn-success am-fr" id="article-switch" data-role="{{'md' if md else 'wys'}}">{{ _("Switch to") }} {{ _("normal view" if md else "MarkDown")}}</button>
-      {% if edit_task_url %}
-      <a class="am-btn am-btn-default am-fr" href="{{ edit_task_url }}" target="_blank">{{ _("Edit") }}</a>
-      {% end %}
+
+
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        {{ _("Title") }}:
+        <label for="title">{{ translate['title'] }}</label>
+        <input type="text" class="am-form-field" id="title" value="{{ translated['title'] }}" placeholder="{{ _('Enter the translation of the title') }}">
+      </div>
     </div>
-  </div>
-  <!-- translated area -->
-  <div class="am-u-sm-6">
-    <div class="am-form-field needsclick" id="wysiwygEditor" {% raw 'style="display:none"' if md else '' %} tabindex="0" contentEditable="true">
-      {% raw translated['html'] or translate['html'] %}
+
+    <!-- toolbar -->
+    <div id="wys-toolbar-area" {{ 'style=display:none' if md else '' }}>
+      {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
     </div>
-    <textarea class="am-form-field" id="mdEditor" {% raw '' if md else 'style="display:none"' %} tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">
-      {{ translated['md'] or translate['md'] }}
-    </textarea>
-  </div>
-  <div class="am-cf">
-    <button type="button"
-            class="am-btn am-btn-success am-fr"
-            id="submit"
-            data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _("Submitting...") }}', resetText: '{{ _("Submit") }}'}">
-      {{ _("Submit") }}
-    </button>
-  </div>
-</div>
 
-<div id="submit-error-panel">
-</div>
+    <div id="md-toolbar-area" {{ '' if md else 'style=display:none' }}>
+      {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, area=False) %}
+    </div>
 
-<div class="am-g">
-  <div class="am-u-sm-12">
-  <label>
-    <input type="checkbox" class="am-checkbox-inline" id="hide-email" checked>
-    {{ _("Hide my email") }}
-  </label>
-  <p>{{ _("By submitting you agree to publish this article under") }}
-    <a href="https://creativecommons.org/licenses/by/2.0/legalcode" target="_blank">
-        <span class="am-icon-cc"> CC {{ _("license") }}</span>
-    </a>
-  </p>
+
+    <div class="am-g">
+      <!-- translated area -->
+      <div class="am-u-sm-12 am-u-md-6" id="left">
+        <label>{{ _("Translate Here") }}: </label>
+        <div class="am-form-field needsclick" id="wysiwygEditor" {% raw 'style="display:none"' if md else '' %} tabindex="0" contentEditable="true">
+          {% raw translated['html'] or translate['html'] %}
+        </div>
+        <textarea class="am-form-field" id="mdEditor" {% raw '' if md else 'style="display:none"' %} tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">
+          {{ translated['md'] or translate['md'] }}
+        </textarea>
+        <div class="am-cf">
+          <button class="am-btn am-btn-secondary am-fr" id="source-show" style="display:none"><span class="am-icon-eye"> {{ _("Show Source") }}</span></button>
+        </div>
+      </div>
+      <!-- original content -->
+      <div class="am-u-sm-12 am-u-md-6" id="right">
+        <div id="article-area">
+          <label>{{ _("Original Content") }}: </label>
+          <div class="am-scrollable-vertical" id="article-wys" {% raw 'style="display:none"' if md else '' %}>
+            {% raw translate['html'] %}
+          </div>
+          <pre class="am-scrollable-vertical" id="article-md" {% raw '' if md else 'style="display:none"' %}>
+            {% raw translate['md'] %}
+          </pre>
+        </div>
+        <div class="am-cf">
+          <button class="am-btn am-btn-secondary am-fr" id="source-hide"><span class="am-icon-eye-slash"></span> {{ _("Hide Source") }}</button>
+          <button class="am-btn am-btn-success am-fr" id="article-switch" data-role="{{'md' if md else 'wys'}}">{{ _("Switch to") }} {{ _("normal view" if md else "MarkDown")}}</button>
+          {% if edit_task_url %}
+          <a class="am-btn am-btn-default am-fr" id="source-edit" href="{{ edit_task_url }}" target="_blank">{{ _("Edit Source") }}</a>
+          {% end %}
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="am-divider am-divider-default">
+
+    <div id="submit-error-panel">
+    </div>
+
+    <!-- reprint -->
+    <p class="am-u-sm-12">{{ _("Enter the reprinting information. (Leave it blank if your translation hasn't been reprinted yet)") }}</p>
+    <label class="am-u-sm-4">{{ _('Site Name') }}</label>
+    <label class="am-u-sm-8">{{ _('URL') }}</label>
+    <div id="reprint-area">
+    {% for name, url in translated['reprint'].items() %}
+      <div class="am-g">
+        <div class="am-u-sm-4">
+          <input class="am-form-field" value="{{ name }}" placeholder="{{ _('Enter site name') }}">
+        </div>
+        <div class="am-u-sm-7">
+          <input class="am-form-field" value="{{ url }}" placeholder="{{ _('Enter URL') }}">
+        </div>
+        <div class="am-u-sm-1">
+          <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
+        </div>
+      </div>
+    {% else %}
+      <div class="am-g">
+        <div class="am-u-sm-4">
+          <input class="am-form-field" placeholder="{{ _('Enter site name') }}">
+        </div>
+        <div class="am-u-sm-7">
+          <input class="am-form-field" placeholder="{{ _('Enter URL') }}">
+        </div>
+        <div class="am-u-sm-1">
+          <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
+        </div>
+      </div>
+    {% end %}
+    </div>
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <label class="am-margin-vertical"><button class="am-btn am-btn-success am-btn-xs" id="add-reprint"><span class="am-icon-plus"></span></button>
+        Add a new line</label>
+      </div>
+    </div>
+
+
+    <!-- show/hide email -->
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <label>
+          <input type="checkbox" class="am-checkbox-inline" id="hide-email" checked>
+          {{ _("Hide my email") }}
+        </label>
+      </div>
+    </div>
+
+    <!-- license -->
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <p>{{ _("By submitting you agree to publish this article under") }}
+          <a href="https://creativecommons.org/licenses/by/2.0/legalcode" target="_blank">
+            <span class="am-icon-cc"> CC {{ _("license") }}</span>
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <div class="am-g">
+      <div class="am-u-sm-12 am-cf">
+        <button type="button"
+                class="am-btn am-btn-success am-fr"
+                id="submit"
+                data-am-loading="{spinner: 'circle-o-notch', loadingText: '{{ _("Submitting...") }}', resetText: '{{ _("Submit") }}'}">
+          {{ _("Submit") }}
+        </button>
+      </div>
+    </div>
+
+    <br>
+
   </div>
-</div>
-
 
 {% end %}
 

@@ -47,10 +47,13 @@ class BaseHandler(tornado.web.RequestHandler):
         user = user.decode('utf-8')
         email = self.get_secure_cookie('email').decode('utf-8')
         level = self.get_secure_cookie('type')
+        active = (True
+                  if self.get_secure_cookie('active').decode('utf-8') == 'true'
+                  else False)
+        return {'user': user, 'email': email, 'type': int(level),
+                'active': active}
 
-        return {'user': user, 'email': email, 'type': int(level)}
-
-    def set_user(self, user, email, type, lang=None, temp=False):
+    def set_user(self, user, email, type, active, lang=None, temp=False):
         if temp:
             kwd = {'expires_days': None}
         else:
@@ -58,6 +61,7 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie('user', user, **kwd)
         self.set_secure_cookie('email', email, **kwd)
         self.set_secure_cookie('type', str(type), **kwd)
+        self.set_secure_cookie('active', 'true' if active else 'false', **kwd)
         if lang is not None:
             self.set_cookie('lang', lang)
 
@@ -71,6 +75,24 @@ class BaseHandler(tornado.web.RequestHandler):
             split[1] = host
             return urlunsplit(split)
         return url
+
+    def get_ssl(self, uri=None):
+        uri = uri or self.request.uri
+        splited = urlsplit(uri)
+        to_list = list(splited)
+        if not splited.netloc:
+            to_list[1] = self.request.host
+        to_list[0] = 'https'
+        return urlunsplit(to_list)
+
+    def get_non_ssl(self, uri=None):
+        uri = uri or self.request.uri
+        splited = urlsplit(uri)
+        to_list = list(splited)
+        if not splited.netloc:
+            to_list[1] = self.request.host
+        to_list[0] = 'http'
+        return urlunsplit(to_list)
 
     def get_user_path(self, user):
         return os.path.join(rootdir, 'static', 'upload', user)
@@ -101,7 +123,6 @@ class BaseHandler(tornado.web.RequestHandler):
         if code is None:
             return None
         return tornado.locale.get(code)
-
 
     def get_imgs_and_files(self, user, type):
         allow_update = (type >= User.admin)

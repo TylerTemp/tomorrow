@@ -336,14 +336,16 @@
         // insert image | end
 
         // upload a file
-        options.uploadFileSelect.click(function(evt)
+        var show_uploaded_url = function(evt)
         {
             var val = this.value;
             if (val)
                 options.uploadFileShow.html(
                     _("URL") + ': <a target="_blank" href="'+val+'">'+val+'</a>'
                 );
-        });
+        };
+        options.uploadFileSelect.click(show_uploaded_url);
+        options.uploadFileSelect.on('change', show_uploaded_url);
         options.uploadFile.change(function(evt)
         {
             var status = {

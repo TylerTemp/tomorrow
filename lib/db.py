@@ -319,19 +319,20 @@ class Article(object):
     def new(self):
         return self.article_info is None
 
-    def mkurl(self, title, author):
+    @classmethod
+    def mkurl(cls, title, author):
         url = title.replace(' ', '-')
-        if self.find_url(url) is None:
+        if cls.find_url(url) is None:
             return url
         url = '%s-by-%s' % (url, author.replace(' ', '-'))
-        if self.find_url(url) is None:
+        if cls.find_url(url) is None:
             return url
 
         idx = 0
         while True:
             idx += 1
             theurl = '%s-%s' % (url, idx)
-            if self.find_url(theurl) is None:
+            if cls.find_url(theurl) is None:
                 return theurl
 
     @classmethod

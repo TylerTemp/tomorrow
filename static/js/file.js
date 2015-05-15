@@ -10,7 +10,7 @@ $(document).ready(function()
       return info_panel.html('');
     level = level? ("am-alert-"+level): '';
     return info_panel.html(
-      '<div class="am-alert "' + level + ' data-am-alert>' +
+      '<div class="am-alert ' + level + '" data-am-alert>' +
         '<button type="button" class="am-close">&times;</button>' +
         '<p>' + msg + '</p>' +
       '</div>'
@@ -115,7 +115,7 @@ $(document).ready(function()
     // check type
     if (IMG_ONLY &&
         ((subType === undefined) ||
-        (IMG_ALLOW.indexOf(subType.toLowerCase()) == -1))
+         (IMG_ALLOW.indexOf(subType.toLowerCase()) == -1))
        )
     {
       bar.warning();
@@ -172,7 +172,7 @@ $(document).ready(function()
         if (obj.error == 0)
         {
           bar.success();
-          mknode(obj.url, obj.name, obj.size, obj.icon)
+          mknode(obj.url, obj.name, unitSatisfy(obj.size, 'b', 2).join(' '), obj.icon)
           .prependTo("#list")
           .find("button")
           .click(delfunc);

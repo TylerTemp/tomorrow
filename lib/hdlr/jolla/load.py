@@ -25,7 +25,7 @@ from lib.tool.md import md2html
 from lib.db import Jolla
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.load')
+logger = logging.getLogger('tomorrow.jolla.load')
 
 
 class LoadHandler(BaseHandler):

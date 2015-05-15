@@ -123,7 +123,7 @@ in you browser.</p>
 
         raise tornado.gen.Return(self.send(email, title, content))
 
-    def _verify_change(self, email, user, code, url, expire, for_, ssl=False):
+    def _verify_change(self, email, user, code, url, expire, for_):
         if self.lang.lower().startswith('en'):
 
             title = 'Change your %s | tomorrow.becomes.today' % for_
@@ -132,13 +132,13 @@ in you browser.</p>
 <p>Hi, {user}! You request for changing your {for}.</p>
 <p>Your verifying code is <code>{code}</code>. Use it before {time}</p>
 <p>Click the following link to change {for}:<br/>
-    <a href="http{s}://tomorrow.becomes.today{url}">
-        http{s}://tomorrow.becomes.today{url}
+    <a href="https://tomorrow.becomes.today{url}">
+        https://tomorrow.becomes.today{url}
     </a>
 </p>
 <p>If you can't click the url above, please copy the following text and paste
 in you browser.</p>
-<p><code>http{s}://tomorrow.becomes.today{url}</code></p>'''
+<p><code>https://tomorrow.becomes.today{url}</code></p>'''
         else:
             title = '修改你的%s | tomorrow.becomes.today' % for_
             content = '''\
@@ -146,16 +146,16 @@ in you browser.</p>
 <p>嘿，{user}！ 你申请修改{for}.</p>
 <p>你的验证码是：<code>{code}</code>。该验证码在{time}前有效</p>
 <p>猛戳下方连接完成修改：<br/>
-    <a href="http{s}://tomorrow.becomes.today{url}">
-        http{s}://tomorrow.becomes.today{url}
+    <a href="https://tomorrow.becomes.today{url}">
+        https://tomorrow.becomes.today{url}
     </a>
 </p>
 <p>点不动？把下面这行复制到浏览器地址栏吧</p>
-<p><code>http{s}://tomorrow.becomes.today{url}</code></p>'''
+<p><code>https://tomorrow.becomes.today{url}</code></p>'''
 
         content = content.format(**{'for': for_, 'user': user, 'code': code,
                                     'url': url, 'time': expire,
-                                    's':'s' if ssl else ''})
+                                   })
         return self.send(email, title, content)
 
     @tornado.gen.coroutine
@@ -189,7 +189,7 @@ in you browser.</p>
 
         raise tornado.gen.Return(self._verify_change(email, user, code, url,
                                                      self.format_time(expire),
-                                                     for_, ssl=True))
+                                                     for_))
 
     @classmethod
     def is_zh_mail(cls, mail):

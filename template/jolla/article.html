@@ -39,6 +39,12 @@
     text-align: center;
   }
 
+  article p img {
+    max-width: 100%;
+    height: auto;
+    margin: 0em 0em 0em -2em;
+  }
+
   #page-box {
     padding-top: 50px;
     max-width: 600px;
@@ -54,6 +60,20 @@
     text-indent: 0em;
   }
 
+  #bread-crumbs {
+    color: #fff;
+  }
+
+  #bread-crumbs a:link {
+    color: #fff;
+  }
+  #bread-crumbs a:visited {
+    color: #fff;
+  }
+  #bread-crumbs a:hover {
+    color: #fff;
+    text-decoration:underline;
+  }
 </style>
 {% end %}
 
@@ -62,7 +82,7 @@
 <header>
   <div class="am-g">
     <div class="am-u-sm-12">
-      <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
+      <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
     </div>
   </div>
 </header>
@@ -71,15 +91,24 @@
   {% if await %}
   <div class="am-alert" data-am-alert>
     <button type="button" class="am-close">&times;</button>
-    <p>感谢翻译，这篇文章正在审核中。</p>
+    <p>{{ _("Thanks for translation, we are checking if it's appropriate") }}</p>
   </div>
   {% end %}
   {% if reject %}
   <div class="am-alert am-alert-warning" data-am-alert>
     <button type="button" class="am-close">&times;</button>
-    <p>这篇文章并未作为被采用为最终译稿，非常抱歉。</p>
+    <p>{{ _("This article is not taken as the final translate. Sorry.") }}</p>
   </div>
   {% end %}
+
+  <div class="am-g" id="bread-crumbs">
+    <div class="am-u-sm-12" style="text-align: left">
+      <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
+      <span class="am-icon-angle-right"><a href="/jolla/blog/">{{ _('Blog')}}</a></span> &nbsp;
+      <span class="am-icon-caret-right">{{ article['translated']['title'] }}</span>
+    </div>
+  </div>
+
   {% if headimg %}
     <img src="{{ headimg }}" id="title-img">
   {% end %}
@@ -89,9 +118,7 @@
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article['translated']['title'] }}</h1>
           <p class="am-article-meta">
-            {{ _('By')}} {% raw article['translated']['author'] %}
-            {% raw article['translated'].get('emaillink', '') %}
-            {{ _('at') }} {% raw createtime %}
+            {% raw _('Posted by %s%s at %s') % (article['translated']['author'], article['translated'].get('emaillink', ''), createtime) %}
           </p>
         </div>
 
@@ -106,8 +133,18 @@
         <footer>
           <div id="license">
             <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
-            <p>{% module License(license) %}</p>
+            <p>{% module License(license, article['translated']['author'], article['translated'].get('emaillink', None)) %}</p>
           </div>
+          {% if article['reprint'] %}
+          <div>
+            <p>本文已转载至:</p>
+            <ul>
+            {% for name, url in article['reprint'].items() %}
+              <li><a href="{{ url }}" target="_blank">{{ name }}</a></li>
+            {% end %}
+            </ul>
+          </div>
+          {% end %}
         </footer>
       </article>
     </div>

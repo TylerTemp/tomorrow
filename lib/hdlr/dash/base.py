@@ -40,6 +40,8 @@ class BaseHandler(BaseHandler):
         if 'main_url' not in kwargs:
             kwargs['main_url'] = '/am/%s' % quote(user_info['user'])
 
+        kwargs['main_url'] = self.get_non_ssl(kwargs['main_url'])
+
         if 'user_name' not in kwargs:
             kwargs['user_name'] = user_info['user']
         if 'user_type' not in kwargs:

@@ -109,6 +109,17 @@ var unitSatisfy = function(size, unit, accuracy)
 };
 
 
+var logout = function(evt)
+{
+  var cookie = $.AMUI.utils.cookie;
+  cookie.unset('user', '/');
+  cookie.unset('type', '/');
+  cookie.unset('email', '/');
+  cookie.unset('active', '/');
+  cookie.unset('lang', '/');
+}
+
+
 // for login/signin
 var MASK_USER_NOT_EXISTS = 64;
 var USER_MAX_LEN = 100;

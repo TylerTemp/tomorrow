@@ -2,6 +2,15 @@
 
 {% block guide %}<span class="am-icon-image"> <strong class="am-text-primary am-text-lg">{{ _("Gallery") }}</strong></span> / <small>{{ _("All images you uploaded") }}</small>{% end %}
 
+{% block throat %}
+<style>
+  /* this works for protrait but not work for landscape. Pls help */
+  img.am-img-loaded {
+    width: 100%;
+  }
+</style>
+{% end %}
+
 {% block content %}
 
 <div class="am-padding am-g">

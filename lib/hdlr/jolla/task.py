@@ -24,7 +24,7 @@ from lib.db import User
 sys.path.pop(0)
 
 cfg = Config()
-logger = logging.getLogger('tomorrow.task')
+logger = logging.getLogger('tomorrow.jolla.task')
 
 
 class TaskHandler(BaseHandler):

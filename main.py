@@ -28,6 +28,7 @@ from lib.tool.bashlog import parse_level
 from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
+from lib.hdlr.redirect import RedirectHandler
 # from lib.hdlr.edit import EditHandler
 from lib.hdlr.auth import LoginHandler
 from lib.hdlr.auth import SigninHandler
@@ -44,6 +45,7 @@ from lib.hdlr.jolla import LoadHandler
 from lib.hdlr.jolla import TranslateHandler
 from lib.hdlr.jolla import BlogHandler
 from lib.hdlr.jolla import ArticleHandler
+from lib.hdlr.jolla import HomeHandler
 # from lib.hdlr.upload import UploadHandler
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
@@ -73,7 +75,7 @@ class Application(tornado.web.Application):
 
     def __init__(self):
         handlers = (
-            # (r'/edit/', EditHandler),
+            ('/', RedirectHandler, {'to': '/jolla/'}),
             (r'/login/', LoginHandler),
             (r'/signin/', SigninHandler),
             (r'/logout/', LogoutHandler),
@@ -85,7 +87,7 @@ class Application(tornado.web.Application):
             (r'/am/(?P<user>[^/]+)/verify/'
              r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
              r'(?P<code>[^/]+)/', VerifyHandler),
-            (r'/jolla/', BareHandler),
+            (r'/jolla/', HomeHandler),
             (r'/jolla/blog/', BlogHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', ArticleHandler),
             (r'/jolla/translate/', ListHandler),

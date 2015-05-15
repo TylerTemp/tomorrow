@@ -20,6 +20,7 @@ from lib.db import Article
 from lib.config import Config
 from lib.tool.generate import generate
 from lib.tool.mail import Email
+from lib.tool.ensure import EnsureSsl
 from lib.hdlr.dash.base import its_myself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
@@ -42,10 +43,13 @@ class VerifyHandler(BaseHandler):
         'changepwd': User.CHANGEPWD,
     }
 
+    @EnsureSsl(True)
     def get(self, user, act, code):
+        if act == 'changepwd' and not self.is_ssl():
+            return self.redirect(self.get_ssl())
         code = unquote(code)
         urluser = unquote(user)
-        main_url = '/am/%s' % urluser
+        main_url = self.get_non_ssl('/am/%s' % urluser)
         user = User(urluser)
         subtitle = {
             'newuser': 'setup new user',
@@ -132,11 +136,12 @@ class VerifyHandler(BaseHandler):
             user_info['active'] = True
             user.save()
             self.set_user(user_info['user'], user_info['email'],
-                          user_info['type'], temp=True)
+                          user_info['type'], user_info['active'], temp=True)
             return {'error': 'succeed'}
 
         return {'for_': None}
 
+    @EnsureSsl(True)
     @tornado.web.asynchronous
     # @tornado.gen.coroutine
     def post(self, user, act, code):
@@ -180,11 +185,12 @@ class VerifyHandler(BaseHandler):
             user_info['pwd'] = sha256_crypt.encrypt(self.get_argument('pwd'))
         user_name = user_info['user']
         self.set_user(user_name, user_info['email'],
-                      user_info['type'], temp=True)
+                      user_info['type'], user_info['active'], temp=True)
         self.write(json.dumps({'error': 0,
                                'for': 'newuser',
                                'user': user_name,
-                               'redirect': '/am/%s/' % quote(user_name)}))
+                               'redirect': self.get_non_ssl(
+                                    '/am/%s/' % quote(user_name))}))
         self.finish()
         user_info['active'] = True
         user_info.pop('verify')
@@ -196,7 +202,8 @@ class VerifyHandler(BaseHandler):
         user_info = user.get()
         user_info['pwd'] = pwd
         self.set_user(user_info['user'], user_info['email'],
-                      user_info['type'], user_info.get('lang', None),
+                      user_info['type'], user_info['active'],
+                      user_info.get('lang', None),
                       temp=True)
         self.write(json.dumps({'error': 0, 'for': 'pwd'}))
         self.finish()
@@ -231,10 +238,13 @@ class VerifyHandler(BaseHandler):
         collect.update_many({'author': olduser}, {'$set': {'author': newuser}})
 
         self.set_user(newuser, user_info['email'],
-                      user_info['type'], user_info.get('lang', None),
+                      user_info['type'],
+                      user_info['active'],
+                      user_info.get('lang', None),
                       temp=True)
         self.write(json.dumps({'error': 0, 'for': 'user',
-                               'redirect': '/am/%s' % quote(newuser)}))
+                               'redirect': self.get_non_ssl(
+                                    '/am/%s/' % quote(newuser))}))
         self.finish()
         logger.debug('changed user name %s -> %s', user_info['user'], newuser)
         user_info['user'] = newuser
@@ -282,7 +292,8 @@ class VerifyHandler(BaseHandler):
         self.write(json.dumps({'error': 0 if result else self.ERROR_NOT_SEND,
                                'for': 'email',
                                'email': newmail,
-                               'redirect': '/am/%s/' % quote(user_name)}))
+                               'redirect': self.get_non_ssl(
+                                    '/am/%s/' % quote(user_name))}))
         self.finish()
         # user_info.pop('verify')
         user.save()
