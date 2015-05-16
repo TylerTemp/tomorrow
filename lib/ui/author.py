@@ -75,7 +75,7 @@ class AuthorModule(tornado.web.UIModule):
                 ''',
                 'https://dn-jolla.qbox.me/Antti Saarnio.png'
             )
-        if name = 'Carol Chen':
+        if name == 'Carol Chen':
             return (
                 '''Jolla社区主管。
                 全球（星级）星舰迷。
