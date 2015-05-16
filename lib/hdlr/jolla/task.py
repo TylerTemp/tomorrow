@@ -1,6 +1,7 @@
 import tornado.web
 import logging
 import json
+import time
 try:
     from urllib.parse import quote
     from urllib.parse import unquote
@@ -19,6 +20,7 @@ from lib.config import Config
 from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
+from lib.tool.ensure import EnsureUser
 from lib.db import Jolla
 from lib.db import User
 sys.path.pop(0)
@@ -29,20 +31,7 @@ logger = logging.getLogger('tomorrow.jolla.task')
 
 class TaskHandler(BaseHandler):
 
-    def admin_required(func):
-
-        def wrapper(self, *a, **k):
-            usertype = self.get_current_user()['type']
-            if usertype < User.admin:
-                self.clear()
-                self.set_status(403)
-                return self.write('permission denied')
-            return func(self, *a, **k)
-
-        return wrapper
-
-    @tornado.web.authenticated
-    @admin_required
+    @EnsureUser(level=User.admin, active=True)
     def get(self, url=None):
         self.xsrf_token
         user_info = self.get_current_user()
@@ -84,8 +73,7 @@ class TaskHandler(BaseHandler):
             size_limit=cfg.size_limit[usertype]
         )
 
-    @tornado.web.authenticated
-    @admin_required
+    @EnsureUser(level=User.admin, active=True)
     def post(self, url=None):
         logger.debug('post...')
         self.check_xsrf_cookie()
@@ -105,10 +93,21 @@ class TaskHandler(BaseHandler):
             url = unquote(url)
 
         article = Jolla(url)
-        article.add(link, title, author, content, url=url, headimg=headimg)
+        if article.new:
+            article.add(link, title, author, content, url=url, headimg=headimg)
+        else:
+            article.get().update({
+                'link': link,
+                'title': title,
+                'author': author,
+                'content': content,
+                'url': url,
+                'headimg': headimg,
+                'edittime': time.time(),
+            })
         article.save()
 
         red_url = article.get()['url']
-        redirect = '/jolla/translate/' + red_url
+        redirect = '/jolla/translate/%s/' % quote(red_url)
         logger.debug("new jolla translate task: %s", title)
         return self.write(json.dumps({'error': 0, 'redirect': redirect}))

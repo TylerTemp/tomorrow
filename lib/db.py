@@ -183,6 +183,10 @@ class Jolla(object):
     def get(self):
         return self.jolla_info
 
+    def remove(self):
+        self._jolla.delete_one(self.jolla_info)
+        self.jolla_info = None
+
     @property
     def new(self):
         return self.jolla_info is None
