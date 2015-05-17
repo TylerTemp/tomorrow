@@ -15,9 +15,8 @@
     background-color: #5BA2A1;
   }
   header {
-    text-align: center;
-    padding: 30px 0px 45px;
-    /*margin: 0px auto;*/
+    /*text-align: center;*/
+    /*padding: 30px 0px 45px;*/
   }
 
   header img {
@@ -31,17 +30,8 @@
     height: auto;
   }
 
-  .img-box {
-    padding: 0px 0px 0px;
-  }
-
-  .title-box {
-    padding: 40px;
-    background-color: #FFF;
-  }
-
-  .blog-box {
-    background-color: #FFF;
+  .white {
+    background-color: #fff;
   }
 
   #bread-crumbs {
@@ -65,16 +55,12 @@
 {% block body %}
 
 <header>
-  <div class="am-g">
-    <div class="am-u-sm-12">
-      <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
-    </div>
+  <div class="am-margin am-text-center">
+    <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
   </div>
 </header>
 
-
-
-<div class="am-u-sm-centered am-g-fixed" id="blog">
+<div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
   <div class="am-g" id="bread-crumbs">
     <div class="am-u-sm-12" style="text-align: left">
       <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
@@ -91,9 +77,9 @@
     </div>
   {% else %}
     <!-- horizontal blog box -->
-    <div class="am-g blog-box">
-      <div class="am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }} title-box">
-        <article class="am-article">
+    <div class="am-g white">
+      <div class="am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
+        <article class="am-article am-margin-lg">
           <div class="am-article-hd">
             <a href="{{ each['url'] }}"><h2 class="am-article-title">{{ each['title'] }}</h2></a>
           </div>
@@ -101,7 +87,7 @@
             <p>{{ each['preview'] }}...</p>
           </div>
         </article>
-        <div class="am-cf">
+        <div class="am-cf am-margin-horizontal-lg am-margin-vertical-sm">
           <a class="am-btn am-btn-success am-fr" href="{{ each['url'] }}">{{ _("Continue reading") }}</a>
         </div>
       </div>
@@ -118,10 +104,10 @@
   {% if idx % 2 == 0 %}
   <div class="am-g">
   {% end %}
-    <div class="amu-sm-12 am-u-md-6 blog-vbox">
+    <div class="am-u-sm-12 am-u-md-6 white">
       <a href="{{ each['url'] }}"><img src="{{ each['img'] }}"></a>
       <div class="title-box">
-        <article class="am-article">
+        <article class="am-article am-margin-lg">
           <div class="am-article-hd">
             <a href="{{ each['url'] }}"><h2>{{ each['title'] }}</h2></a>
           </div>
@@ -129,14 +115,18 @@
             <p>{{ each['preview'] }}...</p>
           </div>
         </article>
-        <div class="am-cf">
+        <div class="am-cf am-margin-lg">
           <a class="am-btn am-btn-success am-fr" href="{{ each['url'] }}">{{ _("Continue reading") }}</a>
         </div>
       </div>
     </div>
+
   {% if idx % 2 != 0 %}
   </div>
+  <!-- if text is empty then it won't work. Why??? -->
+  <span class="am-hide-md-down">&nbsp;</span>
   {% end %}
+  <span class="am-show-md-down">&nbsp;</span>
   {% end %}
 
 

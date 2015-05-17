@@ -14,10 +14,6 @@
     background-position: right top;
     background-color: #5BA2A1;
   }
-  header {
-    padding: 30px 0px 45px;
-    /*margin: 0px auto;*/
-  }
 
   header img {
     width: 100%;
@@ -47,11 +43,9 @@
 
 {% block body %}
 <header>
-  <div class="am-g am-center">
-    <div class="am-u-sm-12" style="text-align:center">
-      <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
+    <div class="am-margin am-text-center">
+      <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
     </div>
-  </div>
 </header>
 
 <div class="am-g" id="bread-crumbs">

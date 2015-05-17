@@ -19,7 +19,7 @@ class LicenseModule(tornado.web.UIModule):
         if license == Article.CC_LICENSE:
             return '''
 本文基于
-<a href="https://creativecommons.org/licenses/by/2.0/legalcode" target="_blank">
+<a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank">
     <span class="am-icon-cc"> CC协议</span>
 </a>发布。作商业用途的转载请先联系%s %s。''' % (emaillink, name)
         if license == Article.PUB_LICENSE:
