@@ -11,7 +11,6 @@ Options:
 -h --help                 show this message
 '''
 
-
 import logging
 import os
 import time
@@ -29,24 +28,9 @@ from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
-# from lib.hdlr.edit import EditHandler
-from lib.hdlr.auth import LoginHandler
-from lib.hdlr.auth import SigninHandler
-from lib.hdlr.auth import LogoutHandler
-from lib.hdlr.dash import DashboardHandler
-from lib.hdlr.dash import InfoHandler
-from lib.hdlr.dash import SecureHandler
-from lib.hdlr.dash import VerifyHandler
-from lib.hdlr.dash import FileHandler
-# from lib.hdlr.jolla.task import TaskHandler
-from lib.hdlr.jolla import TaskHandler
-from lib.hdlr.jolla import ListHandler
-from lib.hdlr.jolla import LoadHandler
-from lib.hdlr.jolla import TranslateHandler
-from lib.hdlr.jolla import BlogHandler
-from lib.hdlr.jolla import ArticleHandler
-from lib.hdlr.jolla import HomeHandler
-# from lib.hdlr.upload import UploadHandler
+from lib.hdlr import dash
+from lib.hdlr import jolla
+from lib.hdlr import auth
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
@@ -54,8 +38,6 @@ from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
 from lib.ui.license import LicenseModule
 from lib.ui.author import AuthorModule
-# from lib.ui.upload import UploadImageModule
-# from lib.ui.upload import UploadFileModule
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
@@ -76,30 +58,33 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = (
             ('/', RedirectHandler, {'to': '/jolla/'}),
-            (r'/login/', LoginHandler),
-            (r'/signin/', SigninHandler),
-            (r'/logout/', LogoutHandler),
+            (r'/login/', auth.LoginHandler),
+            (r'/signin/', auth.SigninHandler),
+            (r'/logout/', auth.LogoutHandler),
             (r'/hi/(?P<user>[^/]+)/', BareHandler),
-            (r'/am/(?P<user>[^/]+)/', DashboardHandler),
-            (r'/am/(?P<user>[^/]+)/info/', InfoHandler),
-            (r'/am/(?P<user>[^/]+)/secure/', SecureHandler),
-            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', FileHandler),
+
+            (r'/am/(?P<user>[^/]+)/', dash.DashboardHandler),
+            (r'/am/(?P<user>[^/]+)/info/', dash.InfoHandler),
+            (r'/am/(?P<user>[^/]+)/secure/', dash.SecureHandler),
+            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', dash.FileHandler),
             (r'/am/(?P<user>[^/]+)/verify/'
              r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
-             r'(?P<code>[^/]+)/', VerifyHandler),
-            (r'/jolla/', HomeHandler),
-            (r'/jolla/blog/', BlogHandler),
-            (r'/jolla/blog/(?P<url>[^/]+)/', ArticleHandler),
-            (r'/jolla/translate/', ListHandler),
-            (r'/jolla/translate/(?P<url>[^/]+)/', TranslateHandler),
-            (r'/jolla/task/', TaskHandler),
-            (r'/jolla/task/(?P<url>[^/]+)/', TaskHandler),
+             r'(?P<code>[^/]+)/', dash.VerifyHandler),
+            (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
+
+            (r'/jolla/', jolla.HomeHandler),
+            (r'/jolla/blog/', jolla.BlogHandler),
+            (r'/jolla/blog/(?P<url>[^/]+)/', jolla.ArticleHandler),
+            (r'/jolla/translate/', jolla.ListHandler),
+            (r'/jolla/translate/(?P<url>[^/]+)/', jolla.TranslateHandler),
+            (r'/jolla/task/', jolla.TaskHandler),
+            (r'/jolla/task/(?P<url>[^/]+)/', jolla.TaskHandler),
 
             (r'/blog/(?P<board>[^/]+)/', BareHandler),
             (r'/edit/', BareHandler),
             (r'/edit/(?P<board>[^/]+)/', BareHandler),
 
-            (r'/api/load/', LoadHandler),
+            (r'/api/load/', jolla.LoadHandler),
 
 
             (r'/xmlrpc\.php', BlackListHandler),

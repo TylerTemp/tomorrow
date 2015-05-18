@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-edit"> <strong class="am-text-primary am-text-lg">{{ _("Article") }}</strong></span> / <small>{{ _("All your posts") }}</small>{% end %}
+
+{% block content %}
+<hr class="am-divider am-divider-default"/>
+
+<div class="am-panel-group" id="articles">
+  {% set article = next(articles) %}
+  <div class="am-panel am-panel-default">
+    <div class="am-panel-hd am-cf am-g">
+      <h4 class="am-panel-title am-u-sm-11" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
+        {{ article['title'] }}
+      </h4>
+      <div class="am-u-sm-1">
+        <button type="button" class="am-btn am-btn-warning am-btn-xs am-fr" data-role="delete" data-id="{{ article['id'] }}"><span class="am-icon-trash"></span></button>
+      </div>
+    </div>
+    <div id="{{ article['id'] }}" class="am-panel-collapse am-collapse am-in">
+      <div class="am-panel-bd">
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th>{{ _("info") }}</th>
+              <th>{{ _("detail") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ _("title") }}</td>
+              <td><a href="{{ article['url'] }}">{{ article['title'] }}</a></td>
+            </tr>
+            <tr>
+              <td>{{ _("preview") }}</td>
+              <td>{{ article['content'][:40] }}...</td>
+            </tr>
+            <tr>
+              <td>{{ _("board") }}</td>
+              <td>{{ article['board'] }}</td>
+            </tr>
+            <tr>
+              <td>{{ _("create time") }}</td>
+              <td>{{ article['create_time'] }}</td>
+            </tr>
+            <tr>
+              <td>{{ _("edit time") }}</td>
+              <td>{{ article['edit_time'] }}</td>
+            </tr>
+            <tr>
+              <td>{{ _("license") }}</td>
+              <td>
+                {% if article['license'] == cc_license %}
+                <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank">
+                  <span class="am-icon-cc"> CC BY 4.0</span>
+                </a>
+                {% elif article['license'] == pub_license %}
+                <a rel="license" href="http://creativecommons.org/publicdomain/mark/1.0/">
+                  <img src="http://i.creativecommons.org/p/mark/1.0/88x31.png"
+                     style="border-style: none;" alt="Public Domain Mark" />
+                </a>
+                {% else %}
+                  Unknown
+                {% end %}
+              </td>
+              <tr>
+                <td>{{ _("show email") }}</td>
+                <td>&#{{ '10004' if article['show_email'] else '10060' }};</td>
+              </tr>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% for each in articles %}
+  <ul>
+  {% for k, v in each.items() %}
+    <li>{{ k }}:
+      {% if k == 'content' %}
+        {{ v[:50] }}...
+      {% elif isinstance(v, dict) %}
+      <ul>
+        {% for key, value in v.items() %}
+          <li>{{ key }}: {{ value }}</li>
+        {% end %}
+      </ul>
+      {% else %}
+        {{ v }}
+      {% end %}
+    </li>
+  {% end %}
+  </ul>
+  <hr>
+{% end %}
+{% end %}
+
+{% block leg %}
+  <script src="/static/js/dash/article.js">
+  </script>
+{% end %}

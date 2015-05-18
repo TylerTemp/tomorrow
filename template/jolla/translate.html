@@ -199,8 +199,8 @@ header img {
     <div class="am-g">
       <div class="am-u-sm-12">
         <p>{{ _("By submitting you agree to publish this article under") }}
-          <a href="https://creativecommons.org/licenses/by/2.0/legalcode" target="_blank">
-            <span class="am-icon-cc"> CC {{ _("license") }}</span>
+          <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank">
+            <span class="am-icon-cc"> CC BY 4.0</span>
           </a>
         </p>
       </div>
@@ -230,10 +230,10 @@ header img {
   var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
   var _editor_status = "{{ 'md' if md else 'wysiwyg' }}";
 </script>
-<script src="/static/js/jquery/jquery-textrange.min.js"></script>
-<script src="/static/js/md/html2md.min.js"></script>
-<script src="/static/js/md/md2html.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script>
 <script src="/static/js/md/editor-wysiwyg.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
-<script src="/static/js/jollatranslate.js"></script>
+<script src="/static/js/jolla/translate.js"></script>
 {% end %}

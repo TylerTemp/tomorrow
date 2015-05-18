@@ -1,5 +1,6 @@
 import tornado.web
 import logging
+import functools
 try:
     from urllib.parse import unquote
     from urllib.parse import quote
@@ -20,6 +21,7 @@ logger = logging.getLogger('tomorrow.dash.base')
 
 def its_myself(func):
 
+    @functools.wraps(func)
     def wrapper(self, user):
         user_info = self.current_user
         url_user = unquote(user)

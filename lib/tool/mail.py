@@ -24,6 +24,7 @@ class Email(object):
 
     def __init__(self, lang='zh_CN'):
         self.lang = lang
+        self.error = None
 
     def _send_gmail(self, user, pwd, tos, msg):
         logger.info('send using %s', user)
@@ -40,6 +41,7 @@ class Email(object):
             smtp.sendmail(user, tos, msg)
         except BaseException as e:
             logger.error('failed to send mail: %s', e)
+            self.error = e
             return False
         else:
             return True
@@ -56,6 +58,7 @@ class Email(object):
             smtp.sendmail(user, tos, msg)
             logger.debug('finished')
         except BaseException as e:
+            self.error = e
             logger.error('failed to send mail: %s', e)
             return False
         else:

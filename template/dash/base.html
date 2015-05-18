@@ -32,23 +32,23 @@ Hi, {{ user_name }}{% block subtitle %}{% end %}
   <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
     <div class="am-offcanvas-bar admin-offcanvas-bar">
       <ul class="am-list admin-sidebar-list">
-      <li><a href="{{ main_url }}/"><span class="am-icon-home"></span> {{ _("Main Page")}} </a></li>
-      <li><a href="{{ main_url }}/info/"><span class="am-icon-user"></span> {{ _("Personal Info")}} </a></li>
-      <li><a href="{{ main_url }}/secure/"><span class="am-icon-lock"></span> {{ _("Security")}} </a></li>
-      <li><a href="{{ main_url }}/article/"><span class="am-icon-list-alt"></span> {{ _("Article")}} </a></li>
-      <li><a href="{{ main_url }}/message/"><span class="am-icon-comment"></span> {{ _("Message")}} </a></li>
+      <li><a href="{{ main_url }}/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
+      <li><a href="{{ main_url }}/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
+      <li><a href="{{ main_url }}/secure/"><span class="am-icon-lock am-icon-fw"></span> {{ _("Security")}} </a></li>
+      <li><a href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
+      <li><a href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Message")}} </a></li>
 
       {% if user_type != NORMAL %}
       <li class="admin-parent">
         <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="collapse-nav">
-          <li><a href="{{ main_url }}/img/" class="am-cf"><span class="am-icon-file-image-o"></span> {{ _("Gallery")}}</a></li>
-          <li><a href="{{ main_url }}/file/"><span class="am-icon-file"></span> {{ _("File")}}</a></li>
+          <li><a href="{{ main_url }}/img/" class="am-cf"><span class="am-icon-file-image-o am-icon-fw"></span> {{ _("Gallery")}}</a></li>
+          <li><a href="{{ main_url }}/file/"><span class="am-icon-file am-icon-fw"></span> {{ _("File")}}</a></li>
         </ul>
       </li>
       {% end %}
 
-      <li><a href="#" id="signout"><span class="am-icon-sign-out"></span> {{ _("Logout")}} </a></li>
+      <li><a href="#" id="signout"><span class="am-icon-sign-out am-icon-fw"></span> {{ _("Logout")}} </a></li>
       </ul>
     </div>
   </div>

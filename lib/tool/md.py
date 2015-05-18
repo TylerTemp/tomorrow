@@ -43,6 +43,7 @@ white_tags.extend(('span',
                    'em', 'strong', 'code', 'del', 'abbr',
                    'h2', 'h3', 'h4', 'h5', 'h6',
                    'dl', 'dt', 'dd',
+                   'quoteblock',
                    'video'))
 
 attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'

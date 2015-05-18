@@ -31,8 +31,8 @@ class AuthorModule(tornado.web.UIModule):
             content = '''
             Jolla联合创始人，首席技术官。
             一个拥有社交技巧和商业头脑的极客。
-            An entrepreneur with a touch for people and for fixing stuff.
-            喜爱食物、小玩意、摄影和骑行，顾家的好男人。'''
+            一个善于交际又喜欢修理物件的企业家。
+            爱食物，爱小玩意，爱摄影，爱家人，爱骑行。'''
             img = 'https://dn-jolla.qbox.me/Stefano Mosconi.jpg'
             return (content, img)
         if name == 'Marc Dillon':
@@ -80,7 +80,7 @@ class AuthorModule(tornado.web.UIModule):
                 '''Jolla社区主管。
                 全球（星级）星舰迷。
                 热爱开源和开放的社区。
-                会用鼓、琴和嗓音创造不错的音乐。
+                会用定音鼓、架子鼓和钢琴配着嗓音创作出不错的音乐。
                 ''',
                 'https://dn-jolla.qbox.me/Carol-Chen.jpeg'
             )
