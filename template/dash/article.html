@@ -6,18 +6,45 @@
 <hr class="am-divider am-divider-default"/>
 
 <div class="am-panel-group" id="articles">
-  {% set article = next(articles) %}
-  <div class="am-panel am-panel-default">
+  {% for article in articles %}
+  <div class="am-panel am-panel-default container">
     <div class="am-panel-hd am-cf am-g">
-      <h4 class="am-panel-title am-u-sm-11" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
+      <h4 class="am-panel-title am-u-sm-8 am-u-md-9 am-u-lg-10" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
         {{ article['title'] }}
       </h4>
-      <div class="am-u-sm-1">
-        <button type="button" class="am-btn am-btn-warning am-btn-xs am-fr" data-role="delete" data-id="{{ article['id'] }}"><span class="am-icon-trash"></span></button>
+      <div class="am-u-sm-4 am-u-md-3 am-u-lg-2">
+        <button
+            type="button"
+            class="am-btn am-btn-warning am-btn-xs am-fr"
+            data-role="delete"
+            data-id="{{ article['id'] }}"
+            data-am-loading="{spinner: 'times-circle', loadingText: '', resetText: '<span class= &#34;am-icon-trash &#34;></span>'}">
+          <span class="am-icon-trash"></span>
+        </button>
+        <button
+            type="button"
+            class="am-btn am-btn-primary am-btn-xs am-fr"
+            data-role="edit"
+            data-id="{{ article['id'] }}"
+            data-status="edit"
+            data-am-button
+            data-am-loading="{spinner: 'refresh', loadingText: '', resetText: '<span class= &#34;am-icon-pencil &#34;></span>'}">
+          <span class="am-icon-pencil"></span>
+        </button>
+        <button
+            type="button"
+            class="am-btn am-btn-secondary am-btn-xs am-fr"
+            data-role="undo"
+            data-id="{{ article['id'] }}"
+            style="display:none">
+          <span class="am-icon-undo"></span>
+        </button>
       </div>
     </div>
-    <div id="{{ article['id'] }}" class="am-panel-collapse am-collapse am-in">
+    <div id="{{ article['id'] }}" class="am-panel-collapse am-collapse">
       <div class="am-panel-bd">
+        <div data-role="info-panel">
+        </div>
         <table class="am-table">
           <thead>
             <tr>
@@ -28,12 +55,23 @@
           <tbody>
             <tr>
               <td>{{ _("title") }}</td>
-              <td><a href="{{ article['url'] }}">{{ article['title'] }}</a></td>
+              <td data-role="title">
+                <a href="{{ article['url'] }}">{{ article['title'] }}</a>
+                <input class="am-form-field" style="display:none">
+              </td>
             </tr>
             <tr>
               <td>{{ _("preview") }}</td>
-              <td>{{ article['content'][:40] }}...</td>
+              <td>{% if article['edit'] %}[<a href="{{ article['edit'] }}">{{ _('edit') }}</a>] {% end %}
+                {{ article['content'][:40] }}...
+              </td>
             </tr>
+            {% if 'source_url' in article %}
+            <tr>
+              <td>{{ _('source') }}</td>
+              <td><a href="{{ article['source_url'] }}">{{ article['source_title'] }}</a></td>
+            </tr>
+            {% end %}
             <tr>
               <td>{{ _("board") }}</td>
               <td>{{ article['board'] }}</td>
@@ -64,14 +102,48 @@
               </td>
               <tr>
                 <td>{{ _("show email") }}</td>
-                <td>&#{{ '10004' if article['show_email'] else '10060' }};</td>
+                <td
+                    data-role="show-email"
+                    {{ 'data-true' if article['show_email'] else ''}}>
+                  <span>&#{{ '10004' if article['show_email'] else '10060' }};</span>
+                  <label class="am-checkbox" style="display:none">
+                    <input type="checkbox" data-am-ucheck>
+                    {{ _('Show my email when display the article') }}
+                  </label>
+                </td>
               </tr>
-            </tr>
+              {% if 'reprint' in article %}
+              <tr>
+                <td>{{ _("reprint") }}</td>
+                <td data-role="reprint">
+                  <div>
+                    {% raw '; '.join('<a href="{}">{}</a>'.format(key, value) for key, value in article['reprint'].items()) %}
+                  </div>
+                  <div class="am-g" style="display:none">
+                    <label class="am-u-sm-3">{{ _('Site Name') }}</label>
+                    <label class="am-u-sm-9">{{ _('URL') }}</label>
+                    {% for name, url in article['reprint'].items() %}
+                    <div class="am-u-sm-3">
+                      <input class="am-form-field" value="{{ name }}" placeholder="{{ _('Enter site name') }}">
+                    </div>
+                    <div class="am-u-sm-8">
+                      <input class="am-form-field" value="{{ url }}" placeholder="{{ _('Enter URL') }}">
+                    </div>
+                    <div class="am-u-sm-1">
+                      <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
+                    </div>
+                    {% end %}
+                  </div>
+                </td>
+              </tr>
+              {% end %}
+
           </tbody>
         </table>
       </div>
     </div>
   </div>
+  {% end %}
 </div>
 
 

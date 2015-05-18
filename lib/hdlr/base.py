@@ -153,6 +153,7 @@ class BaseHandler(tornado.web.RequestHandler):
             return self.render('404.html')
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))
+        logging.error('%s' % get_exc_plus())
         if self.application.settings['debug']:
             self.write('''
                 <html>
@@ -167,7 +168,6 @@ class BaseHandler(tornado.web.RequestHandler):
             return self.flush()
 
         else:
-            logging.error('%s' % get_exc_plus())
             # uncomment this line for py2
             # return self.__class__.write_error(self, status_code, **kwargs)
             # uncomment this line for py3

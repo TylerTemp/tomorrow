@@ -129,11 +129,7 @@ $(document).ready(function(){
     {
       server_error_panel.text(
         _("Sorry, a server error occured, please refresh and retry") +
-        " (" +
-        jqXHR.status +
-        ": " +
-        errorThrown +
-        ")"
+        " ({0}: {1})".format(jqXHR.status, errorThrown)
       );
       server_error_panel.show(400);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
