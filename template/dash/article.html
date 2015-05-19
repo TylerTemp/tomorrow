@@ -122,17 +122,16 @@
                   <div class="am-g" style="display:none">
                     <label class="am-u-sm-3">{{ _('Site Name') }}</label>
                     <label class="am-u-sm-9">{{ _('URL') }}</label>
-                    {% for name, url in article['reprint'].items() %}
-                    <div class="am-u-sm-3">
-                      <input class="am-form-field" value="{{ name }}" placeholder="{{ _('Enter site name') }}">
+                    <div data-role="reprint-container">
                     </div>
-                    <div class="am-u-sm-8">
-                      <input class="am-form-field" value="{{ url }}" placeholder="{{ _('Enter URL') }}">
+                    <div data-role="new-line" class="am-cf">
+                      <label class="am-fr am-margin-top am-margin-right">
+                        {{ _("Add a new record") }}
+                        <button class="am-btn am-btn-success am-btn-xs am-round" data-role="add-line">
+                          <span class="am-icon-plus"></span>
+                        </button>
+                      </label>
                     </div>
-                    <div class="am-u-sm-1">
-                      <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
-                    </div>
-                    {% end %}
                   </div>
                 </td>
               </tr>

@@ -189,7 +189,8 @@ class TranslateHandler(BaseHandler):
         for k, v in self.request.arguments.items():
             match = re_reprint.match(k)
             if match is not None:
-                v = v[0]
+                if isinstance(v, (list, tuple)):
+                    v = v[0]
                 if py3:
                     v = v.decode('utf-8')
                 result[match.groupdict()['key']] = v

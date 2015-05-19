@@ -3,6 +3,7 @@ import tornado.web
 import logging
 import json
 import time
+import re
 from bson.objectid import ObjectId
 try:
     from urllib.parse import unquote
@@ -17,6 +18,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import Article
 from lib.db import Jolla
+from lib.tool.minsix import py3
 from lib.hdlr.dash.base import its_myself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
@@ -73,7 +75,43 @@ class ArticleHandler(BaseHandler):
         return time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
 
     def save_article(self):
-        pass
+        coll = Article.get_collect()
+        id_obj = ObjectId(self.get_argument('id'))
+        title = self.get_argument('title')
+        # jQuery will send 'true'/'false', and tornado will not deal this
+        show_email = (self.get_argument('show_email').lower() != 'false')
+        reprint = self.get_reprint_argument()
+
+        logger.info('update id(%s): title: %s; show_email: %s; reprint: %s',
+                    id_obj, title, show_email, reprint)
+
+        assert title
+        coll.update_one(
+            {'_id': id_obj},
+            {'$set':
+                {
+                    'title': title,
+                    'show_email': show_email,
+                    'transinfo.reprint': reprint,
+                }
+            }
+        )
+
+        return self.write(json.dumps({'error': 0}))
+
+    re_reprint = re.compile(r'^reprint\[(?P<key>.*?)\]$')
+    def get_reprint_argument(self):
+        result = {}
+        re_reprint = self.re_reprint
+        for k, v in self.request.arguments.items():
+            match = re_reprint.match(k)
+            if match is not None:
+                if isinstance(v, (list, tuple)):
+                    v = v[0]
+                if py3:
+                    v = v.decode('utf-8')
+                result[match.groupdict()['key']] = v
+        return result
 
     def delete_article(self):
         coll = Article.get_collect()
