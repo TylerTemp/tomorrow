@@ -35,7 +35,7 @@ class BlackListHandler(tornado.web.RequestHandler):
             if len(collect) >= 1000:
                 logger.warning('too many blacklist. Clean')
                 collect.clear()
-        return self.redirect('//'+ip, True)
+        return self.redirect('//' + ip, True)
 
     post = get
 
