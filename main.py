@@ -92,11 +92,7 @@ class Application(tornado.web.Application):
             (r'/api/load/', jolla.LoadHandler),
 
 
-            (r'/xmlrpc\.php', BlackListHandler),
-            (r'/wp-login\.php', BlackListHandler),
-            (r'/phpmyadmin/scripts/setup\.php(?i)', BlackListHandler),
-            (r'/pma/scripts/setup\.php(?i)', BlackListHandler),
-            (r'/myadmin/scripts/setup\.php(?i)', BlackListHandler),
+            (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
         )
 
