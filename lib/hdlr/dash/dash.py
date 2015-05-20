@@ -13,7 +13,8 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import User
 from lib.db import Article
-from lib.hdlr.dash.base import its_myself
+from lib.db import Message
+from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
 
@@ -22,8 +23,8 @@ logger = logging.getLogger('tomorrow.dash.dash')
 
 class DashboardHandler(BaseHandler):
 
-    @its_myself
     @tornado.web.authenticated
+    @ItsMyself('')
     def get(self, user):
 
         url_user = unquote(user)
@@ -61,4 +62,5 @@ class DashboardHandler(BaseHandler):
             article_num=Article.num_by(user_name),
             file_num=file_num,
             img_num=img_num,
+            msg_num=Message.num_to(user_name)
         )

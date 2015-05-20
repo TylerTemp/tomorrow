@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block subtitle %}&#62; {{ _('Security') }}{% end %}
+
 {% block guide %}<span class="am-icon-lock"> <strong class="am-text-primary am-text-lg">{{ _("Security Settings") }}</strong></span> / <small>{{ _("Anything about your account") }}</small>{% end %}
 
 {% block content %}
@@ -7,9 +9,9 @@
 <hr>
 <div class="am-padding">
   <h2>{{ _("Security Info") }}</h2>
-  <small class="am-padding">&#62;  {{ _("Note changing user name or email may cause unexpected result.") }}</small>
+  <span class="am-icon-warning am-text-danger"></span><small class="am-padding"> {{ _("Note changing user name or email may cause unexpected result.") }}</small>
   <br>
-  <small class="am-padding">&#62;  {{ _("Each time you can only change one thing.") }}</small>
+  <span class="am-icon-info-circle am-text-primary"></span><small class="am-padding"> {{ _("Each time you can only change one thing.") }}</small>
 </div>
 <hr>
 
@@ -28,13 +30,13 @@
 {% if verify_mail %}
 <!-- name -->
 <div class="am-padding">
-  <div class="am-u-sm-4">
+  <div class="am-u-sm-4 am-u-md-2">
     <label><span class="am-icon-user"> {{ _("Name") }}:</span></label>
   </div>
-  <div class="am-u-sm-3">
+  <div class="am-u-sm-3 am-u-md-10">
     <p>{{ user_name }} </p>
   </div>
-  <div class="am-u-sm-5 am-cf">
+  <div class="am-u-sm-5 am-u-md-2 am-cf">
     <p class="am-text-warning am-fr">{{ _("Please verify your email first") }}</p>
   </div>
 </div>
@@ -43,10 +45,10 @@
 <!-- email -->
 <div class="am-padding">
   <div class="am-g">
-    <div class="am-u-sm-4">
+    <div class="am-u-sm-4 am-u-md-2">
       <label><span class="am-icon-envelope"> {{ _("Email") }}:</span></label>
     </div>
-    <div class="am-u-sm-8">
+    <div class="am-u-sm-8 am-u-md-10">
       <input class="am-form-field am-inline am-input-sm" id="email-input" value="{{ user_email }}" style="width:65%">
       <button class="am-btn am-btn-success am-btn-xs" id="email-btn" data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Send Confirm Mail") }}'}">{{ _("Send Confirm Mail") }}</button>
     </div>
@@ -56,13 +58,13 @@
 
 <!-- password -->
 <div class="am-g am-padding">
-  <div class="am-u-sm-4">
-    <label><span class="am-icon-lock"> {{ _("Password") }}:</span></label>
+  <div class="am-u-sm-4 am-u-md-2">
+    <label><span class="am-icon-key"> {{ _("Password") }}:</span></label>
   </div>
-  <div class="am-u-sm-3">
+  <div class="am-u-sm-3 am-u-md-10">
     <p>********</p>
   </div>
-  <div class="am-u-sm-5 am-cf">
+  <div class="am-u-sm-5 am-u-md-2 am-cf">
     <p class="am-text-warning am-fr">{{ _("Please verify your email first") }}</p>
   </div>
 </div>
@@ -73,13 +75,13 @@
 <div class="am-padding">
   <!-- name -->
   <div class="am-g">
-    <div class="am-u-sm-4">
+    <div class="am-u-sm-4 am-u-md-2">
       <label><span class="am-icon-user"> {{ _("Name") }}:</span></label>
     </div>
-    <div class="am-u-sm-4">
+    <div class="am-u-sm-4 am-u-md-8">
       {{ user_name }}
     </div>
-    <div class="am-u-sm-4 am-cf">
+    <div class="am-u-sm-4 am-u-md-2 am-cf">
       <button class="am-btn am-btn-success am-btn-xs am-fr" id="name-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
     </div>
   </div>
@@ -89,10 +91,10 @@
 <div class="am-padding">
   <!-- email -->
   <div class="am-g">
-    <div class="am-u-sm-4">
+    <div class="am-u-sm-4 am-u-md-2">
       <label><span class="am-icon-envelope"> {{ _("Email") }}:</span></label>
     </div>
-    <div class="am-u-sm-8 am-cf">
+    <div class="am-u-sm-8 am-u-md-10 am-cf">
       {{ user_email }}
       <button class="am-btn am-btn-success am-btn-xs am-fr" id="email-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
     </div>
@@ -101,10 +103,10 @@
 </div>
 
 <div class="am-g am-padding">
-  <div class="am-u-sm-4">
-    <label><span class="am-icon-lock"> {{ _("Password") }}:</span></label>
+  <div class="am-u-sm-4 am-u-md-2">
+    <label><span class="am-icon-key"> {{ _("Password") }}:</span></label>
   </div>
-  <div class="am-u-sm-8 am-cf">
+  <div class="am-u-sm-8 am-u-md-10 am-cf">
     ********
     <button class="am-btn am-btn-success am-btn-xs am-fr" id="pwd-btn"  data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Change") }}'}">{{ _("Change")}}</button>
   </div>
@@ -113,10 +115,10 @@
 {% end %}
 
 <div class="am-g am-padding">
-  <div class="am-u-sm-4">
+  <div class="am-u-sm-4 am-u-md-2">
     <label><span class="am-icon-child"> {{ _("Active") }}:</span></label>
   </div>
-  <div class="am-u-sm-8">
+  <div class="am-u-sm-8 am-u-md-10">
     <span class="{{ 'am-text-success am-icon-check' if active else 'am-text-danger am-icon-times' }}"></span>
   </div>
 </div>

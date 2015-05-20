@@ -119,7 +119,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def get_user_locale(self):
         code = self.get_argument('lang', self.get_cookie('lang', None))
-        logger.debug(code)
         if code is None:
             return None
         return tornado.locale.get(code)

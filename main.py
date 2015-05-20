@@ -29,6 +29,7 @@ from lib.config import Config
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
 from lib.hdlr import dash
+from lib.hdlr import hi
 from lib.hdlr import jolla
 from lib.hdlr import auth
 from lib.hdlr.blacklist import BlackListHandler
@@ -61,7 +62,6 @@ class Application(tornado.web.Application):
             (r'/login/', auth.LoginHandler),
             (r'/signin/', auth.SigninHandler),
             (r'/logout/', auth.LogoutHandler),
-            (r'/hi/(?P<user>[^/]+)/', BareHandler),
 
             (r'/am/(?P<user>[^/]+)/', dash.DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', dash.InfoHandler),
@@ -71,6 +71,11 @@ class Application(tornado.web.Application):
              r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
              r'(?P<code>[^/]+)/', dash.VerifyHandler),
             (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
+            (r'/am/(?P<user>[^/]+)/message/', dash.MessageHandler),
+
+            (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
+            (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
+            (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
 
             (r'/jolla/', jolla.HomeHandler),
             (r'/jolla/blog/', jolla.BlogHandler),

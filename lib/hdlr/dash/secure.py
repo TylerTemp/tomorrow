@@ -17,7 +17,7 @@ from lib.db import User
 from lib.config import Config
 from lib.tool.generate import generate
 from lib.tool.mail import Email
-from lib.hdlr.dash.base import its_myself
+from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
 
@@ -30,8 +30,8 @@ class SecureHandler(BaseHandler):
     ERROR_FAILED_SEND_EMAIL = 2
     ERROR_NOTHING_TO_SEND = 3
 
-    @its_myself
     @tornado.web.authenticated
+    @ItsMyself('secure/')
     def get(self, user):
 
         self.xsrf_token
@@ -48,9 +48,10 @@ class SecureHandler(BaseHandler):
             active=user_info['active'],
         )
 
+    @tornado.web.authenticated
+    @ItsMyself('secure/')
     @tornado.web.asynchronous
     @tornado.gen.engine
-    @tornado.web.authenticated
     def post(self, user):
 
         userinfo = self.get_current_user()

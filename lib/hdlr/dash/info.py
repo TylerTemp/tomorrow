@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import User
 from lib.config import Config
-from lib.hdlr.dash.base import its_myself
+from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 from lib.tool.unitsatisfy import unit_satisfy
 sys.path.pop(0)
@@ -25,8 +25,8 @@ logger = logging.getLogger('tomorrow.dash.info')
 class InfoHandler(BaseHandler):
     config = Config()
 
-    @its_myself
     @tornado.web.authenticated
+    @ItsMyself('info/')
     def get(self, user):
 
         user = User(self.current_user['user'])
@@ -44,6 +44,7 @@ class InfoHandler(BaseHandler):
         )
 
     @tornado.web.authenticated
+    @ItsMyself('info/')
     def post(self, user):
 
         self.check_xsrf_cookie()

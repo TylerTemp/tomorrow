@@ -14,10 +14,6 @@
     background-position: right top;
     background-color: #5BA2A1;
   }
-  header {
-    /*text-align: center;*/
-    /*padding: 30px 0px 45px;*/
-  }
 
   header img {
     width: 100%;
@@ -31,7 +27,7 @@
   }
 
   .white {
-    background-color: #fff;
+    background-color: #fff !important;
   }
 
   #bread-crumbs {
@@ -77,8 +73,8 @@
     </div>
   {% else %}
     <!-- horizontal blog box -->
-    <div class="am-g am-margin-vertical-sm">
-      <div class="am-margin-horizontal-xs">
+    <div class="am-g">
+      <div class="am-margin-horizontal-xs am-margin-vertical-sm">
         <div class="white am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
           <article class="am-article am-margin-lg">
             <div class="am-article-hd">

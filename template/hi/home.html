@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block guide %}<span class="am-icon-home"> <strong class="am-text-primary am-text-lg">{{ _("Main Page") }}</strong></span> / <small>{{ _("Some basic information") }}</small>{% end %}
+
+{% block content %}
+
+<div class="am-g am-padding admin-content-list">
+  <div class="am-u-sm-12 am-u-md-3">
+    <p>
+      <img class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+    </p>
+  </div>
+  <div class="am-u-sm-12 am-u-md-9">
+
+    <h2>{{ _("Hi %(visitor)s, I'm %(user_name)s") % {'visitor': visitor or 'there', 'user_name': user_name} }} :)</h2>
+    <table class="am-table am-table-striped am-table-hover am-table-compact">
+      <tbody>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-user"> {{ _("My Name") }}</span></td>
+          <td style="width:70%">{{ user_name }}</td>
+        </tr>
+        <tr>
+          <td class="am-primary" style="width:30%"><span class="am-icon-envelope"> {{ _("My Email") }}</span></td>
+          <td style="width:70%">{% raw '<a href="mailto:%s">%s</a>' % (user_email, user_email) if user_email else '<span class="am-icon-eye-slash"> (%s)</span>' % _('hide') %}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+<!-- collection -->
+<ul class="am-avg-sm-1 am-avg-md-2 am-margin am-padding am-text-center admin-content-list ">
+  <li><a href="{{ main_url }}/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
+  <li><a href="{{ main_url }}/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Leave a Message") }}</a></li>
+</ul>
+{% end %}

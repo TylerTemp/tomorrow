@@ -161,8 +161,6 @@ $(document).ready(function()
       reprint.children(':first-child').html(reprint_urls.join('; ')).show();
       reprint.children(':nth-child(2)').hide();
 
-      console.log(show_email_val);
-
       $.ajax(
         settings = {
           'data': {

@@ -16,10 +16,10 @@ from lib.hdlr.base import BaseHandler
 from lib.db import User
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.dash.base')
+logger = logging.getLogger('tomorrow.hi.base')
 
 
-class ItsMyself(object):
+class ItsNotMyself(object):
 
     def __init__(self, to):
         self._to = to
@@ -28,33 +28,25 @@ class ItsMyself(object):
         @functools.wraps(func)
         def wrapper(ins, user):
             unquoted = unquote(user)
-            if (ins.current_user is None or
-                    ins.current_user['user'] != unquoted):
-                logger.debug('redirect to visit %s - %s', unquoted, self._to)
-                return ins.redirect('/'.join(('/hi', unquoted, self._to)))
+            u = User(unquoted)
+            if u.new:
+                raise tornado.web.HTTPError(404, 'User %s not found' % unquoted)
+            if (ins.current_user is not None and
+                    ins.current_user['user'] == unquoted):
+                logger.debug('redirect to dashboard %s - %s',
+                             unquoted, self._to)
+                return ins.redirect('/'.join(('/am', unquoted, self._to)))
 
             return func(ins, user)
 
         return wrapper
 
+
 class BaseHandler(BaseHandler):
 
     def render(self, template_name, **kwargs):
-        user_info = self.current_user
-
-        if 'main_url' not in kwargs:
-            kwargs['main_url'] = '/am/%s' % quote(user_info['user'])
-
-        kwargs['main_url'] = self.get_non_ssl(kwargs['main_url'])
-
-        if 'user_name' not in kwargs:
-            kwargs['user_name'] = user_info['user']
-        if 'user_type' not in kwargs:
-            kwargs['user_type'] = user_info['type']
-
-        kwargs['NORMAL'] = User.normal
-        kwargs['ADMIN'] = User.admin
-        kwargs['ROOT'] = User.root
+        if 'visitor' not in kwargs:
+            kwargs['visitor'] = self.current_user and self.current_user['user']
 
         return super(BaseHandler, self).render(
             template_name,

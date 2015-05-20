@@ -21,7 +21,6 @@ from lib.config import Config
 from lib.tool.generate import generate
 from lib.tool.mail import Email
 from lib.tool.ensure import EnsureSsl
-from lib.hdlr.dash.base import its_myself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
 

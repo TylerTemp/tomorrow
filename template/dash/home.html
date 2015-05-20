@@ -39,7 +39,7 @@
     </p>
   </div>
   <div class="am-u-sm-12 am-u-md-9">
-    <h2>{{ _("Hi %(user)s, my %(type)s, welcome back :)") % {'user': user_name, 'type': type_name} }}</h2>
+    <h2>{{ _("Hi %(user)s, my %(type)s, welcome back") % {'user': user_name, 'type': type_name} }} :)</h2>
     <table class="am-table am-table-striped am-table-hover am-table-compact">
       <tbody>
         <tr>
@@ -66,7 +66,7 @@
 <!-- collection -->
 <ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
   <li><a href="{{ main_url }}/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
-  <li><a href="{{ main_url }}/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>0</a></li>
+  <li><a href="{{ main_url }}/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>{{ msg_num }}</a></li>
   <li><a href="{{ main_url }}/img/" class="am-text-danger"><span class="am-icon-btn am-icon-image"></span><br/>{{ _("Images") }}<br/>{{ img_num }}</a></li>
   <li><a href="{{ main_url }}/file/" class="am-text-secondary"><span class="am-icon-btn am-icon-folder-o"></span><br/>{{ _("Files") }}<br/>{{ file_num }}</a></li>
 </ul>

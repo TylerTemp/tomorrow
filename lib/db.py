@@ -75,7 +75,6 @@ class User(object):
         return self.user_info
 
     def verify(self, pwd):
-        assert not self.new
         encoded_pwd = self.user_info['pwd']
         return sha256_crypt.verify(pwd, encoded_pwd)
 
@@ -129,13 +128,57 @@ class User(object):
         return repr(self.user_info)
 
 
-class Board(object):
-    _board = db.board
+class Message(object):
+    _msg = db.message
+
+    def __init__(self, _id=None):
+        self._id = _id
+        if _id is None:
+            self.from_ = self.to = self.content = self.time = None
+        else:
+            result = self._msg.find_one({'_id': _id})
+            if result is None:
+                self.from_ = self.to = self.content = self.time = None
+            else:
+                print(result)
+                self.from_ = result['from']
+                self.to = result['to']
+                self.content = result['content']
+                self.time = result['time']
+
+    def send(self, from_, to, content):
+        self.from_ = from_
+        self.to = to
+        self.content = content
+        self._id = self._msg.save(
+            {'from': from_, 'to': to, 'content': content, 'time': time.time()})
+
+    @property
+    def new(self):
+        return (self._id is None)
+
+    def remove(self):
+        self._msg.delete_one({'_id': self._id})
+        self._id = self.from_ = self.to = self.content = self.time = None
 
     @classmethod
-    def all(self):
-        return self._board.find({})
+    def find_to(cls, to):
+        return cls._msg.find({'to': to}).sort('time', pymongo.DESCENDING)
 
+    @classmethod
+    def num_to(cls, user):
+        return cls._msg.find({'to': user}).count()
+
+    def __str__(self):
+        if self._id is None:
+            return 'Message at %s' % id(self)
+        return 'Message(%s) from %s to %s: %s...' % (self._id, self.from_,
+                                                     self.to, self.content[:50])
+
+    def __repr__(self):
+        if self._id is None:
+            return 'Message()'
+        return 'Message(%s)' % self._id
 
 class Jolla(object):
     _jolla = db.jolla
@@ -213,7 +256,7 @@ class Jolla(object):
     # todo: order by time/...
     @classmethod
     def all(cls):
-        return cls._jolla.find({})
+        return cls._jolla.find({}).sort('createtime', pymongo.DESCENDING)
 
     @classmethod
     def find_url(cls, url):
@@ -341,7 +384,8 @@ class Article(object):
 
     @classmethod
     def find_jollas(cls):
-        return cls._article.find({'board': 'jolla'})
+        return cls._article.find({'board': 'jolla'}).sort(
+            'createtime', pymongo.DESCENDING)
 
     @classmethod
     def num_by(cls, user):
@@ -378,6 +422,7 @@ if __name__ == '__main__':
                 assert t in type(to_type.keys())
                 t = to_type[t]
         u.add(email=e, pwd=p, type=t)
+        u.save()
         sys.exit()
     if args['--delete']:
         u = User(args['--user'] or args['--email'])

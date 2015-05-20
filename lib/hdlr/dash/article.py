@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
 from lib.db import Article
 from lib.db import Jolla
 from lib.tool.minsix import py3
-from lib.hdlr.dash.base import its_myself
+from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
 
@@ -29,7 +29,7 @@ logger = logging.getLogger('tomorrow.dash.secure')
 class ArticleHandler(BaseHandler):
 
     @tornado.web.authenticated
-    @its_myself
+    @ItsMyself('article/')
     def get(self, user):
 
         self.xsrf_token
@@ -42,7 +42,7 @@ class ArticleHandler(BaseHandler):
         )
 
     @tornado.web.authenticated
-    @its_myself
+    @ItsMyself('article/')
     def post(self, user):
         self.check_xsrf_cookie()
 

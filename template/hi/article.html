@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block subtitle %}&#62; {{ _('Article') }}{% end %}
+
+{% block guide %}<span class="am-icon-edit"> <strong class="am-text-primary am-text-lg">{{ _("Article") }}</strong></span> / <small>{{ _("All posts by %s") % user_name }}</small>{% end %}
+
+{% block content %}
+
+<hr class="am-divider am-divider-default">
+
+<div class="am-container am-padding">
+  <table class="am-table am-table-striped am-table-hover am-table-compact">
+    <thead>
+      <tr>
+        <th>{{ _("Title") }}</th>
+        <th>{{ _("Post Time") }}</th>
+        <th>{{ _("Edit Time") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for article in articles %}
+      <tr>
+        <td><a href="{{ article['url'] }}">{{ article['title'] }}</a></td>
+        <td><time datetime="{{ article['create_time_attr'] }}">{{ article['create_time'] }}</time></td>
+        <td><time datetime="{{ article['edit_time_attr'] }}">{{ article['edit_time'] }}</time></td>
+      </tr>
+      {% end %}
+    </tbody>
+  </table>
+</div>
+
+
+{% end %}

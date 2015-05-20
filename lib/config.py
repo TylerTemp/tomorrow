@@ -151,7 +151,7 @@ def remove():
             else:
                 return os.unlink(cfg.pids_file)
 
-            piddict.pop(os.getpid())
+            piddict.pop(str(os.getpid()))
             f.seek(0)
             f.truncate()
             json.dump(piddict, f, indent=4)
