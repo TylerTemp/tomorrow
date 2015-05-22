@@ -6,6 +6,7 @@
 
 {% block neck %}
 <link rel="stylesheet" href="/static/css/editor.css">
+{% module IconFontCss() %}
 <style>
 body {
   background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
@@ -112,7 +113,7 @@ header img {
         <div class="am-form-field needsclick" id="wysiwygEditor" {% raw 'style="display:none"' if md else '' %} tabindex="0" contentEditable="true">
           {% raw translated['html'] or translate['html'] %}
         </div>
-        <textarea class="am-form-field" id="mdEditor" {% raw '' if md else 'style="display:none"' %} tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">
+        <textarea class="am-form-field" id="mdEditor" {% raw '' if md else 'style="display:none"' %} tabindex="0" placeholder="&#xe603; {{ _('Markdown syntax supported') }}">
           {{ translated['md'] or translate['md'] }}
         </textarea>
         <div class="am-cf">

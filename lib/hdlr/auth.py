@@ -17,7 +17,7 @@ from lib.hdlr.base import BaseHandler
 from lib.db import User
 from lib.tool.mail import Email
 from lib.tool.generate import generate
-from lib.tool.ensure import EnsureSsl
+from lib.hdlr.base import EnsureSsl
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.auth')

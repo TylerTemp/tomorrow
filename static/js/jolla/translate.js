@@ -39,7 +39,7 @@ $(document).ready(function(evt)
   });
 
 
-  $("#swith-to-md").click(function(evt)
+  $("#switch-to-md").click(function(evt)
   {
     evt.preventDefault();
     _editor_status = "md";
@@ -53,7 +53,7 @@ $(document).ready(function(evt)
     });
   });
 
-  $("#swith-to-wysiwyg").click(function(evt)
+  $("#switch-to-wysiwyg").click(function(evt)
   {
     evt.preventDefault();
     _editor_status = "wysiwyg";

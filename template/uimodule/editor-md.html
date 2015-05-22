@@ -25,7 +25,8 @@
 					</div>
 					<div class="am-form-group">
 						<label for="md-url-text">{{ _("shown text") }}</label>
-						<input class="am-form-field" id="md-url-text" placeholder="{{ _('Enter shown text here') }}">
+						<input class="am-form-field" id="md-url-text"
+						="{{ _('Enter shown text here') }}">
 					</div>
 					<button class="am-btn am-btn-secondary" id="md-url-insert">{{ _("insert") }}</button>
 				</div>
@@ -128,7 +129,7 @@
 		</div> -->
 		{% if switch %}
 		<div class="am-btn-group">
-			<button class="am-btn am-btn-success" id="swith-to-wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><i class="am-icon-pencil-square-o"></i></button>
+			<button class="am-btn am-btn-success" id="switch-to-wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><i class="am-icon-pencil-square-o"></i></button>
 		</div>
 		{% end %}
 	</div>
@@ -138,7 +139,7 @@
 <!-- editor make it focusable  -->
 <div class="am-g">
 	<div class="am-u-sm-12">
-		<textarea class="am-form-field" id="mdEditor" tabindex="0" placeholder="&#12304;M&#11015;&#12305; {{ _('Markdown syntax supported') }}">{{ content }}</textarea>
+		<textarea class="am-form-field" id="mdEditor" tabindex="0" placeholder="&#xe603; {{ _('Markdown Syntax Supported') }}">{{ content }}</textarea>
 	</div>
 </div>
 {% end %}

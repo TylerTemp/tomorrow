@@ -37,6 +37,7 @@ from lib.hdlr.base import BaseHandler
 
 from lib.ui.editor import MdWysiwygEditorModule
 from lib.ui.editor import MdEditorModule
+from lib.ui.iconfont import IconFontModule
 from lib.ui.license import LicenseModule
 from lib.ui.author import AuthorModule
 
@@ -72,6 +73,7 @@ class Application(tornado.web.Application):
              r'(?P<code>[^/]+)/', dash.VerifyHandler),
             (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
             (r'/am/(?P<user>[^/]+)/message/', dash.MessageHandler),
+            (r'/am/(?P<user>[^/]+)/manage/jolla/', dash.manage.JollaHandler),
 
             (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
@@ -106,6 +108,7 @@ class Application(tornado.web.Application):
                 'MdEditor': MdEditorModule,
                 'License': LicenseModule,
                 'Author': AuthorModule,
+                'IconFontCss': IconFontModule,
                 # 'UploadFile': UploadFileModule,
                 # 'UploadImage': UploadImageModule,
                 },

@@ -5,6 +5,7 @@ from .verify import VerifyHandler
 from .file import FileHandler
 from .article import ArticleHandler
 from .message import MessageHandler
+from . import manage
 
 __all__ = ('DashboardHandler', 'InfoHandler', 'SecureHandler', 'FileHandler',
-           'ArticleHandler', 'MessageHandler')
+           'ArticleHandler', 'MessageHandler', 'manage')

@@ -18,7 +18,7 @@ from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
-from lib.tool.ensure import EnsureUser
+from lib.hdlr.base import EnsureUser
 from lib.tool.minsix import py3
 from lib.db import Jolla
 from lib.db import Article

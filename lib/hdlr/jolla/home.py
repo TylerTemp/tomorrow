@@ -10,9 +10,9 @@ import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
+from lib.hdlr.base import EnsureUser
 from lib.db import Jolla
 from lib.db import User
-from lib.tool.ensure import EnsureUser
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.jolla.task')
