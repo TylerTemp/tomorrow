@@ -47,7 +47,7 @@ class BaseHandler(BaseHandler):
     def render(self, template_name, **kwargs):
         if 'visitor' not in kwargs:
             kwargs['visitor'] = self.current_user and self.current_user['user']
-
+        kwargs.setdefault('act', None)
         return super(BaseHandler, self).render(
             template_name,
             **kwargs

@@ -6,6 +6,11 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="https://dn-tomorrow.qbox.me/admin.css">
+<style>
+  .highlight {
+    background-color: #E6E6E6;
+  }
+</style>
 {% block throat %}
 {% end %}
 {% end %}
@@ -32,9 +37,9 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
   <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
     <div class="am-offcanvas-bar admin-offcanvas-bar">
       <ul class="am-list admin-sidebar-list">
-      <li><a href="{{ main_url }}/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
-      <li><a href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
-      <li><a href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Leave a Message")}} </a></li>
+      <li><a id="home" href="{{ main_url }}/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
+      <li><a id="article" href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
+      <li><a id="msg" href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Leave a Message")}} </a></li>
       </ul>
     </div>
   </div>
@@ -65,5 +70,10 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
 <script src="https://dn-tomorrow.qbox.me/respond.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/amazeui.legacy.2.3.0.min.js"></script>
 <![endif]-->
+<script>
+  $(document).ready(function(){
+    $("#{{ act }}").addClass('highlight');
+  });
+</script>
 {% block leg %}{% end %}
 {% end %}

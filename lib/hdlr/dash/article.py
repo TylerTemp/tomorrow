@@ -38,7 +38,8 @@ class ArticleHandler(BaseHandler):
             'dash/article.html',
             cc_license=Article.CC_LICENSE,
             pub_license=Article.PUB_LICENSE,
-            articles=self.get_articles(self.current_user['user'])
+            articles=self.get_articles(self.current_user['user']),
+            act='article'
         )
 
     @tornado.web.authenticated

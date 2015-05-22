@@ -47,10 +47,9 @@ class BaseHandler(BaseHandler):
 
         kwargs['main_url'] = self.get_non_ssl(kwargs['main_url'])
 
-        if 'user_name' not in kwargs:
-            kwargs['user_name'] = user_info['user']
-        if 'user_type' not in kwargs:
-            kwargs['user_type'] = user_info['type']
+        kwargs.setdefault('user_name', user_info['user'])
+        kwargs.setdefault('user_type', user_info['type'])
+        kwargs.setdefault('act', None)
 
         kwargs['NORMAL'] = User.normal
         kwargs['ADMIN'] = User.admin

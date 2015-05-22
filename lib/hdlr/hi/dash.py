@@ -43,4 +43,5 @@ class DashboardHandler(BaseHandler):
             user_email=user_email,
             main_url=main_url,
             article_num=Article.num_by(user_name),
+            act='home'
         )

@@ -110,7 +110,8 @@ class FileHandler(BaseHandler):
         return self.render(
             'dash/image.html' if to == 'img' else 'dash/file.html',
             size_limit=size_limit,
-            files=self.file_attrs(folder, url) if os.path.isdir(folder) else ()
+            files=self.file_attrs(folder, url) if os.path.isdir(folder) else (),
+            act=to
         )
 
     def file_attrs(self, path, url_template):

@@ -26,6 +26,11 @@
     height: auto;
   }
 
+  img.cover-img {
+    width: 100%;
+    height: auto;
+  }
+
   .white {
     background-color: #fff !important;
   }
@@ -76,21 +81,21 @@
     <div class="am-g">
       <div class="am-margin-horizontal-xs am-margin-vertical-sm">
         <div class="white am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
-          <article class="am-article am-margin-lg">
+          <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
             <div class="am-article-hd">
-              <a href="{{ each['url'] }}"><h2 class="am-article-title">{{ each['title'] }}</h2></a>
+              <a href="{{ each['url'] }}"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
             </div>
             <div class="am-article-bd">
               <p>{{ each['preview'] }}...</p>
             </div>
           </article>
-          <div class="am-cf am-margin-horizontal-lg am-margin-vertical-sm">
+          <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
             <a class="am-btn am-btn-success am-fr" href="{{ each['url'] }}">{{ _("Continue reading") }}</a>
           </div>
         </div>
         {% if each['img'] %}
-        <div class="am-u-sm-12 am-u-md-6 img-box">
-          <a href="{{ each['url'] }}"><img src="{{ each['img'] }}"></a>
+        <div class="am-u-sm-12 am-u-md-6">
+          <a href="{{ each['url'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>
         </div>
         {% end %}
       </div>
@@ -105,11 +110,13 @@
   {% end %}
     <div class="am-u-sm-12 am-u-md-6">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
-        <a href="{{ each['url'] }}"><img src="{{ each['img'] }}"></a>
+        {% if each['img'] %}
+        <a href="{{ each['url'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>
+        {% end %}
         <div class="title-box">
-          <article class="am-article am-margin-lg">
+          <article class="am-article  am-margin-horizontal-lg am-margin-top-lg">
             <div class="am-article-hd">
-              <a href="{{ each['url'] }}"><h2>{{ each['title'] }}</h2></a>
+              <a href="{{ each['url'] }}"><h2 class="am-article-title">{{ each['title'] }}</h2></a>
             </div>
             <div class="am-article-bd">
               <p>{{ each['preview'] }}...</p>

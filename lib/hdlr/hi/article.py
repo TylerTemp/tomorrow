@@ -31,7 +31,8 @@ class ArticleHandler(BaseHandler):
             'hi/article.html',
             main_url=main_url,
             user_name=user_name,
-            articles=self.get_articles(user_name)
+            articles=self.get_articles(user_name),
+            act='article'
         )
 
     @ItsNotMyself('article')

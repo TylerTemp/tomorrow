@@ -34,6 +34,7 @@ class MessageHandler(BaseHandler):
             'hi/message.html',
             main_url=main_url,
             user_name=user_name,
+            act='msg'
         )
 
     @ItsNotMyself('message/')

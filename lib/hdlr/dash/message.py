@@ -36,7 +36,8 @@ class MessageHandler(BaseHandler):
 
         return self.render(
             'dash/message.html',
-            msg=self.msgs(self.current_user['user'])
+            msg=self.msgs(self.current_user['user']),
+            act="msg"
         )
 
     def msgs(self, user):
