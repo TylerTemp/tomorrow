@@ -109,7 +109,7 @@ class TranslateHandler(BaseHandler):
 
         if format != 'md':
             content = html2md(content)
-        else:
+        elif self.current_user['type'] < User.root:
             content = escape(content)
 
         to_trans_info = to_translate.get()

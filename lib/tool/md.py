@@ -44,10 +44,10 @@ white_tags.extend(('span',
                    'h2', 'h3', 'h4', 'h5', 'h6',
                    'dl', 'dt', 'dd',
                    'quoteblock',
-                   'video'))
+                   'video', 'source'))
 
 attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
-                    'border', 'text-align')}
+                    'border', 'text-align', 'type', 'controls')}
 
 # _md = markdown.Markdown(smart_emphasis=False, safemode=False,
 #                         output_format='html5', extensions=extend)

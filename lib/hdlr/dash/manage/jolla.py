@@ -22,5 +22,6 @@ class JollaHandler(BaseHandler):
     def get(self, user):
 
         return self.render(
-            'dash/manage/jolla.html'
+            'dash/manage/jolla.html',
+            act='jolla'
         )
