@@ -118,6 +118,6 @@ class AuthorModule(tornado.web.UIModule):
                 喜欢QA、开源、开发者社区和交流。
                 Punk, nature, singing, badgers and Shetland sheepdogs are near to heart.
                 ''',
-                None
+                'https://dn-jolla.qbox.me/Iekku Pylkkä.jpeg'
             )
         return None
