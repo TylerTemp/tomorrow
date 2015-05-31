@@ -19,7 +19,7 @@ $(document).ready(function(evt)
     });
 
     var _editor_status = 'wysiwyg';
-    $("#swith-to-md").click(function(evt)
+    $("#switch-to-md").click(function(evt)
     {
         evt.preventDefault();
         mdEditor.val(wysiwygEditor.getMarkdown());
@@ -28,7 +28,7 @@ $(document).ready(function(evt)
         _editor_status = 'md';
 
     });
-    $("#swith-to-wysiwyg").click(function(evt)
+    $("#switch-to-wysiwyg").click(function(evt)
     {
         evt.preventDefault();
         wysiwygEditor.html(mdEditor.getHtml());

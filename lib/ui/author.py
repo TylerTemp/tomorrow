@@ -111,4 +111,13 @@ class AuthorModule(tornado.web.UIModule):
                 ''',
                 'https://dn-jolla.qbox.me/Martin Schüle.jpg'
             )
+        if name == 'Iekku Pylkkä':
+            return (
+                '''
+                Jolla开发人员事务主管。
+                喜欢QA、开源、开发者社区和交流。
+                Punk, nature, singing, badgers and Shetland sheepdogs are near to heart.
+                ''',
+                None
+            )
         return None
