@@ -4,10 +4,14 @@ main.py [options]
 
 Options:
 -p --port=<port>          listen to this port(default: 8000)
---tmr-level=<level>       site logic code logging level, can be `DEBUG`, `INOF`, `WARNING`, `ERROR`, `CRITICAL`, or number from 0 to 50(default: INFO)
+--tmr-level=<level>       site logic code logging level, can be `DEBUG`,
+                          `INOF`, `WARNING`, `ERROR`, `CRITICAL`,
+                          or number from 0 to 50(default: INFO)
 --tnd-level=<level>       request/response logging level.(default: INFO)
---tmr-file=<file>         site logic code file logger.(default: /tmp/tomorrow.log)
---tnd-file=<file>         request/response file logger.(default: /tmp/tornado.log)
+--tmr-file=<file>         site logic code file logger.
+                          (default: /tmp/tomorrow.log)
+--tnd-file=<file>         request/response file logger.
+                          (default: /tmp/tornado.log)
 -h --help                 show this message
 '''
 
@@ -28,6 +32,7 @@ from lib.config import Config
 
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
+from lib.hdlr.brey import ForBrey
 from lib.hdlr import dash
 from lib.hdlr import hi
 from lib.hdlr import jolla
@@ -92,7 +97,7 @@ class Application(tornado.web.Application):
             (r'/edit/(?P<board>[^/]+)/', BareHandler),
 
             (r'/api/load/', jolla.LoadHandler),
-
+            (r'/brey/', ForBrey),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),

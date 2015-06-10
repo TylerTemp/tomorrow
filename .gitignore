@@ -70,6 +70,7 @@ config.conf
 *.crt
 *.key
 tomorrow.becomes.today_sha256_cn.zip
+template/brey.html
 
 # store the uploaded file
 static/upload

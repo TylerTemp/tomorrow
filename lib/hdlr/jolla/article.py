@@ -68,12 +68,12 @@ class ArticleHandler(BaseHandler):
             info['translated']['content'])
         if info['translated'].pop('showmail'):
             info['translated']['emaillink'] = (
-                '<a href="mailto: %s">'
+                '<a href="mailto: %s" rel="author">'
                     '<span class="am-icon-envelope"></span>'
                 '</a>'
             ) % info['translated']['email']
         info['translated']['author'] = (
-            '<a href="/hi/%s/" target="_blank">%s</a>' % (
+            '<a href="/hi/%s/" target="_blank" rel="author">%s</a>' % (
                 quote(info['translated']['author']),
                 info['translated']['author'])
         )

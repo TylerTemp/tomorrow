@@ -104,13 +104,17 @@ class ArticleHandler(BaseHandler):
     def get_reprint_argument(self):
         result = {}
         re_reprint = self.re_reprint
+        logger.debug(self.request.arguments)
         for k, v in self.request.arguments.items():
+            logger.debug('k: %r; v: %r', k, v)
             match = re_reprint.match(k)
             if match is not None:
+                k = match.groupdict()['key']
                 if isinstance(v, (list, tuple)):
                     v = v[0]
                 if py3:
                     v = v.decode('utf-8')
+                    k = k.decode('utf-8')
                 result[match.groupdict()['key']] = v
         return result
 
