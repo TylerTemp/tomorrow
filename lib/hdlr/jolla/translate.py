@@ -172,6 +172,7 @@ class TranslateHandler(BaseHandler):
             translated_info['transinfo']['status'] = translated.TRUSTED
         else:
             translated_info['transinfo']['status'] = translated.AWAIT
+        translated_info['index'] = to_trans_info['index']
 
         translated.save()
 

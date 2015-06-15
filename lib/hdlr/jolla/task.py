@@ -89,10 +89,12 @@ class TaskHandler(BaseHandler):
         else:
             content = html2md(content)
 
-        if url is not None:
-            url = unquote(url)
+        if url is None:
+            article = Jolla(unquote(url))
+        else:
+            article = Jolla()
+            article.set(article.find_link(link))
 
-        article = Jolla(url)
         if article.new:
             article.add(link, title, author, content, url=url, headimg=headimg)
         else:
