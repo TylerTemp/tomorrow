@@ -140,7 +140,6 @@ class Message(object):
             if result is None:
                 self.from_ = self.to = self.content = self.time = None
             else:
-                print(result)
                 self.from_ = result['from']
                 self.to = result['to']
                 self.content = result['content']
