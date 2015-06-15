@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-  var file_input = $("#file");
+  var file_input = $("#fileinput");
   var file_bar = $("#bar");
   var info_panel = $("#info-panel");
 
