@@ -8,7 +8,7 @@ $(document).ready(function()
     $('html, body').animate({
       scrollTop: $("#user").val(to).offset().top
     }, 300);
-    $("#msg").focus();
+    $("#content").focus();
   });
   $('[data-role="delete"]').click(function(evt)
   {
@@ -91,16 +91,16 @@ $(document).ready(function()
     var submit_btn = $("#sumbit");
 
     var user = $("#user").val();
-    var msg = $("#msg").val();
+    var msg = $("#content").val();
 
     if (!msg)
     {
-      $("#msg").parent().addClass('am-form-warning');
+      $("#content").parent().addClass('am-form-warning');
       set_info(_('Content should not be empty') + ' :/', 'warning');
       return false;
     }
 
-    $("#msg").parent().removeClass('am-form-warning');
+    $("#content").parent().removeClass('am-form-warning');
 
     $.ajax(
       settings = {
@@ -124,7 +124,7 @@ $(document).ready(function()
       if (obj.error == 0)
       {
         $("#user").val('');
-        $("#msg").val('');
+        $("#content").val('');
         return set_info(
           _("Send to {0} successfully").format(user? user: 'site ownder'),
           'success'
