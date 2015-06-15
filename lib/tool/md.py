@@ -1,9 +1,13 @@
 import bleach
 import html2text
+import logging
 
 import markdown
 import markdown_newtab
 # from ..markdown_gridtables import mdx_grid_tables
+
+logger = logging.getLogger('MARKDOWN')
+logger.setLevel(logging.CRITICAL)
 
 __all__ = ['md2html', 'html2md', 'escape']
 
