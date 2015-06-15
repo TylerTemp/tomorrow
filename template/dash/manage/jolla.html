@@ -3,11 +3,37 @@
 {% block subtitle %}&#62; {{ _('Manage') }} &#62; Jolla{% end %}
 
 {% block guide %}
-<span class="iconfont icon-jolla"> <strong class="am-text-primary am-text-lg">{{ _("Article") }}</strong></span> / <small>{{ _("All your posts") }}</small>
+<span class="iconfont icon-jolla"> <strong class="am-text-primary am-text-lg">{{ _("Jolla") }}</strong></span> / <small>{{ _("Manage all Jolla posts") }}</small>
 {% end %}
 
 {% block content %}
 
 <hr class="am-divider am-divider-default">
 
+<div class="am-panel-group am-padding" id="posts">
+{% for each in jolla %}
+  <div class="am-panel-hd am-g am-cf">
+    <h4 class="am-panel-title"
+        data-am-collapse="{parent: '#posts', target: '#{{ each['id'] }}'}">
+      {{ each['title'] }}
+      {% if each['translated'] %}
+        <span class="am-fr am-icon-check am-text-success"> {{ each['trans_num'] if each['trans_num'] != 1 else '' }}</span>
+      {% elif each['trans_num'] %}
+        <span class="am-fr am-icon-info-circle am-text-warning"> {{ each['trans_num'] }}</span>
+      {% end %}
+    </h4>
+
+  </div>
+  <div id="{{ each['id'] }}" class="am-panel-collapse am-collapse" data-empty="true" data-role="detail">
+    <div class="am-panel-bd am-padding">
+    </div>
+  </div>
+
+{% end %}
+</div>
+
+{% end %}
+
+{% block leg %}
+<script src="/static/js/dash/manage/jolla.js"></script>
 {% end %}

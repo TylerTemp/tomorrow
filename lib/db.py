@@ -198,7 +198,7 @@ class Jolla(object):
             self.jolla_info = self.find_url(url)
 
     def add(self, link, title, author, content, url=None, headimg=None,
-            trusted_translation=None):
+            trusted_translation=None, index=0):
         if url is None:
             url = self.mkurl(title, author)
 
@@ -212,6 +212,7 @@ class Jolla(object):
             'createtime': time.time(),
             'edittime': time.time(),
             'trusted_translation': trusted_translation,
+            'index': index
         }
 
         self.jolla_info = info
@@ -225,6 +226,12 @@ class Jolla(object):
 
     def get(self):
         return self.jolla_info
+
+    def set(self, value):
+        if self.jolla_info is None:
+            self.jolla_info = value
+            return
+        self.jolla_info.update(value)
 
     def remove(self):
         self._jolla.delete_one(self.jolla_info)
@@ -256,7 +263,10 @@ class Jolla(object):
     # todo: order by time/...
     @classmethod
     def all(cls):
-        return cls._jolla.find({}).sort('createtime', pymongo.DESCENDING)
+        return cls._jolla.find({}).sort(
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            ))
 
     @classmethod
     def find_url(cls, url):
@@ -265,6 +275,10 @@ class Jolla(object):
     @classmethod
     def find_link(cls, link):
         return cls._jolla.find_one({'link': link})
+
+    @classmethod
+    def find_id(cls, id):
+        return cls._jolla.find_one({'_id': id})
 
 
 class Article(object):
@@ -288,7 +302,9 @@ class Article(object):
     # transinfo: Jolla translation only
     # transinfo = {link: , author: , url: , title: ,
     #              headimg:, status:, reprint: };
-    # same as Jolla. status: AWAIT/TRUSTED/REJECT
+    # same as Jolla.
+    # status: AWAIT/TRUSTED/REJECT
+    # index: same as Jolla.index(cache)
 
     # if url exists, then add "-by-"+username
     # if still exists, then add "-1", "-2", etc.
@@ -300,7 +316,7 @@ class Article(object):
             self.article_info = self.find_url(url)
 
     def add(self, board, title, content, author, email, url=None,
-            show_email=True, license=CC_LICENSE, transinfo=None):
+            show_email=True, license=CC_LICENSE, transinfo=None, index=0):
 
         if url is None:
             if transinfo is not None:
@@ -319,6 +335,7 @@ class Article(object):
             'license': license,
             'createtime': time.time(),
             'edittime': time.time(),
+            'index': index,
         }
 
         if transinfo is not None:
@@ -332,6 +349,14 @@ class Article(object):
     @classmethod
     def find_url(cls, url):
         return cls._article.find_one({'url': url})
+
+    @classmethod
+    def find_ref(cls, ref):
+        return cls._article.find({'transref': ref})
+
+    @classmethod
+    def find_ref_number(cls, ref):
+        return cls._article.find({'transref': ref}).count()
 
     @classmethod
     def find_ref_of_user(cls, refurl, user):
@@ -353,7 +378,10 @@ class Article(object):
         return self.article_info
 
     def set(self, info):
-        self.article_info = info
+        if self.article_info is None:
+            self.article_info = info
+            return
+        self.article_info.update(info)
 
     def save(self):
         return self._article.save(self.article_info)
@@ -385,7 +413,9 @@ class Article(object):
     @classmethod
     def find_jollas(cls):
         return cls._article.find({'board': 'jolla'}).sort(
-            'createtime', pymongo.DESCENDING)
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            ))
 
     @classmethod
     def num_by(cls, user):

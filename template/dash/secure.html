@@ -6,14 +6,12 @@
 
 {% block content %}
 
-<hr>
 <div class="am-padding">
-  <h2>{{ _("Security Info") }}</h2>
   <span class="am-icon-warning am-text-danger"></span><small class="am-padding"> {{ _("Note changing user name or email may cause unexpected result.") }}</small>
   <br>
   <span class="am-icon-info-circle am-text-primary"></span><small class="am-padding"> {{ _("Each time you can only change one thing.") }}</small>
 </div>
-<hr>
+<hr class="am-divider am-divider-default">
 
 <div class="am-g am-padding" style="{{ '' if verify_mail else 'display:none'}}">
   <div class="am-u-sm-12" id="info-panel">
