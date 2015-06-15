@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import User
 from lib.config import Config
-from lib.tool.minsix import open
+from lib.tool.minsix import open, py3
 from lib.tool.unitsatisfy import unit_satisfy
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
@@ -170,7 +170,7 @@ class FileHandler(BaseHandler):
         action = self.get_argument('action', 'upload')
 
         if action == 'upload':
-            self.upload(to)
+            yield self.upload(to)
         else:
             self.delete(to)
 
@@ -212,9 +212,10 @@ class FileHandler(BaseHandler):
                 self.write(json.dumps({'error': self.DUPLICATED_NAME}))
                 self.finish()
                 return
-
-        bindata = yield self.decode(urldata)
-        if bindata is None:
+        try:
+            bindata = yield self.decode(urldata)
+        except binascii.Error as e:
+            logger.error(e)
             self.write(json.dumps({'error': self.DECODE_ERROR}))
             self.finish()
             return
@@ -235,11 +236,9 @@ class FileHandler(BaseHandler):
     @tornado.gen.coroutine
     def decode(self, dataurl):
         _, data64 = dataurl.split(',', 1)
-        try:
-            bindata = base64.b64decode(data64)
-        except binascii.Error as e:
-            logger.error(e)
-            bindata = None
+        if py3:
+            data64 = data64.encode()
+        bindata = base64.b64decode(data64)
         raise tornado.gen.Return(value=bindata)
 
     @tornado.gen.coroutine
