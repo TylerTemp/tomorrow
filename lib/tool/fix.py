@@ -12,9 +12,9 @@ article = db.article
 jolla  = db.jolla
 
 for each in article.find({}):
-    each['index'] = 0
+    each['index'] = None
     article.save(each)
 
 for each in jolla.find({}):
-    each['index'] = 0
+    each['index'] = None
     jolla.save(each)

@@ -68,7 +68,7 @@ class JollaHandler(BaseHandler):
         result['link'] = link
         result['title'] = info['title']
         result['edit'] = '/jolla/task/%s/' % quote(info['url'])
-        result['priority'] = abs(info.get('index', 0))
+        result['priority'] = info.get('index', None)
         trans_slug = info['trusted_translation']
         if trans_slug:
             article = Article(trans_slug)
@@ -88,7 +88,7 @@ class JollaHandler(BaseHandler):
         self.write(json.dumps(result))
         self.finish()
 
-        if trans_slug and result['priority'] != trans['index']:
+        if trans_slug and info.get('index', None) != trans['index']:
             logger.info('incorrect index %s of %s, fix to %s',
                         trans['index'],
                         trans['url'],
@@ -101,8 +101,9 @@ class JollaHandler(BaseHandler):
     def post(self, user):
         self.check_xsrf_cookie()
 
-        index = self.get_argument('prority', '0')
-        index = -abs(int(index))
+        index = self.get_argument('prority', None)
+        if index is not None:
+            index = -abs(int(index))
         _id = ObjectId(self.get_argument('id'))
 
         logger.debug('manage jolla id %s', _id)

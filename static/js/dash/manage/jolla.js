@@ -24,7 +24,7 @@ $(document).ready(function(evt){
                          ).format(
                            _('source'), obj.edit, _('edit'), obj.link, obj.title,
                            _('translation'), (obj.trans_title? '<a href="{0}">{1}</a> (<a href="{2}"><span class="am-icon-user"> {3}</span></a>)'.format(obj.trans_link, obj.trans_title, obj.trans_author_link, obj.trans_author_name): '<span class="am-icon-times"></span>'),
-                           _('sort priority'), (obj.priority !== undefined? obj.priority: '')
+                           _('sort priority'), (obj.priority || '')
                          );
           body.html('');
           var prority = $(raw_html).appendTo(body).find('input');
