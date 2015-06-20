@@ -23,13 +23,13 @@ logger = logging.getLogger('tomorrow.dash.dash')
 
 class DashboardHandler(BaseHandler):
 
-    @tornado.web.authenticated
     @ItsMyself('')
+    @tornado.web.authenticated
     def get(self, user):
 
         url_user = unquote(user)
 
-        user_info = self.get_current_user()
+        user_info = self.current_user
 
         user = User(user_info['user'])
         user_info = user.get()

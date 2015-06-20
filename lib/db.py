@@ -417,6 +417,32 @@ class Article(object):
             ))
 
     @classmethod
+    def find_need_shown(cls, skip=0, limit=None):
+        result = cls._article.find({
+            '$or': [
+                {'transinfo.status': {'$exists': False}},
+                {'transinfo.status': cls.TRUSTED}
+            ]
+        }).sort(
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            )
+        )
+        if limit is None:
+            return result[skip:]
+        return result[skip:skip + limit]
+
+    # not work. Why?
+    # @classmethod
+    # def find_need_shown_num(cls, skip=0):
+    #     return cls._article.find({
+    #         '$or': [
+    #             {'transinfo.status': {'$exists': False}},
+    #             {'transinfo.status': cls.TRUSTED}
+    #         ]
+    #     }).count()#.skip(skip).count()
+
+    @classmethod
     def num_by(cls, user):
         return cls._article.find({'author': user}).count()
 

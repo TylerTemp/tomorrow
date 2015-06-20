@@ -37,6 +37,26 @@
   {# for css #}
   <!-- add iconfont -->
   <style>
+  @font-face {font-family: "iconfont";
+    src: url('https://dn-tomorrow.qbox.me/iconfont.eot'); /* IE9*/
+    src: url('https://dn-tomorrow.qbox.me/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('https://dn-tomorrow.qbox.me/iconfont.woff') format('woff'), /* chrome、firefox */
+    url('https://dn-tomorrow.qbox.me/iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('https://dn-tomorrow.qbox.me/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+  }
+
+  .iconfont {
+    font-family:"Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .icon-md-simple:before { content: "\e604"; }
+  .icon-md-solid:before { content: "\e603"; }
+  .icon-jolla:before { content: "\e600"; }
+
   ::-webkit-input-placeholder {
       font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
   }
@@ -55,11 +75,75 @@
 </head>
 <body>
 
+{% block nav %}
+
+<header class="am-topbar">
+  <h1 class="am-topbar-brand">
+    <a href="/">{{ _("Tomorrow.Becomes.Today") }}</a>
+  </h1>
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+          data-am-collapse="{target: '#nav-collapse'}"><span class="am-sr-only">导航切换</span> <span
+      class="am-icon-bars"></span></button>
+  <div class="am-collapse am-topbar-collapse" id="nav-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+      <li class="{{ 'am-active' if nav_active == 'home' else '' }}">
+        <a href="/"><span class="am-icon-home"> {{ _('Home') }}</span></a>
+      </li>
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          {{ _('Category') }}<span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <!-- <li class="am-dropdown-header"></li> -->
+          <li class="{{ 'am-active' if nav_active == 'jolla_blog' else '' }}">
+            <a href="/jolla/blog/"><span class="iconfont icon-jolla"> {{ _('Jolla Blog') }}</span></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="am-topbar-left am-topbar-right am-topbar-btn">
+      {% if user_name is None %}
+      <div class="am-btn-group am-btn-group-sm">
+        <a class="am-btn am-btn-primary am-round" href="/login/" style="color:#fff">{{ _('Login') }}</a>
+        <a class="am-btn am-btn-secondary am-round" href="/signin/" style="color:#fff">{{ _('Signin') }}</a>
+      </div>
+      {% else %}
+      <div class="am-dropdown" data-am-dropdown>
+        <button class="am-btn am-btn-primary am-dropdown-toggle am-btn-sm"><span class="am-icon-user"> {{ user_name }}</span> <span class="am-icon-caret-down"></span></button>
+
+        <ul class="am-dropdown-content">
+          <li>
+            <a href="{{ user_link }}"><span class="am-icon-dashboard"> {{ _('Dashboard') }}</span></a>
+          </li>
+          <li>
+            <a href="/logout/"><span class="am-icon-sign-out"> {{ _('Logout')}}</span></button>
+          </li>
+        </ul>
+      </div>
+      {% end %}
+      <div class="am-dropdown" data-am-dropdown  data-role="switch-lang-dropper">
+        <button class="am-btn am-btn-success am-dropdown-toggle am-btn-sm"><span class="am-icon-globe"> 语言/Language</span> <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content">
+          <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+            <a href="./?lang=zh" data-role="switch-lang" data-lang="zh"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+          </li>
+          <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+            <a href="./?lang=en" data-role="switch-lang" data-lang="en"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+{% end %}
+
 {% block body %}
 {% end %}
 
 <script>
-    var locale = "{{ locale.code }}";
+  var locale = "{{ locale.code[:2] }}";
 </script>
 
 <!--[if (gte IE 9)|!(IE)]><!-->
@@ -75,6 +159,47 @@
 </script>
 
 <script src="/static/js/app.js"></script>
+
+{% block navjs %}
+<script>
+  $("[data-role='switch-lang']").click(function(evt)
+  {
+    evt.preventDefault();
+    var self = $(this);
+    var to_lang = self.data('lang');
+    console.log('switch language from ' + locale + ' to ' + to_lang);
+    $("[data-role='switch-lang-dropper']").dropdown('close');
+    if (to_lang == locale)
+      return;
+    change_lang(to_lang);
+    var msg = '';
+    to_lang_2 = to_lang.substring(0, 2);
+
+    console.log('current: ' + locale + '; set to ' + to_lang_2);
+
+    var partly_support = (to_lang_2 !== 'zh');
+    var refresh = (to_lang_2 !== locale);
+    var refresh_now = false;
+    locale = to_lang_2;
+
+    if (partly_support)
+      msg += 'Attention: this is a Chinese website. The language of most articles will still be in Chinese.' + '\n';
+    if (refresh)
+      msg += _('Refreshing page is required to change language. Refresh now?');
+
+    if (refresh)
+      refresh_now = confirm(msg);
+    else if (msg)
+      return alert(msg);
+    else
+      return ;
+
+    if (refresh_now)
+      location.reload();
+  });
+</script>
+{% end %}
+
 
 {# for js #}
 {% block butt %}

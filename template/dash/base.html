@@ -15,6 +15,17 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
 {% end %}
 {% end %}
 
+{% block nav %}
+
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
+  </div>
+</header>
+
+{% end %}
+
+
 {% block body %}
 
 <!--[if lte IE 9]>
@@ -24,13 +35,6 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
 
 </p>
 <![endif]-->
-
-
-<header class="am-topbar admin-header">
-  <div class="am-topbar-brand">
-    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
-  </div>
-</header>
 
 <div class="am-cf admin-main">
   <!-- sidebar start -->
@@ -51,7 +55,6 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
           <li><a id="file" href="{{ main_url }}/file/"><span class="am-icon-file am-icon-fw"></span> {{ _("File")}}</a></li>
         </ul>
       </li>
-      {% module IconFontCss() %}
       <li class="admin-parent">
         <a class="am-cf" data-am-collapse="{target: '#mamage'}"><span class="am-icon-wrench"></span> {{ _('Manage') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="mamage">

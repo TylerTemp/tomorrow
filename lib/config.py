@@ -35,6 +35,9 @@ class Config(object):
                     cfg = json.load(f)
             else:
                 cfg = {}
+            # posts number for '/'
+            ins.home_post_limit = cfg.get('home_post_limit', 10)
+            ins.home_description_limit = cfg.get('home_description_limit', 150)
             # wait time (for reload.py)
             ins.sleep = cfg.get('wait_bootup', 3)
             # ports (for reload.py)
@@ -169,6 +172,14 @@ if __name__ == '__main__':
 
     # store secret file. Delete this file if you want to refresh secret
     "secret_file": "{TMPDIR}/tomorrow.sec",
+
+    # the posts number of '/'
+    # used by `lib/hdlr/home.py/HomeHandler`
+    "home_post_limit": 10,
+
+    # the chars number of description in '/'
+    # used by `lib/hdlr/home.py/HomeHandler`
+    "home_description_limit": 50,
 
     # used by `reboot.py`
     # time period after start up a process and before kill next process

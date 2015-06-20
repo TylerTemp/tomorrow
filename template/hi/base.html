@@ -15,6 +15,14 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
 {% end %}
 {% end %}
 
+{% block nav %}
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-smile-o"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
+  </div>
+</header>
+{% end %}
+
 {% block body %}
 
 <!--[if lte IE 9]>
@@ -25,12 +33,6 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
 </p>
 <![endif]-->
 
-
-<header class="am-topbar admin-header">
-  <div class="am-topbar-brand">
-    <a href="/"><strong>{{ _("Tomorrow Becomes Today") }}</strong></a>  | <span class="am-icon-smile-o"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
-  </div>
-</header>
 
 <div class="am-cf admin-main">
   <!-- sidebar start -->

@@ -222,7 +222,7 @@ class LogoutHandler(_Handler):
 
     def get(self):
         self.logout()
-        return self.flush()
+        return self.redirect('/')
 
     post = get
 

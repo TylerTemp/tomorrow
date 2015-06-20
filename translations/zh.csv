@@ -54,3 +54,13 @@ Logining...,登录中…
 "You are using a browser which is <strong>out of date</strong> and we can't handle it correctly. Please <a href=""http://updatemybrowser.org/"" target=""_blank"">update your browser</a>, THX!","你正在使用<strong>过时</strong>的浏览器，我们无法正确为其处理页面。请 <a href=""http://updatemybrowser.org/"" target=""_blank"">升级浏览器</a>以获得更好的体验！"
 Continue reading,阅读全文
 "Almost there, almost...", 别慌，马上就好
+
+translation,翻译
+Prev Page,上一页
+Next Page,下一页
+Category,目录
+Home,首页
+Jolla Blog,Jolla博客
+
+Posted by %(name)s%(email)s at %(time)s, %(name)s%(email)s发表于%(time)s
+Unofficial Jolla Chinese Blog,非官方Jolla中文博客

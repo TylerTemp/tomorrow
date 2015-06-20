@@ -16,17 +16,19 @@
 </style>
 {% end %}
 
+{% block nav %}{% end %}
+
 {% block body %}
 <div class="header">
   <div class="am-g">
-    <h1>{{ _('Tomorrow Becomes Today') }}</h1>
+    <a href="/"><h1>{{ _('Tomorrow Becomes Today') }}</h1></a>
   </div>
-  <hr />
+  <hr class="am-divider am-divider-default"/>
 </div>
 <div class="am-g">
   <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
     <h2>{{ _('Signin') }}</h2>
-    <hr>
+    <hr class="am-divider am-divider-default">
 
     {% if not ssl %}
     <div class="am-alert am-alert-danger" data-am-alert>

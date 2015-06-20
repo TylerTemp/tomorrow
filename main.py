@@ -30,6 +30,7 @@ from lib.tool.bashlog import filelogger
 from lib.tool.bashlog import parse_level
 from lib.config import Config
 
+from lib.hdlr.home import HomeHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
 from lib.hdlr.brey import ForBrey
@@ -64,7 +65,9 @@ class Application(tornado.web.Application):
 
     def __init__(self):
         handlers = (
-            ('/', RedirectHandler, {'to': '/jolla/'}),
+            (r'/', HomeHandler),
+            (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
+            (r'/page/(?P<page>\d+)/', HomeHandler),
             (r'/login/', auth.LoginHandler),
             (r'/signin/', auth.SigninHandler),
             (r'/logout/', auth.LogoutHandler),
@@ -84,7 +87,7 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
 
-            (r'/jolla/', jolla.HomeHandler),
+            (r'/jolla/', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/jolla/blog/', jolla.BlogHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/translate/', jolla.ListHandler),
@@ -92,12 +95,10 @@ class Application(tornado.web.Application):
             (r'/jolla/task/', jolla.TaskHandler),
             (r'/jolla/task/(?P<url>[^/]+)/', jolla.TaskHandler),
 
-            (r'/blog/(?P<board>[^/]+)/', BareHandler),
-            (r'/edit/', BareHandler),
-            (r'/edit/(?P<board>[^/]+)/', BareHandler),
+            (r'/post/(?P<slug>[^/]+)/', BareHandler),
 
             (r'/api/load/', jolla.LoadHandler),
-            (r'/brey/', ForBrey),
+            (r'/brey/(?i)', ForBrey),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),

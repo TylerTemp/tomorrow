@@ -30,7 +30,9 @@ var I18N = {
     "Password should not be empty": "密码不能为空",
     "Re-entered password is not the same": "两次输入的密码不一致",
     "Password incorrect": "密码错误",
-    "Sorry, a server error occured, please refresh and retry": "抱歉，服务器出错，请刷新重试"
+    "Sorry, a server error occured, please refresh and retry": "抱歉，服务器出错，请刷新重试",
+
+    "Refreshing page is required to change language. Refresh now?": "修改语言需要刷新页面生效。现在刷新？"
   }
 };
 
@@ -117,6 +119,15 @@ var logout = function(evt)
   cookie.unset('email', '/');
   cookie.unset('active', '/');
   cookie.unset('lang', '/');
+}
+
+var change_lang = function(lang)
+{
+  var cookie = $.AMUI.utils.cookie;
+  cookie.unset('lang', '/');
+  if (!lang)
+    return ;
+  cookie.set('lang', lang);
 }
 
 

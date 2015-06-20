@@ -31,14 +31,25 @@ logger = logging.getLogger("tomorrow.base")
 class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
-        # add ssl var
-        # override this method pls use `super`
         kwargs['ssl'] = self.is_ssl()
+        if 'nav_active' not in kwargs:
+            kwargs['nav_active'] = None
+
+        if self.current_user is None:
+            kwargs.setdefault('user_name', None)
+            kwargs.setdefault('user_link', None)
+
+        if 'user_name' not in kwargs:
+            kwargs['user_name'] = self.current_user['user']
+
+        if 'user_link' not in kwargs:
+            kwargs['user_link'] = '/am/%s/' % quote(kwargs['user_name'])
 
         return super(BaseHandler, self).render(
             template_name,
             **kwargs
         )
+
     def get_current_user(self):
         user = self.get_secure_cookie("user")
 

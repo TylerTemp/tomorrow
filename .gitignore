@@ -58,6 +58,9 @@ target/
 # pyenv
 .python-version
 
+# apple
+.DS_Store
+
 # my personal infomation of the site
 .info
 nginx.conf

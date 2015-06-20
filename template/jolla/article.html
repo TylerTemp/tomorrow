@@ -77,6 +77,8 @@
 </style>
 {% end %}
 
+{% block nav %}{% end %}
+
 {% block body %}
 
 <header>
@@ -102,7 +104,7 @@
   <div class="am-g" id="bread-crumbs">
     <div class="am-u-sm-12" style="text-align: left">
       <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
-      <span class="am-icon-angle-right"><a href="/jolla/blog/">{{ _('Blog')}}</a></span> &nbsp;
+      <span class="am-icon-angle-right"><a href="/jolla/blog/">{{ _('Jolla Blog')}}</a></span> &nbsp;
       <span class="am-icon-caret-right">{{ article['translated']['title'] }}</span>
     </div>
   </div>
@@ -116,7 +118,9 @@
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article['translated']['title'] }}</h1>
           <p class="am-article-meta">
-            {% raw _('Posted by %s%s at %s') % (article['translated']['author'], article['translated'].get('emaillink', ''), createtime) %}
+            {% raw _('Posted by %(name)s%(email)s at %(time)s') % {'name': article['translated']['author'],
+                                                                   'email': article['translated'].get('emaillink', ''),
+                                                                   'time': createtime} %}
           </p>
         </div>
 

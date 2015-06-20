@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}{{ _("Home") }}{% end %}
+
+{% block neck %}
+<style>
+  @media only screen and (min-width: 1200px) {
+    .blog-g-fixed {
+      max-width: 1200px;
+    }
+  }
+
+  @media only screen and (min-width: 641px) {
+    .blog-sidebar {
+      font-size: 1.4rem;
+    }
+  }
+
+  .blog-main {
+    padding: 20px 0;
+  }
+
+  .blog-title {
+    margin: 10px 0 20px 0;
+  }
+
+  .blog-meta {
+    font-size: 14px;
+    margin: 10px 0 20px 0;
+    color: #222;
+  }
+
+  .blog-meta a {
+    color: #27ae60;
+  }
+
+  .blog-pagination a {
+    font-size: 1.4rem;
+  }
+
+  .blog-team li {
+    padding: 4px;
+  }
+
+  .blog-team img {
+    margin-bottom: 0;
+  }
+
+  .blog-content img,
+  .blog-team img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .blog-footer {
+    padding: 10px 0;
+    text-align: center;
+  }
+</style>
+{% end %}
+
+{% block body %}
+
+<div class="am-g am-g-fixed blog-g-fixed">
+  <div class="am-u-md-8">
+    {% set idx = -1 %}
+    {% for idx, each in enumerate(posts) %}
+      {% if idx == limit - 1 %}
+        {% break %}
+      {% end %}
+    <article class="blog-main">
+      <h3 class="am-article-title blog-title">
+        <a href="{{ each['link' ]}}">{{ '[%s] ' % _('translation') if each['is_translation'] else ''}}{{ each['title'] }}</a>
+      </h3>
+      <h4 class="am-article-meta blog-meta">
+        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a> posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time> | <span class="am-badge am-badge-success am-radius">{{ each['board'] }}</span>
+      </h4>
+      <div class="am-g blog-content">
+        <div class="am-u-lg-{{7 if each['cover'] else 12}}">
+          <p>{{ each['description'] }}</p>
+        </div>
+        {% if each['cover'] %}
+        <div class="am-u-lg-5">
+          <p><img src="{{ each['cover'] }}"></p>
+        </div>
+        {% end %}
+      </div>
+    </article>
+
+    <hr class="am-article-divider blog-hr">
+    {% else %}
+      {% if idx == -1 %}
+        {% if locale.code[:2] == 'zh' %}
+          <p>这里什么都没有，施主还是请回吧。</p>
+        {% else %}
+          <p> Oops... Nothing here.</p>
+        {% end %}
+        <hr class="am-article-divider blog-hr">
+      {% end %}
+    {% end %}
+
+    <ul class="am-pagination blog-pagination">
+      {% if this_page != 1 %}
+      <li class="am-pagination-prev"><a href="/page/{{ this_page - 1 }}/ ">&laquo; {{ _('Prev Page') }}</a></li>
+      {% end %}
+      {% if idx == limit - 1 %}
+      <li class="am-pagination-next"><a href="/page/{{ this_page + 1 }}/ ">{{ _('Next Page') }} &raquo;</a></li>
+      {% end %}
+    </ul>
+  </div>
+
+  <div class="am-u-md-4 blog-sidebar">
+    <div class="am-panel-group">
+      <!-- <section class="am-panel am-panel-default">
+        <div class="am-panel-hd">{{ 'Category' }}</div>
+        <div class="am-panel-bd">
+          <a class="am-btn am-btn-success am-btn-sm" href="#"></a>
+        </div>
+      </section> -->
+
+      <section class="am-panel am-panel-default">
+        <div class="am-panel-hd">{{ _('Category') }}</div>
+        <ul class="am-list blog-list">
+          <li>
+            <a href="/jolla/blog/">
+            {{ _('Unofficial Jolla Chinese Blog') }} <br>
+            <img src="/static/img/unofficial.png" style="max-width:100%;">
+            </a>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+  </div>
+
+</div>
+
+<footer class="blog-footer">
+  <p>Tomorrow Becomes Today<br/>
+    <small>&#169; 2015 TylerTemp</small>
+  </p>
+</footer>
+
+{% end %}
