@@ -12,21 +12,9 @@ sys.path.pop(0)
 article = db.article
 jolla  = db.jolla
 
-slug = 'Early-access%3A-Sailfish-OS-Aaslakkajärvi-with-private-browsing-and-more-is-here!'
-slug = unquote(slug)
-newurl = 'sailfish-os-aaslakkajarvi'
-
-a = article.find_one({'url': slug})
-a['url'] = newurl
-a['transref'] = newurl
-a['transinfo']['url'] = newurl
-a['title'] = 'Sailfish系统Aaslakkajärvi带来隐私浏览和更多特性！'
-a['transinfo']['title'] = 'Sailfish OS Aaslakkajärvi with private browsing and more is here!'
-
+slug = 'A-Peek-at-our-Ambience-Pic-Picks'
 j = jolla.find_one({'url': slug})
-j['url'] = newurl
-j['trusted_translation'] = newurl
-j['title'] = 'Sailfish OS Aaslakkajärvi with private browsing and more is here!'
-
-article.save(a)
+a = article.find_one({'url': slug})
+print(a['title'])
+j['trusted_translation'] = a['url']
 jolla.save(j)

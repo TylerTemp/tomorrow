@@ -199,7 +199,7 @@ class Jolla(object):
     def add(self, link, title, author, content, url=None, headimg=None,
             trusted_translation=None, index=0):
         if url is None:
-            url = self.mkurl(title, author)
+            url = self.mkurl(link, author)
 
         info = {
             'link': link,
@@ -240,8 +240,14 @@ class Jolla(object):
     def new(self):
         return self.jolla_info is None
 
-    def mkurl(self, title, author):
-        url = title.replace(' ', '-')
+    def mkurl(self, link, author):
+        splited = link.split('/')
+        last = False
+        while not last:
+            last = splited.pop().strip()
+        else:
+            raise ValueError("Can't make url for %s", link)
+        url = last.replace(' ', '-')
         if self.find_url(url) is None:
             logger.debug('url as %s', url)
             return url
@@ -259,7 +265,6 @@ class Jolla(object):
                 logger.debug('url as %s', theurl)
                 return theurl
 
-    # todo: order by time/...
     @classmethod
     def all(cls):
         return cls._jolla.find({}).sort(
