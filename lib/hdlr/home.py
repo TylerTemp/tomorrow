@@ -55,7 +55,7 @@ class HomeHandler(BaseHandler):
                                      each['content'][:self.CHARS] + '...')
             result['author_name'] = each['author']
             result['author_link'] = '/hi/%s/' % quote(each['author'])
-            result['post_time'], result['post_time_attr'] = \
+            result['post_time_attr'], result['post_time'] = \
                 self.format_time(each['createtime'])
             if each['board'] == 'jolla':
                 link = '/jolla/blog/%s/'

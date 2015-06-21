@@ -112,15 +112,16 @@
   {% if headimg %}
     <img src="{{ headimg }}" id="title-img">
   {% end %}
-  <div class="am-g" id="white-bg-box">
+  <div class="am-g am-margin-bottom-xl" id="white-bg-box">
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
       <article class="am-article">
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article['translated']['title'] }}</h1>
           <p class="am-article-meta">
-            {% raw _('Posted by %(name)s%(email)s at %(time)s') % {'name': article['translated']['author'],
-                                                                   'email': article['translated'].get('emaillink', ''),
-                                                                   'time': createtime} %}
+            {% raw _('Posted by %(name)s%(email)s on %(time)s') % {
+              'name': article['translated']['author'],
+              'email': article['translated'].get('emaillink', ''),
+              'time': createtime} %}
           </p>
         </div>
 
@@ -149,8 +150,26 @@
           {% end %}
         </footer>
       </article>
+
+      <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr">
+        <div class="ds-thread"></div>
+      </div>
+
     </div>
   </div>
 </div>
 
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"tmr"};
+  (function()
+  {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]
+    ).appendChild(ds);
+  })();
+</script>
 {% end %}

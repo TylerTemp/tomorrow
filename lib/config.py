@@ -37,7 +37,7 @@ class Config(object):
                 cfg = {}
             # posts number for '/'
             ins.home_post_limit = cfg.get('home_post_limit', 10)
-            ins.home_description_limit = cfg.get('home_description_limit', 150)
+            ins.home_description_limit = cfg.get('home_description_limit', 100)
             # wait time (for reload.py)
             ins.sleep = cfg.get('wait_bootup', 3)
             # ports (for reload.py)

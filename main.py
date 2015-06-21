@@ -88,6 +88,12 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
 
             (r'/jolla/', RedirectHandler, {'to': '/', 'permanently': True}),
+            (r'/jolla/blog/Early-access:-Sailfish-OS-Aaslakkaj%C3%A4rvi-with-private-browsing-and-more-is-here!/',
+             RedirectHandler,
+             {'to': '/jolla/blog/sailfish-os-aaslakkajarvi/',
+              'permanently': True}),
+            (r'/test/', RedirectHandler, {'to': '/'}),
+
             (r'/jolla/blog/', jolla.BlogHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/translate/', jolla.ListHandler),

@@ -37,7 +37,7 @@ class ArticleHandler(BaseHandler):
             license=result.pop('license'),
             createtime=result.pop('createtime'),
             await=result.pop('await'),
-            reject=result.pop('reject'),
+            reject=result.pop('reject')
         )
 
     def parse_article(self, info):
