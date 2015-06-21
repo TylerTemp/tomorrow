@@ -29,7 +29,7 @@
   <div class="am-g">
   {% if title %}
     <h1>{{ _("Edit Translation Post") }}</h1>
-    <p>{{ _("Edit the content and format of this original article") }}</p>
+    <p>{{ _("Edit the content and the format of this original article") }}</p>
   {% else %}
     <h1>{{ _("New Translation Post") }}</h1>
     <p>{{ _("Post a new translation original article") }}<br>
@@ -94,7 +94,7 @@
       {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, content=md) %}
       <div class="am-form-group">
         <div class="am-u-sm-12">
-          <p>{{ _("What is") }} <a href="/about/markdown/" target="_blank">MarkDown</a>?</p>
+          <p>{% raw _("What is %(MarkDown)s") % {'MarkDown': '<a href="/about/markdown/" target="_blank">MarkDown</a>'} %}?</p>
         </div>
       </div>
     </div>

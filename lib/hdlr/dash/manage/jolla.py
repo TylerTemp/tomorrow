@@ -68,10 +68,10 @@ class JollaHandler(BaseHandler):
         result['link'] = link
         result['title'] = info['title']
         result['edit'] = '/jolla/task/%s/' % quote(info['url'])
-        if 'index' in info:
-            result['priority'] = abs(info['index'])
-        else:
-            result['priority'] = None
+        prio = info.get('index', None)
+        if prio is not None:
+            prio = abs(prio)
+        result['priority'] = prio
         trans_slug = info['trusted_translation']
         if trans_slug:
             article = Article(trans_slug)

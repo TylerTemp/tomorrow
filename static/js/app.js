@@ -32,7 +32,21 @@ var I18N = {
     "Password incorrect": "密码错误",
     "Sorry, a server error occured, please refresh and retry": "抱歉，服务器出错，请刷新重试",
 
-    "Refreshing page is required to change language. Refresh now?": "修改语言需要刷新页面生效。现在刷新？"
+    "Refreshing page is required to change language. Refresh now?": "修改语言需要刷新页面生效。现在刷新？",
+
+    "loading...": "载入中……",
+    "source": "源",
+    "edit": "编辑",
+    "translation": "翻译",
+    "sort priority": "排序优先级",
+    "(Not Set)": "(无)",
+    "change translation": "修改翻译",
+    "edit content": "编辑内容",
+    "loading content...": "内容载入中……",
+    "Sorry, unknown error": "嗯，貌似哪里出错了",
+    "Sorry, a server error occured, please refresh and retry": "哎哎，服务器出错啦，也许刷新重试一下吧",
+    "sort priority should be empty or number only": "排序优先级只能为数字或为空",
+    "Change saved. Refresh to see the result": "修改已保存。刷新查看结果"
   }
 };
 
@@ -118,7 +132,7 @@ var logout = function(evt)
   cookie.unset('type', '/');
   cookie.unset('email', '/');
   cookie.unset('active', '/');
-  cookie.unset('lang', '/');
+  // cookie.unset('lang', '/');
 }
 
 var change_lang = function(lang)

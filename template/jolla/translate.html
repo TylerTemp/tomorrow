@@ -148,7 +148,7 @@ header img {
     </div>
 
     <!-- reprint -->
-    <p class="am-u-sm-12">{{ _("Enter the reprinting information. (Leave it blank if your translation hasn't been reprinted yet)") }}</p>
+    <p class="am-u-sm-12">{{ _("Shared on (leave it blank if it hasn't shared on any other website)") }}:</p>
     <label class="am-u-sm-4">{{ _('Site Name') }}</label>
     <label class="am-u-sm-8">{{ _('URL') }}</label>
     <div id="reprint-area">
@@ -199,10 +199,7 @@ header img {
     <!-- license -->
     <div class="am-g">
       <div class="am-u-sm-12">
-        <p>{{ _("By submitting you agree to publish this article under") }}
-          <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank">
-            <span class="am-icon-cc"> CC BY 4.0</span>
-          </a>
+        <p>{% raw _("By submitting you agree to publish this article under %s license") %'<a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank"><span class="am-icon-cc"> CC BY 4.0</span></a>' %}
         </p>
       </div>
     </div>

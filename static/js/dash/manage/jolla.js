@@ -38,7 +38,7 @@ $(document).ready(function(evt){
           option = $('<p><label>' + _('change translation') + '</label>: ' +
                      option.format(collect.join('')) +
                      '</p>').appendTo(body).find('select');
-          $('<p><label>{0}</label></p>'.format(_('edit content:'))).appendTo(body);
+          $('<p><label>{0}:</label></p>'.format(_('edit content'))).appendTo(body);
           var content = $('<textarea class="am-form-field" placeholder="&#xe603; MarkDown Format Required">{0}</textarea>'.format(obj.trans_content || '')).appendTo(body);
           var error_panel = $('<div></div>').appendTo(body);
           var set_error = function(msg, level)

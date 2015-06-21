@@ -116,7 +116,7 @@
               </tr>
               {% if 'reprint' in article %}
               <tr>
-                <td>{{ _("reprint") }}</td>
+                <td>{{ _("shared") }}</td>
                 <td data-role="reprint">
                   <div>
                     {% raw '; '.join('<a href="{}">{}</a>'.format(key, value) for key, value in article['reprint'].items()) %}

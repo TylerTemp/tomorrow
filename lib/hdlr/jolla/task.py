@@ -70,7 +70,9 @@ class TaskHandler(BaseHandler):
 
             img_upload_url='/hi/%s/img/' % quote(username),
             file_upload_url='/hi/%s/file/' % quote(username),
-            size_limit=cfg.size_limit[usertype]
+            size_limit=cfg.size_limit[usertype],
+
+            nav_active='jolla_task',
         )
 
     @EnsureUser(level=User.admin, active=True)

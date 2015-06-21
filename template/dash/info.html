@@ -2,11 +2,11 @@
 
 {% block subtitle %}[{{ _('Information') }}]{% end %}
 
-{% block guide %}<span class="am-icon-user"> <strong class="am-text-primary am-text-lg">{{ _("Personal Infomation") }}</strong></span> / <small>{{ _("Anything about you") }}</small>{% end %}
+{% block guide %}<span class="am-icon-user"> <strong class="am-text-primary am-text-lg">{{ _("Personal Information") }}</strong></span> / <small>{{ _("Anything about you") }}</small>{% end %}
 
 {% block content %}
 <div class="am-g am-padding">
-  <span class="am-icon-info-circle am-text-primary"></span><small> {{ _('You can change your name, email and password in "Security" panel.') }}</small>
+  <span class="am-icon-info-circle am-text-primary"></span><small> {{ _('You can change your name, email and password in "Security" panel') }}</small>
 </div>
 
 <hr class="am-divider am-divider-default"/>
@@ -45,15 +45,15 @@
       <label><input id="show_email" name="show_email" type="checkbox" value="show_email" {{ 'checked' if show_email else ''}}> {{ _("Show my email when someone visits my homepage") }}</label>
     </div>
     <div class="am-form-group">
-      <label for="url-avatar"><span class="am-icon-instagram"> {{ _("Change") if user_img else _("Set") }} {{ _("Avatar (URL):") }}</span></label>
+      <label for="url-avatar"><span class="am-icon-instagram"> {{ _(("Change" if user_img else "Set") + " Avatar (URL)") }}:</span></label>
       <input type="text" id="url-avatar" name="img_url" placeholder="{{ _("Enter the url of your avatar image") }}" value="{{ user_img if user_img else ''}}">
       <button class="am-btn am-btn-default am-btn-xs" id="preview-avatar">{{ _("Preview") }}</button>
       <small>
-        {{ "You havn't set avatar yet." if not user_img else "" }}
+        {{ _("You havn't set avatar yet") if not user_img else "" }}
         {% if user_type == NORMAL %}
           {{ _("Enter the url of your avatar image") }}
         {% else %}
-          Need upload? Visit "<a href='{{ main_url }}/img/'>Image</a>" panel
+          {% raw _('Need upload? Visit "%s" panel') % ("<a href='%s/img/'>%s</a>" % (main_url, _("Gallery"))) %}
         {% end %}
       </small>
     </div>
@@ -65,35 +65,6 @@
       </button>
     </div>
   </form>
-</div>
-
-<hr>
-<div class="am-g am-padding">
-{% if user_type == NORMAL %}
-  <p>{{ _('In Group "User" means you can:') }}</p>
-  <ul>
-    <li>{{ _('Translate a Jolla article.') }}</li>
-  </ul>
-{% elif user_type == ADMIN %}
-<p>{{ _('In Group "Administor" means you can:') }}</p>
-  <ul>
-    <li>{{ _('Post a new Jolla translating task.') }}</li>
-    <li>{{ _('Translate a Jolla article.') }}</li>
-    <li>{{ _('Change a trusted translation for a Jolla translating task.') }}</li>
-    <li>{{ _('Upload images/files up to %s.') % size_limit }}</li>
-  </ul>
-{% elif user_type == ROOT %}
-  <p>{{ _('Oh Root user. You know what you can do.') }} :)</p>
-  <ul>
-    <li>{{ _('Post a new Jolla translating task.') }}</li>
-    <li>{{ _('Translate a Jolla article.') }}</li>
-    <li>{{ _('Change a trusted translation for a Jolla translating task.') }}</li>
-    <li>{{ _("Unlimited images/files size upload. (Note it will still be limited by the server proxy setting)") }}</li>
-    <li>...</li>
-  </ul>
-{% else %}
-  <p>{{ _("Oops, we don't know which user group you are from. Outter space?") }}</p>
-{% end %}
 </div>
 
 {% end %}

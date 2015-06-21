@@ -104,9 +104,16 @@
 
     <div class="am-topbar-left am-topbar-right am-topbar-btn">
       {% if user_name is None %}
-      <div class="am-btn-group am-btn-group-sm">
-        <a class="am-btn am-btn-primary am-round" href="/login/" style="color:#fff">{{ _('Login') }}</a>
-        <a class="am-btn am-btn-secondary am-round" href="/signin/" style="color:#fff">{{ _('Signin') }}</a>
+      <div class="am-dropdown" data-am-dropdown>
+        <button class="am-btn am-btn-primary am-dropdown-toggle am-btn-sm"><span class="am-icon-user"></span> <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content">
+          <li>
+            <a href="/login/"><span class="am-icon-sign-in am-icon-fw"> {{ _('Login') }}</spin></a>
+          </li>
+          <li>
+            <a href="/signin/"><span class="am-icon-user-plus am-icon-fw"> {{ _('Signin') }}</span></a>
+          </li>
+        </ul>
       </div>
       {% else %}
       <div class="am-dropdown" data-am-dropdown>
@@ -114,10 +121,21 @@
 
         <ul class="am-dropdown-content">
           <li>
-            <a href="{{ user_link }}"><span class="am-icon-dashboard"> {{ _('Dashboard') }}</span></a>
+            <a href="{{ user_link }}"><span class="am-icon-dashboard am-icon-fw"> {{ _('Dashboard') }}</span></a>
+          </li>
+          <li class="am-divider"></li>
+          <li>
+            <a href="/edit/"><span class="am-icon-plus am-icon-fw"> {{ _('New Post') }}</span></a>
+          </li>
+          <li class="{{ 'am-active' if nav_active == 'jolla_task' else '' }}">
+            <a href="/jolla/task/"><span class="iconfont icon-jolla"> {{ _('New Jolla Translation') }}</span></a>
           </li>
           <li>
-            <a href="/logout/"><span class="am-icon-sign-out"> {{ _('Logout')}}</span></button>
+            <a href="/jolla/translate/"><span class="am-icon-language am-icon-fw"> {{ _('Translate a Jolla Post') }}</span></a>
+          </li>
+          <li class="am-divider"></li>
+          <li>
+            <a href="/logout/"><span class="am-icon-sign-out am-icon-fw"> {{ _('Logout')}}</span></button>
           </li>
         </ul>
       </div>
@@ -183,7 +201,7 @@
     locale = to_lang_2;
 
     if (partly_support)
-      msg += 'Attention: this is a Chinese website. The language of most articles will still be in Chinese.' + '\n';
+      msg += 'Please note: this is a Chinese website. Most articles will still be in Chinese.\n';
     if (refresh)
       msg += _('Refreshing page is required to change language. Refresh now?');
 

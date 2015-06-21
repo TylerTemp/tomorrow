@@ -7,9 +7,9 @@
 {% block content %}
 
 <div class="am-padding">
-  <span class="am-icon-warning am-text-danger"></span><small class="am-padding"> {{ _("Note changing user name or email may cause unexpected result.") }}</small>
+  <span class="am-icon-warning am-text-danger am-icon-fw"></span><small> {{ _("Note changing user name or email may cause unexpected result") }}</small>
   <br>
-  <span class="am-icon-info-circle am-text-primary"></span><small class="am-padding"> {{ _("Each time you can only change one thing.") }}</small>
+  <span class="am-icon-info-circle am-text-primary am-icon-fw"></span><small> {{ _("Each time you can only change one thing") }}</small>
 </div>
 <hr class="am-divider am-divider-default">
 
@@ -124,7 +124,7 @@
 
 <div class="am-g am-padding">
   <div class="am-u-sm-12">
-    <p class="am-fr">{{ _("Doesn't recive the email? Try this:") }} &nbsp;
+    <p class="am-fr">{{ _("Doesn't recive the email? Try this") }}: &nbsp;
       <button class="am-btn am-btn-primary" id="resend-btn"
       data-am-loading="{spinner: 'refresh', loadingText: '', resetText: '{{ _('Resend') }}'}">
         {{ _('Resend') }}</button>

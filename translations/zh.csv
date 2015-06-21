@@ -55,12 +55,141 @@ Logining...,登录中…
 Continue reading,阅读全文
 "Almost there, almost...", 别慌，马上就好
 
+Edit Translation Original Post,编辑翻译原文
+New Translation Original Post,新翻译原文
+Edit Translation Post,编辑翻译文章
+New Translation Post,新翻译文章
+Edit the content and the format of this original article,编辑原文内容和格式
+Post a new translation original article,新增需要翻译的原文
+"Note you can paste the url and click ""Load"" to let server load the content","试试输入原文网址后点击“载入”按钮吧"
+Article Information,文章信息
+Source Link,原文链接
+Enter the link of the original content,输入原文链接
+Load,载入
+Enter the title of the original content,输入原文标题
+Author,作者
+Enter the author of the original content,输入原文作者
+Heading Image,文顶图片
+[Optional] Enter the URL of heading image of the original content,[可选]输入原文顶部图片地址
+What is %(MarkDown)s,%(MarkDown)s是个啥
+MarkDown Syntax Supported,支持MarkDown语法
+
 translation,翻译
 Prev Page,上一页
 Next Page,下一页
 Category,目录
 Home,首页
 Jolla Blog,Jolla博客
+Dashboard,控制面板
+Logout,注销
+Translate,翻译
+Translate a Jolla Post,翻译Jolla文章
+New Post,新文章
+New Jolla Translation,新Jolla翻译
+
+Finished,已完成
+Title,标题
+Translate Here,译文
+Original Content,原文
+Edit Source,编辑原文
+Switch to,切换到
+Hide Source,隐藏原文
+Shared on (leave it blank if it hasn't shared on any other website),已转载至(留白即为首发)
+Site Name,站点名
+Enter the translation of the title,输入标题翻译
+Add a new record,新增一条记录
+Submit,提交
+Hide my email,隐藏我的邮箱
+Enter site name,输入站点名称
+Enter URL,输入网址
+By submitting you agree to publish this article under %s license,你的译文将基于%s协议发布
 
 Posted by %(name)s%(email)s at %(time)s, %(name)s%(email)s发表于%(time)s
 Unofficial Jolla Chinese Blog,非官方Jolla中文博客
+
+Main Page,主页
+Some basic information,基本信息
+Administor,管理员
+Super User,超级用户
+Root,超级用户
+friend,朋友
+Your account is deactive,账户未激活
+Please verify your email to active your account,请查看邮箱以激活账户
+"Visit ""Security"" panel for more detail","查看""安全""选项卡查看详情"
+"Hi %(user)s, my %(type)s, welcome back","嘿，%(user)s，我的%(type)s，欢迎回来"
+Name,名称
+Show My Email,显示我的邮箱
+Avatar,头像
+Articles,文章
+Messages,信息
+Images,图像
+Files,文件
+Gallery,画廊
+Change,修改
+
+Personal Info,个人信息
+Personal Information,个人信息
+Anything about you,关于你的二三事
+"You can change your name, email and password in ""Security"" panel","你可以在“安全”面板中修改你的名称,邮件和密码"
+My Personal Infomation,我的个人信息
+User Group,用户组
+Show Email,显示邮箱
+Show my email when someone visits my homepage,在我的主页上显示我的邮箱
+You havn't set avatar yet,你还没有设置头像呢
+"Need upload? Visit ""%s"" panel","需要上传？看看“%s”面板吧"
+Change Avatar (URL),修改头像（地址）
+Set Avatar (URL),设置头像（地址）
+Image,图像
+Preview,预览
+Save,保存
+
+Security,安全
+Security Settings,安全设置
+Anything about your account,关于你账户的那些事儿
+Note changing user name or email may cause unexpected result,注意修改用户名和邮箱可能会导致意料之外的错误
+Each time you can only change one thing,一次只能改一个哦
+Active,激活
+Doesn't recive the email? Try this,没收到邮件？试试这个
+Resend,重发
+
+Article,文章
+All your posts,你的文
+info,信息
+detail,详情
+title,标题
+source,源
+board,板块
+create time,创建时间
+edit time,编辑时间
+license,许可协议
+show email,显示邮箱
+shared,转载
+
+Message,信息
+All messages you received,给你一张过去的专辑
+To,给
+Leave it blank if you want to send to site owner,如果需要传达给站长，请留白
+Enter user name or email,输入用户名或邮箱
+Enter the content,输入内容
+Send,发送
+You have no unread message,你没有未读信息
+
+Uploaded,已上传
+File,文件
+All images you uploaded,已上传的所有图片
+All files you uploaded,已上传的所有文件
+Upload,上传
+
+
+Manage,管理
+Manage all Jolla posts,管理所有的Jolla文章
+
+"Hi %(visitor)s, I'm %(user_name)s","嘿%(visitor)s，我是%(user_name)s"
+there,这位仁兄
+My Name,我的名字
+My Email,我的邮箱
+Leave a Message,留言
+Post Time,发布时间
+Edit Time,编辑时间
+Your email,你的邮箱
+Leave %s a message,给%s飞鸽传封书
