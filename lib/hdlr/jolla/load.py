@@ -97,7 +97,7 @@ class LoadHandler(BaseHandler):
         headimg = article.img['src']
         title = article.h1.string.strip()
         content = article.find('div', {'class': 'entry-content'})
-        content.find(True, {'class': 'ssba'}).extract()
+        # content.find(True, {'class': 'ssba'}).extract()
         mdcontent = html2md(str(content))
         htmlcontent = md2html(mdcontent)
         return dict(title=title, author=author,
