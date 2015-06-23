@@ -160,6 +160,7 @@ class TranslateHandler(BaseHandler):
                         con_title, con_author)
                     conflicting_article.save()
                 translated_info['url'] = to_trans_info['url']
+                this_url = to_trans_info['url']
 
             logger.debug(
                 'trust %s as translation of %s',

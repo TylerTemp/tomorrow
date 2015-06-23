@@ -243,8 +243,10 @@ class Jolla(object):
     def mkurl(self, link, author):
         splited = link.split('/')
         last = False
-        while not last:
+        while splited:
             last = splited.pop().strip()
+            if last:
+                break
         else:
             raise ValueError("Can't make url for %s", link)
         url = last.replace(' ', '-')
