@@ -147,21 +147,21 @@ header img {
     <div id="submit-error-panel">
     </div>
 
-    <!-- reprint -->
+    <!-- share -->
     <p class="am-u-sm-12">{{ _("Shared on (leave it blank if it hasn't shared on any other website)") }}:</p>
     <label class="am-u-sm-4">{{ _('Site Name') }}</label>
     <label class="am-u-sm-8">{{ _('URL') }}</label>
-    <div id="reprint-area">
-    {% for name, url in translated['reprint'].items() %}
+    <div id="share-area">
+    {% for each in translated['share'] %}
       <div class="am-g">
         <div class="am-u-sm-4">
-          <input class="am-form-field" value="{{ name }}" placeholder="{{ _('Enter site name') }}">
+          <input class="am-form-field" value="{{ each['name'] }}" placeholder="{{ _('Enter site name') }}">
         </div>
         <div class="am-u-sm-7">
-          <input class="am-form-field" value="{{ url }}" placeholder="{{ _('Enter URL') }}">
+          <input class="am-form-field" value="{{ each['url'] }}" placeholder="{{ _('Enter URL') }}">
         </div>
         <div class="am-u-sm-1">
-          <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
+          <button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>
         </div>
       </div>
     {% else %}
@@ -173,14 +173,14 @@ header img {
           <input class="am-form-field" placeholder="{{ _('Enter URL') }}">
         </div>
         <div class="am-u-sm-1">
-          <button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>
+          <button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>
         </div>
       </div>
     {% end %}
     </div>
     <div class="am-g">
       <div class="am-u-sm-12">
-        <label class="am-margin-vertical"><button class="am-btn am-btn-success am-btn-xs" id="add-reprint"><span class="am-icon-plus"></span></button>
+        <label class="am-margin-vertical"><button class="am-btn am-btn-success am-btn-xs" id="add-share"><span class="am-icon-plus"></span></button>
           {{ _("Add a new record") }}</label>
       </div>
     </div>

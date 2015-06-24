@@ -10,11 +10,15 @@ from lib.db import db
 sys.path.pop(0)
 
 article = db.article
-jolla  = db.jolla
 
-slug = 'A-Peek-at-our-Ambience-Pic-Picks'
-j = jolla.find_one({'url': slug})
-a = article.find_one({'url': slug})
-print(a['title'])
-j['trusted_translation'] = a['url']
-jolla.save(j)
+for each in article.find({}):
+    if 'transinfo' in each:
+        transinfo = each['transinfo']
+        share = transinfo.pop('reprint')
+        result = []
+        print(each['url'])
+        for name, url in share.items():
+            print(name, url)
+            result.append({'name': name, 'url': url})
+        transinfo['share'] = result
+        article.save(each)

@@ -62,11 +62,11 @@ class ArticleHandler(BaseHandler):
             if 'transinfo' in each:
                 each['edit'] = \
                     '/jolla/translate/%s/' % each['transinfo']['url']
-                each['reprint'] = each['transinfo']['reprint']
+                each['share'] = each['transinfo']['share']
                 each['source_title'] = each['transinfo']['title']
                 each['source_url'] = each['transinfo']['link']
             else:
-                each['edit'] = each['reprint'] = each['source_title'] \
+                each['edit'] = each['share'] = each['source_title'] \
                     = each['source_url'] = None
             yield each
 
@@ -81,10 +81,10 @@ class ArticleHandler(BaseHandler):
         title = self.get_argument('title')
         # jQuery will send 'true'/'false', and tornado will not deal this
         show_email = (self.get_argument('show_email').lower() != 'false')
-        reprint = self.get_reprint_argument()
+        share = self.get_share_argument()
 
-        logger.info('update id(%s): title: %s; show_email: %s; reprint: %s',
-                    id_obj, title, show_email, reprint)
+        logger.info('update id(%s): title: %s; show_email: %s; share: %s',
+                    id_obj, title, show_email, share)
 
         assert title
         coll.update_one(
@@ -93,29 +93,29 @@ class ArticleHandler(BaseHandler):
                 {
                     'title': title,
                     'show_email': show_email,
-                    'transinfo.reprint': reprint,
+                    'transinfo.share': share,
                 }
             }
         )
 
         return self.write(json.dumps({'error': 0}))
 
-    re_reprint = re.compile(r'^reprint\[(?P<key>.*?)\]$')
-    def get_reprint_argument(self):
-        result = {}
-        re_reprint = self.re_reprint
+    re_share = re.compile(r'^share\[(?P<key>.*?)\]$')
+    def get_share_argument(self):
+        result = []
+        re_share = self.re_share
         logger.debug(self.request.arguments)
         for k, v in self.request.arguments.items():
             logger.debug('k: %r; v: %r', k, v)
-            match = re_reprint.match(k)
+            match = re_share.match(k)
             if match is not None:
                 k = match.groupdict()['key']
                 if isinstance(v, (list, tuple)):
                     v = v[0]
                 if py3:
                     v = v.decode('utf-8')
-                    k = k.decode('utf-8')
-                result[match.groupdict()['key']] = v
+                # result[v] = match.groupdict()['key']
+                result.append({'name': v, 'url': k})
         return result
 
     def delete_article(self):

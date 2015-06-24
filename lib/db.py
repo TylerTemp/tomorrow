@@ -307,7 +307,7 @@ class Article(object):
     # transref: same as Jolla.url
     # transinfo: Jolla translation only
     # transinfo = {link: , author: , url: , title: ,
-    #              headimg:, status:, reprint: };
+    #              headimg:, status:, share: };
     # same as Jolla.
     # status: AWAIT/TRUSTED/REJECT
     # index: same as Jolla.index(cache)

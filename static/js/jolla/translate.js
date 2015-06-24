@@ -85,7 +85,7 @@ $(document).ready(function(evt)
     $("#right").show(400);
   });
 
-  var del_reprint = function(evt)
+  var del_share = function(evt)
   {
     evt.preventDefault();
     var container = $(this).parent().parent();
@@ -95,9 +95,9 @@ $(document).ready(function(evt)
     });
   }
 
-  $(".delete-reprint").click(del_reprint);
+  $(".delete-share").click(del_share);
 
-  $("#add-reprint").click(function(evt)
+  $("#add-share").click(function(evt)
   {
     $(
       '<div class="am-g">' +
@@ -108,13 +108,13 @@ $(document).ready(function(evt)
           '<input class="am-form-field" placeholder="' + _('Enter URL') + '">' +
         '</div>' +
         '<div class="am-u-sm-1">' +
-          '<button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>' +
+          '<button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>' +
         '</div>' +
       '</div>'
     )
-    .appendTo("#reprint-area")
+    .appendTo("#share-area")
     .find('button')
-    .click(del_reprint);
+    .click(del_share);
   });
 
   var error_panel = $("#submit-error-panel");
@@ -137,15 +137,15 @@ $(document).ready(function(evt)
     if (!content)
       errors.push(_("Content should not be empty"));
 
-    var reprint_obj = {};
-    $("#reprint-area").children().each(function(idx, ele)
+    var share_obj = {};
+    $("#share-area").children().each(function(idx, ele)
     {
       var inputs = $(ele).find('input');
       var name = inputs.eq(0).val();
       var url = inputs.eq(1).val();
       if ((name && (!url)) || (((!name) && url)))
       {
-        errors.push(_("Miss {0} in  reprinting information, line {1}").format(
+        errors.push(_("Miss {0} in  sharing information, line {1}").format(
           _(name? "URL": "Site Name"),
           idx + 1
         ));
@@ -156,7 +156,7 @@ $(document).ready(function(evt)
       else
       {
         console.log('name: {0}, url: {1}'.format(name, url));
-        reprint_obj[name] = url;
+        share_obj[url] = name;    // a little trick: encode/decode
       }
     });
 
@@ -179,7 +179,7 @@ $(document).ready(function(evt)
           'content': content,
           'format': _editor_status,
           'show_email': show_email,
-          'reprint': reprint_obj
+          'share': share_obj
         },
         'type': 'post',
         'beforeSend': function(jqXHR, settings)

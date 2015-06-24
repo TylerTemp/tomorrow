@@ -114,17 +114,17 @@
                   </label>
                 </td>
               </tr>
-              {% if 'reprint' in article %}
+              {% if 'share' in article %}
               <tr>
                 <td>{{ _("shared") }}</td>
-                <td data-role="reprint">
+                <td data-role="share">
                   <div>
-                    {% raw '; '.join('<a href="{}">{}</a>'.format(key, value) for key, value in article['reprint'].items()) %}
+                    {% raw '; '.join('<a href="{}">{}</a>'.format(each['url'], each['name']) for each in article['share']) %}
                   </div>
                   <div class="am-g" style="display:none">
                     <label class="am-u-sm-3">{{ _('Site Name') }}</label>
                     <label class="am-u-sm-9">{{ _('URL') }}</label>
-                    <div data-role="reprint-container">
+                    <div data-role="share-container">
                     </div>
                     <div data-role="new-line" class="am-cf">
                       <label class="am-fr am-margin-top am-margin-right">

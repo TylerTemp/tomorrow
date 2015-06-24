@@ -184,6 +184,8 @@ Upload,上传
 Manage,管理
 Manage all Jolla posts,管理所有的Jolla文章
 
+edit,编辑
+
 "Hi %(visitor)s, I'm %(user_name)s","嘿%(visitor)s，我是%(user_name)s"
 there,这位仁兄
 My Name,我的名字

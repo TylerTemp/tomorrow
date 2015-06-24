@@ -138,12 +138,12 @@
             <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
             <p>{% module License(license, article['translated']['author'], article['translated'].get('emaillink', None)) %}</p>
           </div>
-          {% if article['reprint'] %}
+          {% if article['share'] %}
           <div>
             <p>本文已转载至:</p>
             <ul>
-            {% for name, url in article['reprint'].items() %}
-              <li><a href="{{ url }}" target="_blank">{{ name }}</a></li>
+            {% for each in article['share'] %}
+              <li><a href="{{ each['url'] }}" target="_blank">{{ each['name'] }}<span class="am-icon-external-link"></span></a></li>
             {% end %}
             </ul>
           </div>

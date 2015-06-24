@@ -61,13 +61,13 @@ class TranslateHandler(BaseHandler):
 
         if translated is None:
             translated = {k: '' for k in translate.keys()}
-            translated['reprint'] = {}
+            translated['share'] = {}
         else:
             translated = {
                 'title': translated['title'],
                 'md': translated['content'],
                 'html':md2html(translated['content']),
-                'reprint': translated['transinfo']['reprint'],
+                'share': translated['transinfo']['share'],
             }
 
         return self.render(
@@ -96,7 +96,7 @@ class TranslateHandler(BaseHandler):
         format = self.get_argument('format')
         content = self.get_argument('content')
         show_email = self.get_argument('show_email', True)
-        reprint = self.get_reprint_argument()
+        share = self.get_share_argument()
 
         url = unquote(url)
         to_translate = Jolla(url)
@@ -143,8 +143,8 @@ class TranslateHandler(BaseHandler):
             translated_info = translated.get()
             logger.info('Renew translate %s', translated_info['url'])
         translated_info = translated.get()
-        translated_info['transinfo']['reprint'] = reprint
-        logger.debug(translated_info['transinfo']['reprint'])
+        translated_info['transinfo']['share'] = share
+        logger.debug(translated_info['transinfo']['share'])
 
         this_url = translated_info['url']
         old_url = to_trans_info['trusted_translation']
@@ -184,16 +184,17 @@ class TranslateHandler(BaseHandler):
 
         return self.write(json.dumps(result))
 
-    re_reprint = re.compile(r'^reprint\[(?P<key>.*?)\]$')
-    def get_reprint_argument(self):
-        result = {}
-        re_reprint = self.re_reprint
+    re_share = re.compile(r'^share\[(?P<key>.*?)\]$')
+    def get_share_argument(self):
+        # result = {}
+        result = []
+        re_share = self.re_share
         for k, v in self.request.arguments.items():
-            match = re_reprint.match(k)
+            match = re_share.match(k)
             if match is not None:
                 if isinstance(v, (list, tuple)):
                     v = v[0]
                 if py3:
                     v = v.decode('utf-8')
-                result[match.groupdict()['key']] = v
+                result.append({'name': v, 'url': k})
         return result

@@ -64,7 +64,7 @@ $(document).ready(function()
     });
   });
 
-  var mk_reprint = function(container, name, value)
+  var mk_share = function(container, name, value)
   {
     var target = $(
       '<div>' +
@@ -75,7 +75,7 @@ $(document).ready(function()
           '<input class="am-form-field" value="' + value + '" placeholder="' + _('Enter URL') + '">' +
         '</div>' +
         '<div class="am-u-sm-1">' +
-          '<button class="am-btn am-btn-warning delete-reprint"><span class="am-icon-times"></span></button>' +
+          '<button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>' +
         '</div>' +
       '</div>'
     ).appendTo(container).hide().fadeIn(400);
@@ -91,8 +91,8 @@ $(document).ready(function()
 
   $('button[data-role="add-line"]').click(function(evt)
   {
-    var target = $(this).closest('td[data-role="reprint"]').find('div[data-role="reprint-container"]');
-    mk_reprint(target, '', '');
+    var target = $(this).closest('td[data-role="share"]').find('div[data-role="share-container"]');
+    mk_share(target, '', '');
   });
 
   $("button[data-role='edit']").click(function(evt)
@@ -109,8 +109,8 @@ $(document).ready(function()
 
     var title = tbody.find('td[data-role="title"]');
     var show_email = tbody.find('td[data-role="show-email"]');
-    var reprint = tbody.find('td[data-role="reprint"]');
-    var reprint_container = reprint.find('div[data-role="reprint-container"]');
+    var share = tbody.find('td[data-role="share"]');
+    var share_container = share.find('div[data-role="share-container"]');
     if (for_edit)
     {
       var title_val = title.find('a').hide().text();
@@ -120,13 +120,13 @@ $(document).ready(function()
       show_email.children(':first-child').hide();
       show_email.children(':nth-child(2)').show().find('input').uCheck(show_email_val? 'check': 'uncheck');
 
-      reprint.children(':first-child').hide();
-      reprint.children(':nth-child(2)').show()
-      reprint_container.html('');
-      reprint.find('a').each(function(idx, ele)
+      share.children(':first-child').hide();
+      share.children(':nth-child(2)').show()
+      share_container.html('');
+      share.find('a').each(function(idx, ele)
       {
         var self = $(ele);
-        mk_reprint(reprint_container, self.text(), self.prop('href'));
+        mk_share(share_container, self.text(), self.prop('href'));
       });
     }
     else
@@ -145,21 +145,21 @@ $(document).ready(function()
       var show_email_val = show_email.children(':nth-child(2)').hide().find('input').prop('checked');
       show_email.children(':first-child').show().html(show_email_val? '&#10004;': '&#10060;');
 
-      var reprint_urls = [];
-      var reprint_obj = {};
-      reprint_container.children().each(function(idx, ele)
+      var share_urls = [];
+      var share_obj = {};
+      share_container.children().each(function(idx, ele)
       {
         var inputs = $(ele).find('input');
         var name = inputs.eq(0).val();
         var url = inputs.eq(1).val();
-        if (name && url && reprint_obj[name] === undefined)
+        if (name && url && share_obj[name] === undefined)
         {
-          reprint_urls.push('<a href="{0}">{1}</a>'.format(url, name));
-          reprint_obj[name] = url;
+          share_urls.push('<a href="{0}">{1}</a>'.format(url, name));
+          share_obj[url] = name;
         }
       });
-      reprint.children(':first-child').html(reprint_urls.join('; ')).show();
-      reprint.children(':nth-child(2)').hide();
+      share.children(':first-child').html(share_urls.join('; ')).show();
+      share.children(':nth-child(2)').hide();
 
       $.ajax(
         settings = {
@@ -168,7 +168,7 @@ $(document).ready(function()
             'action': 'edit',
             'title': title_val,
             'show_email': show_email_val,
-            'reprint': reprint_obj
+            'share': share_obj
           },
           'type': 'post',
           'beforeSend': function(jqXHR, settings)
@@ -227,8 +227,8 @@ $(document).ready(function()
     show_email.children(':first-child').show();
     show_email.children(':nth-child(2)').hide();
 
-    var reprint = tbody.find('td[data-role="reprint"]');
-    reprint.children(':first-child').show();
-    reprint.children(':nth-child(2)').hide();
+    var share = tbody.find('td[data-role="share"]');
+    share.children(':first-child').show();
+    share.children(':nth-child(2)').hide();
   });
 });
