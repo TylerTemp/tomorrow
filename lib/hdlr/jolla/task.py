@@ -68,8 +68,8 @@ class TaskHandler(BaseHandler):
             md=md,
             link=link,
 
-            img_upload_url='/hi/%s/img/' % quote(username),
-            file_upload_url='/hi/%s/file/' % quote(username),
+            img_upload_url='/am/%s/img/' % quote(username),
+            file_upload_url='/am/%s/file/' % quote(username),
             size_limit=cfg.size_limit[usertype],
 
             nav_active='jolla_task',

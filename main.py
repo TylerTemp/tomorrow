@@ -31,6 +31,7 @@ from lib.tool.bashlog import parse_level
 from lib.config import Config
 
 from lib.hdlr.home import HomeHandler
+from lib.hdlr.edit import EditHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
 from lib.hdlr.brey import ForBrey
@@ -102,6 +103,8 @@ class Application(tornado.web.Application):
             (r'/jolla/task/(?P<url>[^/]+)/', jolla.TaskHandler),
 
             (r'/post/(?P<slug>[^/]+)/', BareHandler),
+            (r'/edit/', EditHandler),
+            (r'/edit/(?P<slug>[^/]+)/', EditHandler),
 
             (r'/api/load/', jolla.LoadHandler),
             (r'/brey/(?i)', ForBrey),

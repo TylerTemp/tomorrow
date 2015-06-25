@@ -78,9 +78,9 @@ class TranslateHandler(BaseHandler):
             imgs=imgs,
             files=files,
             edit_task_url=edit_task_url,
-            img_upload_url=('/hi/%s/img/' % quote(username)
+            img_upload_url=('/am/%s/img/' % quote(username)
                             if username else None),
-            file_upload_url=('/hi/%s/file/' % quote(username)
+            file_upload_url=('/am/%s/file/' % quote(username)
                              if username else None),
             size_limit=cfg.size_limit.get(usertype, 0),
             md=self.get_argument('md', False),
