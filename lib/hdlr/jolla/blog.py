@@ -42,7 +42,7 @@ class BlogHandler(BaseHandler):
             info = each['transinfo']
             result = {
                 'title': each['title'],
-                'url': '//%s/%s' % (cls.HOST, quote(each['url'])),
+                'url': '//%s/%s/' % (cls.HOST, quote(each['url'])),
                 'img': info.get('cover', None) or info['headimg'],
                 'descripition': (each['transinfo'].get('description', None)
                             or each['content'][:80] + '...'),
