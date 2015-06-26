@@ -23,25 +23,30 @@ class HomeHandler(BaseHandler):
     _cfg = Config()
     LIMIT = _cfg.home_post_limit
     CHARS = _cfg.home_description_limit
+    JOLLA = _cfg.jolla_host
+    # HOST = _cfg.main_host
 
     def get(self, page=1):
         this_page = int(page)
-        # count with skip won't work. WHY?
-        # todo: better way to check next page
-        posts = self.get_posts(self.LIMIT * (this_page - 1), self.LIMIT + 1)
+
+        limit = self.LIMIT
+        offset = limit * (this_page - 1)
+        collected = Article.find_need_shown(offset, limit)
+
+        total = collected.count()
+        has_next_page = (this_page * limit < total)
 
         return self.render(
             'home.html',
             nav_active='home',
-            posts=posts,
+            posts=self.parse_posts(collected),
             this_page=this_page,
-            limit=self.LIMIT)
+            has_next_page=has_next_page
+        )
 
-    def get_posts(self, offset=0, limit=None):
-        if limit is None:
-            limit = self.LIMIT
+    def parse_posts(self, collected):
         result = {}
-        for each in Article.find_need_shown(offset, limit):
+        for each in collected:
             result['title'] = each['title']
             result['board'] = each['board']
             result['is_translation'] = ('transref' in each)
@@ -57,11 +62,12 @@ class HomeHandler(BaseHandler):
             result['author_link'] = '/hi/%s/' % quote(each['author'])
             result['post_time_attr'], result['post_time'] = \
                 self.format_time(each['createtime'])
+            quoted = quote(each['url'])
             if each['board'] == 'jolla':
-                link = '/jolla/blog/%s/'
+                link = '//%s/%s/' % (self.JOLLA, quoted)
             else:
-                link = '/post/%s/'
-            result['link'] = link % quote(each['url'])
+                link = '/post/%s/' % quoted
+            result['link'] = link
             yield result
             # yield each
 

@@ -64,15 +64,12 @@
   <div class="am-u-md-8">
     {% set idx = -1 %}
     {% for idx, each in enumerate(posts) %}
-      {% if idx == limit - 1 %}
-        {% break %}
-      {% end %}
     <article class="blog-main">
       <h3 class="am-article-title blog-title">
         <a href="{{ each['link' ]}}">{{ '[%s] ' % _('translation') if each['is_translation'] else ''}}{{ each['title'] }}</a>
       </h3>
       <h4 class="am-article-meta blog-meta">
-        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a> posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time> | <span class="am-badge am-badge-success am-radius">{{ each['board'] }}</span>
+        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a> posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time> <span class="am-footer-divider">|</span> <span class="am-badge am-badge-success am-radius">{{ each['board'] }}</span>
       </h4>
       <div class="am-g blog-content">
         <div class="am-u-lg-{{7 if each['cover'] else 12}}">
@@ -102,7 +99,7 @@
       {% if this_page != 1 %}
       <li class="am-pagination-prev"><a href="/page/{{ this_page - 1 }}/ ">&laquo; {{ _('Prev Page') }}</a></li>
       {% end %}
-      {% if idx == limit - 1 %}
+      {% if has_next_page %}
       <li class="am-pagination-next"><a href="/page/{{ this_page + 1 }}/ ">{{ _('Next Page') }} &raquo;</a></li>
       {% end %}
     </ul>
@@ -121,7 +118,7 @@
         <div class="am-panel-hd">{{ _('Category') }}</div>
         <ul class="am-list blog-list">
           <li>
-            <a href="/jolla/blog/">
+            <a href="//{{ JOLLA_HOST }}">
             {{ _('Unofficial Jolla Chinese Blog') }} <br>
             <img src="/static/img/unofficial.png" style="max-width:100%;">
             </a>
@@ -133,11 +130,5 @@
   </div>
 
 </div>
-
-<footer class="blog-footer">
-  <p>Tomorrow Becomes Today<br/>
-    <small>&#169; 2015 TylerTemp</small>
-  </p>
-</footer>
 
 {% end %}

@@ -1,4 +1,4 @@
-{% extends "../base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
   {{ article['translated']['title'] }} | Jolla Blog
@@ -70,6 +70,18 @@
     text-decoration:underline;
   }
 
+  .am-footer-default {
+    background-color: transparent;
+    color: #fff;
+  }
+  .am-footer-default p {
+    color: #fff;
+  }
+
+  .am-footer-default a {
+    color: #fff;
+  }
+
   video {
     width: 100%;
     height: auto;
@@ -83,7 +95,7 @@
 
 <header>
   <div class="am-margin-lg am-text-center">
-    <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
+    <a href="//{{ JOLLA_HOST }}/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="https://dn-jolla.qbox.me/blog_header.png"></a>
   </div>
 </header>
 
@@ -102,12 +114,27 @@
   {% end %}
 
   <div class="am-g" id="bread-crumbs">
-    <div class="am-u-sm-12" style="text-align: left">
-      <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
-      <span class="am-icon-angle-right"><a href="/jolla/blog/">{{ _('Jolla Blog')}}</a></span> &nbsp;
-      <span class="am-icon-caret-right">{{ article['translated']['title'] }}</span>
+    <div class="am-u-sm-6" style="text-align: left">
+      <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="//{{ MAIN_HOST }}/">{{ _('Back to tomorrow') }}<a/></span> &nbsp;
+    </div>
+    <div class="am-u-sm-6 am-cf">
+
+      <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
+        <button class="am-btn am-btn-link am-dropdown-toggle am-btn-sm" style="color: #fff"><span class="am-icon-globe"></span> <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content">
+          <li class="am-dropdown-header">修改语言/Change Language</li>
+          <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+            <a href="./?lang=zh" data-role="switch-lang" data-lang="zh" style="color: #000"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+          </li>
+          <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+            <a href="./?lang=en" data-role="switch-lang" data-lang="en" style="color: #000"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+          </li>
+        </ul>
+      </div>
+
     </div>
   </div>
+
 
   {% if headimg %}
     <img src="{{ headimg }}" id="title-img">

@@ -424,6 +424,19 @@ class Article(object):
             ))
 
     @classmethod
+    def find_trusted_jollas(cls, skip=0, limit=None):
+        result = cls._article.find(
+            {'board': 'jolla', 'transinfo.status': cls.TRUSTED}
+        ).sort(
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            )
+        )
+        if limit is None:
+            return result[skip:]
+        return result[skip: skip + limit]
+
+    @classmethod
     def find_need_shown(cls, skip=0, limit=None):
         result = cls._article.find({
             '$or': [

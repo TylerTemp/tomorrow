@@ -96,6 +96,10 @@ class Application(tornado.web.Application):
             (r'/test/', RedirectHandler, {'to': '/'}),
 
             (r'/jolla/blog/', jolla.BlogHandler),
+            (r'/jolla/blog/page/1/',
+             RedirectHandler,
+             {'to': '//' + self.config.jolla_host, 'permanently': True}),
+            (r'/jolla/blog/page/(\d+)/', jolla.BlogHandler),
             (r'/jolla/blog/(?P<url>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/translate/', jolla.ListHandler),
             (r'/jolla/translate/(?P<url>[^/]+)/', jolla.TranslateHandler),

@@ -23,12 +23,14 @@ rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
 from lib.db import User
+from lib.config import Config
 sys.path.pop(0)
 
 logger = logging.getLogger("tomorrow.base")
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    cfg = Config()
 
     def render(self, template_name, **kwargs):
         kwargs['ssl'] = self.is_ssl()
@@ -45,10 +47,19 @@ class BaseHandler(tornado.web.RequestHandler):
         if 'user_link' not in kwargs:
             kwargs['user_link'] = '/am/%s/' % quote(kwargs['user_name'])
 
+        kwargs.setdefault('JOLLA_HOST', self.cfg.jolla_host)
+        kwargs.setdefault('MAIN_HOST', self.cfg.main_host)
+
+        assert 'static_path' not in kwargs
+        kwargs['static_path'] = self.static_path
+
         return super(BaseHandler, self).render(
             template_name,
             **kwargs
         )
+
+    def static_path(self, url):
+        return '//%s/static/%s' % (self.cfg.main_host, quote(url))
 
     def get_current_user(self):
         user = self.get_secure_cookie("user")

@@ -9,16 +9,17 @@ sys.path.insert(0, rootdir)
 from lib.db import db
 sys.path.pop(0)
 
-article = db.article
+jolla = db.jolla
 
-for each in article.find({}):
-    if 'transinfo' in each:
-        transinfo = each['transinfo']
-        share = transinfo.pop('reprint')
-        result = []
-        print(each['url'])
-        for name, url in share.items():
-            print(name, url)
-            result.append({'name': name, 'url': url})
-        transinfo['share'] = result
-        article.save(each)
+for each in jolla.find({}):
+    if each.get('trusted_translation', None):
+        continue
+    old = each['url']
+    link = each['link']
+    listed = link.split('/')
+    last = False
+    while not last and listed:
+        last = listed.pop(-1)
+    print(old, '->', last)
+    each['url'] = last
+    jolla.save(each)

@@ -38,6 +38,9 @@ class Config(object):
             # posts number for '/'
             ins.home_post_limit = cfg.get('home_post_limit', 10)
             ins.home_description_limit = cfg.get('home_description_limit', 100)
+            ins.jolla_post_limit = cfg.get('jolla_post_limit', 9)
+            ins.main_host = cfg.get('main_host', '127.0.0.1')
+            ins.jolla_host = cfg.get('jolla_host', '127.0.0.1/jolla/blog')
             # wait time (for reload.py)
             ins.sleep = cfg.get('wait_bootup', 3)
             # ports (for reload.py)
@@ -177,9 +180,19 @@ if __name__ == '__main__':
     # used by `lib/hdlr/home.py/HomeHandler`
     "home_post_limit": 10,
 
+    # the posts number of '/blog/jolla/[page/NUM/]'
+    # used by `lib/hdlr/jolla/blog/BolgHandler.py`
+    "jolla_post_limit": 9,
+
     # the chars number of description in '/'
     # used by `lib/hdlr/home.py/HomeHandler`
     "home_description_limit": 50,
+
+    # domain
+    "main_host": "127.0.0.1",
+
+    # jolla blog domain (rewrite to main_host/jolla/blog/.*)
+    "jolla_host": "127.0.0.1",
 
     # used by `reboot.py`
     # time period after start up a process and before kill next process

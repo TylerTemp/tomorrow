@@ -1,4 +1,4 @@
-{% extends "../base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
   {{ _("Unofficical Jolla Chinese Blog") }}
@@ -59,15 +59,29 @@
 
 <header>
   <div class="am-margin am-text-center">
-    <img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png">
+    <a href="#"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="https://dn-jolla.qbox.me/blog_header.png"></a>
   </div>
 </header>
 
 <div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
-  <div class="am-g" id="bread-crumbs">
-    <div class="am-u-sm-12" style="text-align: left">
-      <span class="am-icon-angle-right"><a href="/">{{ _('Home')}}</a></span> &nbsp;
-      <span class="am-icon-caret-right">{{ _('Jolla Blog')}}</span>
+  <div class="am-g am-margin-horizontal-xs" id="bread-crumbs">
+    <div class="am-u-sm-6" style="text-align: left">
+      <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="//{{ MAIN_HOST }}/">{{ _('Back to tomorrow') }}<a/></span> &nbsp;
+    </div>
+    <div class="am-u-sm-6 am-cf">
+
+      <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
+        <button class="am-btn am-btn-link am-dropdown-toggle am-btn-sm" style="color: #fff"><span class="am-icon-globe"> 语言/Language</span> <span class="am-icon-caret-down"></span></button>
+        <ul class="am-dropdown-content">
+          <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+            <a href="./?lang=zh" data-role="switch-lang" data-lang="zh" style="color: #000"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+          </li>
+          <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+            <a href="./?lang=en" data-role="switch-lang" data-lang="en" style="color: #000"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+          </li>
+        </ul>
+      </div>
+
     </div>
   </div>
   <!-- first article -->
@@ -88,7 +102,7 @@
               <a href="{{ each['url'] }}"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
             </div>
             <div class="am-article-bd">
-              <p>{{ each['preview'] }}...</p>
+              <p>{{ each['descripition'] }}...</p>
             </div>
           </article>
           <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
@@ -105,12 +119,10 @@
   {% end %}
   <!-- first article | end -->
 
+  <ul class="am-avg-sm-1 am-avg-md-2">
   {% for idx, each in enumerate(articles) %}
 
-  {% if idx % 2 == 0 %}
-  <div class="am-g">
-  {% end %}
-    <div class="am-u-sm-12 am-u-md-6">
+    <li>
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
         {% if each['img'] %}
         <a href="{{ each['url'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>
@@ -121,7 +133,7 @@
               <a href="{{ each['url'] }}"><h2 class="am-article-title">{{ each['title'] }}</h2></a>
             </div>
             <div class="am-article-bd">
-              <p>{{ each['preview'] }}...</p>
+              <p>{{ each['descripition'] }}</p>
             </div>
           </article>
           <div class="am-cf">
@@ -129,17 +141,27 @@
           </div>
         </div>
       </div>
-    </div>
-
-  {% if idx % 2 != 0 %}
-  </div>
+    </li>
   {% end %}
 
+</ul>
+
+
+<div class="am-cf am-margin-horizontal-xs">
+  {% if this_page != 1 %}
+  <a href="/page/{{ this_page - 1}}/" class="am-fl am-btn-link" style="color: #fff">&laquo; {{ _('Prev Page') }}</a>
   {% end %}
-
-
-
-
+  {% if has_next_page %}
+  <a href="/page/{{ this_page + 1 }}/" class="am-fr am-btn-link" style="color: #fff">{{ _('Next Page') }} &raquo;</a>
+  {% end %}
 </div>
+
+<!-- Page -->
+<!-- <ul class="am-margin-horizontal-xs">
+  <li class="am-pagination-prev"><a href="">&laquo; {{ _('Prev Page') }}</a></li>
+  <li class="am-pagination-next"><a href="">{{ _('Next Page') }} &raquo;</a></li>
+</ul> -->
+
+
 
 {% end %}
