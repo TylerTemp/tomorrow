@@ -126,6 +126,7 @@ class TranslateHandler(BaseHandler):
                 'url': to_trans_info['url'],
                 'title': to_trans_info['title'],
                 'headimg': to_trans_info['headimg'],
+                'cover': to_trans_info.get('cover', None),
                 'status': Article.AWAIT,
             }
         }

@@ -47,10 +47,10 @@ class _Handler(BaseHandler):
     PWD_WRONG = int('100000000', 2)  # login
     SEND_EMAIL_FAILED = int('100000000', 2)  # signin
 
-    def render(self, template_name, **kwargs):
-        if 'ssl' not in kwargs:
-            kwargs['ssl'] = (self.request.protocol == 'https')
-        return super(BaseHandler, self).render(template_name, **kwargs)
+    # def render(self, template_name, **kwargs):
+    #     if 'ssl' not in kwargs:
+    #         kwargs['ssl'] = (self.request.protocol == 'https')
+    #     return super(BaseHandler, self).render(template_name, **kwargs)
 
 
 class LoginHandler(_Handler):
@@ -59,7 +59,7 @@ class LoginHandler(_Handler):
     def get(self):
         redirect = self.get_argument('next', None)
 
-        if self.get_current_user():
+        if self.current_user is not None:
             return self.redirect(
                 self.safe_redirect(redirect) if redirect is not None else '/')
 

@@ -18,5 +18,12 @@ class ListHandler(BaseHandler):
 
         return self.render(
             'jolla/list.html',
-            articles=Jolla.all()
+            articles=self.parse_jolla(Jolla.all())
         )
+
+    def parse_jolla(self, collected):
+        for each in collected:
+            each['cover'] = each.get('cover', None) or each['headimg']
+            each['preview'] = (each.get('description', None) or
+                               each['content'][:200] + '...')
+            yield each

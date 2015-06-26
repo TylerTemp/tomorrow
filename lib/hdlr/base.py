@@ -34,8 +34,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
         kwargs['ssl'] = self.is_ssl()
-        if 'nav_active' not in kwargs:
-            kwargs['nav_active'] = None
+        kwargs.setdefault('nav_active', None)
 
         if self.current_user is None:
             kwargs.setdefault('user_name', None)

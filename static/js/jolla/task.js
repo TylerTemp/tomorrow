@@ -18,7 +18,6 @@ $(document).ready(function(evt)
         'imageTypes': IMG_ALLOW
     });
 
-    var _editor_status = 'wysiwyg';
     $("#switch-to-md").click(function(evt)
     {
         evt.preventDefault();
@@ -96,7 +95,7 @@ $(document).ready(function(evt)
         }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
         {
             $("#fieldset").prop("disabled", false);
-            btn.prop("disabled", false).button("reset");
+            btn.button("reset");
         });
 
     });
@@ -157,7 +156,8 @@ $(document).ready(function(evt)
                     'author': author,
                     'content': content,
                     'format': format,
-                    'headimg': $("#headimg").val()
+                    'headimg': $("#headimg").val(),
+                    'cover': $('#cover').val()
                 },
             'type': 'post',
             'beforeSend': function(jqXHR, settings){

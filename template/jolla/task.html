@@ -86,11 +86,18 @@
       </div>
     </div>
 
-    <div id="wysiwyg-area">
+    <div class="am-form-group">
+      <label for="headimg" class="am-u-sm-3 am-form-label">{{ _("Cover Image")}}</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="cover" value="{{ cover }}" placeholder="{{ _('[Optional] Enter the URL of cover image of the original content') }}" />
+      </div>
+    </div>
+
+    <div id="wysiwyg-area" style="{{ 'display:none' if use_md else '' }}">
       {% module WysiwygEditor(switch=True, upload_img=imgs, upload_file=files, content=html) %}
     </div>
 
-    <div id="md-area" style="display:none">
+    <div id="md-area" style="{{ 'display:none' if not use_md else '' }}">
       {% module MdEditor(switch=True, upload_img=imgs, upload_file=files, content=md) %}
       <div class="am-form-group">
         <div class="am-u-sm-12">
@@ -120,6 +127,7 @@
   var IMGUPLOADURL = "{{ img_upload_url }}";
   var FILEUPLOADURL = "{{ file_upload_url }}";
   var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
+  var _editor_status = "{{' md' if use_md else 'wysiwyg' }}";
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>

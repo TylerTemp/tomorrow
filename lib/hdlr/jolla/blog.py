@@ -1,5 +1,9 @@
 import tornado.web
 import logging
+try:
+    from urllib.parse import quote
+except ImportError:
+    from urllib import quote
 
 import sys
 import os
@@ -13,7 +17,9 @@ sys.path.pop(0)
 logger = logging.getLogger('tomorrow.jolla.blog')
 
 class BlogHandler(BaseHandler):
-    LIMIT = Config().jolla_post_limit
+    _cfg = Config()
+    LIMIT = _cfg.jolla_post_limit
+    HOST = _cfg.jolla_host
 
     def get(self, page=1):
         page = int(page)
@@ -33,10 +39,11 @@ class BlogHandler(BaseHandler):
     @classmethod
     def parse_jolla(cls, collected):
         for each in collected:
+            info = each['transinfo']
             result = {
                 'title': each['title'],
-                'url': './%s' % each['url'],
-                'img': each['transinfo']['headimg'],
+                'url': '//%s/%s' % (cls.HOST, quote(each['url'])),
+                'img': info.get('cover', None) or info['headimg'],
                 'descripition': (each['transinfo'].get('description', None)
                             or each['content'][:80] + '...'),
             }

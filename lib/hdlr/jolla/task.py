@@ -53,8 +53,11 @@ class TaskHandler(BaseHandler):
             html = md2html(md)
             headimg = article['headimg']
             link = article['link']
+            cover = article.get('cover', '')
         else:
-            title = author = md = html = headimg = link = ''
+            title = author = md = html = headimg = link = cover = ''
+
+        use_md = self.get_argument('md', False)
 
         return self.render(
             'jolla/task.html',
@@ -64,6 +67,7 @@ class TaskHandler(BaseHandler):
             title=title,
             author=author,
             headimg=headimg,
+            cover=cover,
             html=html,
             md=md,
             link=link,
@@ -73,6 +77,7 @@ class TaskHandler(BaseHandler):
             size_limit=cfg.size_limit[usertype],
 
             nav_active='jolla_task',
+            use_md=use_md
         )
 
     @EnsureUser(level=User.admin, active=True)
@@ -85,6 +90,7 @@ class TaskHandler(BaseHandler):
         content = self.get_argument('content')
         format = self.get_argument('format')
         headimg = self.get_argument('headimg', None)
+        cover = self.get_argument('cover', None)
 
         if format == 'md':
             content = escape(content)
@@ -98,7 +104,8 @@ class TaskHandler(BaseHandler):
             article = Jolla(unquote(url))
 
         if article.new:
-            article.add(link, title, author, content, url=url, headimg=headimg)
+            article.add(link, title, author, content,
+                        url=url, headimg=headimg, cover=cover)
         else:
             article.get().update({
                 'link': link,
@@ -107,6 +114,7 @@ class TaskHandler(BaseHandler):
                 'content': content,
                 'url': url,
                 'headimg': headimg,
+                'cover': cover,
                 'edittime': time.time(),
             })
         article.save()

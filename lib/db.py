@@ -197,7 +197,7 @@ class Jolla(object):
             self.jolla_info = self.find_url(url)
 
     def add(self, link, title, author, content, url=None, headimg=None,
-            trusted_translation=None, index=0):
+            cover=None, trusted_translation=None, index=0):
         if url is None:
             url = self.mkurl(link, author)
 
@@ -208,6 +208,7 @@ class Jolla(object):
             'content': content,
             'url': url,
             'headimg': headimg,
+            'cover': cover,
             'createtime': time.time(),
             'edittime': time.time(),
             'trusted_translation': trusted_translation,
