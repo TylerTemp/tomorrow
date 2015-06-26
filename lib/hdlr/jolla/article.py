@@ -15,11 +15,13 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.db import Article
 from lib.tool import md
+from lib.config import Config
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.jolla.article')
 
 class ArticleHandler(BaseHandler):
+    HOST = Config().main_host
 
     def get(self, url):
         url = unquote(url)
@@ -73,7 +75,8 @@ class ArticleHandler(BaseHandler):
                 '</a>'
             ) % info['translated']['email']
         info['translated']['author'] = (
-            '<a href="/hi/%s/" target="_blank" rel="author">%s</a>' % (
+            '<a href="//%s/hi/%s/" target="_blank" rel="author">%s</a>' % (
+                self.HOST,
                 quote(info['translated']['author']),
                 info['translated']['author'])
         )
