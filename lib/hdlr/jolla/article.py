@@ -62,6 +62,7 @@ class ArticleHandler(BaseHandler):
             'share': info['transinfo']['share'],
             'await': info['transinfo']['status'] == Article.AWAIT,
             'reject': info['transinfo']['status'] == Article.REJECT,
+            'id': str(info['_id'])
         }
         return result
 

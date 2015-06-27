@@ -179,7 +179,11 @@
       </article>
 
       <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr">
-        <div class="ds-thread"></div>
+        <div class="ds-thread"
+             data-thread-key="{{ article['id'] }}"
+             data-title="{{ article['translated']['title'] }}"
+             {% if headimg %}data-image="{{ headimg }}"{% end %}
+             data-form-position="top"></div>
       </div>
 
     </div>
