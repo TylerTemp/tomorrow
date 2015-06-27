@@ -68,6 +68,11 @@
 {% block nav %}{% end %}
 
 {% block body %}
+<div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
+  <div class="am-u-sm-12 am-margin-left" style="color: #fff">
+    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow<a/>
+  </div>
+</div>
 
 <header>
   <div class="am-margin am-text-center">
@@ -77,10 +82,10 @@
 
 <div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
   <div class="am-g am-margin-horizontal-xs" id="bread-crumbs">
-    <div class="am-u-sm-6" style="text-align: left">
+    <!-- <div class="am-u-sm-6" style="text-align: left">
       <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="//{{ MAIN_HOST }}/">{{ _('Back to tomorrow') }}<a/></span>
-    </div>
-    <div class="am-u-sm-6 am-cf">
+    </div> -->
+    <div class="am-cf">
 
       <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
         <button class="am-btn am-btn-link am-dropdown-toggle am-btn-sm" style="color: #fff"><span class="am-icon-globe"> 语言/Language</span> <span class="am-icon-caret-down"></span></button>

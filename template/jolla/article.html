@@ -92,6 +92,11 @@
 {% block nav %}{% end %}
 
 {% block body %}
+<div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
+  <div class="am-u-sm-12 am-margin-left" style="color: #fff">
+    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow<a/>
+  </div>
+</div>
 
 <header>
   <div class="am-margin-lg am-text-center">
@@ -115,7 +120,7 @@
 
   <div class="am-g" id="bread-crumbs">
     <div class="am-u-sm-6" style="text-align: left">
-      <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="//{{ MAIN_HOST }}/">{{ _('Back to tomorrow') }}<a/></span> &nbsp;
+      <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="/">{{ _('Back to home') }}<a/></span> &nbsp;
     </div>
     <div class="am-u-sm-6 am-cf">
 
