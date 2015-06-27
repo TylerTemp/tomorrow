@@ -63,18 +63,16 @@ target/
 
 # my personal infomation of the site
 .info
-nginx.conf
-server_nginx.conf
 tomorrow.p12
 ca.pem
 sub.class1.server.ca.pem
-mongodb.conf
-config.conf
+*.conf
 *.psd
 *.crt
 *.key
 tomorrow.becomes.today_sha256_cn.zip
 template/brey.html
+log
 
 # store the uploaded file
 static/upload

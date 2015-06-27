@@ -1,3 +1,4 @@
+Tyler's Blog,铃某人无人所知的博客
 "Tyler's personal blog for sharing works, ideas, experience ect.","铃某人的个人博客，作为一个pythoner分享作品、想法、经验的地方"
 "Unofficial Jolla Chinese blog. Chinese translation of Jolla's posts and other ideas about Jolla","非官方Jolla中文博客。Jolla文章的中文翻译和更多关于Jolla的想法"
 submit,提交
@@ -81,7 +82,6 @@ Prev Page,上一页
 Next Page,下一页
 Category,目录
 Home,首页
-Jolla Blog,Jolla博客
 Dashboard,控制面板
 Logout,注销
 Translate,翻译
@@ -200,3 +200,5 @@ Leave %s a message,给%s飞鸽传封书
 
 Back to tomorrow,返回tomorrow
 Jolla Blog,Jolla博客
+Unofficical Jolla Chinese Blog,Jolla非官方中文博客
+Task List,任务列表
