@@ -82,7 +82,10 @@ class Application(tornado.web.Application):
              r'(?P<code>[^/]+)/', dash.VerifyHandler),
             (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
             (r'/am/(?P<user>[^/]+)/message/', dash.MessageHandler),
-            (r'/am/(?P<user>[^/]+)/manage/jolla/', dash.manage.JollaHandler),
+            (r'/am/(?P<user>[^/]+)/manage/jolla/post/',
+             dash.manage.jolla.PostHandler),
+            (r'/am/(?P<user>[^/]+)/manage/jolla/author/',
+             dash.manage.jolla.AuthorHandler),
 
             (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),

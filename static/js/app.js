@@ -46,7 +46,9 @@ var I18N = {
     "Sorry, unknown error": "嗯，貌似哪里出错了",
     "Sorry, a server error occured, please refresh and retry": "哎哎，服务器出错啦，也许刷新重试一下吧",
     "sort priority should be empty or number only": "排序优先级只能为数字或为空",
-    "Change saved. Refresh to see the result": "修改已保存。刷新查看结果"
+    "Change saved. Refresh to see the result": "修改已保存。刷新查看结果",
+    "Exit full screen": "退出全屏",
+    "Enter full screen": "进入全屏"
   }
 };
 
@@ -71,6 +73,26 @@ String.prototype.format = function(){
       return args[i];
     });
 }
+
+
+// New for AmazeUI 2.4.1
+(function($) {
+  'use strict';
+
+  $(function() {
+    var $fullText = $('.admin-fullText');
+    $('#admin-fullscreen').on('click', function()
+    {
+      $.AMUI.fullscreen.toggle();
+    });
+
+    $(document).on($.AMUI.fullscreen.raw.fullscreenchange, function()
+    {
+      $fullText.text($.AMUI.fullscreen.isFullscreen ? _('Exit full screen') : _('Enter full screen'));
+    });
+  });
+})(jQuery);
+
 
 // read file, return $.Deferred
 var readFileIntoDataurl = function(fileInfo)

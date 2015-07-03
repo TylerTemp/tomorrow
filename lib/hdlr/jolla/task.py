@@ -21,8 +21,7 @@ from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
 from lib.hdlr.base import EnsureUser
-from lib.db import Jolla
-from lib.db import User
+from lib.db import Jolla, Article, User
 sys.path.pop(0)
 
 cfg = Config()
@@ -92,7 +91,7 @@ class TaskHandler(BaseHandler):
         headimg = self.get_argument('headimg', None)
         cover = self.get_argument('cover', None)
 
-        if format == 'md':
+        if format == 'md' and self.current_user['type'] < User.root:
             content = escape(content)
         else:
             content = html2md(content)
@@ -103,7 +102,8 @@ class TaskHandler(BaseHandler):
         else:
             article = Jolla(unquote(url))
 
-        if article.new:
+        new_task = article.new
+        if new_task:
             article.add(link, title, author, content,
                         url=url, headimg=headimg, cover=cover)
         else:
@@ -122,4 +122,12 @@ class TaskHandler(BaseHandler):
         red_url = article.get()['url']
         redirect = '/jolla/translate/%s/' % quote(red_url)
         logger.debug("new jolla translate task: %s", title)
-        return self.write(json.dumps({'error': 0, 'redirect': redirect}))
+        self.write(json.dumps({'error': 0, 'redirect': redirect}))
+        self.finish()
+
+        # refresh cache
+        coll = Article.get_collect()
+        result = coll.update_many(
+            {'board': 'jolla', 'transref': red_url},
+            {'$set': {'transinfo.headimg': headimg, 'transinfo.cover': cover}})
+        logger.debug('updated %s translation', result.modified_count)

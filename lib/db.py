@@ -308,7 +308,7 @@ class Article(object):
     # transref: same as Jolla.url
     # transinfo: Jolla translation only
     # transinfo = {link: , author: , url: , title: ,
-    #              headimg:, status:, share: };
+    #              headimg:, status:, share:, cover: };
     # same as Jolla.
     # status: AWAIT/TRUSTED/REJECT
     # index: same as Jolla.index(cache)
@@ -466,6 +466,69 @@ class Article(object):
     @classmethod
     def num_by(cls, user):
         return cls._article.find({'author': user}).count()
+
+
+class JollaAuthor(object):
+
+    _jolla_author = db.jolla_author
+
+    def __init__(self, name):
+        result = self.find_author(name)
+        if result is None:
+            self._info = {'name': name, '_id': None}
+        else:
+            self._info = result
+
+    @property
+    def photo(self):
+        return self._info.get('photo', None)
+    @photo.setter
+    def photo(self, value):
+        self._info['photo'] = value
+
+    @property
+    def name(self):
+        return self._info['name']
+
+    @property
+    def description(self):
+        return self._info.get('description', None)
+    @description.setter
+    def description(self, value):
+        self._info['description'] = value
+
+    @property
+    def translation(self):
+        return self._info.get('translation', None)
+    @translation.setter
+    def translation(self, value):
+        self._info['translation'] = value
+
+    @property
+    def new(self):
+        return self._info['_id'] is None
+
+    def save(self, photo=None, description=None, translation=None):
+        _id = self._jolla_author.save({
+            'name': self.name,
+            'photo': photo or self.photo,
+            'description': description or self.description,
+            'translation': translation or self.translation
+        })
+
+        self._info['_id'] = _id
+
+    @classmethod
+    def find_author(self, name):
+        return self._jolla_author.find_one({'name': name})
+
+    @classmethod
+    def all(self):
+        return self._jolla_author.find({})
+
+    @classmethod
+    def get_collect(self):
+        return self._jolla_author
 
 
 if __name__ == '__main__':

@@ -55,6 +55,12 @@
     padding: 10px 0;
     text-align: center;
   }
+
+  @media only screen and (min-width: 1024px) {
+    .cover-img {
+      max-height: 125px;
+    }
+  }
 </style>
 {% end %}
 
@@ -77,7 +83,7 @@
         </div>
         {% if each['cover'] %}
         <div class="am-u-lg-5">
-          <p><img src="{{ each['cover'] }}"></p>
+          <p><img class="am-img-responsive am-img-thumbnail cover-img" src="{{ each['cover'] }}"></p>
         </div>
         {% end %}
       </div>

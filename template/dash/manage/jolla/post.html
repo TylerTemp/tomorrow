@@ -1,6 +1,6 @@
-{% extends "../base.html" %}
+{% extends "../../base.html" %}
 
-{% block subtitle %}[Jolla &#60; {{ _('Manage') }}]{% end %}
+{% block subtitle %}[{{ _('Post') }} &#60; Jolla &#60; {{ _('Manage') }}]{% end %}
 
 {% block guide %}
 <span class="iconfont icon-jolla"> <strong class="am-text-primary am-text-lg">{{ _("Jolla") }}</strong></span> / <small>{{ _("Manage all Jolla posts") }}</small>
@@ -35,5 +35,5 @@
 {% end %}
 
 {% block leg %}
-<script src="/static/js/dash/manage/jolla.js"></script>
+<script src="/static/js/dash/manage/jolla/post.js"></script>
 {% end %}

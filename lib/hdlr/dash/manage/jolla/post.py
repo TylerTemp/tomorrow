@@ -11,18 +11,19 @@ except ImportError:
 
 import sys
 import os
-sys.path.insert(0, os.path.normpath(os.path.join(__file__,
-                                                 '..', '..', '..', '..')))
+sys.path.insert(0, os.path.normpath(
+                    os.path.join(__file__, '..', '..', '..', '..', '..')))
 from lib.hdlr.dash.base import BaseHandler, ItsMyself
 from lib.hdlr.base import EnsureUser
 from lib.db import Article, Jolla, User
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.dash.manage.jolla')
+logger = logging.getLogger('tomorrow.dash.manage.jolla.post')
 
-class JollaHandler(BaseHandler):
 
-    @ItsMyself('manage/jolla/')
+class PostHandler(BaseHandler):
+
+    @ItsMyself('manage/jolla/post/')
     @EnsureUser(level=User.admin, active=True)
     def get(self, user):
         self.xsrf_token
@@ -38,7 +39,7 @@ class JollaHandler(BaseHandler):
 
     def render_page(self):
         return self.render(
-            'dash/manage/jolla.html',
+            'dash/manage/jolla/post.html',
             jolla=self.parse_jolla(),
             act='jolla'
         )

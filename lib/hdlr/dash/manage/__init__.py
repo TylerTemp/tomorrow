@@ -1,3 +1,3 @@
-from .jolla import JollaHandler
+from . import jolla
 
-__all__ = ('JollaHandler', )
+__all__ = ('jolla', )
