@@ -1,3 +1,12 @@
+String.prototype.format = function(){
+  var args = arguments;
+  return this.replace(/\{(\d+)\}/g,
+    function(m,i){
+      return args[i];
+    });
+}
+
+
 var I18N = {
   'zh':
   {
@@ -65,14 +74,6 @@ var _ = function(string)
 
   return result;
 };
-
-String.prototype.format = function(){
-  var args = arguments;
-  return this.replace(/\{(\d+)\}/g,
-    function(m,i){
-      return args[i];
-    });
-}
 
 
 // New for AmazeUI 2.4.1
