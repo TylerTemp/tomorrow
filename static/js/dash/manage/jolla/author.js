@@ -33,7 +33,7 @@ var set_author = function(container, author)
       _('Photo'), _('Introduction'), _('Translation'),
       _('Enter photo url'), _('Enter introduction of author in English'), _('Enter the translation of the introduction'),
       _('Save'), _('Reset'), _('Delete'),
-      author.name, author.name.replace(' ', '-'),
+      author.name, author.name.replace(/\s/g, '-'),
       author.photo || '/static/img/user.jpg',
       author.photo || '',
       author.description || '', author.translation || ''
@@ -110,7 +110,7 @@ var set_author = function(container, author)
   save_btn.click(function(evt)
   {
     evt.preventDefault();
-    var dash_name = author.name.replace(' ', '-');
+    var dash_name = author.name.replace(/\s/g, '-');
     var photo = photo_input.val();
     var description = content.find('#description-' + dash_name).val();
     var translation = content.find('#translation-' + dash_name).val();
