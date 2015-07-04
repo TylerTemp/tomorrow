@@ -49,7 +49,7 @@ class BaseHandler(BaseHandler):
 
         kwargs.setdefault('user_name', user_info['user'])
         kwargs.setdefault('user_type', user_info['type'])
-        kwargs.setdefault('act', None)
+        kwargs.setdefault('act', ())
 
         kwargs['NORMAL'] = User.normal
         kwargs['ADMIN'] = User.admin

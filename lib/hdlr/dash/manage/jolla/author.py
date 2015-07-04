@@ -28,9 +28,36 @@ class AuthorHandler(BaseHandler):
         name = self.get_argument('name', None)
         if name:
             return self.get_info(name)
+
+        self.xsrf_token
         return self.render(
             'dash/manage/jolla/author.html',
-            author_and_status=self.get_all_author())
+            author_and_status=self.get_all_author(),
+            act=('manage', 'manage-jolla', 'manage-jolla-author'))
+
+    @ItsMyself('manage/jolla/author/')
+    @EnsureUser(level=User.admin, active=True)
+    def post(self, _=None):
+        self.check_xsrf_cookie()
+        name = self.get_argument('name')
+        author = JollaAuthor(name)
+        if self.get_argument('action', None) == 'delete':
+            author.remove()
+            logger.info('delete author %s', name)
+            return self.write(json.dumps({'error': 0, 'name': name}))
+        author.photo = self.get_argument('photo').strip() or None
+        author.description = self.get_argument('description').strip() or None
+        author.translation = self.get_argument('translation').strip() or None
+        author.save()
+        logger.info('modify author %s', author)
+        return self.write(json.dumps({
+            'error': 0,
+            'name': author.name,
+            'photo': author.photo,
+            'description': author.description,
+            'translation': author.translation
+        }))
+
 
     def get_info(self, name):
         author = JollaAuthor(name)

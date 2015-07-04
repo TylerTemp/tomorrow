@@ -58,7 +58,7 @@ class DashboardHandler(BaseHandler):
             verify_mail=verify_mail,
             user_type=user_info['type'],
             user_img=user_info.get('img', None),
-            act='home',
+            act=('home',),
 
             article_num=Article.num_by(user_name),
             file_num=file_num,

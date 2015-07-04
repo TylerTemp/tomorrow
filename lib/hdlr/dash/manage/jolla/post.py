@@ -41,7 +41,7 @@ class PostHandler(BaseHandler):
         return self.render(
             'dash/manage/jolla/post.html',
             jolla=self.parse_jolla(),
-            act='jolla'
+            act=('manage', 'manage-jolla', 'manage-jolla-post')
         )
 
     def get_article(self, slug):

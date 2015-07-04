@@ -46,7 +46,7 @@ class SecureHandler(BaseHandler):
             verify_mail=verify_mail,
             user_email=user_info['email'],
             active=user_info['active'],
-            act="secure",
+            act=('secure', ),
         )
 
     @tornado.web.authenticated

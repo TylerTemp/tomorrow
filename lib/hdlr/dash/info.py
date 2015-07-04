@@ -41,7 +41,7 @@ class InfoHandler(BaseHandler):
             user_email=user_info['email'],
             show_email=user_info['show_email'],
             size_limit=size_limit,
-            act='info',
+            act=('info', ),
         )
 
     @tornado.web.authenticated

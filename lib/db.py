@@ -509,14 +509,22 @@ class JollaAuthor(object):
         return self._info['_id'] is None
 
     def save(self, photo=None, description=None, translation=None):
-        _id = self._jolla_author.save({
+        info = {
             'name': self.name,
             'photo': photo or self.photo,
             'description': description or self.description,
-            'translation': translation or self.translation
-        })
+            'translation': translation or self.translation,
+        }
 
+        if self._info['_id'] is not None:
+            info['_id'] = self._info['_id']
+        _id = self._jolla_author.save(info)
+        self._info.clear()
+        self._info.update(info)
         self._info['_id'] = _id
+
+    def _save(self, info):
+        return self._jolla_author.save(info)
 
     @classmethod
     def find_author(self, name):
@@ -529,6 +537,15 @@ class JollaAuthor(object):
     @classmethod
     def get_collect(self):
         return self._jolla_author
+
+    def remove(self):
+        assert not self.new
+        self._jolla_author.delete_one(self._info)
+
+    def __str__(self):
+        return ('JollaAuthor(name: %s, photo: %s, '
+                'description: %.10r..., translation: %.10r)') % (
+                    self.name, self.photo, self.description, self.translation)
 
 
 if __name__ == '__main__':
