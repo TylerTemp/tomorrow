@@ -91,8 +91,9 @@ class TaskHandler(BaseHandler):
         headimg = self.get_argument('headimg', None)
         cover = self.get_argument('cover', None)
 
-        if format == 'md' and self.current_user['type'] < User.root:
-            content = escape(content)
+        if format == 'md':
+            if self.current_user['type'] < User.root:
+                content = escape(content)
         else:
             content = html2md(content)
 
@@ -105,7 +106,7 @@ class TaskHandler(BaseHandler):
         new_task = article.new
         if new_task:
             article.add(link, title, author, content,
-                        url=url, headimg=headimg, cover=cover)
+                        url=url, headimg=headimg, cover=cover, index=None)
         else:
             article.get().update({
                 'link': link,
