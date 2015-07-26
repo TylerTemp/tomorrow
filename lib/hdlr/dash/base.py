@@ -13,7 +13,7 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
-from lib.db import User
+from lib.db import User, Message
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.dash.base')
@@ -45,7 +45,15 @@ class BaseHandler(BaseHandler):
         if 'main_url' not in kwargs:
             kwargs['main_url'] = '/am/%s' % quote(user_info['user'])
 
-        kwargs['main_url'] = self.get_non_ssl(kwargs['main_url'])
+        if 'MESSAGENUM' not in kwargs:
+            name = user_info['user']
+            num = Message.num_to(name)
+            kwargs['MESSAGENUM'] = num
+
+        if 'SERVICE' not in kwargs:
+            kwargs['SERVICE'] = user_info['service']
+
+        # kwargs['main_url'] = self.get_non_ssl(kwargs['main_url'])
 
         kwargs.setdefault('user_name', user_info['user'])
         kwargs.setdefault('user_type', user_info['type'])

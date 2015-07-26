@@ -5,7 +5,8 @@ submit,提交
 Bold,加粗
 Italic,斜体
 Added Content,新增内容
-Delete,删除线
+Strike,删除线
+Delete,删除
 Indent,缩进
 Dedent,反缩进
 URL,地址
@@ -53,6 +54,8 @@ Already have an account?,已有账号?
 "Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.","抱歉，站点暂时不支持SSL安全数据传输。请确保您的网络环境是安全的。"
 Signing...,注册中…
 Logining...,登录中…
+Enter user name,输入用户名
+Enter your user name,输入你的用户名
 
 "You are using a browser which is <strong>out of date</strong> and we can't handle it correctly. Please <a href=""http://updatemybrowser.org/"" target=""_blank"">update your browser</a>, THX!","你正在使用<strong>过时</strong>的浏览器，我们无法正确为其处理页面。请 <a href=""http://updatemybrowser.org/"" target=""_blank"">升级浏览器</a>以获得更好的体验！"
 Continue reading,阅读全文
@@ -149,7 +152,9 @@ Security,安全
 Security Settings,安全设置
 Anything about your account,关于你账户的那些事儿
 Note changing user name or email may cause unexpected result,注意修改用户名和邮箱可能会导致意料之外的错误
-Each time you can only change one thing,一次只能改一个哦
+"Please check your email ""%s"" to active your account","请查看邮箱“%s”来激活你的账号"
+Please verify your email first,请先验证你的邮箱
+Send Confirm Mail,发送验证邮件
 Active,激活
 Doesn't recive the email? Try this,没收到邮件？试试这个
 Resend,重发
@@ -167,7 +172,8 @@ license,许可协议
 show email,显示邮箱
 shared,转载
 
-Message,信息
+Message,消息
+Information,信息
 All messages you received,给你一张过去的CD
 To,给
 Leave it blank if you want to send to site owner,如果需要传达给站长，请留白
@@ -198,6 +204,9 @@ Edit Time,编辑时间
 Your email,你的邮箱
 Leave %s a message,给%s飞鸽传封书
 
+Manage all users in this site,一个都不能少
+Actived,已激活
+
 Back to tomorrow,返回tomorrow
 Jolla Blog,Jolla博客
 Unofficical Jolla Chinese Blog,Jolla非官方中文博客
@@ -206,3 +215,27 @@ Back to home,返回首页
 tr,译
 Post,帖子
 Cover Image,封面图片
+User,用户
+
+Show email on dashboard,主页上显示邮箱
+Default Language,默认语言
+English,英语
+Chinese,中文
+Depending on the browser,浏览器语言决定
+Group,组
+Normal User,普通用户
+Admin,管理员
+Enter the url of avatar,输入头像URL
+Enter the url of your avatar image,输入你的头像URL
+Enter email,输入邮件地址
+Change Password,修改密码
+Enter the password,输入密码
+Re-enter the password,再次输入密码
+Update your information,更新你的信息
+New User Name,新用户名
+Enter your new email,输入新邮箱
+New Email,新邮箱
+New Password,新密码
+"You need to enter the same password, you know that","你得输入相同的密码，你懂的"
+
+Service,服务

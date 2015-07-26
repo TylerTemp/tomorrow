@@ -23,8 +23,8 @@ var set_user_error = function(error, is_email)
   var user_obj = $("#user-or-email");
   switch(error)
   {
-    case 'empty':
-      set_error(user_obj, _("User Name or Email should not be empty"), "error");
+    case 'tooshort':
+      set_error(user_obj, _("User Name or Email should not shorter than {0} characters").format(USER_MIN_LEN), "error");
       break;
     case 'notexist':
       if (is_email)
@@ -42,8 +42,8 @@ var set_pwd_error = function(error)
   var pwd_obj = $("#pwd");
   switch(error)
   {
-    case 'empty':
-      set_error(pwd_obj, _("Password should not be empty"), "error");
+    case 'short':
+      set_error(pwd_obj, _("Password should not be less than {0} words").format(PWD_MIN_LENGTH), "error");
       break;
     case 'wrong':
       set_error(pwd_obj, _("Password incorrect"), "error");
@@ -62,22 +62,22 @@ var enterSubmit = function(evt)
 
 
 $(document).ready(function(){
-  var user   = $("#user-or-email");
-  var pwd  = $("#pwd");
+  var user = $("#user-or-email");
+  var pwd = $("#pwd");
   var remember = $("#remember-me");
   var submit = $("#submit");
   var server_error_panel = $("#server-error");
 
   user.on('input', function(evt)
   {
-    if (!$(this).val())
-      return set_user_error('empty');
+    if ($(this).val().length < USER_MIN_LEN)
+      return set_user_error('tooshort');
     set_user_error();
   });
   pwd.on('input', function(evt)
   {
-    if (!$(this).val())
-      return set_pwd_error('empty');
+    if ($(this).val().length < PWD_MIN_LENGTH)
+      return set_pwd_error('short');
     set_pwd_error();
   });
 
@@ -90,6 +90,8 @@ $(document).ready(function(){
     var u = user.val(), p = pwd.val();
     if (!(u && p))
       return false;
+    submit.button("loading");
+    server_error_panel.hide(400);
     $.ajax(
       settings = {
         'data': {
@@ -98,10 +100,9 @@ $(document).ready(function(){
           'remember': remember.prop("checked")
         },
         'type': 'post',
-        'beforeSend': function(jqXHR, settings){
+        'beforeSend': function(jqXHR, settings)
+        {
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          submit.button("loading");
-          server_error_panel.hide(400);
         }
       }
     ).done(function(data, textStatus, jqXHR)
@@ -111,8 +112,8 @@ $(document).ready(function(){
       if (obj.error == 0)
         return window.location.href = obj.redirect;
 
-      if (obj.error & MASK_USER_EMPTY)
-        set_user_error('empty', false);
+      if (obj.error & MASK_USER_TOO_SHORT)
+        set_user_error('tooshort', false);
       else if (obj.error & MASK_USER_NOT_EXISTS)
         set_user_error("notexist", false);
       else if (obj.error & MASK_EMAIL_NOT_EXISTS)
@@ -120,8 +121,8 @@ $(document).ready(function(){
       else if (obj.error & MASK_EMAIL_NOT_EXISTS)
         set_user_error("exists", true);
 
-      if (obj.error & MASK_PWD_EMPTY)
-        set_pwd_error("empty");
+      if (obj.error & MASK_PWD_TOO_SHORT)
+        set_pwd_error("short");
       else if (obj.error & MASK_PWD_WRONG)
         set_pwd_error("wrong");
 

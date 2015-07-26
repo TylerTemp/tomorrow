@@ -1,3 +1,3 @@
 from . import jolla
-
-__all__ = ('jolla', )
+from .user import UserHandler
+__all__ = ('jolla', 'UserHandler')

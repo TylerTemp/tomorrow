@@ -1,0 +1,17 @@
+User-agent: Baiduspider
+Disallow: /
+User-agent: Sosospider
+Disallow: /jolla/blog/from-2014-to-2015/
+Disallow: /from-2014-to-2015/
+User-agent: sogou spider
+Disallow: /jolla/blog/from-2014-to-2015/
+Disallow: /from-2014-to-2015/
+User-agent: YodaoBot
+Disallow: /jolla/blog/from-2014-to-2015/
+Disallow: /from-2014-to-2015/
+
+User-agent: *
+Disallow: /jolla/translate/
+Disallow: /jolla/translate/*
+Disallow: /jolla/task/*
+Disallow: /jolla/task/

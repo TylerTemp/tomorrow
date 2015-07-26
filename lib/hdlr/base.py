@@ -72,10 +72,14 @@ class BaseHandler(tornado.web.RequestHandler):
         active = (True
                   if self.get_secure_cookie('active').decode('utf-8') == 'true'
                   else False)
+        service = self.get_secure_cookie('service')
         return {'user': user, 'email': email, 'type': int(level),
-                'active': active}
+                'active': active,
+                'service':
+                    service.decode('utf-8').split('|') if service else ()}
 
-    def set_user(self, user, email, type, active, lang=None, temp=False):
+    def set_user(self, user, email, type, active, service=None,
+                 lang=None, temp=False):
         if temp:
             kwd = {'expires_days': None}
         else:
@@ -84,6 +88,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.set_secure_cookie('email', email, **kwd)
         self.set_secure_cookie('type', str(type), **kwd)
         self.set_secure_cookie('active', 'true' if active else 'false', **kwd)
+        if service:
+            self.set_secure_cookie('service', '|'.join(service))
         if lang is not None:
             self.set_cookie('lang', lang)
 
@@ -123,10 +129,10 @@ class BaseHandler(tornado.web.RequestHandler):
         return '/static/upload/%s/' % quote(user)
 
     def logout(self):
-        self.clear_cookie("user")
+        self.clear_cookie('user')
         self.clear_cookie('type')
         self.clear_cookie('email')
-        self.clear_cookie('lang')
+        self.clear_cookie('service')
 
     def is_ajax(self):
         return (self.request.headers.get('X-Requested-With', None) ==

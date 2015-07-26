@@ -10,25 +10,26 @@
 
 <hr class="am-divider am-divider-default">
 
-<div class="am-panel-group am-padding" id="posts">
+<div class="am-panel-group am-padding-horizontal" id="posts">
 {% for each in jolla %}
-  <div class="am-panel-hd am-g am-cf">
-    <h4 class="am-panel-title"
-        data-am-collapse="{parent: '#posts', target: '#{{ each['id'] }}'}">
-      {{ each['title'] }}
-      {% if each['translated'] %}
-        <span class="am-fr am-icon-check am-text-success"> {{ each['trans_num'] if each['trans_num'] != 1 else '' }}</span>
-      {% elif each['trans_num'] %}
-        <span class="am-fr am-icon-info-circle am-text-warning"> {{ each['trans_num'] }}</span>
-      {% end %}
-    </h4>
+  <div class="am-panel am-panel-default">
+    <div class="am-panel-hd am-g am-cf">
+      <h4 class="am-panel-title"
+          data-am-collapse="{parent: '#posts', target: '#{{ each['id'] }}'}">
+        {{ each['title'] }}
+        {% if each['translated'] %}
+          <span class="am-fr am-icon-check am-text-success"> {{ each['trans_num'] if each['trans_num'] != 1 else '' }}</span>
+        {% elif each['trans_num'] %}
+          <span class="am-fr am-icon-info-circle am-text-warning"> {{ each['trans_num'] }}</span>
+        {% end %}
+      </h4>
 
-  </div>
-  <div id="{{ each['id'] }}" class="am-panel-collapse am-collapse" data-empty="true" data-role="detail">
-    <div class="am-panel-bd am-padding">
+    </div>
+    <div id="{{ each['id'] }}" class="am-panel-collapse am-collapse" data-empty="true" data-role="detail">
+      <div class="am-panel-bd am-padding">
+      </div>
     </div>
   </div>
-
 {% end %}
 </div>
 

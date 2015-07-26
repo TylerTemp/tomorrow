@@ -35,6 +35,7 @@ from lib.hdlr.edit import EditHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
 from lib.hdlr.brey import ForBrey
+from lib.hdlr.verify import VerifyHandler
 from lib.hdlr import dash
 from lib.hdlr import hi
 from lib.hdlr import jolla
@@ -72,20 +73,19 @@ class Application(tornado.web.Application):
             (r'/login/', auth.LoginHandler),
             (r'/signin/', auth.SigninHandler),
             (r'/logout/', auth.LogoutHandler),
+            (r'/verify/(?P<code>[^/]+)/', VerifyHandler),
 
             (r'/am/(?P<user>[^/]+)/', dash.DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', dash.InfoHandler),
             (r'/am/(?P<user>[^/]+)/secure/', dash.SecureHandler),
             (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', dash.FileHandler),
-            (r'/am/(?P<user>[^/]+)/verify/'
-             r'(?P<act>newuser|newmail|changemail|changeuser|changepwd)/'
-             r'(?P<code>[^/]+)/', dash.VerifyHandler),
             (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
             (r'/am/(?P<user>[^/]+)/message/', dash.MessageHandler),
             (r'/am/(?P<user>[^/]+)/manage/jolla/post/',
              dash.manage.jolla.PostHandler),
             (r'/am/(?P<user>[^/]+)/manage/jolla/author/',
              dash.manage.jolla.AuthorHandler),
+            (r'/am/(?P<user>[^/]+)/manage/user/', dash.manage.UserHandler),
 
             (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),

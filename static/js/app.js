@@ -27,18 +27,25 @@ var I18N = {
     "User Name should not be empty": "用户名不能为空",
     "User Name or Email should not be empty": "用户名或邮箱不能为空",
     "User Name should not be '.' or '..'.": "用户名不能为'.'或'..'",
-    "User Name should not longer than": "用户名不能多于",
-    "characters": "个字符",
+    "User Name should not be '..'": "用户名不能为'..'",
+    "User Name should not longer than {0} characters": "用户名不能多于{0}个字符",
+    "User Name should not shorter than {0} characters": "用户名不能少于{0}个字符",
+    "User Name or Email should not shorter than {0} characters": "用户名或邮箱不能少于{0}个字符",
     "User Name should only contain English characters, Chinese characters, number, space, underbar, minus, dot, and can not only be '.' or '..'": "用户名只能为英文/中文字符、数字、空格、下划线、减号、小数点，且不能为“.”或“..”",
-    "User Name is taken. Please try another one": "用户名已被占用，请尝试其它名字。",
+    "User Name should only contain English characters, Chinese characters, number, space, underbar, minus, dot": "用户名只能为英文/中文字符、数字、空格、下划线、减号、小数点",
+    "User Name is taken. Please try another one": "用户名已被占用，请尝试其它名字",
     "This user name hasn't <a href='/signin/'>signin</a>": "这个用户名尚未<a href='/signin/'>注册</a>",
     "This email hasn't <a href='/signin/'>signin</a>": "这个邮箱尚未<a href='/signin/'>注册</a>",
     "Email should not be empty": "邮箱不能为空",
+    "Email is taken. Please try another one": "户名已被占用，请尝试其它邮箱",
     'Email exists. Please <a href="/login/">login</a> directly or <a href="/lost/">find your password</a>': '邮箱已注册被注册。请直接<a href="/login/">登录</a>或<a href="/lost/">找回密码</a>',
     "Wrong email format": "邮箱格式错误",
-    "Password should not be empty": "密码不能为空",
+    "Password should not be less than {0} words": "密码不能少于{0}个字",
     "Re-entered password is not the same": "两次输入的密码不一致",
+    "You need to enter the same password, you know that": "你得输入相同的密码，你懂的。",
     "Password incorrect": "密码错误",
+    "Hey, we only accept email address from earth": "嘿，请填写来自地球的邮箱",
+    "Oops, your verify code just expired. Be quicker next time": "哎哎，验证码刚刚过期了呢。下次手快点吧",
 
     "Refreshing page is required to change language. Refresh now?": "修改语言需要刷新页面生效。现在刷新？",
 
@@ -154,6 +161,7 @@ var logout = function(evt)
   cookie.unset('type', '/');
   cookie.unset('email', '/');
   cookie.unset('active', '/');
+  cookie.unset('service', '/');
   // cookie.unset('lang', '/');
 }
 
@@ -170,24 +178,35 @@ var change_lang = function(lang)
 // for login/signin
 var MASK_USER_NOT_EXISTS = 64;
 var USER_MAX_LEN = 100;
-var MASK_PWD_EMPTY = 32;
+var USER_MIN_LEN = 2;
+var MASK_USER_TOO_SHORT = 32;
 var MASK_EMAIL_NOT_EXISTS = 128;
-var USER_RE = /^[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]{1,100}$/;
+var USER_RE = /^[a-zA-Z0-9\u4e00-\u9fa5_\ \-][a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-][a-zA-Z0-9\u4e00-\u9fa5_\ \-]|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]{3,100}$/;
 var EMAIL_RE = /^[\w\d.+-]+@([\w\d.]+\.)+\w{2,}$/;
 var MASK_USER_TOO_LONG = 2;
 var MASK_USER_EXISTS = 64;
-var MASK_PWD_WRONG = 256;
+var MASK_PWD_TOO_SHORT = 256;
 var MASK_USER_EMPTY = 1;
 var MASK_EMAIL_EMPTY = 8;
 var MASK_EMAIL_EXISTS = 128;
 var MASK_EMAIL_FORMAT_WRONG = 16;
 var MASK_USER_FORMAT_WRONG = 4;
 var MAST_SEND_EMAIL_FAILED = 256;
+var PWD_MIN_LENGTH = 8;
 
 // for upload files
-var MASK_NO_PERMISSION = 1
-var MASK_FILE_TOO_BIG = 2
-var MASK_FILE_DUPLICATED_NAME = 4
-var MASK_FILE_DECODE_ERROR = 8
+var MASK_NO_PERMISSION = 1;
+var MASK_FILE_TOO_BIG = 2;
+var MASK_FILE_DUPLICATED_NAME = 4;
+var MASK_FILE_DECODE_ERROR = 8;
 
-var IMG_ALLOW = ['jpg', 'jpeg', 'png', 'gif']
+var IMG_ALLOW = ['jpg', 'jpeg', 'png', 'gif'];
+
+(function($) {
+  if ($.AMUI && $.AMUI.validator) {
+    $.AMUI.validator.patterns = $.extend($.AMUI.validator.patterns, {
+      user: USER_RE,
+      email: EMAIL_RE
+    });
+  }
+})(window.jQuery);

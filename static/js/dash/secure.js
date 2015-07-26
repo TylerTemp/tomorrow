@@ -1,28 +1,32 @@
 $(document).ready(function(evt)
 {
-  var info_panel = $("#info-panel");
-  var email_input = $("#email-input");
-  var resend_btn = $("#resend-btn");
-  var email_btn = $("#email-btn");
-  var name_btn = $("#name-btn");
-  var pwd_btn = $("#pwd-btn");
+  var $info = $('#info-panel');
+  var $email_input = $('#email-input');
+  var $resend_btn = $('#resend-btn');
+  var $chk_all = $('input[name="check-all"]');
+  var $chk_name = $('input[name="name"]');
+  var $chk_email = $('input[name="email"]');
+  var $chk_pwd = $('input[name="pwd"]');
+  var $submit = $('button#submit_change');
 
   var set_error = function(msg, error)
   {
     if (!msg)
-      return info_panel.parent().hide();
+      return $info.hide(200);
     var cls = error? "danger": "success";
-    info_panel.html(
+    $info.html(
       '<div class="am-alert am-alert-' + cls + '" data-am-alert>' +
         '<button type="button" class="am-close">&times;</button>' +
         '<p>' + msg + '</p>' +
       '</div>'
-    );
-    info_panel.parent().show();
+    ).show(200);
   }
 
-  var ajax = function(data, btn)
+  var ajax = function(data, form)
   {
+    var $submit_btn = form.find('button[type="submit"]').button('loading');
+    var $fieldset = form.find('fieldset').prop('disabled', true);
+    set_error();
     $.ajax(
       settings = {
         'data': data,
@@ -30,8 +34,6 @@ $(document).ready(function(evt)
         'beforeSend': function(jqXHR, settings)
         {
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          btn.prop("disabled", true).button("loading");
-          set_error();
         }
       }
     ).done(function(data, textStatus, jqXHR)
@@ -40,10 +42,8 @@ $(document).ready(function(evt)
       if (obj.error == 0)
         set_error(_('A verify email has been sent to "{0}"').format(obj.email), false);
       else if (obj.error == 1)
-        set_error(_('You need to verify your email first'), true);
-      else if (obj.error == 2)
         set_error(_('Oops, we failed to send email to "{0}", sorry for that').format(obj.email), true);
-      else if (obj.error == 3)
+      else if (obj.error == 2)
         set_error(_('Nothing to resend'), false);
       else
         set_error(_('Oops, unexpected error ({0}), sorry for that').format(obj.error), true);
@@ -51,45 +51,62 @@ $(document).ready(function(evt)
     {
       set_error(
         _("Sorry, a server error occured, please refresh and retry") +
-        " (" +
-        jqXHR.status +
-        ": " +
-        errorThrown +
-        ")",
+          " ({0}: {1})".format(jqXHR.status, errorThrown),
         true
       );
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
-      btn.prop("disabled", false).button('reset');
+      $submit_btn.button('reset');
+      $fieldset.prop('disabled', false);
     });
   }
 
-  name_btn.click(function(evt)
+  var check_status = function()
   {
-    evt.preventDefault();
-    var data = {'action': 'name'};
-    ajax(data, $(this));
+    var name = $chk_name.prop('checked');
+    var email = $chk_email.prop('checked');
+    var pwd = $chk_pwd.prop('checked');
+    if (name || email || pwd)
+      $submit.prop('disabled', false);
+    if (name && email && pwd)
+      $chk_all.uCheck('check');
+    else if (! (name || email || pwd))
+    {
+      $chk_all.uCheck('uncheck');
+      $submit.prop('disabled', true);
+    }
+  }
+
+  $chk_name.on('change', check_status);
+  $chk_email.on('change', check_status);
+  $chk_pwd.on('change', check_status);
+
+  $chk_all.on('change', function(evt)
+  {
+    var checked = $chk_all.prop('checked');
+    $chk_name.uCheck(checked? 'check': 'uncheck');
+    $chk_email.uCheck(checked? 'check': 'uncheck');
+    $chk_pwd.uCheck(checked? 'check': 'uncheck');
+    $submit.prop('disabled', (!checked));
   });
 
-  pwd_btn.click(function(evt)
-  {
-    evt.preventDefault();
-    var data = {'action': 'pwd'};
-    ajax(data, $(this));
-  });
-
-  email_btn.click(function(evt)
-  {
-    evt.preventDefault();
-    var data = {'action': 'email', 'email': email_input.val()};
-    ajax(data, $(this));
-  });
-
-  resend_btn.click(function(evt)
+  $resend_btn.click(function(evt)
   {
     evt.preventDefault();
     var data = {'action': 'resend'};
     ajax(data, $(this));
+  });
+
+  $('form').submit(function(evt)
+  {
+    evt.preventDefault();
+    var $self = $(this);
+    var values = {};
+    $.each($self.serializeArray(), function(i, field)
+    {
+        values[field.name] = field.value;
+    });
+    ajax(values, $self);
   });
 
 });

@@ -3,9 +3,9 @@ var set_error = function(obj, msg, level)
   var container = obj.parent();
   var panel = container.children(".error-panel");
 
-  container.removeClass("am-form-success");
-  container.removeClass("am-form-warning");
-  container.removeClass("am-form-error");
+  container.removeClass("am-form-success").
+            removeClass("am-form-warning").
+            removeClass("am-form-error");
   if (level)
     container.addClass("am-form-"+level);
 
@@ -22,11 +22,11 @@ var set_user_error = function(error)
 {
   var user_obj = $("#user");
   switch(error){
-    case 'empty':
-      set_error(user_obj, _("User Name should not be empty"), "error");
+    case 'tooshort':
+      set_error(user_obj, _("User Name should not shorter than {0} characters").format(USER_MIN_LEN), "error");
       break;
     case 'dot':
-      set_error(user_obj, _("User Name should not be '.' or '..'"), "error");
+      set_error(user_obj, _("User Name should not be '..'"), "error");
       break;
     case 'length':
       set_error(user_obj, _("User Name should not longer than {0} characters").format(USER_MAX_LEN), "error");
@@ -46,9 +46,9 @@ var check_user = function()
 {
   var user_obj = $("#user");
   var val = user_obj.val();
-  if (!val)
+  if (val.length < USER_MIN_LEN)
   {
-    set_user_error('empty');
+    set_user_error('tooshort');
     return false;
   }
   if (val == '.' || val == '..')
@@ -115,8 +115,8 @@ var set_pwd_error = function(error)
   var pwd_obj = $("#pwd");
   switch(error)
   {
-    case 'empty':
-      set_error(pwd_obj, _("Password should not be empty"), "error");
+    case 'short':
+      set_error(pwd_obj, _("Password should not be less than {0} words").format(PWD_MIN_LENGTH), "error");
       break;
     default:
       set_error(pwd_obj);
@@ -126,9 +126,9 @@ var set_pwd_error = function(error)
 var check_pwd = function()
 {
   var pwd_obj = $("#pwd");
-  if (!pwd_obj.val())
+  if (pwd_obj.val().length < PWD_MIN_LENGTH)
   {
-    set_pwd_error("empty");
+    set_pwd_error("short");
     return false;
   }
   set_pwd_error(pwd_obj);
@@ -191,6 +191,8 @@ $(document).ready(function(){
     var u = check_user(), e = check_email(), p = check_pwd(), r = check_repwd();
     if (!(u && e && p && r))
       return false;
+    submit.button("loading");
+    server_error_panel.hide(400);
     $.ajax(
       settings = {
         'data': {
@@ -201,8 +203,6 @@ $(document).ready(function(){
         'type': 'post',
         'beforeSend': function(jqXHR, settings){
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          submit.button("loading");
-          server_error_panel.hide(400);
         }
       }
     ).done(function(data, textStatus, jqXHR)
@@ -221,8 +221,8 @@ $(document).ready(function(){
         );
         server_error_panel.show(400);
       }
-      else if (obj.error & MASK_USER_EMPTY)
-        set_user_error('empty');
+      else if (obj.error & MASK_USER_TOO_SHORT)
+        set_user_error('tooshort');
       else if (obj.error & MASK_USER_TOO_LONG)
         set_user_error("length");
       else if (obj.error & MASK_USER_FORMAT_WRONG)

@@ -9,7 +9,7 @@
 {% block content %}
 <hr class="am-divider am-divider-default">
 
-<div class="am-padding">
+<div class="am-padding-horizontal">
   <div class="am-panel-group" id="authors">
     {% for name, status in author_and_status %}
     <div class="am-panel am-panel-default">
@@ -25,7 +25,7 @@
       </div>
       <div id="{{ name.replace(' ', '-') }}" class="am-panel-collapse am-collapse" data-role="detail" data-name="{{ name }}">
         <div class="am-panel-bd">
-          
+
         </div>
       </div>
     </div>

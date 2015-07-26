@@ -198,4 +198,5 @@ class TranslateHandler(BaseHandler):
                 if py3:
                     v = v.decode('utf-8')
                 result.append({'name': v, 'url': k})
+        logging.debug(result)
         return result

@@ -36,7 +36,7 @@ class DashboardHandler(BaseHandler):
         user_name = user_info['user']
 
         verify_mail = ('verify' in user_info and
-                       user_info['verify']['for'] == user.NEWEMAIL)
+                       user_info['verify']['for'] == user.NEWUSER)
 
         folder_path = self.get_user_path(user_name)
         file_path = os.path.join(folder_path, 'file')

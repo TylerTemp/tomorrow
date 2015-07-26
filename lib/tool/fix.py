@@ -7,120 +7,189 @@ from urllib.parse import unquote, quote
 
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
-from lib.db import JollaAuthor
+from lib.db import Email
 sys.path.pop(0)
 
-JollaAuthor._jolla_author.drop()
+Email._email.drop()
 
 info = (
-    {
-        'name': 'JuhaniLassila',
-        'photo': 'https://dn-jolla.qbox.me/Jussi1-150x150.jpg',
-        'description': 'Head of Communications for Jolla. International PR &amp; Communications professional. Music enthusiast. Guitarist in the Jolla Cruise Band, among other bands.',
-        'translation': '''
-Jolla通讯部主管。
-国际公关和通讯专家。
-音乐爱好者。
-Jolla巡演队（以及其它乐队）吉他手。'''
+    {'name': '_extra',
+     'zh': {
+        'main_title': 'tomorrow.becomes.today',
+        'footer': ''
+     },
+     'default': {
+        'main_title': 'tomorrow.becomes.today',
+        'footer': ''
+     }
     },
-    {
-        'name': 'Stefano Mosconi',
-        'photo': 'https://dn-jolla.qbox.me/Stefano Mosconi.jpg',
-        'description': 'CTO and Co-founder of Jolla. A geek with social skills and business acumen. An entrepreneur with a touch for people and for fixing stuff. Loves food, gadgets, photography, family, cycling.',
-        'translation': '''
-Jolla联合创始人，首席技术官。
-一个拥有社交技巧和商业头脑的极客。
-一个善于交际又喜欢修理物件的企业家。
-爱食物，爱小玩意，爱摄影，爱家人，爱骑行。'''
+    {'name': 'new_user',
+     'default':
+        {'title': 'Welcome, {user}',
+         'content': '''<h2>Verify Your Email</h2>
+         <p>Hi, {user}. You've just registered at
+           <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>.
+         </p>
+         <p>Your verifying code is: <code>{code}</code></p>
+         <p>Click the following link to active your account:<br/>
+           <a href="http://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+         </p>
+         <p>If you can't click the url above, please copy the following text and paste
+         in you browser.</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''},
+     'zh':
+        {'title': '{user}，欢迎加入',
+         'content': '''<h2>验证你的邮箱</h2>
+         <p>嘿，{user}！你刚注册了
+           <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>。
+         </p>
+         <p>你的激活码是：{code}</p>
+         <p>猛戳下方链接来激活你的账户:<br/>
+          <a href="https://tomorrow.becomes.today/verify/{escaped_code}/">
+            https://tomorrow.becomes.today/verify/{escaped_code}/
+          </a>
+         </p>
+         <p>戳不了？把下面这行复制到浏览器地址栏也行 :)</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>''',
+        }
     },
-    {
-        'name': 'Marc Dillon',
-        'photo': 'https://dn-jolla.qbox.me/Marc_Dillon.jpg',
-        'description': 'COO and Co-founder of Jolla. Global speaker and thought leader in mobile technology. Guitarist & singer, motorcyclist, and enthusiastic in mechanics & electronics.',
-        'translation': '''
-Jolla创始人，首席运营官。
-手机技术的全球发言人和思想领导。
-吉他手，歌手，摩托车骑手，狂热的机械和电子爱好者。
-'''
-    },
-    {
-        'name': 'Soumya Bijjal',
-        'photo': 'https://dn-jolla.qbox.me/Soumya Bijjal.jpeg',
-        'description': 'Software Program Manager at Jolla. A Linux enthusiast in search of a TARDIS.',
-        'translation': '''Jolla项目经理。
-Linux狂热爱好者。'''
-    },
-    {
-        'name': 'Juha Paakkari',
-        'photo': 'https://dn-jolla.qbox.me/Juha Paakkari.jpeg',
-        'description': 'Head of Go-To-Market at Jolla. Passionate about things that really matter and about keeping them moving.',
-        'translation': None
-    },
-    {
-        'name': 'Carsten Munk',
-        'photo': 'https://dn-jolla.qbox.me/Carsten Munk.png',
-        'description': 'Chief Research Engineer at Jolla. Works with all sorts of strange things to bring you future SailfishOS devices and innovation for them. Passionate about open source and transparency in development.',
-        'translation': '''
-Jolla首席研究工程师。
-经常从一些奇奇怪怪的东西中获得Sailfish系统新特性和革新的灵感。
-热衷于开源透明的开发。
-'''
-    },
-    {
-        'name': 'Antti Saarnio',
-        'photo': 'https://dn-jolla.qbox.me/Antti Saarnio.png',
-        'description': 'Co-founder and Chairman of the Board of Jolla. Fearless entrepreneur and business adventurer.',
-        'translation': '''Jolla联合创始人，董事会主席。
-大无畏的企业家和商业冒险家。'''
-    },
-    {
-        'name': 'Carol Chen',
-        'photo': 'https://dn-jolla.qbox.me/Carol-Chen.jpeg',
-        'description': 'Community Chief at Jolla. Globe (and star) trekker. Ardent about open source and open communication. Makes decent music with timpani, drums, piano, and vocal cords.',
-        'translation': '''Jolla社区主管。
-全球（星级）星舰迷。
-热爱开源和开放的社区。
-会用定音鼓、架子鼓和钢琴配着嗓音创作出不错的音乐。
-'''
-    },
-    {
-        'name': 'Marko Saukko',
-        'photo': 'https://dn-jolla.qbox.me/Marko Saukko.jpg',
-        'description': 'Chief Engineer at Jolla since Feb 2012. Maintainer of the Nemo Mobile project, also involved with the Mer Project, with years of experience on hardware adaptation work. Photography and video game enthusiast.',
-        'translation': '''自2012年2月起任Jolla手机工程师。
-Nemo手机工程维护者，Mer项目维护者，拥有数年硬件自适应工作经验。
-摄影和电子游戏狂热爱好者。'''
-    },
-    {
-        'name': 'Pauliina Alanen',
-        'photo': 'https://dn-jolla.qbox.me/Pauliina Alanen.jpg',
-        'description': 'Communications and Marketing Assistant for Jolla. Passionate about media in all its diversity. Loves singing and playing the piano.',
-        'translation': '''Jolla通讯和营销助理。
-热衷于各种媒体。
-爱好唱歌和弹钢琴。'''
-    },
-    {
-        'name': 'Martin Schüle',
-        'photo': 'https://dn-jolla.qbox.me/Martin Schüle.jpg',
-        'description': 'Chief Designer of Jolla. Passionate about holistic and multidisciplinary design. Loves his family, renovating old wooden houses, as well as playing handball.',
-        'translation': '''Jolla首席执行师。
-醉心于宏观和交叉学科设计。
-顾家，喜欢翻修老木房，也喜欢手球。'''
-    },
-    {
-        'name': 'Iekku Pylkkä',
-        'photo': 'https://dn-jolla.qbox.me/Iekku Pylkkä.jpeg',
-        'description': 'Head of Developer Affairs at Jolla. Interested in QA, open source, developer community and communication. Punk, nature, singing, badgers and Shetland sheepdogs are near to heart.',
-        'translation': '''Jolla开发人员事务主管。
-喜欢QA、开源、开发者社区和交流。
-Punk, nature, singing, badgers and Shetland sheepdogs are near to heart。'''
-    }
+    {'name': 'change_email',
+     'default':
+        {'title': 'Verify Your New Email Address',
+         'content': '''<h1>Verify Your New Email Address</h1>
+         <p>Hi {user}, you just changed your email address on
+            <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>.
+         </p>
+         <p>Your verifying code is: <code>{code}</code></p>
+         <p>Click the following link to active your account:<br/>
+           <a href="http://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+         </p>
+         <p>If you can't click the url above, please copy the following text and paste
+         in you browser.</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''},
+     'zh':
+        {'title': '验证你的新邮箱地址',
+         'content': '''<h1>验证你的新邮箱地址</h1>
+          <p>嘿，{user}。你刚修改了在我们站点
+             <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>
+            的邮箱地址。
+          </p>
+          <p>你的激活码是：{code}</p>
+          <p>猛戳下方链接来激活你的账户:<br/>
+           <a href="https://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+          </p>
+          <p>戳不了？把下面这行复制到浏览器地址栏也行 :)</p>
+          <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''}},
+    {'name': 'update_account',
+     'default':
+        {'title': 'New Activity of Your Account',
+         'content': '''<h1>Update Your Account</h1>
+         <p>Hi, {user}. There are some changes of your account on
+            <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>.
+         </p>
+         <p>Your verifying code is: <code>{code}</code></p>
+         <p>{expire_announce}</p>
+         <p>Click the following link to active your account:<br/>
+           <a href="http://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+         </p>
+         <p>If you can't click the url above, please copy the following text and paste
+         in you browser.</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''},
+     'zh':
+        {'title': '账户变更',
+         'content':'''<h1>账户变更确认</h1>
+          <p>嘿，{user}。你刚修改了在我们站点
+             <a href="http://tomorrow.becomes.today">tomorrow.becomes.today</a>
+            的账户信息。
+          </p>
+          <p>你的激活码是：{code}</p>
+          <p>{expire_announce}</p>
+          <p>猛戳下方链接来激活你的账户:<br/>
+           <a href="https://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+          </p>
+          <p>戳不了？把下面这行复制到浏览器地址栏也行 :)</p>
+          <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''}},
+    {'name': 'invite',
+     'default':
+        {'title': 'Join Us',
+         'content': '''<h1>Join Us and Create Something Awesome Together!</h1>
+         <p>Hi there!</p>
+         <p>{invitor} invite you to join
+           <a href="https://tomorrow.becomes.today">
+             tomorrow.becomes.today
+           </a>.
+         </p>
+         <p>Your verifying code is: <code>{code}</code></p>
+         <p>Click the following link to active your account:<br/>
+           <a href="http://tomorrow.becomes.today/verify/{escaped_code}/">
+             https://tomorrow.becomes.today/verify/{escaped_code}/
+           </a>
+         </p>
+         <p>If you can't click the url above, please copy the following text and paste
+         in you browser.</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''},
+     'zh':
+        {'title': '加入我们',
+         'content': '''<h1>现在就加入我们！</h1>
+         <p>嘿，你好：</p>
+         <p>{invitor}邀请你加入
+           <a href="https://tomorrow.becomes.today/">
+             tomorrow.becomes.today
+           </a>。
+         </p>
+         <p>你的激活码是：{code}</p>
+         <p>{expire_announce}</p>
+         <p>猛戳下方链接来激活你的账户:<br/>
+          <a href="https://tomorrow.becomes.today/verify/{escaped_code}/">
+            https://tomorrow.becomes.today/verify/{escaped_code}/
+          </a>
+         </p>
+         <p>戳不了？把下面这行复制到浏览器地址栏也行 :)</p>
+         <p><code>https://tomorrow.becomes.today/verify/{escaped_code}/</code></p>'''}},
+    {'name': 'invite_no_verify',
+     'defualt':
+        {'title': 'Welcome',
+         'content': '''<h1>Welcome, My Friend</h1>
+         <p>{invitor} just added you as a member of
+             <a href="https://tomorrow.becomes.today/">
+               tomorrow.becomes.today
+             </a>.
+         </p>
+         <p>He/She should already give you the password. You can login on
+            <a href="https://tomorrow.becomes.today/login/">
+                tomorrow.becomes.today/login/
+            </a>.
+         </p>
+         <p>Hope you enjoy there:)</p>'''},
+    'zh':
+        {'title': '欢迎',
+         'content': '''<h1>欢迎加入</h1>
+         <p>{invitor}刚添加了你为
+             <a href="https://tomorrow.becomes.today/">
+               tomorrow.becomes.today
+             </a>成员。
+         </p>
+         <p>你应该已经从他/她那里获得了密码。你可以通过
+            <a href="https://tomorrow.becomes.today/login/">
+                tomorrow.becomes.today/login/
+            </a>登录。
+         </p>
+         <p>希望你玩的开心:)</p>'''}}
 )
 
+
 for each in info:
+    e = Email()
     print(each['name'])
-    author = JollaAuthor(each['name'])
-    author.photo = each['photo']
-    author.description = each['description']
-    author.translation = each['translation']
-    author.save()
+    e.get().update(each)
+    e.save()

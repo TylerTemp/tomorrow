@@ -18,6 +18,14 @@ from bson.objectid import ObjectId
 from passlib.hash import sha256_crypt
 import time
 
+import sys
+import os
+
+rootdir = os.path.normpath(os.path.join(__file__, '..', '..'))
+sys.path.insert(0, rootdir)
+from lib.tool import generate
+sys.path.pop(0)
+
 logger = logging.getLogger('tomorrow.db')
 
 client = pymongo.MongoClient()
@@ -31,10 +39,10 @@ class User(object):
     admin = 1
     root = 2
 
-    NEWEMAIL = 0
-    CHANGEEMAIL = 1
-    CHANGEPWD = 2
-    CHANGEUSER = 3
+    NEWUSER = 1
+    CHANGEEMAIL = 2
+    CHANGEPWD = 4
+    CHANGEUSER = 8
 
     OK = 0
     ERROR_NOT_APPLY = 1
@@ -46,14 +54,19 @@ class User(object):
     # pwd
     # nickname
     # type
-    def __init__(self, user_or_email):
-        self.user_info = self.find_user(user_or_email)
-        if self.user_info is None:
-            self.user = user_or_email if '@' not in user_or_email else None
-            self.email = user_or_email if '@' in user_or_email else None
+    def __init__(self, user_or_email=None):
+        if user_or_email is None:
+            self.user_info = None
+            self.user = None
+            self.email = None
         else:
-            self.user = self.user_info['user']
-            self.email = self.user_info['email']
+            self.user_info = self.find_user(user_or_email)
+            if self.user_info is None:
+                self.user = user_or_email if '@' not in user_or_email else None
+                self.email = user_or_email if '@' in user_or_email else None
+            else:
+                self.user = self.user_info['user']
+                self.email = self.user_info['email']
 
     def add(self, user=None, email=None, pwd=None, type=None,
             show_email=True, active=False):
@@ -88,7 +101,7 @@ class User(object):
 
     def remove(self):
         logger.info('remove user %s', self.user_info)
-        self._user.delete_one(self.user_info)
+        self._user.delete_one({'_id': self.user_info['_id']})
         # self._user.remove({'user': self.user})
         self.user_info = None
 
@@ -96,12 +109,26 @@ class User(object):
         self.user_info['img'] = url
 
     def save(self):
-        result = self._user.save(self.user_info)
-        self.user_info['_id'] = result
+        info = self.user_info
+        if '_id' in info:
+            result = self._user.find_one_and_replace(
+                {'_id': info['_id']},
+                info)
+        else:
+            result = self._user.insert_one(self.user_info)
+            self.user_info['_id'] = result
         return result
 
     def get(self):
         return self.user_info
+
+    @classmethod
+    def generate(cls):
+        collect = cls._user
+        while True:
+            code = generate.generate()
+            if collect.find_one({'verify.code': code}) is None:
+                return code
 
     def set_code(self, for_, code, expire=None):
         info = self.user_info
@@ -112,6 +139,34 @@ class User(object):
         }
         if expire is not None:
             info['verify']['expire'] = expire
+
+    @classmethod
+    def init_by_code(cls, code):
+        info = cls._user.find_one({'verify.code': code})
+        u = cls()
+        u.user_info = info
+        u.user = info['user'] if info else None
+        u.email = info['email'] if info else None
+        return u
+
+    @classmethod
+    def init_by_id(cls, _id):
+        if not isinstance(_id, ObjectId):
+            _id = ObjectId(_id)
+        info = cls._user.find_one({'_id': _id})
+        u = cls()
+        u.user_info = info
+        u.user = info['user'] if info else None
+        u.email = info['email'] if info else None
+        return u
+
+    @classmethod
+    def get_collect(cls):
+        return cls._user
+
+    @classmethod
+    def all(self):
+        return self._user.find({})
 
     @property
     def new(self):
@@ -149,7 +204,7 @@ class Message(object):
         self.from_ = from_
         self.to = to
         self.content = content
-        self._id = self._msg.save(
+        self._id = self._msg.insert_one(
             {'from': from_, 'to': to, 'content': content, 'time': time.time()})
 
     @property
@@ -167,6 +222,10 @@ class Message(object):
     @classmethod
     def num_to(cls, user):
         return cls._msg.find({'to': user}).count()
+
+    @classmethod
+    def get_collect(cls):
+        return cls._msg
 
     def __str__(self):
         if self._id is None:
@@ -219,9 +278,16 @@ class Jolla(object):
         return self.jolla_info
 
     def save(self, t=None):
-        self.jolla_info['edittime'] = t or time.time()
-        result  = self._jolla.save(self.jolla_info)
-        self.jolla_info['_id'] = result
+        jolla_info = self.jolla_info
+        jolla_info['edittime'] = t or time.time()
+        if '_id' in jolla_info:
+            self._jolla.replace_one(
+                {'_id': jolla_info['id']},
+                jolla_info)
+            result = jolla_info['_id']
+        else:
+            result  = self._jolla.insert_one(self.jolla_info)
+            jolla_info['_id'] = result
         return result
 
     def get(self):
@@ -391,7 +457,12 @@ class Article(object):
         self.article_info.update(info)
 
     def save(self):
-        return self._article.save(self.article_info)
+        info = self.article_info
+        coll = self._article
+        if '_id' in info:
+            coll.replace_one({'_id': info['_id']}, info)
+            return info['_id']
+        return coll.insert_one(self.article_info)
 
     @classmethod
     def get_collect(cls):
@@ -453,23 +524,12 @@ class Article(object):
             return result[skip:]
         return result[skip:skip + limit]
 
-    # not work. Why?
-    # @classmethod
-    # def find_need_shown_num(cls, skip=0):
-    #     return cls._article.find({
-    #         '$or': [
-    #             {'transinfo.status': {'$exists': False}},
-    #             {'transinfo.status': cls.TRUSTED}
-    #         ]
-    #     }).count()#.skip(skip).count()
-
     @classmethod
     def num_by(cls, user):
         return cls._article.find({'author': user}).count()
 
 
 class JollaAuthor(object):
-
     _jolla_author = db.jolla_author
 
     def __init__(self, name):
@@ -516,15 +576,16 @@ class JollaAuthor(object):
             'translation': translation or self.translation,
         }
 
+        coll = self._jolla_author
         if self._info['_id'] is not None:
-            info['_id'] = self._info['_id']
-        _id = self._jolla_author.save(info)
+            _id = self._info['_id']
+            info['_id'] = _id
+            coll.replace_one({'id': _id}, info)
+        else:
+            _id = coll.insert_one(info)
         self._info.clear()
         self._info.update(info)
         self._info['_id'] = _id
-
-    def _save(self, info):
-        return self._jolla_author.save(info)
 
     @classmethod
     def find_author(self, name):
@@ -547,6 +608,56 @@ class JollaAuthor(object):
                 'description: %.10r..., translation: %.10r)') % (
                     self.name, self.photo, self.description, self.translation)
 
+
+class Email(object):
+    _email = db.email
+    _extra = _email.find_one({'name': '_extra'}) or {}
+
+    # name: unique id
+    # title
+    # content
+    # add_main_title: title of the email will be `title` + ' | ' + `main_title`
+    # add_footer: add foot for the email
+    # attachment: list of filename
+
+    # name: _extra
+    # main_title: the value of the main_title, usu. "tomorrow.becomes.today"
+    # footer: the value of the footer, usu. basic info/donate info
+
+    def __init__(self, name=None):
+        self._info = self._email.find_one({'name': name}) or {}
+
+    def get(self):
+        return self._info
+
+    def save(self):
+        self._email.insert_one(self._info)
+
+    @property
+    def new(self):
+        return '_id' not in self._info
+
+    def format(self, use_zh=False):
+        data = self._info['default']
+        extra = self._extra['default']
+        if use_zh:
+            if 'zh' in self._info:
+                data = self._info['zh']
+            if 'zh' in self._extra:
+                extra = self._extra['zh']
+        if data.get('add_main_title', True):
+            data['title'] = '%s | %s' % (data['title'], extra['main_title'])
+        if data.get('add_footer', True):
+            data['content'] += extra['footer']
+
+        return data
+
+class File(object):
+    _file = db.file
+
+    # name: filename
+    # type: file type(mime info)
+    # user_level: least level
 
 if __name__ == '__main__':
     import docopt

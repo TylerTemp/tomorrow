@@ -13,22 +13,22 @@ import sys
 import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
-from lib.db import User
+from lib.db import User, Message
 from lib.config import Config
 from lib.tool.generate import generate
 from lib.tool.mail import Email
+from lib.tool.tracemore import get_exc_plus
 from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.dash.secure')
 
-
+# todo: fix this so it can work again
 class SecureHandler(BaseHandler):
 
-    ERROR_NOT_VERIFY_EMAIL = 1
-    ERROR_FAILED_SEND_EMAIL = 2
-    ERROR_NOTHING_TO_SEND = 3
+    ERROR_FAILED_SEND_EMAIL = 1
+    ERROR_NOTHING_TO_SEND = 2
 
     @tornado.web.authenticated
     @ItsMyself('secure/')
@@ -39,7 +39,7 @@ class SecureHandler(BaseHandler):
         user = User(self.current_user['user'])
         user_info = user.get()
         verify_mail = ('verify' in user_info and
-                       user_info['verify']['for'] == user.NEWEMAIL)
+                       user_info['verify']['for'] & user.NEWUSER)
 
         return self.render(
             'dash/secure.html',
@@ -51,59 +51,63 @@ class SecureHandler(BaseHandler):
 
     @tornado.web.authenticated
     @ItsMyself('secure/')
-    @tornado.web.asynchronous
-    @tornado.gen.engine
+    # @tornado.web.asynchronous
+    # @tornado.gen.engine
     def post(self, user):
 
-        userinfo = self.get_current_user()
+        userinfo = self.current_user
         urluser = unquote(user)
         if userinfo['user'] != urluser:
             raise tornado.web.HTTPError(500, 'user %s try to modefy user %s',
                                         userinfo['user'], urluser)
 
-        action = self.get_argument('action')  # name/email/pwd/resend
+        action = self.get_argument('action', None)  # resend/verify_email/None
         flag = 0
         user = User(userinfo['user'])
         user_info = user.get()
-        if action in ('name', 'pwd'):
-            if ('verify' in user_info and
-                    user_info['verify']['for'] == user.NEWEMAIL):
-                logger.debug('user %s need verify email before %s',
-                             user_info['user'], action)
-                self.write(json.dumps({'error': self.ERROR_NOT_VERIFY_EMAIL}))
-                self.finish()
-                return
-            email = user_info['email']
-            for_ = {'name': User.CHANGEUSER, 'pwd': User.CHANGEPWD}[action]
-            expire = time.time() + 60 * 60 * 24
-            code = generate()
-        elif action == 'email':
-            if ('verify' in user_info and
-                    user_info['verify']['for'] == user.NEWEMAIL):
-                for_ = user.NEWEMAIL
-                expire = None
-                email = self.get_argument('email', None)
-                if email is None:
-                    email = user_info['email']
-                else:
-                    user_info['email'] = email
-                code = user_info['verify']['code']
-            else:
-                email = user_info['email']
-                for_ = user.CHANGEEMAIL
-                expire = time.time() + 60 * 60 * 24
-                code = generate()
-        elif action == 'resend':
-            if 'verify' not in user_info:
+        if action == 'resend':
+            if 'verify' not in user_info or user_info['verify']['for'] == 0:
                 self.write(json.dumps({'error': self.ERROR_NOTHING_TO_SEND}))
                 self.finish()
                 return
-            for_ = user_info['verify']['for']
             expire = user_info['verify'].get('expire', None)
             email = user_info['email']
             code = user_info['verify']['code']
+            for_ = user_info['verify']['for']
+        elif action == 'verify_email':
+            assert user_info['verify']['for'] & user.NEWUSER
+            email = self.get_argument('email')
+            expire = None
+            code = user_info['verify']['code']
+            for_ = user_info['verify']['for']
         else:
-            raise tornado.web.HTTPError(500, 'Unknown action %s', action)
+            if ('verify' in user_info):
+                 assert not user_info['verify']['for'] & user.NEWUSER
+            email = user_info['email']
+            expire = time.time() + 60 * 60 * 24
+            code = User.generate()
+
+            change_name = self.get_argument('name', False)
+            change_email = self.get_argument('email', False)
+            change_pwd = self.get_argument('pwd', False)
+
+            # for normal form submit
+            if change_name == 'false':
+                change_name = False
+            if change_email == 'false':
+                change_email = False
+            if change_pwd == 'false':
+                change_pwd = False
+
+            assert change_name or change_email or change_pwd
+
+            for_ = 0
+            if change_name:
+                for_ |= User.CHANGEUSER
+            if change_email:
+                for_ |= User.CHANGEEMAIL
+            if change_pwd:
+                for_ |= User.CHANGEPWD
 
         logger.info('user: %s; email: %s; for: %s, expire: %s, code: %s',
                     user_info['user'], email, action, expire, code)
@@ -111,36 +115,38 @@ class SecureHandler(BaseHandler):
         user.set_code(for_=for_, code=code, expire=expire)
         user.save()
 
-        mail_man = Email(self.locale.code)
-        args = {'email': email, 'user': user_info['user'], 'code': code}
-        if for_ == user.NEWEMAIL:
-            args['url'] = '/am/%s/verify/newmail/%s/' % (
-                quote(user_info['user']),
-                quote(code))
-            func = mail_man.verify_new_mail
-        elif for_ == user.CHANGEEMAIL:
-            args['expire'] = expire
-            args['url'] = '/am/%s/verify/changemail/%s/' % (
-                quote(user_info['user']),
-                quote(code))
-            func = mail_man.verify_change_mail
-        elif for_ == user.CHANGEUSER:
-            args['expire'] = expire
-            args['url'] = '/am/%s/verify/changeuser/%s/' % (
-                quote(user_info['user']),
-                quote(code))
-            func = mail_man.verify_change_user
-        elif for_ == user.CHANGEPWD:
-            args['expire'] = expire
-            args['url'] = '/am/%s/verify/changepwd/%s/' % (
-                quote(user_info['user']),
-                quote(code))
-            func = mail_man.verify_change_pwd
+        mail_man = Email(email, self.locale.code)
 
-        sent = yield func(**args)
-        if not sent:
+        try:
+            mail_man.send('update_account',
+                          user=user_info['user'],
+                          code=code,
+                          escaped_code=quote(code),
+                          expire_announce=self.format_expire(expire))
+        except BaseException as e:
             flag = self.ERROR_FAILED_SEND_EMAIL
+            error = get_exc_plus()
+            logger.error(error)
+            Message().send(
+                None,
+                None,
+                '''Fail to send to {user}({email}/{for_}).<br />
+                <pre><code>{error}</code></pre>'''.format(
+                    user=user_info['user'],
+                    email=email,
+                    for_=for_,
+                    error=error
+                    ))
 
         self.write(json.dumps({'error': flag, 'email': email}))
         self.finish()
         return
+
+    def format_expire(self, t):
+        if t is None:
+            return ''
+        if self.locale.code[:2].lower().startswith('zh'):
+            return '请在%s前完成验证' % \
+                    time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
+
+        return 'Please verify before' + time.ctime(t)

@@ -57,9 +57,23 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
       <li><a data-act="info" href="{{ main_url }}/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
       <li><a data-act="secure" href="{{ main_url }}/secure/"><span class="am-icon-lock am-icon-fw"></span> {{ _("Security")}} </a></li>
       <li><a data-act="article" href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
-      <li><a data-act="msg" href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Message")}} </a></li>
+      <li><a data-act="msg" href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Message")}} {% if MESSAGENUM %}<span class="am-badge am-badge-secondary am-margin-right am-fr">{{ MESSAGENUM }}</span>{% end %}</a></li>
+
+      {% if SERVICE %}
+      <!-- Service | start -->
+      <li class="admin-parent">
+        <a class="am-cf" data-act="service" data-am-collapse="{target: '#service'}"><span class="am-icon-cloud"></span> {{ _('Service') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+        <ul class="am-list am-collapse admin-sidebar-sub am-in" id="service">
+          {% if 'ss' in SERVICE %}
+          <li><a data-act="service-ss" href="{{ main_url }}/service/ss/"><span class="am-icon-send am-icon-fw"></span> {{ _('ShadowSocks')}}</a></li>
+          {% end %}
+        </ul>
+      </li>
+      <!-- Service | end -->
+      {% end %}
 
       {% if user_type > NORMAL %}
+      <!-- Upload | start -->
       <li class="admin-parent">
         <a class="am-cf" data-act="uploaded" data-am-collapse="{target: '#uploaded'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="uploaded">
@@ -67,9 +81,13 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
           <li><a data-act="uploaded-file" href="{{ main_url }}/file/"><span class="am-icon-file am-icon-fw"></span> {{ _("File")}}</a></li>
         </ul>
       </li>
+      <!-- Upload | end -->
+
+      <!-- manage | start -->
       <li class="admin-parent">
         <a class="am-cf" data-act="manage" data-am-collapse="{target: '#manage'}"><span class="am-icon-wrench"></span> {{ _('Manage') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
         <ul class="am-list am-collapse admin-sidebar-sub am-in" id="manage">
+          <!-- manage-jolla | start -->
           <li>
             <a class="am-cf" data-act="manage-jolla" data-am-collapse="{target: '#jolla'}"><span class="iconfont icon-jolla"></span> {{ _('Jolla') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
             <ul class="am-list am-collapse admin-sidebar-sub am-in" id="jolla">
@@ -80,13 +98,15 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
                 <a data-act="manage-jolla-author" href="{{ main_url }}/manage/jolla/author"><span class="am-icon-pencil"> {{ _("Author")}}</span></a>
               </li>
             </ul>
-
           </li>
+          <!-- manage-jolla | end -->
+          <li><a data-act="manage-user" href="https://{{ MAIN_HOST }}{{ main_url }}/manage/user/"><span class="am-icon-user am-icon-fw"></span> {{ _('User') }}</a></li>
         </ul>
       </li>
+      <!-- manage | end -->
       {% end %}
 
-      <li><a href="#" id="signout"><span class="am-icon-sign-out am-icon-fw"></span> {{ _("Logout")}} </a></li>
+      <li><a href="/logout/" id="signout"><span class="am-icon-sign-out am-icon-fw"></span> {{ _("Logout")}} </a></li>
       </ul>
     </div>
   </div>

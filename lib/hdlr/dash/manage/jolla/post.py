@@ -106,7 +106,7 @@ class PostHandler(BaseHandler):
         self.check_xsrf_cookie()
 
         index = self.get_argument('prority', None)
-        if index is not None:
+        if index:
             index = -abs(int(index))
         _id = ObjectId(self.get_argument('id'))
 

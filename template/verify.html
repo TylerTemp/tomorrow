@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Verify') }}{% end %}
+
+{% block body %}
+
+{% if error %}
+<div class="am-alert am-padding am-alert-{{ 'success' if error=='succeed' else 'danger' }}" data-am-alert>
+  {% if error == 'nocode' %}
+    <h1>{{ _('Emm... How did you get there?')}}</h1>
+    <p>{{ _("That's weird. I don't think I've sent you this code. Sorry.") }}</p>
+  {% elif error == 'expire' %}
+    <h1>He's Dead, Jim!</h1>
+    <p>{{ _("Oops, your expire code is expired already") }}</p>
+  {% elif error == 'succeed' %}
+    <h1>{{ _('Verify successfully') }}</h1>
+    <p><u><a href="{{ main_url }}/">{{ _("Click here for more!") }}</a></u></p>
+  {% end %}
+</div>
+{% else %}
+
+<!-- info panel | start -->
+<div class="am-g" id="info-panel">
+</div>
+<!-- info panel | end -->
+
+<!-- detail form -->
+<form class="am-form am-form-horizontal am-padding" action="{{ request.uri }}" method="POST">
+  <fieldset>
+    <legend>{{ _("Update your information") }}</legend>
+    {% raw xsrf_form_html() %}
+
+    <div class="am-form-group">
+      <label for="user" class="am-u-sm-2 am-form-label">{{ _('New User Name' if change_user else 'Name') }}:</label>
+      <div class="am-u-sm-10">
+        <input
+            {% if not change_user %} value="{{ user_name }}" disabled="disabled"
+            {% else %} class="js-pattern-user"
+            {% end %}
+            type="text"
+            name="user"
+            minlength="2"
+            data-min-length="2"
+            maxlength="100"
+            placeholder="{{ _('Enter your user name') }}"
+            required>
+      </div>
+    </div>
+
+    <div class="am-form-group">
+        <label for="email" class="am-u-sm-2 am-form-label">{{ _('New Email' if change_email else 'Email') }}:</label>
+        <div class="am-u-sm-10">
+          <input
+              type="text"
+              {% if not change_email %} value="{{ user_email }}" disabled="disabled"
+              {% else %} class="js-pattern-email"
+              {% end %}
+              id="email"
+              name="email"
+              placeholder="{{ _('Enter your new email') }}"
+              required>
+        </div>
+    </div>
+
+    <div class="am-form-group">
+      <label for="pwd" class="am-u-sm-2 am-form-label">{{ _('New Password' if change_pwd else 'Password') }}:</label>
+      <div class="am-u-sm-10">
+        <input
+          type="password"
+          {% if not change_pwd %} value="********" disabled="disabled" {% end %}
+          id="pwd"
+          name="pwd"
+          minlength="8"
+          placeholder="{{ _('Enter your password') }}"
+          required>
+      </div>
+    </div>
+    <div class="am-form-group {{ 'am-hide' if not change_pwd else '' }}">
+      <label for="re-pwd" class="am-u-sm-2 am-form-label">{{ _('Confirm Password') }}:</label>
+      <div class="am-u-sm-10">
+        <input
+            type="password"
+            {% if not change_pwd %} value="********" {% end %}
+            data-equal-to="#pwd"
+            data-validation-message="{{ _('You need to enter the same password, you know that') }}"
+            id="re-pwd"
+            placeholder="{{ _('Re-enter your password') }}"
+            required>
+      </div>
+    </div>
+
+    <div class="am-alert am-alert-warning am-u-sm-10 am-u-sm-offset-2" id="error-panel" data-am-alert style="display:none">
+    </div>
+
+    <div class="am-form-group">
+      <div class="am-u-sm-10 am-u-sm-offset-2">
+        <button type="submit" class="am-btn am-btn-primary" id="submit"
+            data-am-loading="{spinner: 'cog', loadingText: '', resetText: '{{ _('Submit') }}'}">
+          {{ _('Submit') }}
+        </button>
+      </div>
+    </div>
+
+  </fieldset>
+</form>
+<!-- detail form | end -->
+
+{% end %}
+
+{% end %}
+
+{% block butt %}
+<script src="/static/js/verify.js"></script>
+{% end %}
