@@ -9,7 +9,7 @@ sys.path.pop(0)
 
 class MdAndHtmlHandler(BaseHandler):
 
-    @EnsureUser(User.normal, True)
+    # @EnsureUser(User.normal, True)
     def get(self, source, target):
         content = self.get_argument('content')
 
@@ -21,3 +21,9 @@ class MdAndHtmlHandler(BaseHandler):
         if target == 'html':
             content = md2html(content)
         return self.write(content)
+
+    def post(self, *a, **k):
+        return self.get(*a, **k)
+
+    def check_xsrf_cookie(self):
+        return True

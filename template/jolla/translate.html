@@ -59,6 +59,25 @@ header img {
   text-decoration:underline;
 }
 
+#preview_popup p img {
+  max-width: 100%;
+  height: auto;
+  margin: 0em 0em 0em -2em;
+}
+
+#preview_popup p {
+  text-indent: 2em;
+}
+
+#preview_popup .footnote p {
+  text-indent: 0em;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
 </style>
 {% end %}
 {% block body %}
@@ -205,12 +224,19 @@ header img {
     </div>
 
     <div class="am-g">
-      <div class="am-u-sm-12 am-cf">
+      <div class="am-u-sm-12">
+        <button
+            type="button"
+            class="am-btn am-btn-danger"
+            id="preview_btn"
+            data-am-modal="{target: '#preview_popup'}">
+          <span class="am-icon-eye"> {{ _('Preview') }}</span>
+        </button>
         <button type="button"
-                class="am-btn am-btn-success am-fr"
+                class="am-btn am-btn-success"
                 id="submit"
-                data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Submit") }}'}">
-          {{ _("Submit") }}
+                data-am-loading="{spinner: 'circle-o-notch', loadingText: ''">
+          <span class="am-icon-arrow-up"> {{ _("Submit") }}</span>
         </button>
       </div>
     </div>
@@ -218,7 +244,21 @@ header img {
     <br>
 
   </div>
+</div>
 
+<div class="am-popup" id="preview_popup">
+  <div class="am-popup-inner">
+    <div class="am-popup-hd">
+      <h2 class="am-popup-title"></h2>
+      <span data-am-modal-close
+            class="am-close">
+        &times;
+      </span>
+    </div>
+    <div class="am-popup-bd">
+    </div>
+  </div>
+</div>
 {% end %}
 
 {% block butt %}

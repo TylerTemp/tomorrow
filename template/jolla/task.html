@@ -16,10 +16,20 @@
   height: 450px;
 }
 
-{% module IconFontCss() %}
-/*body {
-  background-color: #5BA2A1;
-}*/
+#preview_popup p img {
+  max-width: 100%;
+  height: auto;
+  margin: 0em 0em 0em -2em;
+}
+
+#preview_popup p {
+  text-indent: 2em;
+}
+
+#preview_popup .footnote p {
+  text-indent: 0em;
+}
+
 </style>
 {% end %}
 
@@ -108,18 +118,41 @@
 
     <div class="am-u-sm-12" id="submit-error-panel">
     </div>
-    <div class="am-cf">
-      <div class="am-u-sm-12">
-        <button class="am-btn am-btn-primary am-fr" type="submit" id="submit"
-            data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Submit") }}'}">
-          {{ _("Submit") }}
+    <div class="am-u-sm-12">
+      <div class="am-cf">
+        <button
+            type="submit"
+            class="am-btn am-btn-primary am-fr am-margin-vertical-sm"
+            id="submit"
+            data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">
+          <span class="am-icon-arrow-up"> {{ _("Submit") }}</span>
         </button>
-        {# <button class="am-btn am-btn-success am-fr">{{ _("Preview") }}</button> #}
+        <button
+            type="button"
+            class="am-btn am-btn-danger am-fr am-margin-horizontal-sm am-margin-vertical-sm"
+            id="preview_btn"
+            data-am-modal="{target: '#preview_popup'}">
+          <span class="am-icon-eye"> {{ _('Preview') }}</span>
+        </button>
       </div>
     </div>
 
   </fieldset>
 </form>
+
+<div class="am-popup" id="preview_popup">
+  <div class="am-popup-inner">
+    <div class="am-popup-hd">
+      <h2 class="am-popup-title"></h2>
+      <span data-am-modal-close
+            class="am-close">
+        &times;
+      </span>
+    </div>
+    <div class="am-popup-bd">
+    </div>
+  </div>
+</div>
 {% end %}
 
 {% block butt %}
@@ -127,7 +160,7 @@
   var IMGUPLOADURL = "{{ img_upload_url }}";
   var FILEUPLOADURL = "{{ file_upload_url }}";
   var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
-  var _editor_status = "{{' md' if use_md else 'wysiwyg' }}";
+  var _editor_status = "{{'md' if use_md else 'wysiwyg' }}";
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>

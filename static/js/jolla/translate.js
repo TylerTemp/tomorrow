@@ -97,6 +97,39 @@ $(document).ready(function(evt)
 
   $(".delete-share").click(del_share);
 
+  $('#preview_btn').click(function(evt)
+  {
+    console.log('preview_btn clicked');
+    var content = (_editor_status == 'md')? mdEditor.val(): wysiwygEditor.html();
+    var format = (_editor_status == 'md')? 'md': 'html';
+    var url = '/api/' + format + '/html/';
+    var method = content.length > 1500? 'post': 'get';
+    var $popup = $('#preview_popup');
+    var $content = $popup.find('.am-popup-bd');
+    $popup.find('.am-popup-title').html($('#title').val());
+    $content.html('<div class="am-text-xxxl" style="text-align:center"><i class="am-icon-spinner am-icon-pulse"></i> {0}</div>'.format(_('loading')));
+    console.log('use method ' + method);
+    console.log(content.length);
+    $.ajax(
+      url,
+      settings={
+        'data': {'content': content},
+        'method': method
+      }
+    ).done(function(data, textStatus, jqXHR)
+    {
+      console.log(textStatus);
+      $content.html(data);
+    }).fail(function(jqXHR, textStatus, errorThrown)
+    {
+      $content.html('<div class="am-alert am-alert-danger" data-am-alert>' +
+        '<p>' + _("Sorry, a server error occured, please refresh and retry") +
+          " ({0}: {1})".format(jqXHR.status, errorThrown) +
+        '</p>' +
+      '</div>');
+    });
+  });
+
   $("#add-share").click(function(evt)
   {
     $(
