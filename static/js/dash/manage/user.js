@@ -362,10 +362,48 @@ $(document).ready(function()
         return false;
       var id = $(this).data('id');
       var action = 'delete';
+      var $fieldset = $form.find('fieldset');
       $btn.btn('loading');
-      setTimeout(function(){
+      $fieldset.prop('disabled', true);
+      $.ajax(settings={
+        data: {
+          'id': id,
+          'action': 'delete'
+        },
+        type: 'post',
+        beforeSend: function(jqXHR, settings)
+        {
+          jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
+        }
+      }).done(function(data, textStatus, jqXHR)
+      {
+        console.log(data);
+        var obj = $.parseJSON(data);
+        if (obj.error == 0)
+        {
+          var $panel = $form.closest('.am-panel');
+          $panel.hide(200, $panel.remove);
+        }
+        else if (obj.error == 1)
+        {
+          set_error(_('User is not on the earth'), true);
+        }
+        else
+        {
+          set_error(_('Unexpected error code {0}'.format(obj.error)), true);
+        }
+      }).fail(function(jqXHR, textStatus, errorThrown)
+      {
+        set_error(
+          _("Sorry, a server error occured, please refresh and retry") +
+          " ({0}: {1})".format(jqXHR.status, errorThrown),
+          true
+        );
+      }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+      {
         $btn.btn('reset');
-      }, 500);
+        $fieldset.prop('disabled', false);
+      });
     });
   });
 });

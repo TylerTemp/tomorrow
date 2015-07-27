@@ -40,6 +40,7 @@ from lib.hdlr import dash
 from lib.hdlr import hi
 from lib.hdlr import jolla
 from lib.hdlr import auth
+from lib.hdlr import api
 from lib.hdlr.blacklist import BlackListHandler
 from lib.hdlr.base import BaseHandler
 
@@ -114,6 +115,7 @@ class Application(tornado.web.Application):
             (r'/edit/(?P<slug>[^/]+)/', EditHandler),
 
             (r'/api/load/', jolla.LoadHandler),
+            (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
             (r'/brey/(?i)', ForBrey),
 
             (r'.*?\.php$(?i)', BlackListHandler),

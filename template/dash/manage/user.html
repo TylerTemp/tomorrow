@@ -32,7 +32,7 @@
           <div class="am-panel-hd">
             <h4 class="am-panel-title" data-am-collapse="{parent: '#user-coll', target: '#collapse-{{ each['_id'] }}'}">
               {{ each['user'] }}
-              <span class="am-fr am-icon-fw {% if each['type'] == ROOT %} am-icon-diamond am-text-secondary {% elif each['type'] == ADMIN %} am-icon-user-plus am-text-success {% else %} am-icon-user {% end %}"></span>
+              <span class="am-fr am-icon-fw {% if each['type'] == ROOT %} am-icon-user-md am-text-secondary {% elif each['type'] == ADMIN %} am-icon-user-plus am-text-success {% else %} am-icon-user {% end %}"></span>
               {% if not each['active'] %}
               <span class="am-fr am-text-danger am-icon-frown-o"></span>
               {% end %}

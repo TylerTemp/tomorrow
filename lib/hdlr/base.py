@@ -223,7 +223,11 @@ class EnsureUser(object):
         User.root: 'super user'
     }
 
-    def __init__(self, level=User.normal, active=True):
+    NORMAL = User.normal
+    ADMIN = User.admin
+    ROOT = User.root
+
+    def __init__(self, level=ROOT, active=True):
         self._level = level
         self._active = active
 

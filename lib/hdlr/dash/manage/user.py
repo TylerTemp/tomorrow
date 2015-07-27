@@ -44,6 +44,14 @@ class UserHandler(BaseHandler):
             act=('manage', 'manage-user')
         )
 
+    def all_users():
+        for each in User.all():
+            if each['user'] is None:
+                each['user'] = ''
+            if each['email'] is None:
+                each['email'] = ''
+            yield each
+
     @ItsMyself('manage/user/')
     @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
@@ -153,25 +161,30 @@ class UserHandler(BaseHandler):
         language = lang or 'en'
         for send_to in send_mail_to:
             mail_man = Email(send_to, language)
+            kwargs = {'invitor': self.current_user['user']}
+            if 'verify' in user_info:
+                code = user_info['verify']['code']
+                kwargs.update({'code': code, 'escaped_code': quote(code)})
             if action == 'invite':
-                kwargs = {'invitor': self.current_user['user']}
                 if 'verify' in user_info:
                     name = 'invite'
-                    code = user_info['verify']['code']
-                    kwargs.update({'code': code, 'escaped_code': quote(code)})
                 else:
                     name = 'invite_no_verify'
-                try:
-                    mail_man.send('invite', **kwargs)
-                except BaseException as e:
-                    logger.error(get_exc_plus())
+            else:
+                name = 'update_account'
+                kwargs['expire_announce'] = self.format_expire(
+                    user_info['verify'].get('expire', None))
+            try:
+                mail_man.send(name, **kwargs)
+            except BaseException as e:
+                logger.error(get_exc_plus())
 
     def delete_user(self):
         msg_coll = Message.get_collect()
         article_coll = Article.get_collect()
         user = User.init_by_id(self.get_argument('id'))
         if user.new:
-            return self.write(json.dumps({'error': flag}))
+            return self.write(json.dumps({'error': self.ERROR_USER_NOT_FOUND}))
         else:
             logger.warning('delete user %s', user)
             user.remove()
@@ -208,3 +221,12 @@ class UserHandler(BaseHandler):
             code = User.generate()
         verify.clear()
         verify.update({'for': orl_for | for_, 'code': code})
+
+    def format_expire(self, t):
+        if t is None:
+            return ''
+        if self.locale.code[:2].lower().startswith('zh'):
+            return '请在%s前完成验证' % \
+                    time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
+
+        return 'Please verify before' + time.ctime(t)
