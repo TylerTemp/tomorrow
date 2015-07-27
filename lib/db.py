@@ -282,7 +282,7 @@ class Jolla(object):
         jolla_info['edittime'] = t or time.time()
         if '_id' in jolla_info:
             self._jolla.replace_one(
-                {'_id': jolla_info['id']},
+                {'_id': jolla_info['_id']},
                 jolla_info)
             result = jolla_info['_id']
         else:

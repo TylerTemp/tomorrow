@@ -160,7 +160,7 @@
   var IMGUPLOADURL = "{{ img_upload_url }}";
   var FILEUPLOADURL = "{{ file_upload_url }}";
   var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
-  var _editor_status = "{{'md' if use_md else 'wysiwyg' }}";
+  var _editor_status = "{{ 'md' if use_md else 'wysiwyg' }}";
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
