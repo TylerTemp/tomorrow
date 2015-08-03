@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import Message
 from lib.db import User
-from lib.tool.md import escape
+from lib.tool.md import escape, md2html
 from lib.hdlr.dash.base import ItsMyself
 from lib.hdlr.dash.base import BaseHandler
 sys.path.pop(0)
@@ -57,12 +57,14 @@ class MessageHandler(BaseHandler):
                     each['avatar'] = from_user.get().get('img', None)
                 each['url'] = '/hi/%s/message/' % quote(each['from'])
 
+            each['content'] = md2html(each['content'])
+
             each['id'] = str(each['_id'])
 
             yield each
 
     def format_time_read(self, t):
-        if self.locale.code.startswith('en'):
+        if not self.locale.code.startswith('zh'):
             return time.ctime(t)
         return time.strftime('%m月%d日，%H:%M', time.localtime(t))
 
@@ -116,9 +118,7 @@ class MessageHandler(BaseHandler):
             to = to_user.get()['user']
 
         if user_type < User.admin:
-            content = '<p>%s</p>' % bleach.bleach(
-                content, tags=()).replace('\n', '<br>')
-
+            content = escape(content)
 
         Message().send(from_, to, content)
 

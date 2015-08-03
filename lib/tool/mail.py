@@ -64,6 +64,31 @@ class Email(object):
         finally:
             smtp.quit()
 
+    def send_manually(self, title, content):
+        if 'zh_CN' in self.config.mail and self.is_zh_mail(self.to):
+            logger.debug('send by zh mail')
+            mailinfo = self.config.mail['zh_CN']
+        else:
+            logger.debug('send by default mail')
+            mailinfo = self.config.mail['default']
+
+        me = mailinfo['user']
+        pwd = mailinfo['password']
+        host = mailinfo['host']
+
+        msg = MIMEMultipart()
+        msg['Subject'] = content
+        msg['From'] = me
+        msg['To'] = self.to
+
+        textpart = MIMEText(content, _subtype='html')
+        msg.attach(textpart)
+
+        if me.endswith('gmail.com'):
+            return self._send_gmail(me, pwd, [self.to], msg.as_string())
+
+        return self._send_normal(host, me, pwd, [self.to], msg.as_string())
+
     def send(self, name, **kwargs):
         mail_data = Maildb(name)
         assert not mail_data.new

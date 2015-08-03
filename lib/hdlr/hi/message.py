@@ -12,9 +12,10 @@ import sys
 import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
-from lib.db import Message
+from lib.db import Message, User
 from lib.hdlr.hi.base import BaseHandler
 from lib.hdlr.hi.base import ItsNotMyself
+from lib.tool.md import escape
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.hi.message')
@@ -44,6 +45,8 @@ class MessageHandler(BaseHandler):
         to = unquote(user)
         from_ = ((self.current_user and self.current_user['user']) or
                  self.get_argument('user'))
+        type = ((self.current_user and self.current_user['type']) or 0)
+
 
         # normally this will be redirect to "/am/<user>/message/"
         if ((from_ == to) or
@@ -54,6 +57,9 @@ class MessageHandler(BaseHandler):
         flag = 0
 
         content = self.get_argument('msg')
+        if type < User.admin:
+            content = escape(content)
+
         logger.info('send msg(%s...) from %s to %s', content[:10], from_, to)
         if not content:
             logger.debug('content empty')

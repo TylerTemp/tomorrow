@@ -166,7 +166,7 @@ class User(object):
 
     @classmethod
     def all(self):
-        return self._user.find({})
+        return self._user.find({}).sort('user', pymongo.DESCENDING)
 
     @property
     def new(self):
@@ -185,35 +185,79 @@ class User(object):
 
 class Message(object):
     _msg = db.message
+    DELETE = -1
+    UNREAD = 0
+    READ = 1
+
+    _id = None
+    from_ = None
+    to = None
+    content = None
+    time = None
+    _id = None
+    sender_delete = False
+    receiver_status = UNREAD
 
     def __init__(self, _id=None):
-        self._id = _id
-        if _id is None:
-            self.from_ = self.to = self.content = self.time = None
-        else:
+        if _id is not None:
+            if not isinstance(_id, ObjectId):
+                _id = ObjectId(_id)
             result = self._msg.find_one({'_id': _id})
-            if result is None:
-                self.from_ = self.to = self.content = self.time = None
-            else:
-                self.from_ = result['from']
-                self.to = result['to']
-                self.content = result['content']
-                self.time = result['time']
+            if result:
+                _result = dict(result)
+                self.from_ = _result.pop('from')
+                for k, v in _result.items():
+                    setattr(self, k, v)
 
-    def send(self, from_, to, content):
-        self.from_ = from_
-        self.to = to
-        self.content = content
+    def send(self, from_=None, to=None, content=None, time_=None):
+        if from_:
+            self.from_ = from_
+        if to:
+            self.to = to
+        if content:
+            self.content = content
+        if time_:
+            self.time = time_
         self._id = self._msg.insert_one(
-            {'from': from_, 'to': to, 'content': content, 'time': time.time()})
+            {'from': self.from_,
+             'to': self.to,
+             'content': self.content,
+             'time': self.time or time.time(),
+             'sender_delete': self.sender_delete,
+             'receiver_status': self.receiver_status
+            })
 
     @property
     def new(self):
         return (self._id is None)
 
     def remove(self):
+        assert self._id is not None
         self._msg.delete_one({'_id': self._id})
         self._id = self.from_ = self.to = self.content = self.time = None
+        self.sender_delete = False
+        self.receiver_status = self.UNREAD
+
+    def save(self):
+        _msg = self._msg
+        info = {
+            'from': self.from_,
+            'to': self.to,
+            'content': self.content,
+            'time': self.time or time.time(),
+            'sender_delete': self.sender_delete,
+            'receiver_status': self.receiver_status
+        }
+
+        if self._id is None:
+            self._id = _msg.insert_one(info)
+        else:
+            info['_id'] = self._id
+            _msg.replace_one({'_id': self._id}, info)
+
+    @classmethod
+    def find_from(cls, from_):
+        return cls._msg.find({'from': from_}).sort('time', pymongo.DESCENDING)
 
     @classmethod
     def find_to(cls, to):

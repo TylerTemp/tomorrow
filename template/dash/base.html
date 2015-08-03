@@ -92,15 +92,16 @@ Hi, {{ user_name }} {% block subtitle %}{% end %}
             <a class="am-cf" data-act="manage-jolla" data-am-collapse="{target: '#jolla'}"><span class="iconfont icon-jolla"></span> {{ _('Jolla') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
             <ul class="am-list am-collapse admin-sidebar-sub am-in" id="jolla">
               <li>
-                <a data-act="manage-jolla-post" href="{{ main_url }}/manage/jolla/post"><span class="am-icon-newspaper-o"> {{ _("Post")}}</span></a>
+                <a data-act="manage-jolla-post" href="{{ main_url }}/manage/jolla/post/"><span class="am-icon-newspaper-o"> {{ _("Post")}}</span></a>
               </li>
               <li>
-                <a data-act="manage-jolla-author" href="{{ main_url }}/manage/jolla/author"><span class="am-icon-pencil"> {{ _("Author")}}</span></a>
+                <a data-act="manage-jolla-author" href="{{ main_url }}/manage/jolla/author/"><span class="am-icon-pencil"> {{ _("Author")}}</span></a>
               </li>
             </ul>
           </li>
           <!-- manage-jolla | end -->
           <li><a data-act="manage-user" href="https://{{ MAIN_HOST }}{{ main_url }}/manage/user/"><span class="am-icon-user am-icon-fw"></span> {{ _('User') }}</a></li>
+          <li><a data-act="manage-message" href="https://{{ MAIN_HOST }}{{ main_url }}/manage/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _('Message') }}</a></li>
         </ul>
       </li>
       <!-- manage | end -->
