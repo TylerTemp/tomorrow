@@ -119,6 +119,8 @@ class Application(tornado.web.Application):
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
             (r'/brey/(?i)', ForBrey),
 
+            (r'/comes\.today\.html', VerifyOwnershipHandler),
+
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
         )
@@ -158,6 +160,11 @@ class BareHandler(BaseHandler):
             a: %s<br>
             k: %s''' % (a, k))
 
+class VerifyOwnershipHandler(BaseHandler):
+
+    def get(self):
+        with open('comes.today.html', 'r', encoding='utf-8') as f:
+            return self.write(f.read())
 
 def main(port):
     Config().set_port(port)

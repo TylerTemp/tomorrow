@@ -71,8 +71,11 @@ sub.class1.server.ca.pem
 *.crt
 *.key
 tomorrow.becomes.today_sha256_cn.zip
+comes.today.html
 template/brey.html
 log
+tomorrow.comes.today_sha256_en
+.idea
 
 # store the uploaded file
 static/upload

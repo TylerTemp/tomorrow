@@ -7,16 +7,16 @@
   <meta name="keywords" content="{% block site_kwd %}python,jolla{% end %}">
   <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>{% block title %}{% end %} | {{ _("Tomorrow Becomes Today") }}</title>
+  <title>{% block title %}{% end %}{% block main_title %} | {{ _("Tomorrow Comes Today") }}{% end %}</title>
 
   <!-- Set render engine for 360 browser -->
   <meta name="renderer" content="webkit">
 
   <!-- No Baidu Siteapp-->
   <meta http-equiv="Cache-Control" content="no-siteapp"/>
-  <meta name="baidu-site-verification" content="{% block baidusucks %}9s22UsBcjK{% end %}" />
 
   <meta name="msvalidate.01" content="6FEE6B7E5E894DC35843889AA5486121" />
+  <meta name="google-site-verification" content="rdhkqGLiFZ6CYeQHNZKot17tMnpc1HyfHU3bzovrNAc" />
 
   <link rel="icon" type="image/png" href="{{ static_path('/i/favicon.png') }}">
 
@@ -83,7 +83,7 @@
 
 <header class="am-topbar">
   <h1 class="am-topbar-brand">
-    <a href="/">{{ _("Tomorrow.Becomes.Today") }}</a>
+    <a href="/">{{ _("Tomorrow.Comes.Today") }}</a>
   </h1>
   <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
           data-am-collapse="{target: '#nav-collapse'}"><span class="am-sr-only">导航切换</span> <span
@@ -167,22 +167,21 @@
 <footer class="am-footer am-footer-default">
   {% block footer %}
   <div>
-    <a href="//tomorrow.becomes.today">tomorrow.becomes.today</a> <span class="am-footer-divider">|</span>
+    <a href="//tomorrow.comes.today">tomorrow.comes.today</a> <span class="am-footer-divider">|</span>
       <small>&#169; 2015 <a href="mailto:tylertempdev@gmail.com">TylerTemp</a></small>
 
   </div>
+
   <div class="am-footer-miscs">
-    {% if locale.code[:2] == 'zh' %}
+    {% if locale.code.startswith('zh') %}
     <p>
-      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:40px; height:auto;"> 七牛</a> &amp;
-      <a href="http://amazeui.org/" target="_blank"><img src="https://dn-tomorrow.qbox.me/amazeuiicon.png" style="width:20px; height:auto;"> 妹子UI</a> &amp;
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> 七牛</a> &amp;
       <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
       强力驱动
     </p>
     {% else %}
     <p>Powered by
-      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:40px; height:auto;"> QiNiu</a> &amp;
-      <a href="http://amazeui.org" target="_blank"><img src="https://dn-tomorrow.qbox.me/amazeuiicon.png" style="width:20px; height:auto;"> AmazeUI</a> &amp;
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> QiNiu</a> &amp;
       <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
     </p>
     {% end %}
