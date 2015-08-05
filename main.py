@@ -118,6 +118,7 @@ class Application(tornado.web.Application):
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
             (r'/brey/(?i)', ForBrey),
+            (r'/brey/news/', ForBreyNews),
 
             (r'/comes\.today\.html', VerifyOwnershipHandler),
 
@@ -165,6 +166,11 @@ class VerifyOwnershipHandler(BaseHandler):
     def get(self):
         with open('comes.today.html', 'r', encoding='utf-8') as f:
             return self.write(f.read())
+
+class ForBreyNews(BaseHandler):
+
+    def get(self):
+        return self.render('news-for-brey.html')
 
 def main(port):
     Config().set_port(port)
