@@ -116,7 +116,7 @@ class User(object):
                 info)
         else:
             result = self._user.insert_one(self.user_info)
-            self.user_info['_id'] = result
+            self.user_info['_id'] = result.inserted_id
         return result
 
     def get(self):
@@ -225,7 +225,7 @@ class Message(object):
              'time': self.time or time.time(),
              'sender_delete': self.sender_delete,
              'receiver_status': self.receiver_status
-            })
+            }).inserted_id
 
     @property
     def new(self):
@@ -250,7 +250,7 @@ class Message(object):
         }
 
         if self._id is None:
-            self._id = _msg.insert_one(info)
+            self._id = _msg.insert_one(info).inserted_id
         else:
             info['_id'] = self._id
             _msg.replace_one({'_id': self._id}, info)
@@ -330,7 +330,7 @@ class Jolla(object):
                 jolla_info)
             result = jolla_info['_id']
         else:
-            result  = self._jolla.insert_one(self.jolla_info)
+            result  = self._jolla.insert_one(self.jolla_info).inserted_id
             jolla_info['_id'] = result
         return result
 
@@ -506,7 +506,7 @@ class Article(object):
         if '_id' in info:
             coll.replace_one({'_id': info['_id']}, info)
             return info['_id']
-        return coll.insert_one(self.article_info)
+        return coll.insert_one(self.article_info).inserted_id
 
     @classmethod
     def get_collect(cls):
@@ -626,7 +626,7 @@ class JollaAuthor(object):
             info['_id'] = _id
             coll.replace_one({'id': _id}, info)
         else:
-            _id = coll.insert_one(info)
+            _id = coll.insert_one(info).inserted_id
         self._info.clear()
         self._info.update(info)
         self._info['_id'] = _id
