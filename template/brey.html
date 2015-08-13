@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %} {{ page_title }} {% end %}{% block main_title %}{% end %}
+{% block webapp %}{% end %}
+
+{% block neck %}
+<style>
+  body {
+    background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
+                      url("https://dn-jolla.qbox.me/blog_bg_base.jpg");
+    background-repeat: no-repeat, repeat;
+    background-size: 100% auto, auto auto;
+    background-position: right top;
+    background-color: #5BA2A1;
+  }
+
+  #white-bg-box {
+    background-color: #FFF;
+  }
+
+  article h1 {
+    text-align: center;
+  }
+
+  article p img {
+    max-width: 100%;
+    height: auto;
+    /*margin: 0em 0em 0em -2em;*/
+  }
+
+  #page-box {
+    padding-top: 50px;
+    max-width: 600px;
+
+  }
+
+  /*.am-article-bd p {
+    text-indent: 2em;
+  }*/
+
+</style>
+{% end %}
+
+{% block nav %}
+
+<header class="am-topbar">
+  <h1 class="am-topbar-brand">
+    <span class="am-icon-home"> <a href="/">{{ _("Home") }}</a></span>
+  </h1>
+  <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+          data-am-collapse="{target: '#nav-collapse'}"><span class="am-sr-only">导航切换</span> <span
+      class="am-icon-bars"></span></button>
+  <div class="am-collapse am-topbar-collapse" id="nav-collapse">
+    <ul class="am-nav am-nav-pills am-topbar-nav">
+      <li>
+        <a href="/exam/"><span class="am-icon-pencil-square-o"> {{ _('Pepare for JAVA') }}</span></a>
+      </li>
+      <li>
+        <a href="/booklist/"><span class="am-icon-book"> {{ _('Booklist') }}</span></a>
+      </li>
+      <li>
+        <a href="/news/"><span class="am-icon-newspaper-o"> {{ _('News') }}</span></a>
+      </li>
+    </ul>
+  </div>
+</header>
+
+
+{% end %}
+
+{% block body %}
+<div class="am-u-sm-centered am-g-fixed">
+  <div class="am-g am-margin-bottom-xl" id="white-bg-box">
+    <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
+      <article class="am-article">
+        <div class="am-article-hd">
+          <h1 class="am-article-title">{{ title }}</h1>
+          <hr class="am-article-divider">
+          <div class="am-article-bd">
+            {% raw content %}
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+{% end %}
+
+{% block footer %}{% end %}
