@@ -34,7 +34,7 @@ from lib.hdlr.home import HomeHandler
 from lib.hdlr.edit import EditHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
-from lib.hdlr.brey import ForBrey
+from lib.hdlr import brey
 from lib.hdlr.verify import VerifyHandler
 from lib.hdlr import dash
 from lib.hdlr import hi
@@ -117,8 +117,10 @@ class Application(tornado.web.Application):
 
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
-            (r'/brey/(?i)', ForBrey),
-            (r'/brey/news/', ForBreyNews),
+            (r'/brey/', brey.IndexHandler),
+            (r'/brey/exam/', brey.ExamHandler),
+            (r'/brey/booklist/', brey.BooklistHandler),
+            (r'/brey/news/', brey.NewsHandler),
 
             (r'/comes\.today\.html', VerifyOwnershipHandler),
 

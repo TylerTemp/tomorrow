@@ -49,7 +49,7 @@ class AuthorHandler(BaseHandler):
         author.description = self.get_argument('description').strip() or None
         author.translation = self.get_argument('translation').strip() or None
         author.save()
-        logger.info('modify author %s', author)
+#        logger.info('modify author %s', author)
         return self.write(json.dumps({
             'error': 0,
             'name': author.name,

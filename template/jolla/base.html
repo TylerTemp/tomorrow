@@ -22,26 +22,28 @@
 {% block site_kwd %}Jolla,Jolla博客,Jolla中文博客,Jolla翻译,Jolla非官方中文博客{% end %}
 
 {% block footer %}
+<footer class="am-footer am-footer-default">
 <div>
   <a href="//jolla.comes.today">jolla.comes.today</a> <span class="am-footer-divider">|</span>
     <small>&#169; 2015 <a href="mailto:tylertempdev@gmail.com">TylerTemp</a></small>
 
 </div>
 
-<div class="am-footer-miscs">
-  {% if locale.code.startswith('zh') %}
-  <p>
-    <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> 七牛</a> &amp;
-    <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
-    强力驱动
-  </p>
-  {% else %}
-  <p>Powered by
-    <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> QiNiu</a> &amp;
-    <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
-  </p>
-  {% end %}
-  <span class="am-footer-divider">|</span>
-  <p><a href="https://github.com/TylerTemp/tomorrow" target="_blank">Fork me on <span class="am-icon-github am-text-warning"> GitHub</span></a></p>
-</div>
+  <div class="am-footer-miscs">
+    {% if locale.code.startswith('zh') %}
+    <p>
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> 七牛</a> &amp;
+      <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
+      强力驱动
+    </p>
+    {% else %}
+    <p>Powered by
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> QiNiu</a> &amp;
+      <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
+    </p>
+    {% end %}
+    <span class="am-footer-divider">|</span>
+    <p><a href="https://github.com/TylerTemp/tomorrow" target="_blank">Fork me on <span class="am-icon-github am-text-warning"> GitHub</span></a></p>
+  </div>
+</footer>
 {% end %}

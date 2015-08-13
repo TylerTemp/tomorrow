@@ -20,7 +20,7 @@
 
   <link rel="icon" type="image/png" href="{{ static_path('/i/favicon.png') }}">
 
-{% block webapp %%}
+{% block webapp %}
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="icon" sizes="192x192" href="{{ static_path('i/app-icon72x72@2x.png') }}">
@@ -164,8 +164,8 @@
 {% block body %}
 {% end %}
 
+{% block footer %}
 <footer class="am-footer am-footer-default">
-  {% block footer %}
   <div>
     <a href="//tomorrow.comes.today">tomorrow.comes.today</a> <span class="am-footer-divider">|</span>
       <small>&#169; 2015 <a href="mailto:tylertempdev@gmail.com">TylerTemp</a></small>
@@ -188,8 +188,8 @@
     <span class="am-footer-divider">|</span>
     <p><a href="https://github.com/TylerTemp/tomorrow" target="_blank">Fork me on <span class="am-icon-github am-text-warning"> GitHub</span></a></p>
   </div>
-  {% end %}
 </footer>
+{% end %}
 
 <script>
   var locale = "{{ locale.code[:2] }}";
