@@ -134,6 +134,9 @@ Including intro, test(with anwser, no explain), book recommanded.
 
 ## SCJP 6.0 Quzi, 2nd edition
 
+
+**IMPORTANT**
+
 PDF. Only contain some Chinese words:
 
 * `第xx题` is the question number
@@ -155,7 +158,7 @@ Amazon(I can't find the original English version): <http://www.amazon.cn/%E5%9B%
 
 Very few people recommanded this.
 
-## SCJP Sun Certified Programmer for Java 6 **IMPORTANT**
+## SCJP Sun Certified Programmer for Java 6
 
 Download link: <http://firozstar.tripod.com/_darksiderg.pdf>
 

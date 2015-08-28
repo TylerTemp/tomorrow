@@ -3,10 +3,6 @@ Run this directly to stop the server
 This depends on /tmp/tomorrow.pid file
 '''
 
-'''
-Run this directly to start/reboot the server
-This depends on /tmp/tomorrow.pid file
-'''
 import os
 import sys
 import json
@@ -20,8 +16,8 @@ from lib import config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-config.auto_clean = False
 cfg = config.Config()
+cfg.auto_clean = False
 
 
 def main():

@@ -94,7 +94,8 @@ class TaskHandler(BaseHandler):
         if format == 'md':
             if self.current_user['type'] < User.root:
                 content = escape(content)
-        else:
+        # 'html'
+        elif self.current_user['type'] < User.root:
             content = html2md(content)
 
         if url is None:

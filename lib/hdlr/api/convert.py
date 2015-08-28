@@ -15,13 +15,14 @@ class MdAndHtmlHandler(BaseHandler):
 
         if source == 'html':
             content = html2md(content)
-        elif self.current_user['type'] < User.root:
+        elif self.current_user and self.current_user['type'] < User.root:
             content = escape(content)
 
         if target == 'html':
             content = md2html(content)
         return self.write(content)
 
+    # @EnsureUser(User.normal, True)
     def post(self, *a, **k):
         return self.get(*a, **k)
 

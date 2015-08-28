@@ -17,8 +17,8 @@ from lib import config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-config.auto_clean = False
 cfg = config.Config()
+cfg.auto_clean = False
 mainfile = os.path.join(rootdir, 'main.py')
 
 

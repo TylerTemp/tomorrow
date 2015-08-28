@@ -180,7 +180,7 @@ class TranslateHandler(BaseHandler):
 
         result = {
             'error': 0,
-            'redirect': '/jolla/blog/' + this_url,
+            'redirect': 'http://%s/%s/' % (cfg.jolla_host, this_url),
         }
 
         return self.write(json.dumps(result))
@@ -197,6 +197,6 @@ class TranslateHandler(BaseHandler):
                     v = v[0]
                 if py3:
                     v = v.decode('utf-8')
-                result.append({'name': v, 'url': k})
-        logging.debug(result)
+                url = match.groupdict()['key']
+                result.append({'name': v, 'url': url})
         return result

@@ -3,16 +3,14 @@ Usage:
 main.py [options]
 
 Options:
--p --port=<port>          listen to this port(default: 8000)
+-p --port=<port>          listen to this port
 --tmr-level=<level>       site logic code logging level, can be `DEBUG`,
                           `INOF`, `WARNING`, `ERROR`, `CRITICAL`,
-                          or number from 0 to 50(default: INFO)
---tnd-level=<level>       request/response logging level.(default: INFO)
+                          or number from 0 to 50
+--tnd-level=<level>       request/response logging level.
 --tmr-file=<file>         site logic code file logger.
-                          (default: /tmp/tomorrow.log)
 --tnd-file=<file>         request/response file logger.
-                          (default: /tmp/tornado.log)
--h --help                 show this message
+-h, -?, --help            print this message
 '''
 
 import logging
@@ -25,27 +23,20 @@ import tornado.options
 import tornado.locale
 import tornado.autoreload
 
-from lib.tool.bashlog import stdoutlogger
-from lib.tool.bashlog import filelogger
-from lib.tool.bashlog import parse_level
+from lib.tool.bashlog import stdoutlogger, filelogger, parse_level
 from lib.config import Config
 
+from lib.hdlr import brey
+from lib.hdlr import dash, hi, jolla, auth, api
+from lib.hdlr.base import BaseHandler
 from lib.hdlr.home import HomeHandler
 from lib.hdlr.edit import EditHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
-from lib.hdlr import brey
 from lib.hdlr.verify import VerifyHandler
-from lib.hdlr import dash
-from lib.hdlr import hi
-from lib.hdlr import jolla
-from lib.hdlr import auth
-from lib.hdlr import api
 from lib.hdlr.blacklist import BlackListHandler
-from lib.hdlr.base import BaseHandler
 
-from lib.ui.editor import MdWysiwygEditorModule
-from lib.ui.editor import MdEditorModule
+from lib.ui.editor import MdWysiwygEditorModule, MdEditorModule
 from lib.ui.iconfont import IconFontModule
 from lib.ui.license import LicenseModule
 from lib.ui.author import AuthorModule
@@ -61,6 +52,8 @@ for _filter in tornadologger.filters:
 logger = logging.getLogger('tomorrow')
 
 rootdir = os.path.dirname(__file__)
+
+Config().auto_clean = True
 
 
 class Application(tornado.web.Application):
@@ -96,7 +89,7 @@ class Application(tornado.web.Application):
             (r'/jolla/', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/jolla/blog/Early-access:-Sailfish-OS-Aaslakkaj%C3%A4rvi-with-private-browsing-and-more-is-here!/',
              RedirectHandler,
-             {'to': '/jolla/blog/sailfish-os-aaslakkajarvi/',
+             {'to': 'http://%s/sailfish-os-aaslakkajarvi/' % self.config.jolla_host,
               'permanently': True}),
             (r'/test/', RedirectHandler, {'to': '/'}),
 
@@ -121,8 +114,6 @@ class Application(tornado.web.Application):
             (r'/brey/exam/', brey.ExamHandler),
             (r'/brey/booklist/', brey.BooklistHandler),
             (r'/brey/news/', brey.NewsHandler),
-
-            (r'/comes\.today\.html', VerifyOwnershipHandler),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
@@ -163,16 +154,6 @@ class BareHandler(BaseHandler):
             a: %s<br>
             k: %s''' % (a, k))
 
-class VerifyOwnershipHandler(BaseHandler):
-
-    def get(self):
-        with open('comes.today.html', 'r', encoding='utf-8') as f:
-            return self.write(f.read())
-
-class ForBreyNews(BaseHandler):
-
-    def get(self):
-        return self.render('news-for-brey.html')
 
 def main(port):
     Config().set_port(port)
@@ -191,11 +172,13 @@ def main(port):
 
 
 if __name__ == "__main__":
-    from docopt import docopt
+    from docpie import docpie
 
     config = Config()
 
-    args = docopt(__doc__, help=True)
+    args = docpie(
+        __doc__,
+        extra={'-?': lambda pie, flag: pie.short_help_handler(pie, flag)})
 
     rootlogger = logging.getLogger()
     stdoutlogger(rootlogger, logging.DEBUG, True)

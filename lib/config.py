@@ -19,10 +19,11 @@ from lib.db import User
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.config')
-auto_clean = True
+
 
 class Config(object):
     _ins = None
+    auto_clean = False
 
     def __new__(cls):
         if cls._ins is None:
@@ -147,20 +148,30 @@ class Config(object):
 
 @atexit.register
 def remove():
-    if auto_clean:
-        cfg = Config()
+    cfg = Config()
+    if cfg.auto_clean:
+        delete = False  # windows can not remove file when it's locked
         with FileLock(cfg.pids_file),\
                 open(cfg.pids_file, 'r+', encoding='utf-8') as f:
             val = f.read()
             if val:
                 piddict = json.loads(val)
             else:
-                return os.unlink(cfg.pids_file)
+                delete = True
+            if not delete:
+                this_pid = os.getpid()
+                piddict.pop(str(this_pid))
+                logger.debug('%s exit', this_pid)
+            if not piddict:
+                delete = True
+            if not delete:
+                f.seek(0)
+                f.truncate()
+                json.dump(piddict, f, indent=4)
 
-            piddict.pop(str(os.getpid()))
-            f.seek(0)
-            f.truncate()
-            json.dump(piddict, f, indent=4)
+        if delete:
+            logger.debug('delete pid file %s', cfg.pids_file)
+            return os.unlink(cfg.pids_file)
 
 if __name__ == '__main__':
     with open(os.path.join(rootdir, 'config.conf'),
