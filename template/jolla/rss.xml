@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Jolla中文博客</title>
+  <description>最新最及时最权威Jolla中文资讯</description>
+  <link>http://jolla.comes.today</link>
+  <language>zh-CN</language>
+  <copyright>2015 TylerTemp. All rights reserved.</copyright>
+  <webMaster>tylertempdev@gmail.com</webMaster>
+  <image>
+    <url>http://tomorrow.comes.today/static/i/favicon.png</url>
+    <link>http://jolla.comes.today</link>
+  </image>
+  {% for each in articles %}
+  <item>
+    <title>{{ each['title'] }}</title>
+    <link>{{ each['link' ]}}</link>
+    {% if each['email'] %}
+      <author>{{ each['email'] }}</author>
+    {% end %}
+    <pubDate>{{ each['time'] }}</pubDate>
+    <description>{{ each['descripition'] }}</description>
+  </item>
+  {% end %}
+</channel>
+</rss>

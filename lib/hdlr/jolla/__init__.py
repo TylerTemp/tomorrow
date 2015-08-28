@@ -5,6 +5,7 @@ from .translate import TranslateHandler
 from .blog import BlogHandler
 from .article import ArticleHandler
 from .home import HomeHandler
+from .rss import RssHandler
 
 __all__ = ('ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler'
-           'BlogHandler', 'ArticleHandler', 'HomeHandler')
+           'BlogHandler', 'ArticleHandler', 'HomeHandler', 'RssHandler')

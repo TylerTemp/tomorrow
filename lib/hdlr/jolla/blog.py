@@ -16,6 +16,7 @@ sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.jolla.blog')
 
+
 class BlogHandler(BaseHandler):
     _cfg = Config()
     LIMIT = _cfg.jolla_post_limit
