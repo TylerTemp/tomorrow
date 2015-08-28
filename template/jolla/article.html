@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  {{ article['translated']['title'] }} | {{ _('Jolla Blog') }} | 
+  {{ article['translated']['title'] }} | {{ _('Jolla Blog') }} |
 {% end %}
 
 {% block neck %}
@@ -184,7 +184,7 @@
         </footer>
       </article>
 
-      <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr">
+      <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr" id="comment">
         <div class="ds-thread"
              data-thread-key="{{ article['id'] }}"
              data-title="{{ article['translated']['title'] }}"

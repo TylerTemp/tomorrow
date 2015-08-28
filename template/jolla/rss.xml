@@ -15,12 +15,14 @@
   {% for each in articles %}
   <item>
     <title>{{ each['title'] }}</title>
-    <link>{{ each['link' ]}}</link>
-    {% if each['email'] %}
-      <author>{{ each['email'] }}</author>
-    {% end %}
+    <link>{{ each['link' ] }}</link>
+    <comments>{{ each['link'] }}#comment</comments>
+    <author>{{ each['author'] }}</author>
     <pubDate>{{ each['time'] }}</pubDate>
     <description>{{ each['descripition'] }}</description>
+    <content:encoded>
+      {{ each['content'] }}
+    </content:encoded>
   </item>
   {% end %}
 </channel>

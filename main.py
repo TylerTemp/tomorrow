@@ -94,6 +94,8 @@ class Application(tornado.web.Application):
             (r'/test/', RedirectHandler, {'to': '/'}),
 
             (r'/jolla/blog/', jolla.BlogHandler),
+            (r'/jolla/blog/(favicon\.ico)', tornado.web.StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static')}),
             (r'/jolla/blog/page/1/',
              RedirectHandler,
              {'to': '//' + self.config.jolla_host, 'permanently': True}),
