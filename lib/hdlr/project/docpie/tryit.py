@@ -90,7 +90,7 @@ This program only accepts `help pull`''',
 Usage: pie.py [command --option ARGUMENT]
 
 
-This will only match all three elements or empty command.''',
+This is equal to `[command] [--option] [ARGUMENT]`''',
             'argv': 'command --option all',
         },
 
@@ -390,6 +390,17 @@ Options:
                               [default: ./here ./there]
 ''',
         },
+        'docexample': {
+            'doc': '''\
+    Usage: my_program.py [-hso FILE] [--quiet | --verbose] [INPUT ...]
+
+    Options:
+     -h --help    show this
+     -s --sorted  sorted output
+     -o FILE      specify output file [default: ./test.txt]
+     --quiet      print less text
+     --verbose    print more text'''
+        },
     }
 
     def get(self):
@@ -418,11 +429,12 @@ Options:
 
                 real_io, sys.stdout = sys.stdout, self.io
 
-
                 try:
                     pie = docpie.docpie(doc, 'pie.py ' + argv, **config)
                 except BaseException as e:
                     output = str(e)
+                    if output == 'None':  # pypy3
+                        output = ''
                 else:
                     output = str(pie)
 
