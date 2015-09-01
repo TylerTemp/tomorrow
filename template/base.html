@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="{{ static_path('css/app.css') }}">
 
   {# for css #}
+  {% block iconfont %}
   <!-- add iconfont -->
   <style>
   @font-face {font-family: "iconfont";
@@ -74,6 +75,7 @@
       font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
   }
   </style>
+  {% end %}
 
   {% block neck %}{% end %}
 </head>

@@ -27,6 +27,7 @@ from lib.tool.bashlog import stdoutlogger, filelogger, parse_level
 from lib.config import Config
 
 from lib.hdlr import brey
+from lib.hdlr import project
 from lib.hdlr import dash, hi, jolla, auth, api
 from lib.hdlr.base import BaseHandler
 from lib.hdlr.home import HomeHandler
@@ -47,7 +48,7 @@ for _hdlr in tornadologger.handlers:
 for _filter in tornadologger.filters:
     tornadologger.removeFilter(_filter)
 
-# tornado.options.options.logging = None
+tornado.options.options.logging = None
 
 logger = logging.getLogger('tomorrow')
 
@@ -61,14 +62,16 @@ class Application(tornado.web.Application):
 
     def __init__(self):
         handlers = (
+            # display
             (r'/', HomeHandler),
             (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/page/(?P<page>\d+)/', HomeHandler),
+            # auth
             (r'/login/', auth.LoginHandler),
             (r'/signin/', auth.SigninHandler),
             (r'/logout/', auth.LogoutHandler),
             (r'/verify/(?P<code>[^/]+)/', VerifyHandler),
-
+            # dashboard
             (r'/am/(?P<user>[^/]+)/', dash.DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', dash.InfoHandler),
             (r'/am/(?P<user>[^/]+)/secure/', dash.SecureHandler),
@@ -81,11 +84,11 @@ class Application(tornado.web.Application):
              dash.manage.jolla.AuthorHandler),
             (r'/am/(?P<user>[^/]+)/manage/user/', dash.manage.UserHandler),
             (r'/am/(?P<user>[^/]+)/manage/message/', dash.manage.MessageHandler),
-
+            # profile
             (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
-
+            # jolla
             (r'/jolla/', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/jolla/blog/Early-access:-Sailfish-OS-Aaslakkaj%C3%A4rvi-with-private-browsing-and-more-is-here!/',
              RedirectHandler,
@@ -106,6 +109,9 @@ class Application(tornado.web.Application):
             (r'/jolla/translate/(?P<url>[^/]+)/', jolla.TranslateHandler),
             (r'/jolla/task/', jolla.TaskHandler),
             (r'/jolla/task/(?P<url>[^/]+)/', jolla.TaskHandler),
+            # project
+            (r'/project/docpie/', project.docpie.HomeHandler),
+            (r'/project/docpie/try/', project.docpie.TryHandler),
 
             (r'/post/(?P<slug>[^/]+)/', BareHandler),
             (r'/edit/', EditHandler),
@@ -179,9 +185,7 @@ if __name__ == "__main__":
 
     config = Config()
 
-    args = docpie(
-        __doc__,
-        extra={'-?': lambda pie, flag: pie.short_help_handler(pie, flag)})
+    args = docpie(__doc__)
 
     rootlogger = logging.getLogger()
     stdoutlogger(rootlogger, logging.DEBUG, True)

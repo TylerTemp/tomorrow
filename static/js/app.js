@@ -50,6 +50,7 @@ var I18N = {
     "Refreshing page is required to change language. Refresh now?": "修改语言需要刷新页面生效。现在刷新？",
 
     "loading...": "载入中……",
+    "loading": "载入中",
     "source": "源",
     "edit": "编辑",
     "translation": "翻译",

@@ -249,3 +249,14 @@ select receivers,选择收件人
 Send as email,以邮件发送
 Send as message,以信息发送
 select a user,选择一名用户
+
+RSS Feed,RSS订阅
+Weibo,微博
+WeChat,微信
+Source Code,源代码
+back to introduction,返回介绍页
+Input your doc string,输入doc内容
+Config,设置
+(See {link}here{end} for detail),(详细请参见{link}这里{end})
+Not support here,这里不支持此参数
+(Input Your command),输入参数

@@ -126,6 +126,11 @@ class ExamHandler(BaseHandler):
             title='Resource for SCJP',
             content=md2html(
 '''
+## Official Online self-test
+
+<https://www.selftestsoftware.com/gen.aspx?sn=STS_OracleDemoList&pf=page&pn=STS_OracleDemoListPage&utm_source=MRKT-13713&utm_medium=microsite&utm_term=oracle_demo&utm_content=non_paid&utm_campaign=STS_Partners_14>
+
+
 ## SCJP | OCJP Quesqion Bank
 
 Including intro, test(with anwser, no explain), book recommanded.

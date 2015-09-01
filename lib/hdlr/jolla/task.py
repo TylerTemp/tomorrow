@@ -53,8 +53,11 @@ class TaskHandler(BaseHandler):
             headimg = article['headimg']
             link = article['link']
             cover = article.get('cover', '')
+            slug = article['url'] or ''
+            # description = article.get('description', '')
         else:
-            title = author = md = html = headimg = link = cover = ''
+            title = author = md = html = headimg = link = cover = slug = ''
+            # description = slug = ''
 
         use_md = self.get_argument('md', False)
 
@@ -69,7 +72,9 @@ class TaskHandler(BaseHandler):
             cover=cover,
             html=html,
             md=md,
+            # description=description,
             link=link,
+            slug=url,
 
             img_upload_url='/am/%s/img/' % quote(username),
             file_upload_url='/am/%s/file/' % quote(username),

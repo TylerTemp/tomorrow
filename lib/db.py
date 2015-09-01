@@ -433,7 +433,8 @@ class Article(object):
             self.article_info = self.find_url(url)
 
     def add(self, board, title, content, author, email, url=None,
-            show_email=True, license=CC_LICENSE, transinfo=None, index=0):
+            show_email=True, license=CC_LICENSE, transinfo=None, index=0,
+            tag=[]):
 
         if url is None:
             if transinfo is not None:
@@ -443,6 +444,7 @@ class Article(object):
 
         info = {
             'board': board,
+            'tag': [],
             'title': title,
             'url': url,
             'content': content,

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %} Try {% end %}
+
+{% block neck %}
+  <style>
+    h1 {
+      text-align: center;
+      font-family: "Ubuntu Mono", monospace;
+      font-weight: bold !important;
+      font-size: 9rem !important;
+    }
+    i {
+      padding: 8px 0px 0px 0px;
+    }
+    label.am-form-label {
+      padding: 5px 0px 0px 0px !important;
+    }
+  </style>
+{% end %}
+
+{% block stomach %}
+
+<div class="am-container">
+  <h1><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
+
+  <p><a href="../"><span class="am-icon-angle-double-left"> {{ _('back to introduction') }}</span></a></p>
+
+  <form class="am-form am-form-horizontal">
+    <fieldset>
+      <legend class="am-monospace">docpie ({{_('Version')}} {{ version }})</legend>
+
+      <!-- pie.py -->
+
+      <div class="am-form-group" style="font-weight: blod;">
+        <!-- <label for="doc">{{ _('Input your doc string') }}</label> -->
+        <div style="background-color: #3E4349; color:#fff; font-family: 'Ubuntu Mono', monospace; padding: 24px">
+          <span style="color: #999999;"># pie.py</span><br/>
+          <span style="color: #66FF66;">"""</span>
+            <textarea style="background-color: #3E4349; color:#66FF66; font-weight: bold; font-family: 'Ubuntu Mono', monospace;" name="doc" placeholder="{{ _('Input your doc string') }}">{{ result.get('doc', '') }}</textarea>
+          <span style="color: #66FF66;">"""</span><br><br>
+          <span style="color: #CC00FF;">from</span> docpie <span style="color: #CC00FF;">import</span> docpie</span><br/>
+          <span style="color: #CC00FF;">print</span>(docpie(<span style="color: #E06697;">__doc__</span>))
+        </div>
+      </div>
+
+      <!-- Terminal -->
+      <div style="background-color: #610B4B; color: #fff; font-weight: bold; font-family: 'Ubuntu Mono', monospace; padding: 5px">
+        <div class="am-form-group">
+          <div style="width: 100%">
+            <label for="argv" style="width: 150px; float: left; padding: 4px 0px 0px 0px">
+              <span style="color: #F3F781;">$</span> python pie.py
+            </label>
+            <div style="overflow: hidden;">
+              <input type="text" id="argv" name="argv" value="{{ result.get('argv', '') }}" placeholder="{{ _('(Input Your command)') }}"
+                     style="background-color: #610B4B; color: #fff">
+            </div>
+          </div>
+        </div>
+
+        <div class="am-cf">
+          <button type="submit" class="am-btn am-btn-success am-fr">Enter &#9166;</button>
+          <pre style="background-color: #610B4B; color: #fff; font-weight: bold; font-family: 'Ubuntu Mono', monospace; padding: 0px; margin: 10px; border:0"><code>{{ result['output'] or '' }}</code></pre>
+          {% if result['output'] %}
+            <span style="color: #F3F781;">$</span>
+          {% end %}
+        </div>
+
+      </div>
+
+      <hr class="am-divider am-divider-dashed" />
+
+      <p>{{ _('Config') }}: {% raw _('(See {link}here{end} for detail)').format(
+                                      link='<a href="https://github.com/TylerTemp/docpie/#basic-usage">',
+                                      end='</a>') %}
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">help:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="help" value="true" {{'checked' if result.get('help', True) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="help" value="false" {{'checked' if not result.get('help', True) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="version" class="am-u-sm-3 am-u-md-2 am-form-label">version:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <input name="version" class="am-form-field" id="version" value="{{ result.get('version', '') or '' }}" placeholder="None">
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">stdopt:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="stdopt" value="true" {{'checked' if result.get('stdopt', True) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="stdopt" value="false" {{'checked' if not result.get('stdopt', True) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">attachopt:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="attachopt" value="true" {{'checked' if result.get('attachopt', True) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="attachopt" value="false" {{'checked' if not result.get('attachopt', True) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">attachvalue:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="attachvalue" value="true" {{'checked' if result.get('attachvalue', True) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="attachvalue" value="false" {{'checked' if not result.get('attachvalue', True) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">auto2dashes:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="auto2dashes" value="true" {{'checked' if result.get('auto2dashes', True) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="auto2dashes" value="false" {{'checked' if not result.get('auto2dashes', True) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="name" class="am-u-sm-3 am-u-md-2 am-form-label">name:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <input name="name" class="am-form-field" id="name" value="{{ result.get('name', '') or '' }}" placeholder="None">
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">case_sensitive:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="case_sensitive" value="true" {{'checked' if result.get('case_sensitive', False) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="case_sensitive" value="false" {{'checked' if not result.get('case_sensitive', False) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="extra" class="am-u-sm-3 am-u-md-2 am-form-label"><del>extra:</del></label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <input class="am-form-field" id="extra" value="" placeholder="{{ _('Not support here') }}" disabled="disabled">
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
+</div>
+{% end %}
+
+{% block butt %}
+<script>
+  function h(e)
+  {
+    $(e).css({'height':'auto','overflow-y':'hidden'}).height(e.scrollHeight - 10);
+  }
+  $('textarea').each(function ()
+  {
+    h(this);
+  }).on('input', function ()
+  {
+    h(this);
+  });
+
+  h();
+</script>
+{% end %}

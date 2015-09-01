@@ -157,10 +157,11 @@ def remove():
             if val:
                 piddict = json.loads(val)
             else:
+                piddict = {}
                 delete = True
             if not delete:
                 this_pid = os.getpid()
-                piddict.pop(str(this_pid))
+                piddict.pop(str(this_pid), None)
                 logger.debug('%s exit', this_pid)
             if not piddict:
                 delete = True
