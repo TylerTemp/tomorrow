@@ -172,7 +172,7 @@ var change_lang = function(lang)
   cookie.unset('lang', '/');
   if (!lang)
     return ;
-  cookie.set('lang', lang);
+  cookie.set('lang', lang, undefined, '/');
 }
 
 

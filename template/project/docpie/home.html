@@ -45,6 +45,11 @@
 
 {% block stomach %}
 <div class="am-container">
+  <div class="am-cf">
+    <div class="am-fr">
+      Language/语言: <a href="./?lang=zh" data-lang="zh" style="color: #000"><span class="am-icon-square-o"> Chinese/中文</span></a> | <span class="am-icon-check-square-o"> English/英文</span>
+    </div>
+  </div>
   <article class="am-article">
     <div class="am-article-hd">
       <h1 class="am-article-title am-margin-top-lx">[docpie]</h1>
@@ -142,7 +147,7 @@ Options<span style='color:#d2cd86; '>:</span>
         A multi usage patterns example may look like:
         <pre><code>Usage<span style='color:#d2cd86; '>:</span>
     my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> command <span style='color:#00dddd; '>&lt;</span>argument<span style='color:#00dddd; '>&gt;</span> <span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>option
-    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>[</span>optional-command<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>(</span>REQIRED-ARGUMENT<span style='color:#d2cd86; '>)</span>
+    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>[</span>optional-command<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>(</span>REQUIRED-ARGUMENT<span style='color:#d2cd86; '>)</span>
     my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>(</span><span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>either-this <span style='color:#00dddd; '>|</span> <span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>or-that<span style='color:#d2cd86; '>)</span>
     my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#00dddd; '>&lt;</span>repeatable-arg<span style='color:#00dddd; '>></span><span style='color:#d2cd86; '>...</span></code></pre>
         <div class="am-cf">
@@ -227,13 +232,29 @@ Options<span style='color:#d2cd86; '>:</span>
         <a class="am-fr" href="try/?example=optional_respective_element">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
       </div>
 
+      <p>If you need all elements appear or be omitted, use <code>()</code> (see below).
+
+      <p>Then writing options can be easy &amp; human-readable</p>
+
+      <pre><code>Usage: my_program [-docpie]</code></pre>
+      <div class="am-cf">
+        <a class="am-fr" href="try/?example=docpie">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
+      </div>
+
       <h3 class="mono">(Required Elements)</h3>
 
-      <p>Any element inside <code>()</code>(parentheses) is reqired except those
+      <p>Any element inside <code>()</code>(parentheses) is required except those
       which are nested in <code>[]</code></p>
       <pre><code>Usage: my_program (--this [&lt;arg&gt;] | --that)</code></pre>
       <div class="am-cf">
-        <a class="am-fr" href="try/?example=reqired_either">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
+        <a class="am-fr" href="try/?example=required_either">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
+      </div>
+      <p>You can nest <code>()</code> in a <code>[]</code> so when one element
+        appears, others must appear together.
+      </p>
+      <pre><code>Usage: my_program [(command --option ARGUMENT)]</code></pre>
+      <div class="am-cf">
+        <a class="am-fr" href="try/?example=optional_required_either">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
       </div>
 
       <h3 class="mono">this | or | that</h3>
@@ -405,4 +426,20 @@ Options:
   <p class="am-serif" style="font-size: 6rem; text-align:center"><a href="try/"><span class="am-icon-terminal" style="color: #000"> </span> Try <span class="mono am-text-danger">docpie</span> in your browser!</a></p>
 
 </div>
+{% end %}
+
+{% block butt %}
+<script type="text/javascript">
+$(function()
+{
+  $('[data-lang]').click(function(evt)
+  {
+    evt.preventDefault();
+    var lang = $(this).data('lang');
+    console.log('change lang from ' + locale + ' to ' + lang);
+    change_lang(lang);
+    location.reload();
+  });
+});
+</script>
 {% end %}

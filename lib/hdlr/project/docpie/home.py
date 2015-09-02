@@ -14,5 +14,8 @@ class HomeHandler(BaseHandler):
 
     def get(self):
         return self.render(
-            'project/docpie/home.html'
+            'project/docpie/%s' % (
+                'home.html' if self.locale.code[:2].lower() != 'zh'
+                else 'home.zh.html'
+            )
         )

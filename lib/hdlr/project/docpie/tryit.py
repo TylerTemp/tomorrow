@@ -1,4 +1,6 @@
 import logging
+import time
+import json
 import docpie
 try:
     from io import StringIO
@@ -7,7 +9,6 @@ except ImportError:
         from cStringIO import StringIO
     except ImportError:
         from StringIO import StringIO
-
 
 import sys
 import os
@@ -56,7 +57,7 @@ Options:
             'doc': '''\
 Usage:
     pie.py [options] command <argument> --option
-    pie.py [options] [optional-command] (REQIRED-ARGUMENT)
+    pie.py [options] [optional-command] (REQUIRED-ARGUMENT)
     pie.py [options] (--either-this | --or-that)
     pie.py [options] <repeatable-arg>...
 
@@ -94,10 +95,18 @@ This is equal to `[command] [--option] [ARGUMENT]`''',
             'argv': 'command --option all',
         },
 
+        'optional_required_either': {
+            'doc': '''\
+Usage: my_program [(command --option ARGUMENT)]
+
+These 3 elements must all appear or be omitted.''',
+            'argv': 'command --option arg',
+        },
+
         'optional_respective_element': {
             'doc': 'Usage: pie.py [command] [--option] [<argument>]',
         },
-        'reqired_either': {
+        'required_either': {
             'doc': '''
 Usage: pie.py (--this [<arg>] | --that)
 
@@ -392,16 +401,23 @@ Options:
         },
         'docexample': {
             'doc': '''\
-    Usage: my_program.py [-hso FILE] [--quiet | --verbose] [INPUT ...]
+Usage: my_program.py [-hso FILE] [--quiet | --verbose] [INPUT ...]
 
-    Options:
-     -h --help    show this
-     -s --sorted  sorted output
-     -o FILE      specify output file [default: ./test.txt]
-     --quiet      print less text
-     --verbose    print more text'''
+Options:
+ -h --help    show this
+ -s --sorted  sorted output
+ -o FILE      specify output file [default: ./test.txt]
+ --quiet      print less text
+ --verbose    print more text'''
+        },
+        'docpie': {
+            'doc': '''\
+Usage: my_program [-docpie]''',
+            'argv': '-c -d -e'
         },
     }
+
+    t = docpie.__TIMESTAMP__
 
     def get(self):
         example = self.get_argument('example', None)
@@ -446,15 +462,23 @@ Options:
                 self.io.seek(0)
                 self.io.truncate()
 
-                # logger.debug('%s\n\n%s\n%s\n%s', doc, argv, config, output)
                 result['output'] = output
                 result.update(config)
+
+        if self.is_ajax():
+            return self.write(json.dumps({'output': result['output']}))
 
         return self.render(
             'project/docpie/try.html',
             version=docpie.__version__,
+            time=self.get_time(),
             result=result
         )
 
     def get_bool(self, name):
         return self.get_argument(name, '') not in ('', 'false')
+
+    def get_time(self):
+        if self.locale.code.startswith('en'):
+            return time.ctime(self.t)
+        return time.strftime('%m月%d日，%H:%M', time.localtime(self.t))

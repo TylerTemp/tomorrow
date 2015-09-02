@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% block neck %}
+  <style>
+    h1 {
+      text-align: center;
+      font-family: "Ubuntu Mono", monospace;
+      font-weight: bold !important;
+      font-size: 10rem !important;
+    }
+    h2 {
+      text-align: center;
+      font-size: 4rem;
+      margin: 40px 0px 16px 0px;
+    }
+    h3.mono {
+      font-size: 2.5rem;
+      text-align: center;
+    }
+
+    .mono {
+      font-family: "Ubuntu Mono", monospace;
+    }
+
+    .am-article-meta {
+      text-align: right;
+    }
+    .am-article-lead {
+      text-align: center;
+    }
+
+    article {
+      font-size: 1.8rem;
+    }
+
+    pre {
+      background-color: #3E4349;
+      color: #fff;
+      font-family: "Ubuntu Mono", monospace;
+      padding: 10px 30px;
+    }
+  </style>
+{% end %}
+
+{% block stomach %}
+<div class="am-container">
+  <div class="am-cf">
+    <div class="am-fr">
+      Language/语言:
+      <span class="am-icon-check-square-o"> Chinese/中文</span> |
+      <a href="./?lang=en" data-lang="en" style="color: #000"><span class="am-icon-square-o"> English/英文</span></a>
+    </div>
+  </div>
+  <article class="am-article">
+    <div class="am-article-hd">
+      <h1 class="am-article-title am-margin-top-lx">[docpie]</h1>
+      <p class="am-article-meta">TylerTemp</p>
+    </div>
+
+    <div class="am-article-bd">
+      <p class="am-article-lead am-text-xl">
+        简单快捷且Pythonic的方式创建命令行接口
+      </p>
+      <div class="am-cf">
+        <a class="am-fr" href="try/">在线试试<span class="am-icon-angle-double-right">&nbsp;</span></a>
+      </div>
+      <hr class="am-article-divider" />
+
+
+
+
+<p><code>docpie</code>可以:</p>
+
+<ul>
+<li>读取分析你定义的help message</li>
+<li>duang duang duang地将命令行参数转换为程序可读的python dict对象</li>
+</ul>
+
+
+<p>help message跟<code>man page</code>很像，只需稍为注意一些格式要求即可。如果你还没试过，看看下面这个简单例子吧：</p>
+
+<pre><code>Naval Fate.
+
+Usage:
+  naval_fate ship new &lt;name&gt;...
+  naval_fate ship &lt;name&gt; move &lt;x&gt; &lt;y&gt; [--speed=&lt;km/h&gt;]
+  naval_fate ship shoot &lt;x&gt; &lt;y&gt;
+  naval_fate mine (set|remove) &lt;x&gt; &lt;y&gt; [--moored|--drifting]
+  naval_fate -h | --help
+  naval_fate --version
+
+Options:
+  -h -? --help    Show this screen.
+  --version       Show version.
+  --speed=&lt;km/h&gt;  Speed in knots.[default: 10]
+  --moored        Moored (anchored) mine.
+  --drifting      Drifting mine.
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=ship">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>这个例子里的“<code>Usage</code>”定义了程序的基本用法：<code>naval_fate</code>是程序名字，后面则是一串儿<code>Command</code>（<code>ship</code>，<code>new</code>，<code>move</code>等）、<code>Argument</code>（<code>&lt;name&gt;</code>、<code>&lt;x&gt;</code>、<code>&lt;y&gt;</code>）和<code>Option</code>（<code>--speed</code>，<code>－－moored</code>，<code>--h</code>）。</p>
+
+<p>同时“<code>Usage</code>”使用<code>()</code>（圆括号）/<code>[]</code>（方括号）表示必选/可选元素，<code>...</code>（省略号）标记可重复元素，以及<code>|</code>（竖线）表示仅匹配其中一个（排它元素组）。</p>
+
+<p>而“<code>Option</code>”则列出了可用的<code>Option</code>，定义了各自的同名符（<code>-?</code>和<code>--help</code>是一个意思）、要求参数（<code>--speed</code>要求一个参数而<code>--moored</code>不带参数）以及参数的默认值（<code>--speed</code>的默认值是<code>"10"</code>）。</p>
+
+<p>就酱。接下来<code>docpie</code>会理解这些意思，然后把接收到的参数哐叽哐叽地转成相应的键值对。同时，<code>docpie</code>还会自动处理一些参数，比如在传入<code>-?</code>选项时自动打印这个help message。</p>
+
+<hr />
+
+<h2>Usage区域</h2>
+
+<p>“<code>Usage</code>”起始于"Usage:"（<em>不区分</em>大小写）。如果还有其他部分的帮助信息，一定要用一个空行隔开即可。</p>
+
+<p>一个单行的<code>Usage</code>大致长这样：</p>
+
+<pre><code>Usage: my_program
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=empty">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>或者一个帅气的多行<code>Usage</code>：</p>
+
+<pre><code>Usage:
+    my_program [options] command &lt;argument&gt; --option
+    my_program [options] [optional-command] (REQIRED-ARGUMENT)
+    my_program [options] (--either-this | --or-that)
+    my_program [options] &lt;repeatable-arg&gt;...
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=usage_elements">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p>各个元素通过空格、<code>[</code>、<code>]</code>、<code>(</code>、<code>)</code>、<code>|</code>以及<code>...</code>彼此分开。不过长<code>Option</code>（用<code>--</code>开头）表示它比较喜欢用<code>=</code>来链接自己和它要求的<code>Argument</code>（像这样：<code>--option=&lt;value&gt;</code>）。各元素和分隔符的格式、意义和要求如下。</p>
+
+<h3 class="mono">&lt;argument&gt; ARGUMENT</h3>
+
+<p><code>Argument</code>要么用<code>&lt;&gt;</code>裹起来，要么全大写。</p>
+
+<pre><code>Usage: my_program &lt;input&gt; &lt;output&gt;
+       my_program INPUT OUTPUT
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=usage_argument">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<h3 class="mono">-o --option</h3>
+
+<p><code>Option</code>同样有两个样子：单横线（<code>-</code>）配一个字母的是短<code>Option</code>（比如<code>-h</code>），双横线(<code>--</code>)配几个字母的是长<code>Option</code>（比如<code>--help</code>）。一些提示和注意：</p>
+
+<ol>
+<li>短<code>Option</code>是唯一可以随意搅基的。<code>-abc</code>的意思是<code>-a -b -c</code>。</li>
+<li><p>如果你<strong>没有写“<code>Options</code>”</strong>的话，<code>-a&lt;arg&gt;</code>表示<code>Option(-a)</code>要求一个<code>Argument(&lt;arg&gt;)</code>，因为两个黏在一起的。</p>
+
+<p>而<code>-a &lt;arg&gt;</code>则只是表示一个<code>Option(-a)</code>和一个<code>Argument(&lt;arg&gt;)</code>，俩货井水不犯河水。</p></li>
+<li><p>如果你<strong>没有写“<code>Options</code>”</strong>的话，<code>--long=&lt;arg&gt;</code>表示<code>Option(--long)</code>要求一个<code>Argument(&lt;arg&gt;)</code>，毕竟小手<code>=</code>将两货拉在了一起。</p>
+
+<p>而<code>--long &lt;arg&gt;</code>则单纯地表示一个<code>Option(--long)</code>和一个<code>Argument(&lt;arg&gt;)</code>肩并肩纯洁地站在一起，并没有内在逻辑关系。</p></li>
+<li>如果你定义了“<code>Options</code>”区，则<code>-a &lt;arg&gt;</code>和<code>--long &lt;arg&gt;</code>的意义则自动跟<code>Options</code>中的声明保持一致。</li>
+</ol>
+
+
+<p>注：如果一个长<code>Option</code>要求一个<code>Argument</code>，强烈建议写成<code>--long=&lt;arg&gt;</code>而不是<code>--long &lt;arg&gt;</code>。</p>
+
+<h3 class="mono">command</h3>
+
+<p>所有不满足以上格式的单词都记为<code>Command</code>。</p>
+
+<pre><code>Usage: get help pull
+</code></pre>
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=get_help_pull">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<h3 class="mono">[可选元素]</h3>
+
+<p>所有在<code>[]</code>（方括号）中的元素都为可选元素。在解析的时候，懒散的<code>[]</code>并不介意里面的元素是全部到齐了。也就是说，对于</p>
+
+<pre><code>Usage: my_program [command --option ARGUMENT]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=optional_all_element">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>跟</p>
+
+<pre><code>Usage: my_program [command] [--option] [&lt;argument&gt;]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=optional_respective_element">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>是一个意思。这样可以很方便地写<code>option</code>：</p>
+
+<pre><code>Usage: my_program [-docpie]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=docpie">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p>如果你要求里面的元素要么全部到齐，要么全部缺席，请让一板一眼的<code>()</code>（圆括号）来帮忙（见下节）</p>
+
+<h3 class="mono">(必选元素)</h3>
+
+<p><code>()</code>（圆括号）里所有元素（<code>[]</code>包裹元素除外）都必须出现。</p>
+
+<pre><code>Usage: my_program (--this [&lt;arg&gt;] | --that)
+</code></pre>
+
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=required_either">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>你可以将其嵌套在<code>[]</code>中，这样其中一个元素出现时，其它也必须出现。</p>
+
+
+<pre><code>Usage: my_program [(command --option ARGUMENT)]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=optional_required_either">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<h3 class="mono">要么这个 | 要么那个</h3>
+
+<p><code>|</code>要求其分割的元素只匹配其中一个。</p>
+
+<pre><code>Usage: rank (--first | --second | --third)
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=exclusive_rank">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p><strong>注意</strong> <code>|</code>从左往右匹配。一旦匹配成功则会跳过剩下所有的匹配项。也就是说：</p>
+
+<pre><code>Usage: my_program (-vvv | -vv | -v)
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=exclusive_good">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p>可以匹配<code>-v</code>出现1、2、3次的情形。而</p>
+
+<pre><code>Usage: my_program [-v | -vv | -vvv]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=exclusive_bad">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>则只能匹配<code>-v</code>或空命令行。</p>
+
+<h3 class="mono">重复元素...</h3>
+
+<p><code>...</code>（省略号）意味着其左侧最近的元素/元素组可以重复。</p>
+
+<pre><code>Usage: cp &lt;source&gt;... &lt;target&gt; &lt;logfile&gt;
+</code></pre>
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=cp">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p>注意这货只粘左边最近的人，也就是说：</p>
+
+<pre><code>Usage: my_program -a&lt;arg&gt;...
+       my_program --all=&lt;arg&gt;...
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=ellipsis_option">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+
+<p><code>Option(-a)</code>接受一个可重复的<code>Argument(&lt;arg&gt;)</code>。<code>Option(--all)</code>也一样。这个情况下可以匹配<code>-a 1 2 3</code>。而</p>
+
+<pre><code>Usage: my_program (-a&lt;arg&gt;)...
+       my_program (--all=&lt;arg&gt;)...
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=ellipsis_option_unit">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>意味着<code>Optional(-a)</code>本身是可以重复的。这个情况可以匹配<code>--all=1 --all=2 --all=3</code>。</p>
+
+<h3 class="mono">[options]</h3>
+
+<p><code>[options]</code>则是所有列在"<code>Options</code>"中选项的缩写。下面的这个写法</p>
+
+<pre><code>Usage:
+  program [options] now
+
+Options:
+  --terminate  terminate the daemon process
+  --reload     reload the config file
+  --restart    restart the service
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=terminate_option">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>等同于</p>
+
+<pre><code>Usage: program [--terminate] [--reload] [--restart] now
+</code></pre>
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=terminate_oneline">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<h3 class="mono">--</h3>
+
+<p>单独的<code>--</code>(双横线)意味着<code>Option</code>的结束。不管后面参数如何，第一个<code>--</code>后面的元素，按照POSIX标准，都应当视为Positional Argument。详细请参看<a href="http://unix.stackexchange.com/questions/11376/what-does-double-dash-mean-also-known-as-bare-double-dash">这里</a>。你并不需要在“<code>Usage</code>”中声明<code>--</code>，<code>Docpie</code>会自动处理<code>--</code>。</p>
+
+<pre><code>Usage: cat [&lt;file&gt; ...]
+</code></pre>
+
+<div class="am-cf">
+  <small><a class="am-fr" href="./try/?example=double_dashes_cat">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
+</div>
+
+<p>对于<code>-- -v --help</code>，<code>Docpie</code>会将<code>-v</code>和<code>--help</code>上缴给<code>&lt;file&gt;</code>，而不是当作<code>Option</code>来处理。</p>
+
+<hr />
+
+<h2>Options Section</h2>
+
+<p>“<code>Options</code>”列出了所有可以作用在<code>[options]</code>中的<code>Option</code>。</p>
+
+<p>“<code>Options</code>”按惯例以<strong>“<code>Options:</code>”</strong>（<em>不区分</em>大小写）开头，用空行与其它部分隔开。其中可以声明：</p>
+
+<ul>
+<li><code>Option</code>的别名</li>
+<li><code>Option</code>的描述</li>
+<li><code>Option</code>是否接受参数以及参数的默认值</li>
+</ul>
+
+
+<h3 class="mono">别名和参数</h3>
+
+<p>相同<code>Option</code>不同名字通过空格分开，你也可以额外加一个空格</p>
+
+<pre><code>-h, -?, --help    # with comma
+-v --version      # without comma
+</code></pre>
+
+<p>如果需要参数，则参数用空格分开写在后面。对于长<code>Option</code>可以用<code>=</code>指明。你不必为每个同名<code>Option</code>都写一遍参数。</p>
+
+<pre><code>-r &lt;file&gt; --read &lt;file&gt;     # without `=`
+-w FILE --write=FILE        # with`=`
+-x --exexecute=&lt;file&gt;
+</code></pre>
+
+<h3 class="mono">描述</h3>
+
+<p>描述可以让人知道这个<code>Option</code>是人是鬼。描述至少用两个空格与<code>Option</code>隔开，或者另起一行，比<code>Option</code>多敲两个空格即可。如果一个描述需要分行，则每行保持其缩进就好：</p>
+
+<pre><code>-l --logg                  open the logging.                         # Good. Inline description
+-r &lt;file&gt; --read &lt;file&gt;    read the data from the file.              # Good, 2 spaces
+                           if the file does not exists, create one.  # Good, keep the indent
+-w FILE --write=FILE
+        write the data to the file                                   # Good, new line indent 2 more spaces
+        create one if not exists                                     # Good, keep the indent
+        raise RuntimeError if fails to create
+        raise IOError if fails to write
+</code></pre>
+
+<h3 class="mono">默认值</h3>
+
+<p>接受参数的<code>Option</code>可以指定参数的默认值。默认值只需要把“<code>[default: 你的默认值]</code>”写在描述末尾即可。注意<code>:</code>后面有个空格。</p>
+
+<pre><code>--speed=&lt;km/h&gt;    the speed of the ship.[default: inf]    # 'inf'
+--ship=&lt;name&gt;     the name of the ship
+                  create one if not exist. [default: ]    # an empty string
+</code></pre>
+
+
+    </div>
+  </article>
+  <hr >
+
+
+  <p>喜欢么？你可以通过下面两种方式安装<code>docpie</code></p>
+
+  <ol>
+    <li><pre><code>pip install docpie</code></pre></li>
+    <li><pre><code>pip install git+git://github.com/TylerTemp/docpie.git</code></pre></li>
+  </ol>
+
+
+  <p>完整的文档、源代码和BUG反馈就请参见GitHub啦：<a href="https://github.com/TylerTemp/docpie/" target="_blank"><span class="am-icon-github"> github.com/TylerTemp/docpie/</span><span class="am-icon-external-link"></span></a>。</p>
+
+  <p>喜欢就给个星吧~</p>
+
+  <p class="" style="font-size: 6rem; text-align:center"><a href="try/"><span class="am-icon-terminal" style="color: #000"></span>在线试试<span class="mono am-text-danger">docpie</span>吧！</a></p>
+
+</div>
+{% end %}
+
+{% block butt %}
+<script type="text/javascript">
+$(function()
+{
+  $('[data-lang]').click(function(evt)
+  {
+    evt.preventDefault();
+    var lang = $(this).data('lang');
+    console.log('change lang from ' + locale + ' to ' + lang);
+    change_lang(lang);
+    location.reload();
+  });
+});
+</script>
+{% end %}

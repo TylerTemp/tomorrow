@@ -22,13 +22,29 @@
 {% block stomach %}
 
 <div class="am-container">
-  <h1><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
+  <div class="am-cf">
+    <div class="am-fr">
+      Language/语言:
+        <a href="./?lang=zh" data-lang="zh" style="color: #000">
+          <span class="{{ 'am-icon-check-square-o' if locale.code[:2] == 'zh' else 'am-icon-square-o'}}">
+            Chinese/中文
+          </span>
+        </a>
+        |
+        <a href="./?lang=en" data-lang="en" style="color: #000">
+          <span class="{{ 'am-icon-check-square-o' if locale.code[:2] != 'zh' else 'am-icon-square-o'}}">
+            English/英文
+          </span>
+        </a>
+    </div>
+  </div>
+  <h1 style="margin: 0px 0px 16px 0px;"><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
 
   <p><a href="../"><span class="am-icon-angle-double-left"> {{ _('back to introduction') }}</span></a></p>
 
   <form class="am-form am-form-horizontal">
     <fieldset>
-      <legend class="am-monospace">docpie ({{_('Version')}} {{ version }})</legend>
+      <legend class="am-monospace">docpie ({{_('Version')}} {{ version }} / {{ time }})</legend>
 
       <!-- pie.py -->
 
@@ -37,7 +53,7 @@
         <div style="background-color: #3E4349; color:#fff; font-family: 'Ubuntu Mono', monospace; padding: 24px">
           <span style="color: #999999;"># pie.py</span><br/>
           <span style="color: #66FF66;">"""</span>
-            <textarea style="background-color: #3E4349; color:#66FF66; font-weight: bold; font-family: 'Ubuntu Mono', monospace;" name="doc" placeholder="{{ _('Input your doc string') }}">{{ result.get('doc', '') }}</textarea>
+            <textarea style="background-color: #3E4349; color:#66FF66; font-weight: bold; font-family: 'Ubuntu Mono', monospace;" name="doc" placeholder="{{ _('Input your doc string') }}" required="required">{{ result.get('doc', '') }}</textarea>
           <span style="color: #66FF66;">"""</span><br><br>
           <span style="color: #CC00FF;">from</span> docpie <span style="color: #CC00FF;">import</span> docpie</span><br/>
           <span style="color: #CC00FF;">print</span>(docpie(<span style="color: #E06697;">__doc__</span>))
@@ -59,14 +75,17 @@
         </div>
 
         <div class="am-cf">
-          <button type="submit" class="am-btn am-btn-success am-fr">Enter &#9166;</button>
+          <button type="submit"
+                  class="am-btn am-btn-success am-fr"
+                  data-am-loading="{spinner: 'cog', loadingText: ''}">Enter &#9166;</button>
           <pre style="background-color: #610B4B; color: #fff; font-weight: bold; font-family: 'Ubuntu Mono', monospace; padding: 0px; margin: 10px; border:0"><code>{{ result['output'] or '' }}</code></pre>
-          {% if result['output'] %}
-            <span style="color: #F3F781;">$</span>
-          {% end %}
+          <span data-role="end_dollar" style="color: #F3F781; {{ '' if result['output'] else 'display:none;' }}">$</span>
+
         </div>
 
       </div>
+
+      <p>{% raw _('Find a bug? {mark}Tell me here!{mark_end}').format(mark='<a href="https://github.com/TylerTemp/docpie/issues" target="_blank"><span class="am-icon-bug">', mark_end='</span></a>') %}</p>
 
       <hr class="am-divider am-divider-dashed" />
 
@@ -175,18 +194,85 @@
 
 {% block butt %}
 <script>
-  function h(e)
+  $(function(evt)
   {
-    $(e).css({'height':'auto','overflow-y':'hidden'}).height(e.scrollHeight - 10);
-  }
-  $('textarea').each(function ()
-  {
-    h(this);
-  }).on('input', function ()
-  {
-    h(this);
-  });
+    function h(e)
+    {
+      $(e).css({'height':'auto','overflow-y':'hidden'}).height(e.scrollHeight - 10);
+    }
 
-  h();
+    $('textarea').each(function()
+    {
+      h(this);
+    }).on('input', function()
+    {
+      h(this);
+    });
+
+    $('[data-lang]').click(function(evt)
+    {
+      evt.preventDefault();
+      var $self = $(this)
+      var lang = $self.data('lang');
+      var $other = (lang == 'en'? $('[data-lang="zh"]'): $('[data-lang="en"]'));
+      $self.find('span')
+        .removeClass('am-icon-check-square-o am-icon-square-o')
+        .addClass('am-icon-check-square-o');
+      $other.find('span')
+        .removeClass('am-icon-check-square-o am-icon-square-o')
+        .addClass('am-icon-square-o');
+      if (locale == lang)
+        return;
+      console.log('change lang from ' + locale + ' to ' + lang);
+      change_lang(lang);
+      location.reload();
+    });
+
+    $('form').submit(function(evt)
+    {
+      evt.preventDefault();
+      var $form = $(this);
+      var $button = $form.find('button[type="submit"]');
+      var $fieldset = $form.find('fieldset');
+      var $code = $form.find('pre code');
+      var $end_dollar = $form.find('[data-role="end_dollar"]');
+
+      var values = {};
+      $.each($form.serializeArray(), function(i, field)
+      {
+        values[field.name] = field.value;
+      });
+
+      $code.html(
+        '<center><i class="am-icon-spinner am-icon-pulse am-text-xxxl"></i></center>'
+      );
+
+      $button.button('loading');
+      $fieldset.prop('disabled', true);
+      $end_dollar.hide();
+
+      $.ajax(
+        location.pathname,
+        settings={
+          data: values,
+          type: 'get'
+        }
+      ).done(function(data, textStatus, jqXHR)
+      {
+        var obj = $.parseJSON(data);
+        $code.text(obj.output);
+      }).fail(function(jqXHR, textStatus, errorThrown)
+      {
+        var msg = _("Sorry, a server error occured, please refresh and retry") +
+                  " ({0}: {1})".format(jqXHR.status, errorThrown);
+        $code.text(msg);
+      }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+      {
+        $button.button('reset');
+        $fieldset.prop('disabled', false);
+        $end_dollar.show();
+      })
+    });
+  });
 </script>
 {% end %}
