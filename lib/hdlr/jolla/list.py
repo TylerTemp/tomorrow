@@ -18,7 +18,8 @@ class ListHandler(BaseHandler):
 
         return self.render(
             'jolla/list.html',
-            articles=self.parse_jolla(Jolla.all())
+            articles=self.parse_jolla(Jolla.all()),
+            nav_active='jolla_tr'
         )
 
     def parse_jolla(self, collected):

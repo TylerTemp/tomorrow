@@ -75,11 +75,14 @@
         <a href="{{ each['link' ]}}">{{ each['title'] }}</a>
       </h3>
       <h4 class="am-article-meta blog-meta">
-        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a> posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time> <span class="am-footer-divider">|</span> <span class="am-badge am-badge-success am-radius">{{ each['board'] }}</span>{% if each['is_translation'] %}<span class="am-badge am-badge-secondary am-radius">{{ _('tr') }}</span>{% end %}
+        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a>
+        posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time>
+        <span class="am-footer-divider">|</span>
+        {% raw ''.join(each['tag']) %}
       </h4>
       <div class="am-g blog-content">
         <div class="am-u-lg-{{7 if each['cover'] else 12}}">
-          <p>{{ each['description'] }}</p>
+          {% raw each['description'] %}
         </div>
         {% if each['cover'] %}
         <div class="am-u-lg-5">
@@ -92,11 +95,7 @@
     <hr class="am-article-divider blog-hr">
     {% else %}
       {% if idx == -1 %}
-        {% if locale.code[:2] == 'zh' %}
-          <p>这里什么都没有，施主还是请回吧。</p>
-        {% else %}
-          <p> Oops... Nothing here.</p>
-        {% end %}
+        <p>{{ _('Oops... Nothing here.') }}</p>
         <hr class="am-article-divider blog-hr">
       {% end %}
     {% end %}
@@ -127,6 +126,39 @@
             <a href="//{{ JOLLA_HOST }}">
             {{ _('Unofficial Jolla Chinese Blog') }} <br>
             <img src="/static/img/unofficial.png" style="max-width:100%;">
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      <section class="am-panel am-panel-default">
+        <div class="am-panel-hd">{{ _('Project') }}</div>
+        <ul class="am-list blog-list">
+          <li>
+            <a href="http://docpie.comes.today">
+              <span class="am-monospace" style="font-weight: blod">[docpie]</span>
+              <br/>
+              <span class="am-link-muted">
+                {{ _('An easy & pythonic way to create your command-line interface') }}
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/TylerTemp/DroidSailizedIcon" target="_blank">
+              <span class="am-monospace" style="font-weight: blod">DroidSailizedIcon</span><span class="am-icon-external-link"></span>
+              <br/>
+              <span class="am-link-muted">
+                {{ _('An Android icon set in Sailfish OS style') }}
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/TylerTemp/qstart" target="_blank">
+              <span class="am-monospace" style="font-weight: blod">QStart</span><span class="am-icon-external-link"></span>
+              <br/>
+              <span class="am-link-muted">
+                {{ _('A Windows keyboard shortcut program') }}
+              </span>
             </a>
           </li>
         </ul>

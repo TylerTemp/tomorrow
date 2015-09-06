@@ -210,7 +210,8 @@ class EnsureSsl(object):
         def wrapper(ins, *a, **k):
             if (ins.request.protocol != 'https'):
                 return ins.redirect(
-                    'https://%s%s' % (ins.request.host, ins.request.uri))
+                    'https://%s%s' % (ins.request.host, ins.request.uri),
+                    self._prem)
             return func(ins, *a, **k)
 
         return wrapper

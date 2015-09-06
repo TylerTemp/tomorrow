@@ -428,23 +428,25 @@ class Article(object):
 
     def __init__(self, url=None):
         if url is None:
-            self.article_info = None
+            self.article_info = {}
         else:
-            self.article_info = self.find_url(url)
+            self.article_info = self.find_url(url) or {'url': url}
 
     def add(self, board, title, content, author, email, url=None,
             show_email=True, license=CC_LICENSE, transinfo=None, index=0,
-            tag=[]):
+            tag=[], headimg=None, cover=None, description=None):
 
         if url is None:
             if transinfo is not None:
                 url = self.mkurl(transinfo['title'], author)
+            elif 'url' in self.article_info:
+                url = self.article_info['url']
             else:
                 url = self.mkurl(title, author)
 
         info = {
             'board': board,
-            'tag': [],
+            'tag': tag,
             'title': title,
             'url': url,
             'content': content,
@@ -455,6 +457,9 @@ class Article(object):
             'createtime': time.time(),
             'edittime': time.time(),
             'index': index,
+            'headimg': headimg,
+            'cover': cover,
+            'description': None,
         }
 
         if transinfo is not None:
@@ -516,7 +521,7 @@ class Article(object):
 
     @property
     def new(self):
-        return self.article_info is None
+        return '_id' not in self.article_info
 
     @classmethod
     def mkurl(cls, title, author):

@@ -78,3 +78,5 @@ tomorrow.comes.today_sha256_en
 
 # store the uploaded file
 static/upload
+
+.DS_Store

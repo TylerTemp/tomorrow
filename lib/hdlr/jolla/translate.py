@@ -84,6 +84,7 @@ class TranslateHandler(BaseHandler):
                              if username else None),
             size_limit=cfg.size_limit.get(usertype, 0),
             md=self.get_argument('md', False),
+            nav_active='jolla_tr'
         )
 
     # @tornado.web.asynchronous
@@ -187,7 +188,6 @@ class TranslateHandler(BaseHandler):
 
     re_share = re.compile(r'^share\[(?P<key>.*?)\]$')
     def get_share_argument(self):
-        # result = {}
         result = []
         re_share = self.re_share
         for k, v in self.request.arguments.items():

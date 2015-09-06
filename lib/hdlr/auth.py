@@ -43,7 +43,7 @@ class _Handler(BaseHandler):
     USER_NOT_EXISTS = int('1000000', 2)  # login
     EMAIL_EXISTS = int('10000000', 2)  # signin
     EMAIL_NOT_EXISTS = int('10000000', 2)  # login
-    PWD_WRONG = int('100000000', 2)  # login
+    PWD_WRONG = int('1000000000', 2)  # login
     SEND_EMAIL_FAILED = int('100000000', 2)  # signin
     PWD_MIN_LENGTH = 8
 

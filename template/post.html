@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} {% end %}
+
+{% block neck %}
+<style>
+#title-img {
+  width: 100%;
+  height: auto;
+}
+
+#white-bg-box {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+article h1 {
+  text-align: center;
+}
+
+article p img {
+  max-width: 100%;
+  height: auto;
+  /*margin: 0em 0em 0em -2em;*/
+}
+
+#page-box {
+  padding-top: 50px;
+  max-width: 600px;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
+{% if not is_en %}
+.am-article-bd p {
+  text-indent: 2em;
+}
+{% end %}
+
+</style>
+{% end %}
+
+{% block nav %}
+{% end %}
+
+{% block navjs %}
+{% end %}
+
+{% block body %}
+
+
+<div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
+
+  <header>
+    <h1 class="am-margin-lg am-text-center">
+      <a href="/" class="am-text-ir">Tomorrow Comes Today</a>
+    </h1>
+  </header>
+
+  <div class="am-u-sm-centered am-g-fixed">
+
+    <div class="am-g" id="bread-crumbs">
+      <div class="am-u-sm-6" style="text-align: left">
+        <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="/">{{ _('Back to home') }}<a/></span> &nbsp;
+      </div>
+      <div class="am-u-sm-6 am-cf">
+
+        <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
+          <button class="am-btn am-btn-link am-dropdown-toggle am-btn-sm"><span class="am-icon-globe"></span> <span class="am-icon-caret-down"></span></button>
+          <ul class="am-dropdown-content">
+            <li class="am-dropdown-header">修改语言/Change Language</li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+              <a href="./?lang=zh" data-role="switch-lang" data-lang="zh"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+            </li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+              <a href="./?lang=en" data-role="switch-lang" data-lang="en"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    {% if headimg %}
+      <img src="{{ headimg }}" id="title-img">
+    {% end %}
+    <div class="am-g am-margin-bottom-xl" id="white-bg-box">
+      <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
+        <article class="am-article">
+          <div class="am-article-hd">
+            <h1 class="am-article-title">{{ title }}</h1>
+            <p class="am-article-meta">
+            </p>
+          </div>
+
+          <hr class="am-article-divider">
+          <div class="am-article-bd">
+            {% raw content %}
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% end %}

@@ -60,6 +60,7 @@ class TaskHandler(BaseHandler):
             # description = slug = ''
 
         use_md = self.get_argument('md', False)
+        content = md if use_md else html
 
         return self.render(
             'jolla/task.html',
@@ -70,9 +71,10 @@ class TaskHandler(BaseHandler):
             author=author,
             headimg=headimg,
             cover=cover,
-            html=html,
-            md=md,
+            # html=html,
+            # md=md,
             # description=description,
+            content=content,
             link=link,
             slug=url,
 
@@ -96,11 +98,15 @@ class TaskHandler(BaseHandler):
         headimg = self.get_argument('headimg', None)
         cover = self.get_argument('cover', None)
 
+        logger.debug('%s : %s', format, content)
+
         if format == 'md':
             if self.current_user['type'] < User.root:
+                logger.debug('escape for md')
                 content = escape(content)
         # 'html'
         elif self.current_user['type'] < User.root:
+            logger.debug('html -> md')
             content = html2md(content)
 
         if url is None:

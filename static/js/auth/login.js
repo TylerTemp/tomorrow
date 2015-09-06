@@ -23,6 +23,9 @@ var set_user_error = function(error, is_email)
   var user_obj = $("#user-or-email");
   switch(error)
   {
+    case 'empty':
+      set_error(user_obj, _("User Name or Email should not be empty"), "warning");
+      break;
     case 'tooshort':
       set_error(user_obj, _("User Name or Email should not shorter than {0} characters").format(USER_MIN_LEN), "error");
       break;
@@ -42,6 +45,9 @@ var set_pwd_error = function(error)
   var pwd_obj = $("#pwd");
   switch(error)
   {
+    case 'empty':
+      set_error(pwd_obj, _("Password should not be empty"), "warning");
+      break;
     case 'short':
       set_error(pwd_obj, _("Password should not be less than {0} words").format(PWD_MIN_LENGTH), "error");
       break;
@@ -87,9 +93,16 @@ $(document).ready(function(){
 
   $('form').submit(function(evt)
   {
-    var u = user.val(), p = pwd.val();
+    var u = user.val();
+    var p = pwd.val();
     if (!(u && p))
+    {
+      if (!u)
+        set_user_error('empty');
+      if (!p)
+        set_pwd_error('empty');
       return false;
+    }
     submit.button("loading");
     server_error_panel.hide(400);
     $.ajax(

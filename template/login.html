@@ -3,6 +3,23 @@
 
 {% block nav %}{% end %}
 
+{% block neck %}
+<style>
+  ::-webkit-input-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+  }
+  :-moz-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+  }
+  ::-moz-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+  }
+  :-ms-input-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+  }
+</style>
+{% end %}
+
 {% block body %}
 <div class="header">
   <div class="am-g">
@@ -26,12 +43,12 @@
       {% raw xsrf_form_html() %}
       <div class="am-form-group">
         <label for="user-or-email">{{ _('User Name or Email') }}:</label>
-        <input type="text" name="user" id="user-or-email" placeholder="{{ _('Enter your user name or email') }}">
+        <input type="text" name="user" id="user-or-email" placeholder="&#xf007; / &#xf0e0;">
         <label class="error-panel" style="display:none"></label>
       </div>
       <div class="am-form-group">
         <label for="pwd">{{ _('Password') }}:</label>
-        <input type="password" name="pwd" id="pwd" placeholder="{{ _('Enter your password') }}">
+        <input type="password" name="pwd" id="pwd" placeholder="&#xf069;&#xf069;&#xf069;&#xf069;&#xf069;&#xf069;&#xf069;&#xf069;">
         <label class="error-panel" style="display:none"></label>
       </div>
       <div class="am-alert am-alert-danger" id="server-error" style="display:none">

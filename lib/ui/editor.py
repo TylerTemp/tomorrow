@@ -4,29 +4,21 @@ import logging
 logger = logging.getLogger('romorrow.ui.editor')
 
 
-class MdWysiwygEditorModule(tornado.web.UIModule):
+class WysBarModule(tornado.web.UIModule):
 
-    def render(self, switch=False, upload_img=None,
-               upload_file=None, content='', area=True):
+    def render(self, upload_img=None, upload_file=None):
         return self.render_string(
-            'uimodule/editor-wysiwyg.html',
+            'uimodule/wysbar.html',
             upload_img=upload_img,
             upload_file=upload_file,
-            switch=switch,
-            content=content,
-            area=area,
         )
 
 
-class MdEditorModule(tornado.web.UIModule):
+class MdBarModule(tornado.web.UIModule):
 
-    def render(self, switch=False, upload_img=None,
-               upload_file=None, content='', area=True):
+    def render(self, upload_img=None, upload_file=None):
         return self.render_string(
-            'uimodule/editor-md.html',
+            'uimodule/mdbar.html',
             upload_img=upload_img,
             upload_file=upload_file,
-            switch=switch,
-            content=content,
-            area=area,
         )

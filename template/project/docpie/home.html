@@ -438,7 +438,7 @@ $(function()
     var lang = $(this).data('lang');
     console.log('change lang from ' + locale + ' to ' + lang);
     change_lang(lang);
-    location.reload();
+    window.location.href = location.pathname;
   });
 });
 </script>

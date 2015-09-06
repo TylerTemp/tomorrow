@@ -1,5 +1,9 @@
 (function ($)
 {
+  if (_ === undefined)
+  {
+    var _ = function(s){ return s; }
+  }
   $.fn.markdownEditor = function(userOptions)
   {
     var editor = this;
@@ -67,11 +71,11 @@
               var placehold = range.text || _("indent content");
               break;
             case "insertunorderedlist":
-              var wrapper = ["\n* ", "\n"];
+              var wrapper = ["\n*   ", "\n"];
               var placehold = range.text || _("unordered list item");
               break
             case "insertorderedlist":
-              var wrapper = ["\n1. ", "\n"];
+              var wrapper = ["\n1.  ", "\n"];
               var placehold = range.text || _("ordered list item");
               break
             case "codeinline":
@@ -145,7 +149,7 @@
           if (!textstr)
             return;
         }
-        editor.textrange('insert', '['+textstr+']('+urlstr+')');
+        editor.textrange('insert', '[' + textstr + '](' + urlstr + ')');
         options.createLinkDropper.dropdown('close');
       }
     });
@@ -157,7 +161,7 @@
       var alt = alt || range.text ||  _("image title");
       var start = range.start + 2;
       var length = alt.length;
-      editor.textrange("replace", "!["+alt+"]("+url+")");
+      editor.textrange("replace", "![" + alt + "](" + url + ")");
       editor.textrange("set", start, length);
     }
     // insert Image Url
@@ -284,7 +288,7 @@
           // ImageUpload.url = dataUrl;
           ImageUpload.urlname = name;
           options.insertImagePreviewPanel.html(
-            '<img src="'+dataUrl+'">'
+            '<img src="' + dataUrl + '">'
           )
           $.ajax(
             url = options.uploadImageUrl,
@@ -322,7 +326,7 @@
             if (obj.error & MASK_FILE_TOO_BIG)
               errors.push(_("file too big"))
             if (obj.error & MASK_FILE_DUPLICATED_NAME)
-              errors.push(_("you already uploaded a file with the same name, server can't rename it"));
+              errors.push(_("you've already uploaded a file with the same name"));
             if (obj.error & MASK_FILE_DECODE_ERROR)
               errors.push(_("server can't decode your file"));
             var errmsg = errors.join('; ') || obj.error.toString();
@@ -438,7 +442,7 @@
               'type': 'post',
               'beforeSend': function(jqXHR, settings){
                 ImageUpload.setProcess(95);
-                jqXHR.setRequestHeader('X-Xsrftoken', $.cookie('_xsrf'));
+                jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
               }
             }
           ).done(function(data, textStatus, jqXHR)
@@ -487,7 +491,6 @@
     return editor;
   };
   $.fn.markdownEditor.defaults = {
-    // fromMarkdown: false,  // the original data is markdown? if so, trans to html
     toHtml: function(text){return markdown.toHTML(text);},
     toMarkdown: function(text){return md(text);},
     insertImageUrlInput: $("#md-img-url"),

@@ -417,7 +417,7 @@ Usage: my_program [-docpie]''',
         },
     }
 
-    t = docpie.__TIMESTAMP__
+    t = docpie.__timestamp__
 
     def get(self):
         example = self.get_argument('example', None)

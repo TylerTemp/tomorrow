@@ -48,8 +48,8 @@ $(document).ready(function(evt)
     {
       $("#mdEditor").fadeIn(400);
     });
-    $("#wys-toolbar-area").fadeOut(400, function(){
-      $("#md-toolbar-area").fadeIn(400);
+    $("#wysiwygEditorToolbar").fadeOut(400, function(){
+      $("#mdEditorToolbar").fadeIn(400);
     });
   });
 
@@ -62,9 +62,9 @@ $(document).ready(function(evt)
     {
       $("#wysiwygEditor").fadeIn(400);
     });
-    $("#md-toolbar-area").fadeOut(400, function()
+    $("#mdEditorToolbar").fadeOut(400, function()
     {
-      $("#wys-toolbar-area").fadeIn(400);
+      $("#wysiwygEditorToolbar").fadeIn(400);
     });
   });
 
@@ -97,13 +97,13 @@ $(document).ready(function(evt)
 
   $(".delete-share").click(del_share);
 
-  $('#preview_btn').click(function(evt)
+  $('[data-role="preview"]').click(function(evt)
   {
     console.log('preview_btn clicked');
     var content = (_editor_status == 'md')? mdEditor.val(): wysiwygEditor.html();
     var format = (_editor_status == 'md')? 'md': 'html';
     var url = '/api/' + format + '/html/';
-    var method = content.length > 1500? 'post': 'get';
+    var method = content.length > 700? 'post': 'get';
     var $popup = $('#preview_popup');
     var $content = $popup.find('.am-popup-bd');
     $popup.find('.am-popup-title').html($('#title').val());

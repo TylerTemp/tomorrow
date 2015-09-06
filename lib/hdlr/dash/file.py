@@ -203,15 +203,18 @@ class FileHandler(BaseHandler):
         mainurl = self.get_user_url(user)
 
         if os.path.exists(os.path.join(folder, filename)):
-            ext = os.path.splitext(filename)[-1]
-            mainname = time.strftime('%y-%m-%d-%H-%M-%S',
-                                     time.localtime(time.time()))
-            filename = mainname + ext
-
-            if os.path.exists(os.path.join(folder, filename)):
-                self.write(json.dumps({'error': self.DUPLICATED_NAME}))
-                self.finish()
-                return
+            self.write(json.dumps({'error': self.DUPLICATED_NAME}))
+            self.finish()
+            return
+            # ext = os.path.splitext(filename)[-1]
+            # mainname = time.strftime('%y-%m-%d-%H-%M-%S',
+            #                          time.localtime(time.time()))
+            # filename = mainname + ext
+            #
+            # if os.path.exists(os.path.join(folder, filename)):
+            #     self.write(json.dumps({'error': self.DUPLICATED_NAME}))
+            #     self.finish()
+            #     return
         try:
             bindata = yield self.decode(urldata)
         except binascii.Error as e:
@@ -227,7 +230,7 @@ class FileHandler(BaseHandler):
             'name': filename,
             'icon': self.icon(filename),
             'size': len(bindata),
-            'url': urljoin(mainurl, '%s/%s' % (to, filename))
+            'url': urljoin(mainurl, quote('%s/%s' % (to, filename)))
         }))
         self.finish()
         logger.info('saved %s', filename)

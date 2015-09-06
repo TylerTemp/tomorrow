@@ -32,12 +32,13 @@ from lib.hdlr import dash, hi, jolla, auth, api
 from lib.hdlr.base import BaseHandler
 from lib.hdlr.home import HomeHandler
 from lib.hdlr.edit import EditHandler
+from lib.hdlr.post import PostHandler
 from lib.hdlr.notfound import AddSlashOr404Handler
 from lib.hdlr.redirect import RedirectHandler
 from lib.hdlr.verify import VerifyHandler
 from lib.hdlr.blacklist import BlackListHandler
 
-from lib.ui.editor import MdWysiwygEditorModule, MdEditorModule
+from lib.ui.editor import WysBarModule, MdBarModule
 from lib.ui.iconfont import IconFontModule
 from lib.ui.license import LicenseModule
 from lib.ui.author import AuthorModule
@@ -113,9 +114,9 @@ class Application(tornado.web.Application):
             (r'/project/docpie/', project.docpie.HomeHandler),
             (r'/project/docpie/try/', project.docpie.TryHandler),
 
-            (r'/post/(?P<slug>[^/]+)/', BareHandler),
+            (r'/blog/(?P<slug>[^/]+)/', PostHandler),
             (r'/edit/', EditHandler),
-            (r'/edit/(?P<slug>[^/]+)/', EditHandler),
+            (r'/edit/(?P<urlslug>[^/]+)/', EditHandler),
 
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
@@ -134,8 +135,8 @@ class Application(tornado.web.Application):
             'debug': self.config.debug,
             'login_url': '/login/',
             'ui_modules': {
-                'WysiwygEditor': MdWysiwygEditorModule,
-                'MdEditor': MdEditorModule,
+                'WysBar': WysBarModule,
+                'MdBar': MdBarModule,
                 'License': LicenseModule,
                 'Author': AuthorModule,
                 'IconFontCss': IconFontModule,

@@ -21,6 +21,19 @@
 {% block site_description %}{{ _("Unofficial Jolla Chinese blog. Chinese translation of Jolla's posts and other ideas about Jolla") }}{% end %}
 {% block site_kwd %}Jolla,Jolla博客,Jolla中文博客,Jolla翻译,Jolla非官方中文博客{% end %}
 
+{% block bg %}
+<style>
+  body {
+    background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
+                      url("https://dn-jolla.qbox.me/blog_bg_base.jpg");
+    background-repeat: no-repeat, repeat;
+    background-size: 100% auto, auto auto;
+    background-position: right top;
+    background-color: #5BA2A1;
+  }
+</style>
+{% end %}
+
 {% block footer %}
 <footer class="am-footer am-footer-default">
   <div>

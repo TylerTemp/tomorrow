@@ -1,0 +1,128 @@
+<div class='am-btn-group'>
+  <button class="am-btn am-btn-primary" data-role='bold' data-am-popover="{content: '{{ _('Bold') }}', trigger: 'hover focus'}"><i class="am-icon-bold"></i></button>
+  <button class="am-btn am-btn-primary" data-role='italic' data-am-popover="{content: '{{ _('Italic') }}', trigger: 'hover focus'}"><i class="am-icon-italic"></i></button>
+</div>
+<div class='am-btn-group'>
+  <button class="am-btn am-btn-primary" data-role='indent' data-am-popover="{content: '{{ _('Indent') }}', trigger: 'hover focus'}"><i class="am-icon-indent"></i></button>
+  <button class="am-btn am-btn-primary" data-role='outdent' data-am-popover="{content: '{{ _('Dedent') }}', trigger: 'hover focus'}"><i class="am-icon-outdent"></i></button>
+  <button class="am-btn am-btn-primary" data-role='insertHorizontalRule' data-am-popover="{content: '{{ _('Insert Horizontal') }}', trigger: 'hover focus'}"><i class="am-icon-ellipsis-h"></i></button>
+  <button class="am-btn am-btn-primary" data-role='insertUnorderedList' data-am-popover="{content: '{{ _('Insert Unordered List') }}', trigger: 'hover focus'}"><i class="am-icon-list-ul"></i></button>
+  <button class="am-btn am-btn-primary" data-role='insertOrderedList' data-am-popover="{content: '{{ _('Insert Ordered List') }}', trigger: 'hover focus'}"><i class="am-icon-list-ol"></i></button>
+</div>
+<div class='am-btn-group'>
+
+  <!-- insert link -->
+  <div class="am-dropdown" id="wys-url-dropdown" data-am-dropdown>
+    <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='createLink' data-am-popover="{content: '{{ _('Insert Link') }}', trigger: 'hover focus'}"><i class="am-icon-link"></i></button>
+    <div class="am-dropdown-content">
+      <div class="am-form-group">
+        <label for="wys-url">{{ _("URL") }}</label>
+        <input class="am-form-field" id="wys-url" placeholder="{{ _('Enter url here') }}" value="http://">
+      </div>
+      <div class="am-form-group">
+        <label for="wys-url-text">{{ _("shown text") }}</label>
+        <input class="am-form-field" id="wys-url-text" placeholder="{{ _('Enter shown text here') }}">
+      </div>
+      <button class="am-btn am-btn-secondary" id="wys-url-insert">{{ _("insert") }}</button>
+    </div>
+  </div>
+
+  <button class="am-btn am-btn-primary" data-role='unlink' data-am-popover="{content: '{{ _('Remove Link') }}', trigger: 'hover focus'}"><i class="am-icon-chain-broken"></i></button>
+
+
+  <!-- insert image -->
+  <div class="am-dropdown" id="wys-img-dropdown" data-am-dropdown>
+    <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle data-role='insertimage' data-am-popover="{content: '{{ _('Insert Image') }}', trigger: 'hover focus'}"><i class="am-icon-file-image-o"></i></button>
+
+    <!-- insert image url -->
+    <div class="am-dropdown-content">
+      <div class="am-form-group">
+          <div class="am-form-group">
+            <label for="md-img-url">{{ _("Image URL") }}</label>
+            <input type="text" class="am-form-field" id="wys-img-url" placeholder="{{ _('Enter image url here') }}">
+            <button class="am-btn am-btn-secondary" id="wys-img-url-insert">{{ _("insert") }}</button>
+            <button class="am-btn am-btn-success" id="wys-img-url-preview">{{ _("preview") }}</button>
+          </div>
+      </div>
+      {% if upload_img is not None %}
+        <!-- select an uploaded image -->
+        <div class="am-form-group">
+          <label for="wys-img-select">{{ _("Select an uploaded file") }}</label>
+          <select id="wys-img-select">
+          {% for name, link in upload_img.items() %}
+            <option value="{{ link }}">{{ name }}</option>
+          {% end %}
+          </select>
+          <button class="am-btn am-btn-secondary" id="wys-img-select-insert">{{ _("insert") }}</button>
+        </div>
+        <!-- upload an image -->
+        <div class="am-form-group">
+          <label for="wys-img-upload">{{ _("Upload an image") }}</label>
+          <input type="file" class="am-form-field" id="wys-img-upload">
+          <div class="am-progress am-progress-striped nobottom">
+            <div class="am-progress-bar am-progress-bar-success" id="wys-img-upload-bar" style="width: 0%"></div>
+          </div>
+          <button class="am-btn am-btn-secondary"
+              id="wys-img-upload-insert"
+              data-am-loading="{spinner: 'gear', loadingText: '', resetText: '{{ _("insert") }}'}">
+            {{ _("insert") }}
+          </button>
+        </div>
+      {% end %}
+      <div id="wys-img-error-panel">
+      </div>
+      <div id="wys-img-preview">
+      </div>
+    </div>
+  </div>
+  <!-- insert image | end -->
+
+  <!-- upload a file -->
+
+  {% if upload_file is not None %}
+
+  <div class="am-dropdown" id="wys-file-dropdown" data-am-dropdown>
+    <button class="am-btn am-btn-primary am-dropdown-toggle" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
+
+    <div class="am-dropdown-content">
+
+      <div class="am-form-group">
+        <label for="wys-file-upload">{{ _("Upload a file") }}</label>
+        <input type="file" class="am-form-field" id="wys-file-upload">
+        <div class="am-progress am-progress-striped nobottom">
+          <div class="am-progress-bar am-progress-bar-success" id="wys-file-bar" style="width: 0%"></div>
+        </div>
+        <div id="wys-file-error-panel">
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="wys-file-select">{{ _("Select an uploaded file") }}</label>
+        <select id="wys-file-select">
+        {% for name, link in upload_file.items() %}
+          <option value="{{ link }}">{{ name }}</option>
+        {% end %}
+        </select>
+        <p class="am-form-field" id="wys-file-show">
+        {{ _('Select a file above to show the url') }}
+        </p>
+      </div>
+    </div>
+  </div>
+  {% end %}
+
+  <!-- upload a file | end -->
+</div>
+<div class='am-btn-group'>
+  <!-- <button class="am-btn am-btn-primary" data-role='h1' data-am-popover="{content: '{{ _('Heading Level 1') }}', trigger: 'hover focus'}"><i class="am-icon-header">1</i></button> -->
+  <button class="am-btn am-btn-primary" data-role='h2' data-am-popover="{content: '{{ _('Heading Level 2') }}', trigger: 'hover focus'}"><i class="am-icon-header">2</i></button>
+  <button class="am-btn am-btn-primary" data-role='h3' data-am-popover="{content: '{{ _('Heading Level 3') }}', trigger: 'hover focus'}"><i class="am-icon-header">3</i></button>
+  <button class="am-btn am-btn-primary" data-role='h4' data-am-popover="{content: '{{ _('Heading Level 4') }}', trigger: 'hover focus'}"><i class="am-icon-header">4</i></button>
+  <button class="am-btn am-btn-primary" data-role='h5' data-am-popover="{content: '{{ _('Heading Level 5') }}', trigger: 'hover focus'}"><i class="am-icon-header">5</i></button>
+  <button class="am-btn am-btn-primary" data-role='h6' data-am-popover="{content: '{{ _('Heading Level 6') }}', trigger: 'hover focus'}"><i class="am-icon-header">6</i></button>
+  <button class="am-btn am-btn-primary" data-role='p' data-am-popover="{content: '{{ _('Paragraph') }}', trigger: 'hover focus'}"><i class="am-icon-paragraph"></i></button>
+</div>
+<div class='am-btn-group'>
+  <button class="am-btn am-btn-primary" data-role='undo' data-am-popover="{content: '{{ _('Undo') }}', trigger: 'hover focus'}"><i class="am-icon-reply"></i></button>
+  <button class="am-btn am-btn-primary" data-role='redo' data-am-popover="{content: '{{ _('Redo') }}', trigger: 'hover focus'}"><i class="am-icon-share"></i></button>
+</div>

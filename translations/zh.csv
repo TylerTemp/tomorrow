@@ -107,7 +107,6 @@ Submit,提交
 Hide my email,隐藏我的邮箱
 Enter site name,输入站点名称
 Enter URL,输入网址
-By submitting you agree to publish this article under %s license,你的译文将基于%s协议发布
 
 Posted by %(name)s%(email)s at %(time)s, %(name)s%(email)s发表于%(time)s
 Unofficial Jolla Chinese Blog,非官方Jolla中文博客
@@ -219,7 +218,7 @@ User,用户
 
 Show email on dashboard,主页上显示邮箱
 Default Language,默认语言
-English,英语
+English,英文
 Chinese,中文
 Depending on the browser,浏览器语言决定
 Group,组
@@ -261,3 +260,17 @@ Config,设置
 Not support here,这里不支持此参数
 (Input Your command),输入参数
 Find a bug? {mark}Tell me here!{mark_end},发现了个BUG？{mark}告诉我拍死它！{mark_end}
+Oops... Nothing here.,这里什么都没有，施主还是请回吧。
+"Don't forget to announce a license at the end of your work. {mark}Creative Commons{mark_end} is strongly suggested.","别忘了在作品底部添加版权声明。强烈推荐使用{mark}CC协议{mark_end}。"
+
+Project,项目
+An easy & pythonic way to create your command-line interface,一个简洁易用而Pythonic的方式创建你的命令行交互接口
+An Android icon set in Sailfish OS style,Sailfish系统风格的安卓图标集，专为Jolla设计
+A Windows keyboard shortcut program,Windows下的快捷键程序
+Introduction,介绍
+Tag,标签
+Language,语言
+Load %s content,载入%s内容
+Edit,编辑
+Board,板块
+Test,测试

@@ -77,6 +77,18 @@
   </style>
   {% end %}
 
+  {% block bg %}
+  <style>
+    body {
+      background: #F7F5EC url("//{{ MAIN_HOST }}/static/img/bg.jpg") repeat scroll 0px 0px
+    }
+  </style>
+  {% end %}
+  <style>
+    .am-footer-default {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
   {% block neck %}{% end %}
 </head>
 <body>
@@ -106,6 +118,23 @@
           </li>
         </ul>
       </li>
+      <li class="am-dropdown" data-am-dropdown>
+        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+          {{ _('Project') }}<span class="am-icon-caret-down"></span>
+        </a>
+        <ul class="am-dropdown-content">
+          <!-- <li class="am-dropdown-header"></li> -->
+          <li>
+            <a class="am-monospace" href="http://docpie.comes.today">[docpie]</a>
+          </li>
+          <li>
+            <a class="am-monospace" href="https://github.com/TylerTemp/DroidSailizedIcon" target="_blank">DroidSailizedIcon</a>
+          </li>
+          <li>
+            <a class="am-monospace" href="https://github.com/TylerTemp/qstart" target="_blank">QStart</a>
+          </li>
+        </ul>
+      </li>
     </ul>
 
     <div class="am-topbar-left am-topbar-right am-topbar-btn">
@@ -130,13 +159,13 @@
             <a href="{{ user_link }}"><span class="am-icon-dashboard am-icon-fw"> {{ _('Dashboard') }}</span></a>
           </li>
           <li class="am-divider"></li>
-          <li>
+          <li class="{{ 'am-active' if nav_active == 'new_post' else '' }}">
             <a href="/edit/"><span class="am-icon-plus am-icon-fw"> {{ _('New Post') }}</span></a>
           </li>
           <li class="{{ 'am-active' if nav_active == 'jolla_task' else '' }}">
             <a href="/jolla/task/"><span class="iconfont icon-jolla"> {{ _('New Jolla Translation') }}</span></a>
           </li>
-          <li>
+          <li class="{{ 'am-active' if nav_active == 'jolla_tr' else '' }}">
             <a href="/jolla/translate/"><span class="am-icon-language am-icon-fw"> {{ _('Translate a Jolla Post') }}</span></a>
           </li>
           <li class="am-divider"></li>
@@ -175,20 +204,19 @@
   </div>
 
   <div class="am-footer-miscs">
-    {% if locale.code.startswith('zh') %}
     <p>
+    {% if locale.code.startswith('zh') %}
       <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> 七牛</a> &amp;
       <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
       强力驱动
-    </p>
     {% else %}
-    <p>Powered by
+    Powered by
       <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> QiNiu</a> &amp;
       <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
-    </p>
     {% end %}
     <span class="am-footer-divider">|</span>
-    <p><a href="https://github.com/TylerTemp/tomorrow" target="_blank">Fork me on <span class="am-icon-github am-text-warning"> GitHub</span></a></p>
+    <a href="https://github.com/TylerTemp/tomorrow" target="_blank"><span class="am-icon-github am-text-warning"> {{ _('Source Code') }}</span></a>
+    </p>
   </div>
 </footer>
 {% end %}
@@ -246,7 +274,7 @@
       return ;
 
     if (refresh_now)
-      location.reload();
+      window.location.href = location.pathname;
   });
 </script>
 {% end %}

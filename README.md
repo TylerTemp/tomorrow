@@ -69,6 +69,8 @@ use `python main.py --help` for more detail
 * `lib/tracemore.py` from [*Python Cockbook*](http://www.amazon.com/Python-Cookbook-Third-David-Beazley/dp/1449340377/ref=sr_1_1?ie=UTF8&qid=1430528366&sr=8-1&keywords=python+cookbook)
 * `lib/bashlog.py` from `tornado.logging`
 * `static/js/html2md.js` from [github: neocotic/html.md](https://github.com/neocotic/html.md)
+* [github: showdown](https://github.com/showdownjs/showdown) -  A Javascript
+  lib that can convert markdown (html allowed) to html
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
 * `lib/tool/filelock.py` is edited from source [github: dmfrey/ FileLock](https://github.com/dmfrey/FileLock)
 

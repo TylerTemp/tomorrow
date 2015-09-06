@@ -64,7 +64,9 @@ var I18N = {
     "sort priority should be empty or number only": "排序优先级只能为数字或为空",
     "Change saved. Refresh to see the result": "修改已保存。刷新查看结果",
     "Exit full screen": "退出全屏",
-    "Enter full screen": "进入全屏"
+    "Enter full screen": "进入全屏",
+    "Same": "一致",
+    "Taken":"已占用"
   }
 };
 
@@ -192,8 +194,9 @@ var MASK_EMAIL_EMPTY = 8;
 var MASK_EMAIL_EXISTS = 128;
 var MASK_EMAIL_FORMAT_WRONG = 16;
 var MASK_USER_FORMAT_WRONG = 4;
-var MAST_SEND_EMAIL_FAILED = 256;
+var MASK_SEND_EMAIL_FAILED = 256;
 var PWD_MIN_LENGTH = 8;
+var MASK_PWD_WRONG = 512;
 
 // for upload files
 var MASK_NO_PERMISSION = 1;

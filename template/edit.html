@@ -1,30 +1,176 @@
 {% extends "base.html" %}
-{% block title %}{{ _("Edit") }}{% end %}
+{% block title %}{{ _('Edit') if title else _('New Post') }}{% end %}
 
 {% block neck %}
+<link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
+<link rel="stylesheet" href="/static/css/editor.css">
 <style>
-#mdEditor,
 #preview {
-  height: 400px;
+  min-height: 300px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+#mdEditor {
+  margin: 0px;
+}
+
+::-webkit-input-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+}
+:-moz-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+}
+::-moz-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+}
+:-ms-input-placeholder {
+    font-family: FontAwesome, "iconfont", sans-serif;
+}
+
+i.am-icon-checked,
+i.am-icon-unchecked {
+  padding: 8px 0px 0px 0px;
 }
 </style>
-<link rel="stylesheet" href="/static/css/editor.css">
 {% end %}
 
 {% block body %}
 
-<div class="am-margin-left">
-{% module MdEditor(switch=False, upload_img=None, upload_file=None, content='', area=False) %}
-</div>
-<div class="am-g">
-	<div class="am-u-sm-12 am-u-md-6">
-		<textarea class="am-form-field am-margin-horizontal" id="mdEditor" tabindex="0" placeholder="&#xe603; {{ _('MarkDown Syntax Supported') }}"></textarea>
-	</div>
-  <div class="am-u-sm-12 am-u-md-6">
-    <div id="preview" class="am-form-field am-scrollable-vertical">
+<form class="am-form am-form-horizontal" method="post" action="{{ request.uri }}">
+  <fieldset>
+    <legend>{{ _('Edit') if title else _('New Post') }}</legend>
+
+    {% raw xsrf_form_html() %}
+
+    <!-- title -->
+    <div class="am-form-group">
+      <label for="title" class="am-u-sm-2 am-form-label">{{ _('Title') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="title" name="title" value="{{ title }}" placeholder="&#xf1dc;*" required="required">
+      </div>
     </div>
-	</div>
-</div>
+
+    <!-- board -->
+    <div class="am-form-group">
+      <label for="board" class="am-u-sm-2 am-form-label">{{ _('Board') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="board" name="board" value="{{ board }}" placeholder="&#xf01c;*" required="required">
+      </div>
+    </div>
+
+    <!-- url slug -->
+    <div class="am-form-group">
+      <label for="slug" class="am-u-sm-2 am-form-label">{{ _("SLUG") }}:</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="slug" name="slug" value="{{ slug }}" placeholder="&#xf0c1;*" required="required"/>
+      </div>
+      <div class="am-u-sm-1" style="padding:0px 15px 0px 0px">
+        <button class="am-btn am-btn-block" id="slug-test"><span class="am-icon-question"> {{ _('Test') }}</span></button>
+      </div>
+    </div>
+
+    <!-- tag -->
+    <div class="am-form-group">
+      <label for="tag" class="am-u-sm-2 am-form-label">{{ _('Tag') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="tag" name="tag" value="{{ ','.join(tag) }}" placeholder="&#xf02c;">
+      </div>
+    </div>
+
+    <!-- language -->
+    <div class="am-form-group">
+      <label for="tag" class="am-u-sm-2 am-form-label">{{ _('Language') }}:</label>
+      <div class="am-u-sm-10">
+        <label class="am-radio-inline">
+          <input type="radio" name="lang" value="zh" data-am-ucheck {{ 'checked' if lang != 'en' else '' }}>
+          {{ _('Chinese') }}
+        </label>
+        <label class="am-radio-inline">
+          <input type="radio" name="lang" value="en" data-am-ucheck {{ 'checked' if lang == 'en' else '' }}>
+          {{ _('English') }}
+        </label>
+        <sub>| <a href="./?source={{ 'zh' if lang == 'en' else 'en' }}">{{ _('Load %s content') % _('Chinese' if lang == 'en' else 'English') }}</a></sub>
+      </div>
+    </div>
+
+    <!-- article top image -->
+    <div class="am-form-group">
+      <label for="headimg" class="am-u-sm-2 am-form-label">{{ _("Heading Image") }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="headimg" name="headimg" value="{{ headimg or '' }}" placeholder="&#xf03e; (&#xe600;*)" />
+      </div>
+    </div>
+
+    <!-- cover image -->
+    <div class="am-form-group">
+      <label for="cover" class="am-u-sm-2 am-form-label">{{ _("Cover Image") }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="cover" name="cover" value="{{ cover or '' }}" placeholder="&#xf214;" />
+      </div>
+    </div>
+
+    <!-- description -->
+    <div class="am-form-group">
+      <label for="description" class="am-u-sm-2 am-form-label">{{ _("Introduction") }}:</label>
+      <div class="am-u-sm-10">
+        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe603;)" />
+          {{ description or '' }}
+        </textarea>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="am-g">
+      <div class="am-btn-toolbar am-u-sm-12" id="mdEditorToolbar">
+        {% module MdBar(upload_img=imgs, upload_file=files) %}
+        <div class="am-btn-group">
+          <!-- local preview -->
+          <button type="button" class="am-btn am-btn-primary am-radius" id='hide-preview' data-am-button data-am-popover="{content: '{{ _('Hide Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye-slash" data-am-button></span></button>
+          <button type="button" class="am-btn am-btn-primary am-radius" id='local-preview' data-am-popover="{content: '{{ _('Local Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
+          <!-- config -->
+          <div class="am-dropdown am-dropdown-down" data-am-dropdown>
+            <button type="button" class="am-btn am-btn-primary am-radius am-dropdown-toggle" data-am-popover="{content: '{{ _('Config Preview') }}', trigger: 'hover focus'}"><span class="am-icon-sliders"></span></button>
+            <div class="am-dropdown-content">
+              {{ _("Auto local preview interval:") }}
+              <br />
+              <input type="number" min="0" step="1" id="seconds" placeholder="&#xf05e;"/>
+            </div>
+          </div>
+          <!-- online preview -->
+          <button type="button"
+                  class="am-btn am-btn-warning am-radius"
+                  id='online-preview'
+                  data-am-popover="{content: '{{ _('Online Preview') }}', trigger: 'hover focus'}">
+            <span class="am-icon-eye"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit/Local Preview -->
+    <div class="am-g">
+      <div class="am-u-sm-12 am-u-md-6">
+        <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe603; {{ _('MarkDown Syntax Supported') }}" required="required">{{ content if content else '' }}</textarea>
+      </div>
+      <div class="am-u-sm-12 am-u-md-6">
+        <div class="am-scrollable-vertical" id="preview" style="border: 1px dashed"  data-lock="true">
+          {% raw md2html(content) if content else '' %}
+        </div>
+      </div>
+    </div>
+
+    <div class="am-form-group">
+      <div class="am-cf am-u-sm-12 am-padding-vertical">
+        <button class="am-btn am-btn-primary am-fr"
+                type="submit"
+                data-am-loading="{spinner: 'crosshairs', loadingText: ''}">
+          <span class="am-icon-arrow-up"> {{ _('Submit') }}</span>
+        </button>
+      </div>
+    </div>
+
+  </fieldset>
+</form>
 
 {% end %}
 {% block butt %}
@@ -34,7 +180,8 @@
   var FILEUPLOADURL = "{{ file_upload_url }}";
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
-<script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script>
+<script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
+<script src="/static/js/amazeui.tagsinput.min.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/edit.js"></script>
 

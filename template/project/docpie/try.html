@@ -225,7 +225,7 @@
         return;
       console.log('change lang from ' + locale + ' to ' + lang);
       change_lang(lang);
-      location.reload();
+      window.location.href = location.pathname;
     });
 
     $('form').submit(function(evt)

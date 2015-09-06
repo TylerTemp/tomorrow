@@ -1,7 +1,12 @@
 import tornado.web
+import tornado.escape
 import logging
 import json
 import time
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 try:
     from urllib.parse import quote
 except ImportError:
@@ -14,6 +19,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.db import Article
 from lib.config import Config
+from lib.tool.md import md2html
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.home')
@@ -56,8 +62,13 @@ class HomeHandler(BaseHandler):
                 cover = (transinfo.get('cover', None) or
                          transinfo.get('headimg', None))
             result['cover'] = cover
-            result['description'] = (each.get('description', None) or
-                                     each['content'][:self.CHARS] + '...')
+            des = each.get('description', None)
+            if des is None:
+                des = tornado.escape.xhtml_escape(
+                    each['content'][:self.CHARS]) + '...'
+            else:
+                des = md2html(des)
+            result['description'] = des
             result['author_name'] = each['author']
             result['author_link'] = '/hi/%s/' % quote(each['author'])
             result['post_time_attr'], result['post_time'] = \
@@ -65,8 +76,15 @@ class HomeHandler(BaseHandler):
             quoted = quote(each['url'])
             if each['board'] == 'jolla':
                 link = '//%s/%s/' % (self.JOLLA, quoted)
+                if 'transinfo' in each:
+                    tag = ['jolla', 'tr']
+                else:
+                    tag = each['tag']
+                    tag[:0] = ['jolla', 'original']
             else:
-                link = '/post/%s/' % quoted
+                link = '/blog/%s/' % quoted
+                tag = each['tag']
+            result['tag'] = self.render_tags(tag)
             result['link'] = link
             yield result
             # yield each
@@ -76,3 +94,20 @@ class HomeHandler(BaseHandler):
         attr = time.strftime('%Y-%m-%dT%H:%M:%S', t)
         display_time = time.strftime('%Y-%m-%d', t)
         return (attr, display_time)
+
+    def render_tags(self, tags):
+        for num, (tag1, tag2) in enumerate(zip_longest(tags[::2], tags[1::2])):
+            if num > 3:
+                yield '...'
+                return
+            first = ('<span class="am-badge am-badge-success am-radius">'
+                     '%s'
+                     '</span>') % tag1
+            yield first
+            if tag2 is None:
+                second = ''
+            else:
+                second = ('<span class="am-badge am-badge-primary am-radius">'
+                          '%s'
+                          '</span>') % tag2
+            yield second

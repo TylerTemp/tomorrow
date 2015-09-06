@@ -112,7 +112,7 @@ $(document).ready(function(evt)
     );
   }
 
-  $('#preview_btn').click(function(evt)
+  $('[data-role="preview"]').click(function(evt)
   {
     console.log('preview_btn clicked');
     var content = (_editor_status == 'md')? mdEditor.val(): wysiwygEditor.html();
@@ -164,7 +164,7 @@ $(document).ready(function(evt)
     if (_editor_status == 'wysiwyg')
     {
       console.log("from wys");
-      var content = wysiwygEditor.getHtml();
+      var content = wysiwygEditor.html();
       var format = 'html';
     }
     else

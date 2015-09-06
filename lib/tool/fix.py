@@ -14,5 +14,5 @@ coll = Article._article
 
 for each in coll.find({}):
     coll.update_one(each, {'$set': {
-                                     'tag': ['tr']
+                                     'tag': []
     }})
