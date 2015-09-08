@@ -491,8 +491,6 @@
     return editor;
   };
   $.fn.markdownEditor.defaults = {
-    toHtml: function(text){return markdown.toHTML(text);},
-    toMarkdown: function(text){return md(text);},
     insertImageUrlInput: $("#md-img-url"),
     insertImageUrlInsert: $("#md-img-url-insert"),
     insertImageUrlPreview: $("#md-img-url-preview"),

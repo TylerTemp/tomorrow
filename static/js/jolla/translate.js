@@ -1,21 +1,23 @@
 $(document).ready(function(evt)
 {
-  var toMarkdown = function(text){return md(text);}
-  var toHtml = function(text){return markdown.toHTML(text);};
+  var converter = new showdown.Converter();
+  var toMarkdown = md;
+  var toHtml = converter.makeHtml;
   var wysiwygEditor = $("#wysiwygEditor").wysiwygEditor({
-    'fromMarkdown': false,
-    'toHtml': toHtml,
-    'toMarkdown': toMarkdown,
-    'uploadImageUrl': IMGUPLOADURL,
-    'uploadFileUrl': FILEUPLOADURL,
-    'sizeLimit': SIZELIMIT,
-    'imageTypes': IMG_ALLOW
+    toHtml: toHtml,
+    toMarkdown: toMarkdown,
+    uploadImageUrl: IMGUPLOADURL,
+    uploadFileUrl: FILEUPLOADURL,
+    sizeLimit: SIZELIMIT,
+    imageTypes: IMG_ALLOW
   });
   var mdEditor = $("#mdEditor").markdownEditor({
-    'uploadImageUrl': IMGUPLOADURL,
-    'uploadFileUrl': FILEUPLOADURL,
-    'sizeLimit': SIZELIMIT,
-    'imageTypes': IMG_ALLOW
+    toHtml: toHtml,
+    toMarkdown: toMarkdown,
+    uploadImageUrl: IMGUPLOADURL,
+    uploadFileUrl: FILEUPLOADURL,
+    sizeLimit: SIZELIMIT,
+    imageTypes: IMG_ALLOW
   });
 
   $("#article-switch").click(function(evt)
@@ -85,18 +87,6 @@ $(document).ready(function(evt)
     $("#right").show(400);
   });
 
-  var del_share = function(evt)
-  {
-    evt.preventDefault();
-    var container = $(this).parent().parent();
-    container.hide(400, function()
-    {
-      container.remove();
-    });
-  }
-
-  $(".delete-share").click(del_share);
-
   $('[data-role="preview"]').click(function(evt)
   {
     console.log('preview_btn clicked');
@@ -130,26 +120,6 @@ $(document).ready(function(evt)
     });
   });
 
-  $("#add-share").click(function(evt)
-  {
-    $(
-      '<div class="am-g">' +
-        '<div class="am-u-sm-4">' +
-          '<input class="am-form-field" placeholder="' +  _('Enter site name') + '">' +
-        '</div>' +
-        '<div class="am-u-sm-7">' +
-          '<input class="am-form-field" placeholder="' + _('Enter URL') + '">' +
-        '</div>' +
-        '<div class="am-u-sm-1">' +
-          '<button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>' +
-        '</div>' +
-      '</div>'
-    )
-    .appendTo("#share-area")
-    .find('button')
-    .click(del_share);
-  });
-
   var error_panel = $("#submit-error-panel");
   $("#submit").click(function(evt)
   {
@@ -170,29 +140,6 @@ $(document).ready(function(evt)
     if (!content)
       errors.push(_("Content should not be empty"));
 
-    var share_obj = {};
-    $("#share-area").children().each(function(idx, ele)
-    {
-      var inputs = $(ele).find('input');
-      var name = inputs.eq(0).val();
-      var url = inputs.eq(1).val();
-      if ((name && (!url)) || (((!name) && url)))
-      {
-        errors.push(_("Miss {0} in  sharing information, line {1}").format(
-          _(name? "URL": "Site Name"),
-          idx + 1
-        ));
-        return false;
-      }
-      else if ((!name) && (!url))
-        ;
-      else
-      {
-        console.log('name: {0}, url: {1}'.format(name, url));
-        share_obj[url] = name;    // a little trick: encode/decode
-      }
-    });
-
     if (errors.length != 0)
       return error_panel.html(
         '<div class="am-alert am-alert-danger" data-am-alert>' +
@@ -203,6 +150,7 @@ $(document).ready(function(evt)
 
     var show_email = !$("#hide-email").prop("checked");
 
+    btn.button("loading");
     $.ajax(
       settings =
       {
@@ -212,13 +160,12 @@ $(document).ready(function(evt)
           'content': content,
           'format': _editor_status,
           'show_email': show_email,
-          'share': share_obj
+          'description': $('#description').val()
         },
         'type': 'post',
         'beforeSend': function(jqXHR, settings)
         {
           jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-          btn.button("loading");
         }
       }
     ).done(function(data, textStatus, jqXHR)

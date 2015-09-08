@@ -68,7 +68,7 @@
       {% if article['cover'] %}
       <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
         <div class="am-u-sm-4 am-list-thumb">
-          <a href="./{{ article['url'] }}" rel="nofollow">
+          <a href="./{{ article['slug'] }}" rel="nofollow">
             <img src="{{ article['cover'] }}" alt="{{ article['title'] }}" />
           </a>
         </div>
@@ -77,7 +77,7 @@
             {% if article['trusted_translation'] %}
               [<a href="/jolla/blog/{{ article['trusted_translation'] }}">{{ _("Finished") }}</a>]
             {% end %}
-            <a href="./{{ article['url'] }}" rel="nofollow">{{ article['title'] }}</a>
+            <a href="./{{ article['slug'] }}" rel="nofollow">{{ article['title'] }}</a>
           </h3>
           <div class="am-list-item-text">{{ article['preview'] }}</div>
         </div>
@@ -86,7 +86,7 @@
       <li class="am-g am-list-item-desced">
         <div class=" am-list-main">
           <h3 class="am-list-item-hd">
-            <a href="./{{ article['url'] }}">{{ article['title'] }}</a>
+            <a href="./{{ article['slug'] }}">{{ article['title'] }}</a>
           </h3>
           <div class="am-list-item-text">{{ article['preview'] }}</div>
         </div>

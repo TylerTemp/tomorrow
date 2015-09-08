@@ -282,43 +282,45 @@ class Message(object):
             return 'Message()'
         return 'Message(%s)' % self._id
 
+
 class Jolla(object):
     _jolla = db.jolla
 
     # link: source url (Unique)
     # title: source title
-    # url: title.replace(' ', '-')(Unique)
+    # slug: title.replace(' ', '-')(Unique)
     # author: source author
     # content: source content in markdown format
     # headimg
-    # trusted_translation: url
+    # trusted_translation: slug
 
-    def __init__(self, url=None):
-        if url is None:
+    def __init__(self, slug=None):
+        if slug is None:
             self.jolla_info = None
         else:
-            self.jolla_info = self.find_url(url)
+            self.jolla_info = self.find_slug(slug)
 
-    def add(self, link, title, author, content, url=None, headimg=None,
-            cover=None, trusted_translation=None, index=0):
-        if url is None:
-            url = self.mkurl(link, author)
+    def add(self, link, title, author, content, slug=None, headimg=None,
+            cover=None, trusted_translation=None, index=0, tag=[]):
+        if slug is None:
+            slug = self.mkslug(link, author)
 
         info = {
             'link': link,
             'title': title,
             'author': author,
             'content': content,
-            'url': url,
+            'slug': slug,
             'headimg': headimg,
             'cover': cover,
             'createtime': time.time(),
             'edittime': time.time(),
             'trusted_translation': trusted_translation,
-            'index': index
+            'index': index,
+            'tag': tag
         }
 
-        self.jolla_info = info
+        self.jolla_info.update(info)
         return self.jolla_info
 
     def save(self, t=None):
@@ -351,7 +353,7 @@ class Jolla(object):
     def new(self):
         return self.jolla_info is None
 
-    def mkurl(self, link, author):
+    def mkslug(self, link, author):
         splited = link.split('/')
         last = False
         while splited:
@@ -359,24 +361,26 @@ class Jolla(object):
             if last:
                 break
         else:
-            raise ValueError("Can't make url for %s", link)
-        url = last.replace(' ', '-')
-        if self.find_url(url) is None:
-            logger.debug('url as %s', url)
-            return url
-        url = '%s-by-%s' % (url, author.replace(' ', '-'))
-        if self.find_url(url) is None:
-            logger.debug('url as %s', url)
-            return url
+            raise ValueError("Can't make slug for %s", link)
+        if last.endswith('.html'):
+            last = last[:-5]
+        slug = last.replace(' ', '-')
+        if self.find_slug(slug) is None:
+            logger.debug('slug as %s', slug)
+            return slug
+        slug = '%s-by-%s' % (slug, author.replace(' ', '-'))
+        if self.find_slug(slug) is None:
+            logger.debug('slug as %s', slug)
+            return slug
 
         idx = 0
         while True:
             idx += 1
-            theurl = '%s-%s' % (url, idx)
-            logger.debug('searching %s', theurl)
-            if self.find_url(theurl) is None:
-                logger.debug('url as %s', theurl)
-                return theurl
+            theslug = '%s-%s' % (slug, idx)
+            logger.debug('searching %s', theslug)
+            if self.find_slug(theslug) is None:
+                logger.debug('slug as %s', theslug)
+                return theslug
 
     @classmethod
     def all(cls):
@@ -386,8 +390,8 @@ class Jolla(object):
             ))
 
     @classmethod
-    def find_url(cls, url):
-        return cls._jolla.find_one({'url': url})
+    def find_slug(cls, slug):
+        return cls._jolla.find_one({'slug': slug})
 
     @classmethod
     def find_link(cls, link):
@@ -407,17 +411,15 @@ class Article(object):
     TRUSTED = 1
     REJECT = 2
     # title
-    # url: title.replace(" ", "-")(Unique)
+    # slug: title.replace(" ", "-")(Unique)
     # board
     # content
     # license(int)
     # author
     # email
     # show_email: True/False
-    # transref: Jolla translation only
-    # transref: same as Jolla.url
     # transinfo: Jolla translation only
-    # transinfo = {link: , author: , url: , title: ,
+    # transinfo = {link: , author: , slug: , title: ,
     #              headimg:, status:, share:, cover: };
     # same as Jolla.
     # status: AWAIT/TRUSTED/REJECT
@@ -426,73 +428,77 @@ class Article(object):
     # if url exists, then add "-by-"+username
     # if still exists, then add "-1", "-2", etc.
 
-    def __init__(self, url=None):
-        if url is None:
+    def __init__(self, slug=None):
+        if slug is None:
             self.article_info = {}
         else:
-            self.article_info = self.find_url(url) or {'url': url}
+            self.article_info = self.find_slug(slug) or {'slug': slug}
 
-    def add(self, board, title, content, author, email, url=None,
-            show_email=True, license=CC_LICENSE, transinfo=None, index=0,
+    def add(self, board, author, email, zh=None, en=None, slug=None,
+            show_email=True, transinfo=None, index=0,
             tag=[], headimg=None, cover=None, description=None):
 
-        if url is None:
+        if slug is None:
             if transinfo is not None:
-                url = self.mkurl(transinfo['title'], author)
-            elif 'url' in self.article_info:
-                url = self.article_info['url']
+                slug = self.mkslug(transinfo['title'], author)
+            elif 'slug' in self.article_info:
+                slug = self.article_info['slug']
             else:
-                url = self.mkurl(title, author)
+                slug = self.mkslug(title, author)
+
+        assert zh or en
 
         info = {
             'board': board,
             'tag': tag,
-            'title': title,
-            'url': url,
-            'content': content,
+            'slug': slug,
             'author': author,
             'email': email,
             'show_email': show_email,
-            'license': license,
             'createtime': time.time(),
             'edittime': time.time(),
             'index': index,
             'headimg': headimg,
             'cover': cover,
-            'description': None,
         }
+
+        if zh:
+            info['zh'] = zh
+        if en:
+            info['en'] = en
 
         if transinfo is not None:
             info['transinfo'] = transinfo
-            info['transref'] = transinfo['url']
 
-        self.article_info = info
-        logger.info("New article %s", title)
+        self.article_info.update(info)
         return self.article_info
 
     @classmethod
-    def find_url(cls, url):
-        return cls._article.find_one({'url': url})
+    def find_slug(cls, slug):
+        return cls._article.find_one({'slug': slug})
 
     @classmethod
-    def find_ref(cls, ref):
-        return cls._article.find({'transref': ref})
+    def find_ref(cls, slug):
+        return cls._article.find({'transinfo.slug': slug})
 
     @classmethod
-    def find_ref_number(cls, ref):
-        return cls._article.find({'transref': ref}).count()
+    def find_ref_number(cls, slug):
+        return cls._article.find({'transinfo.slug': slug}).count()
 
     @classmethod
-    def find_ref_of_user(cls, refurl, user):
-        return cls._article.find_one({'transref': refurl, 'author': user})
+    def find_ref_of_user(cls, refslug, user):
+        return cls._article.find_one(
+            {'transinfo.slug': refslug, 'author': user})
 
     @classmethod
-    def find_ref_of_email(cls, refurl, email):
-        return cls._article.find_one({'transref': refurl, 'email': email})
+    def find_ref_of_email(cls, refslug, email):
+        return cls._article.find_one(
+            {'transinfo.slug': refslug, 'email': email})
 
     @classmethod
-    def find_trans_url_translator(cls, url, author):
-        return cls._article.find_one({'transref': url, 'author': author})
+    def find_trans_slug_translator(cls, slug, author):
+        return cls._article.find_one(
+            {'transinfo.slug': slug, 'author': author})
 
     @classmethod
     def find_by(cls, author):
@@ -524,20 +530,20 @@ class Article(object):
         return '_id' not in self.article_info
 
     @classmethod
-    def mkurl(cls, title, author):
-        url = title.replace(' ', '-')
-        if cls.find_url(url) is None:
-            return url
-        url = '%s-by-%s' % (url, author.replace(' ', '-'))
-        if cls.find_url(url) is None:
-            return url
+    def mkslug(cls, title, author):
+        slug = title.replace(' ', '-')
+        if cls.find_slug(slug) is None:
+            return slug
+        slug = '%s-by-%s' % (slug, author.replace(' ', '-'))
+        if cls.find_slug(slug) is None:
+            return slug
 
         idx = 0
         while True:
             idx += 1
-            theurl = '%s-%s' % (url, idx)
-            if cls.find_url(theurl) is None:
-                return theurl
+            theslug = '%s-%s' % (slug, idx)
+            if cls.find_slug(theslug) is None:
+                return theslug
 
     @classmethod
     def find_jollas(cls):
@@ -547,10 +553,13 @@ class Article(object):
             ))
 
     @classmethod
-    def find_trusted_jollas(cls, skip=0, limit=None):
-        result = cls._article.find(
-            {'board': 'jolla', 'transinfo.status': cls.TRUSTED}
-        ).sort(
+    def display_jolla(cls, skip=0, limit=None):
+        result = cls._article.find({
+            '$or': [
+                {'board': 'jolla', 'transinfo': {'$exists': False}},
+                {'board': 'jolla', 'transinfo.status': cls.TRUSTED},
+            ]
+        }).sort(
             (('index', pymongo.ASCENDING),
              ('createtime', pymongo.DESCENDING)
             )
@@ -653,12 +662,6 @@ class JollaAuthor(object):
     def remove(self):
         assert not self.new
         self._jolla_author.delete_one(self._info)
-
-    def __str__(self):
-        return ('JollaAuthor(name: %s, photo: %s, '
-                'description: %.10r..., translation: %.10r)') % (
-                    self.name, self.photo, self.description, self.translation)
-
 
 class Email(object):
     _email = db.email

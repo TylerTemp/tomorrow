@@ -1,22 +1,26 @@
 $(document).ready(function(evt)
 {
-  var toMarkdown = function(text){return md(text);}
-  var toHtml = function(text){return markdown.toHTML(text);};
+  var converter = new showdown.Converter();
+  var toMarkdown = md;
+  var toHtml = converter.makeHtml;
   var wysiwygEditor = $("#wysiwygEditor").wysiwygEditor({
-    'fromMarkdown': false,
-    'toHtml': toHtml,
-    'toMarkdown': toMarkdown,
-    'uploadImageUrl': IMGUPLOADURL,
-    'uploadFileUrl': FILEUPLOADURL,
-    'sizeLimit': SIZELIMIT,
-    'imageTypes': IMG_ALLOW
+    toHtml: toHtml,
+    toMarkdown: toMarkdown,
+    uploadImageUrl: IMGUPLOADURL,
+    uploadFileUrl: FILEUPLOADURL,
+    sizeLimit: SIZELIMIT,
+    imageTypes: IMG_ALLOW
   });
   var mdEditor = $("#mdEditor").markdownEditor({
-    'uploadImageUrl': IMGUPLOADURL,
-    'uploadFileUrl': FILEUPLOADURL,
-    'sizeLimit': SIZELIMIT,
-    'imageTypes': IMG_ALLOW
+    toHtml: toHtml,
+    toMarkdown: toMarkdown,
+    uploadImageUrl: IMGUPLOADURL,
+    uploadFileUrl: FILEUPLOADURL,
+    sizeLimit: SIZELIMIT,
+    imageTypes: IMG_ALLOW
   });
+
+  $('#tag').tagsinput();
 
   $("#switch-to-md").click(function(evt)
   {
@@ -176,7 +180,6 @@ $(document).ready(function(evt)
     if (!content)
       errors.push(_("Content should not be empty"));
 
-
     if (errors.length != 0)
       return submiterror(_("Oops: ") + errors.join("; "));
 
@@ -191,7 +194,9 @@ $(document).ready(function(evt)
           'content': content,
           'format': format,
           'headimg': $("#headimg").val(),
-          'cover': $('#cover').val()
+          'cover': $('#cover').val(),
+          'slug': $('#slug').val(),
+          'tag': $('#tag').val()
         },
       'type': 'post',
       'beforeSend': function(jqXHR, settings){

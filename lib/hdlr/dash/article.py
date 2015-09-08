@@ -16,17 +16,17 @@ import sys
 import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
-from lib.db import Article
-from lib.db import Jolla
+from lib.db import Article, Jolla
 from lib.tool.minsix import py3
-from lib.hdlr.dash.base import ItsMyself
-from lib.hdlr.dash.base import BaseHandler
+from lib.hdlr.dash.base import BaseHandler, ItsMyself
+from lib.config import Config
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.dash.secure')
 
 
 class ArticleHandler(BaseHandler):
+    JOLLA_HOST = Config().jolla_host
 
     @tornado.web.authenticated
     @ItsMyself('article/')
@@ -36,8 +36,6 @@ class ArticleHandler(BaseHandler):
 
         return self.render(
             'dash/article.html',
-            cc_license=Article.CC_LICENSE,
-            pub_license=Article.PUB_LICENSE,
             articles=self.get_articles(self.current_user['user']),
             act=('article', )
         )
@@ -54,20 +52,30 @@ class ArticleHandler(BaseHandler):
 
     def get_articles(self, user):
         for each in Article.find_by(user):
+            if 'zh' in each and 'en' in each:
+                if self.locale.code[:2] != 'zh':
+                    meta = each.pop('en')
+                else:
+                    meta = each.pop('zh')
+            else:
+                meta = each.pop('zh', None) or each.pop('en')
+
             each['id'] = str(each.pop('_id'))
             each['edit_time'] = self.format_time(each.pop('edittime'))
             each['create_time'] = self.format_time(each.pop('createtime'))
             if each['board'] == 'jolla':
-                each['url'] = '/jolla/blog/%s/' % each['url']
+                each['url'] = '//%s/%s/' % (self.JOLLA_HOST, each['slug'])
+            else:
+                each['url'] = '/blog/%s/' % each['slug']
+
             if 'transinfo' in each:
                 each['edit'] = \
-                    '/jolla/translate/%s/' % each['transinfo']['url']
-                each['share'] = each['transinfo']['share']
+                    '/jolla/translate/%s/' % each['transinfo']['slug']
                 each['source_title'] = each['transinfo']['title']
                 each['source_url'] = each['transinfo']['link']
             else:
-                each['edit'] = each['share'] = each['source_title'] \
-                    = each['source_url'] = None
+                each['edit'] = '/edit/%s/' % each['slug']
+            each.update(meta)
             yield each
 
     def format_time(self, t):
@@ -81,7 +89,6 @@ class ArticleHandler(BaseHandler):
         title = self.get_argument('title')
         # jQuery will send 'true'/'false', and tornado will not deal this
         show_email = (self.get_argument('show_email').lower() != 'false')
-        share = self.get_share_argument()
 
         logger.info('update id(%s): title: %s; show_email: %s; share: %s',
                     id_obj, title, show_email, share)
@@ -93,30 +100,11 @@ class ArticleHandler(BaseHandler):
                 {
                     'title': title,
                     'show_email': show_email,
-                    'transinfo.share': share,
                 }
             }
         )
 
         return self.write(json.dumps({'error': 0}))
-
-    re_share = re.compile(r'^share\[(?P<key>.*?)\]$')
-    def get_share_argument(self):
-        result = []
-        re_share = self.re_share
-        logger.debug(self.request.arguments)
-        for k, v in self.request.arguments.items():
-            logger.debug('k: %r; v: %r', k, v)
-            match = re_share.match(k)
-            if match is not None:
-                k = match.groupdict()['key']
-                if isinstance(v, (list, tuple)):
-                    v = v[0]
-                if py3:
-                    v = v.decode('utf-8')
-                # result[v] = match.groupdict()['key']
-                result.append({'name': v, 'url': k})
-        return result
 
     def delete_article(self):
         coll = Article.get_collect()

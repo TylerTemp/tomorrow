@@ -6,10 +6,12 @@ try:
     from urllib.parse import quote
     from urllib.parse import unquote
     from urllib.parse import urljoin
+    from urllib.parse import urlsplit
 except ImportError:
     from urlparse import quote
     from urlparse import unquote
     from urlparse import urljoin
+    from urlparse import urlsplit
 
 import sys
 import os
@@ -31,7 +33,7 @@ logger = logging.getLogger('tomorrow.jolla.task')
 class TaskHandler(BaseHandler):
 
     @EnsureUser(level=User.admin, active=True)
-    def get(self, url=None):
+    def get(self, urlslug=None):
         self.xsrf_token
         user_info = self.get_current_user()
         username = user_info['user']
@@ -40,8 +42,11 @@ class TaskHandler(BaseHandler):
         imgs, files = self.get_imgs_and_files(
             username, usertype)
 
-        if url is not None:
-            article = Jolla.find_url(unquote(url))
+        if urlslug is not None:
+            article = Jolla.find_slug(unquote(urlslug))
+            if article is None:
+                raise tornado.web.HTTPError(
+                    404, "article %s not found" % urlslug)
         else:
             article = None
 
@@ -53,10 +58,14 @@ class TaskHandler(BaseHandler):
             headimg = article['headimg']
             link = article['link']
             cover = article.get('cover', '')
-            slug = article['url'] or ''
+            slug = article['slug'] or ''
+            tag = article['tag']
             # description = article.get('description', '')
+        elif urlslug is not None:
+            raise tornado.web.HTTPError(404, "task %s not found" % urlslug)
         else:
             title = author = md = html = headimg = link = cover = slug = ''
+            tag = []
             # description = slug = ''
 
         use_md = self.get_argument('md', False)
@@ -76,7 +85,8 @@ class TaskHandler(BaseHandler):
             # description=description,
             content=content,
             link=link,
-            slug=url,
+            slug=slug,
+            tag=tag,
 
             img_upload_url='/am/%s/img/' % quote(username),
             file_upload_url='/am/%s/file/' % quote(username),
@@ -87,7 +97,7 @@ class TaskHandler(BaseHandler):
         )
 
     @EnsureUser(level=User.admin, active=True)
-    def post(self, url=None):
+    def post(self, urlslug=None):
         logger.debug('post...')
         self.check_xsrf_cookie()
         link = self.get_argument('link')
@@ -95,10 +105,14 @@ class TaskHandler(BaseHandler):
         author = self.get_argument('author')
         content = self.get_argument('content')
         format = self.get_argument('format')
-        headimg = self.get_argument('headimg', None)
-        cover = self.get_argument('cover', None)
+        headimg = self.get_argument('headimg', None) or None
+        cover = self.get_argument('cover', None) or None
+        slug = self.get_argument('slug', None) or None
+        tag = [x.strip() for x in self.get_argument('tag', '').split(',')]
 
-        logger.debug('%s : %s', format, content)
+        sp = urlsplit(link)
+        if not sp.netloc:
+            link = 'http://' + link
 
         if format == 'md':
             if self.current_user['type'] < User.root:
@@ -109,30 +123,32 @@ class TaskHandler(BaseHandler):
             logger.debug('html -> md')
             content = html2md(content)
 
-        if url is None:
+        if urlslug is None:
             article = Jolla()
             article.set(article.find_link(link))
         else:
-            article = Jolla(unquote(url))
+            article = Jolla(unquote(urlslug))
 
         new_task = article.new
         if new_task:
             article.add(link, title, author, content,
-                        url=url, headimg=headimg, cover=cover, index=None)
+                        slug=slug, headimg=headimg, cover=cover, index=None,
+                        tag=tag)
         else:
             article.get().update({
                 'link': link,
                 'title': title,
                 'author': author,
                 'content': content,
-                'url': url,
+                'slug': slug,
                 'headimg': headimg,
                 'cover': cover,
                 'edittime': time.time(),
+                'tag': tag
             })
         article.save()
 
-        red_url = article.get()['url']
+        red_url = article.get()['slug']
         redirect = '/jolla/translate/%s/' % quote(red_url)
         logger.debug("new jolla translate task: %s", title)
         self.write(json.dumps({'error': 0, 'redirect': redirect}))
@@ -141,6 +157,6 @@ class TaskHandler(BaseHandler):
         # refresh cache
         coll = Article.get_collect()
         result = coll.update_many(
-            {'board': 'jolla', 'transref': red_url},
-            {'$set': {'transinfo.headimg': headimg, 'transinfo.cover': cover}})
+            {'board': 'jolla', 'transinfo.slug': red_url},
+            {'$set': {'headimg': headimg, 'cover': cover, 'tag': tag}})
         logger.debug('updated %s translation', result.modified_count)

@@ -61,19 +61,6 @@
   .icon-md-simple:before { content: "\e604"; }
   .icon-md-solid:before { content: "\e603"; }
   .icon-jolla:before { content: "\e600"; }
-
-  ::-webkit-input-placeholder {
-      font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
-  }
-  :-moz-placeholder {
-      font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
-  }
-  ::-moz-placeholder {
-      font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
-  }
-  :-ms-input-placeholder {
-      font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans","wenquanyi micro hei","Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif, "iconfont";
-  }
   </style>
   {% end %}
 
@@ -216,6 +203,12 @@
     {% end %}
     <span class="am-footer-divider">|</span>
     <a href="https://github.com/TylerTemp/tomorrow" target="_blank"><span class="am-icon-github am-text-warning"> {{ _('Source Code') }}</span></a>
+    </p>
+    <p>
+      {% raw _('All the content in this website without copyright specification is under {a}CC License {img}{a_end}').format(
+        a='<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">',
+        img='<img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" style="display: inline"/>',
+        a_end='</a>') %}
     </p>
   </div>
 </footer>

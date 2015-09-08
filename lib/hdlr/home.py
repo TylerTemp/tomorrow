@@ -53,19 +53,32 @@ class HomeHandler(BaseHandler):
     def parse_posts(self, collected):
         result = {}
         for each in collected:
-            result['title'] = each['title']
+            if 'zh' in each and 'en' in each:
+                if self.locale.code[:2] == 'zh':
+                    result['title'] = each['zh']['title']
+                    result['content'] = each['zh']['content']
+                    des = each['zh']['description']
+                else:
+                    result['title'] = each['en']['title']
+                    result['content'] = each['en']['content']
+                    des = each['en']['description']
+            else:
+                if 'zh' in each:
+                    d = each['zh']
+                else:
+                    d = each['en']
+                result['title'] = d['title']
+                result['content'] = d['content']
+                des = d['description']
+
             result['board'] = each['board']
+
             result['is_translation'] = ('transref' in each)
-            cover = each.get('cover', None)
-            if cover is None and 'transinfo' in each:
-                transinfo = each['transinfo']
-                cover = (transinfo.get('cover', None) or
-                         transinfo.get('headimg', None))
-            result['cover'] = cover
-            des = each.get('description', None)
+            result['cover'] = each.get('cover', None)
+
             if des is None:
                 des = tornado.escape.xhtml_escape(
-                    each['content'][:self.CHARS]) + '...'
+                    result['content'][:self.CHARS]) + '...'
             else:
                 des = md2html(des)
             result['description'] = des
@@ -73,7 +86,7 @@ class HomeHandler(BaseHandler):
             result['author_link'] = '/hi/%s/' % quote(each['author'])
             result['post_time_attr'], result['post_time'] = \
                 self.format_time(each['createtime'])
-            quoted = quote(each['url'])
+            quoted = quote(each['slug'])
             if each['board'] == 'jolla':
                 link = '//%s/%s/' % (self.JOLLA, quoted)
                 if 'transinfo' in each:
@@ -84,7 +97,7 @@ class HomeHandler(BaseHandler):
             else:
                 link = '/blog/%s/' % quoted
                 tag = each['tag']
-            result['tag'] = self.render_tags(tag)
+            result['tag'] = ''.join(self.render_tags(tag))
             result['link'] = link
             yield result
             # yield each
@@ -102,12 +115,12 @@ class HomeHandler(BaseHandler):
                 return
             first = ('<span class="am-badge am-badge-success am-radius">'
                      '%s'
-                     '</span>') % tag1
+                     '</span>') % self.locale.translate(tag1)
             yield first
             if tag2 is None:
                 second = ''
             else:
                 second = ('<span class="am-badge am-badge-primary am-radius">'
                           '%s'
-                          '</span>') % tag2
+                          '</span>') % self.locale.translate(tag2)
             yield second

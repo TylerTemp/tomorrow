@@ -471,8 +471,6 @@
   };
   $.fn.wysiwygEditor.defaults = {
     fromMarkdown: false,  // the original data is markdown? if so, trans to html
-    toHtml: function(text){return markdown.toHTML(text);},
-    toMarkdown: function(text){return md(text);},
     createLinkUrlInput: $("#wys-url"),
     createLinkTextInput: $("#wys-url-text"),
     createLinkInsert: $("#wys-url-insert"),

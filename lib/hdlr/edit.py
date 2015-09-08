@@ -1,6 +1,7 @@
 import tornado.web
 import logging
 import json
+import time
 try:
     from urllib.parse import unquote
     from urllib.parse import quote
@@ -53,16 +54,21 @@ class EditHandler(BaseHandler):
 
         if urlslug is not None:
             article = Article(urlslug)
-            assert not article.new
+            if article.new:
+                raise tornado.web.HTTPError(404, '%s not found' % urlslug)
             info = article.get()
-            zh = info.pop('content', None)
+            zh = info.pop('zh', None)
             en = info.pop('en', None)
-            result['slug'] = info.pop('url')
+            result['slug'] = info.pop('slug')
             result.update(info)
             if source == 'zh':
-                result['content'] = zh or ''
+                result['title'] = zh['title']
+                result['content'] = zh['content'] or ''
+                result['description'] = zh['description'] or ''
             else:
-                result['content'] = en or ''
+                result['title'] = en['title']
+                result['content'] = en['content'] or ''
+                result['description'] = en['description'] or ''
 
         return self.render(
             'edit.html',
@@ -71,7 +77,6 @@ class EditHandler(BaseHandler):
             files=files,
             img_upload_url='/am/%s/img/' % user_slug,
             file_upload_url='/am/%s/file/' % user_slug,
-            md2html=md2html,
             **result
         )
 
@@ -86,30 +91,38 @@ class EditHandler(BaseHandler):
         cover = self.get_argument('cover', None)
         description = self.get_argument('description', None)
         board = self.get_argument('board', 'blog')
+        lang = self.get_argument('language', 'zh')
+        assert lang in ('zh', 'en')
 
         if description is not None:
             description = description.strip()
 
         article = Article(slug)
         logger.info('%s new: %s', slug, article.new)
-        article.get().update(
-            {'board': board,
-             'title': title,
-             'content': content,
-             'author': self.current_user['user'],
-             'email': self.current_user['email'],
-             'show_email': True,
-             'tag': tag,
-             'headimg': headimg or None,
-             'cover': cover or None,
-             'description': description or None,
-             'index': None,
-            }
-        )
+        result = {
+            'board': board or 'blog',
+            lang: {
+                'title': title,
+                'content': content,
+                'description': description or None,
+            },
+            'author': self.current_user['user'],
+            'email': self.current_user['email'],
+            'show_email': True,
+            'tag': tag,
+            'headimg': headimg or None,
+            'cover': cover or None,
+            'index': None}
+
+        if article.new:
+            result.update({
+                'createtime': time.time(),
+                'edittime': time.time()
+            })
+
+        article.get().update(result)
 
         article.save()
-
-        logger.debug(article.get())
 
         return self.write(json.dumps({'error': 0,
                                       'redirect': '/blog/%s/' % quote(slug)}))

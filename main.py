@@ -49,7 +49,7 @@ for _hdlr in tornadologger.handlers:
 for _filter in tornadologger.filters:
     tornadologger.removeFilter(_filter)
 
-tornado.options.options.logging = None
+# tornado.options.options.logging = None
 
 logger = logging.getLogger('tomorrow')
 
@@ -90,7 +90,6 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
             # jolla
-            (r'/jolla/', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/jolla/blog/Early-access:-Sailfish-OS-Aaslakkaj%C3%A4rvi-with-private-browsing-and-more-is-here!/',
              RedirectHandler,
              {'to': 'http://%s/sailfish-os-aaslakkajarvi/' % self.config.jolla_host,
@@ -105,11 +104,11 @@ class Application(tornado.web.Application):
              {'to': '//' + self.config.jolla_host, 'permanently': True}),
             (r'/jolla/blog/page/(\d+)/', jolla.BlogHandler),
             (r'/jolla/blog/feed/', jolla.RssHandler),
-            (r'/jolla/blog/(?P<url>[^/]+)/', jolla.ArticleHandler),
+            (r'/jolla/blog/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/translate/', jolla.ListHandler),
-            (r'/jolla/translate/(?P<url>[^/]+)/', jolla.TranslateHandler),
+            (r'/jolla/translate/(?P<slug>[^/]+)/', jolla.TranslateHandler),
             (r'/jolla/task/', jolla.TaskHandler),
-            (r'/jolla/task/(?P<url>[^/]+)/', jolla.TaskHandler),
+            (r'/jolla/task/(?P<urlslug>[^/]+)/', jolla.TaskHandler),
             # project
             (r'/project/docpie/', project.docpie.HomeHandler),
             (r'/project/docpie/try/', project.docpie.TryHandler),

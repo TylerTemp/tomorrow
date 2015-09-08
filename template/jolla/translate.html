@@ -98,14 +98,22 @@ video {
       <hr />
     </div>
 
-
+    <!-- title -->
     <div class="am-g">
       <div class="am-u-sm-12">
-        {{ _("Title") }}:
-        <label for="title">{{ translate['title'] }}</label>
+        <label for="title">{{ _("Title") }}: {{ translate['title'] }}</label>
         <input type="text" class="am-form-field" id="title" value="{{ translated['title'] }}" placeholder="{{ _('Enter the translation of the title') }}">
       </div>
     </div>
+    <!-- description -->
+    <div class="am-g">
+      <div class="am-u-sm-12">
+        <label for="description">{{ _("Description") }}:</label>
+        <textarea type="text" class="am-form-field" id="description" placeholder="{{ _('Enter the description of this post') }}">{{ translated['description'] }}</textarea>
+      </div>
+    </div>
+
+    <hr />
 
     <!-- toolbar -->
     <div class="am-g">
@@ -168,44 +176,6 @@ video {
     <div id="submit-error-panel">
     </div>
 
-    <!-- share -->
-    <p class="am-u-sm-12">{{ _("Shared on (leave it blank if it hasn't shared on any other website)") }}:</p>
-    <label class="am-u-sm-4">{{ _('Site Name') }}</label>
-    <label class="am-u-sm-8">{{ _('URL') }}</label>
-    <div id="share-area">
-    {% for each in translated['share'] %}
-      <div class="am-g">
-        <div class="am-u-sm-4">
-          <input class="am-form-field" value="{{ each['name'] }}" placeholder="{{ _('Enter site name') }}">
-        </div>
-        <div class="am-u-sm-7">
-          <input class="am-form-field" value="{{ each['url'] }}" placeholder="{{ _('Enter URL') }}">
-        </div>
-        <div class="am-u-sm-1">
-          <button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>
-        </div>
-      </div>
-    {% else %}
-      <div class="am-g">
-        <div class="am-u-sm-4">
-          <input class="am-form-field" placeholder="{{ _('Enter site name') }}">
-        </div>
-        <div class="am-u-sm-7">
-          <input class="am-form-field" placeholder="{{ _('Enter URL') }}">
-        </div>
-        <div class="am-u-sm-1">
-          <button class="am-btn am-btn-warning delete-share"><span class="am-icon-times"></span></button>
-        </div>
-      </div>
-    {% end %}
-    </div>
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <label class="am-margin-vertical"><button class="am-btn am-btn-success am-btn-xs" id="add-share"><span class="am-icon-plus"></span></button>
-          {{ _("Add a new record") }}</label>
-      </div>
-    </div>
-
     <!-- show/hide email -->
     <div class="am-g">
       <div class="am-u-sm-12">
@@ -264,7 +234,8 @@ video {
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
-<script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script>
+<!-- <script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script> -->
+<script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
 <script src="/static/js/md/editor-wysiwyg.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/jolla/translate.js"></script>

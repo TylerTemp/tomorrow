@@ -34,7 +34,7 @@ $(function(evt)
     uploadFileUrl: FILEUPLOADURL
   });
 
-  timer = setTimeout(function(){}, 0);
+  timer = setTimeout(function(){preview($mdEditor.getHtml()); count_timer()}, 0);
 
   $('#tag').tagsinput();
 

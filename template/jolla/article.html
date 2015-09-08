@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-  {{ article['translated']['title'] }} | {{ _('Jolla Blog') }} |
+  {{ article['title'] }} | {{ _('Jolla Blog') }} |
 {% end %}
 
 {% block neck %}
@@ -140,45 +140,40 @@
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
       <article class="am-article">
         <div class="am-article-hd">
-          <h1 class="am-article-title">{{ article['translated']['title'] }}</h1>
+          <h1 class="am-article-title">{{ article['title'] }}</h1>
           <p class="am-article-meta">
+            {% raw article['source'] %}{% raw article['tag'] %}
+            <br />
             {% raw _('Posted by %(name)s%(email)s on %(time)s') % {
-              'name': article['translated']['author'],
-              'email': article['translated'].get('emaillink', ''),
+              'name': article['author'],
+              'email': article.get('emaillink', ''),
               'time': createtime} %}
           </p>
         </div>
 
         <hr class="am-article-divider">
         <div class="am-article-bd">
-          {% raw article['translated']['content'] %}
-          <!-- Jolla blog author translation -->
-          {% module Author(article['original']['author']) %}
-        </div>
-
-        <hr class="am-article-divider">
-        <footer>
-          <div id="license">
-            <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
-            <p>{% module License(license, article['translated']['author'], article['translated'].get('emaillink', None)) %}</p>
-          </div>
-          {% if article['share'] %}
-          <div>
-            <p>本文已转载至:</p>
-            <ul>
-            {% for each in article['share'] %}
-              <li><a href="{{ each['url'] }}" target="_blank">{{ each['name'] }}<span class="am-icon-external-link"></span></a></li>
-            {% end %}
-            </ul>
-          </div>
+          {% if article['description'] %}
+            <div class="am-article-lead">{% raw article['description'] %}</div>
           {% end %}
+          {% raw article['content'] %}
+          <!-- Jolla blog author translation -->
+          {% if article['original'] %}
+            {% module Author(article['original']['author']) %}
+          {% end %}
+        </div>
+        {% if article['original'] %}
+        <footer>
+          <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
         </footer>
+        {% end %}
       </article>
 
+      <hr class="am-divider am-divider-dotted" />
       <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr" id="comment">
         <div class="ds-thread"
              data-thread-key="{{ article['id'] }}"
-             data-title="{{ article['translated']['title'] }}"
+             data-title="{{ article['title'] }}"
              {% if headimg %}data-image="{{ headimg }}"{% end %}
              data-form-position="top"></div>
       </div>

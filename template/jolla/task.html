@@ -7,6 +7,7 @@
 {% end %}
 
 {% block bg %}
+<link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
 <style>
   body {
     background: #F7F5EC url("//{{ MAIN_HOST }}/static/img/bg.jpg") repeat scroll 0px 0px
@@ -120,8 +121,16 @@
       </div>
     </div>
 
+    <!-- tag -->
+    <div class="am-form-group">
+      <label for="tag" class="am-u-sm-3 am-form-label">{{ _("Tag")}}</label>
+      <div class="am-u-sm-9">
+        <input type="text" id="tag" name="tag" value="{{ ','.join(tag) }}" placeholder="{{ _('[Optional] tags') }}" />
+      </div>
+    </div>
+
     <div id="wysiwyg-area" style="{{ 'display:none' if use_md else '' }}">
-      <div class="am-btn-toolbar" id="wysiwygEditorToolbar" style="{{ 'display:none' if use_md else '' }}">
+      <div class="am-btn-toolbar" id="wysiwygEditorToolbar">
         {% module WysBar(upload_img=imgs, upload_file=files) %}
         <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><span class="iconfont icon-md-solid"></span></button>
         <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
@@ -186,7 +195,9 @@
 </script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
-<script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script>
+<!-- <script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script> -->
+<script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
+<script src="/static/js/amazeui.tagsinput.min.js"></script>
 <script src="/static/js/md/editor-wysiwyg.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/jolla/task.js"></script>

@@ -33,9 +33,9 @@ logger = logging.getLogger('tomorrow.jolla.translate')
 class TranslateHandler(BaseHandler):
 
     @EnsureUser(level=User.normal, active=True)
-    def get(self, url):
-        url = unquote(url)
-        to_translate = Jolla.find_url(url)
+    def get(self, slug):
+        slug = unquote(slug)
+        to_translate = Jolla.find_slug(slug)
         if to_translate is None:
             raise tornado.web.HTTPError(404,
                                         "the article to translate not found")
@@ -52,22 +52,23 @@ class TranslateHandler(BaseHandler):
 
         username = userinfo['user']
         usertype = userinfo['type']
-        translated = Article.find_ref_of_user(url, username)
+        translated = Article.find_ref_of_user(slug, username)
         imgs, files = self.get_imgs_and_files(username, usertype)
         if usertype >= User.admin:
-            edit_task_url = '/jolla/task/' + quote(url)
+            edit_task_url = '/jolla/task/' + quote(slug)
         else:
             edit_task_url = None
 
         if translated is None:
             translated = {k: '' for k in translate.keys()}
-            translated['share'] = {}
+            translated['description'] = ''
         else:
+            d = translated['zh']
             translated = {
-                'title': translated['title'],
-                'md': translated['content'],
-                'html':md2html(translated['content']),
-                'share': translated['transinfo']['share'],
+                'title': d['title'],
+                'description': d['description'] or '',
+                'md': d['content'],
+                'html':md2html(d['content'])
             }
 
         return self.render(
@@ -90,21 +91,21 @@ class TranslateHandler(BaseHandler):
     # @tornado.web.asynchronous
     # @tornado.gen.coroutine
     @EnsureUser(level=User.normal, active=True)
-    def post(self, url):
+    def post(self, slug):
         self.check_xsrf_cookie()
 
         title = self.get_argument('title')
         format = self.get_argument('format')
         content = self.get_argument('content')
         show_email = self.get_argument('show_email', True)
-        share = self.get_share_argument()
+        description = self.get_argument('description', '').strip() or None
 
-        url = unquote(url)
-        to_translate = Jolla(url)
+        slug = unquote(slug)
+        to_translate = Jolla(slug)
         if to_translate.new:
             raise tornado.web.HTTPError(
                 404,
-                "the article to translate not found: %s", url)
+                "the article to translate not found: %s", slug)
 
         user_info = self.get_current_user()
 
@@ -116,62 +117,64 @@ class TranslateHandler(BaseHandler):
         to_trans_info = to_translate.get()
         trans_info = {
             'board': 'jolla',
-            'title': title,
-            'content': content,
+            'zh': {
+                'title': title,
+                'content': content,
+                'description': description,
+            },
             'author': user_info['user'],
             'email': user_info['email'],
             'show_email': show_email,
+            'headimg': to_trans_info['headimg'],
+            'cover': to_trans_info.get('cover', None),
+            'tag': to_trans_info['tag'],
             'transinfo': {
                 'link': to_trans_info['link'],
                 'author': to_trans_info['author'],
-                'url': to_trans_info['url'],
+                'slug': to_trans_info['slug'],
                 'title': to_trans_info['title'],
-                'headimg': to_trans_info['headimg'],
-                'cover': to_trans_info.get('cover', None),
                 'status': Article.AWAIT,
             }
         }
 
         translated = Article()
-        translated_info = translated.find_trans_url_translator(
-            url, user_info['user'])
+        translated_info = translated.find_trans_slug_translator(
+            slug, user_info['user'])
 
         if translated_info is None:
             translated.add(**trans_info)
-            logger.info('New translate %s', to_trans_info['url'])
+            logger.info('New translate %s', to_trans_info['slug'])
         else:
             translated_info.update(trans_info)
             translated.set(translated_info)
             translated_info = translated.get()
-            logger.info('Renew translate %s', translated_info['url'])
+            logger.info('Renew translate %s', translated_info['slug'])
         translated_info = translated.get()
-        translated_info['transinfo']['share'] = share
-        logger.debug(translated_info['transinfo']['share'])
 
-        this_url = translated_info['url']
-        old_url = to_trans_info['trusted_translation']
-        logger.debug('old: %s, new: %s', old_url, this_url)
-        if old_url is None and user_info['type'] >= User.admin:
-            if this_url != to_trans_info['url']:
-                conflicting_article = Article(to_trans_info['url'])
+        this_slug = translated_info['slug']
+        old_slug = to_trans_info['trusted_translation']
+        logger.debug('old: %s, new: %s', old_slug, this_slug)
+        if old_slug is None and user_info['type'] >= User.admin:
+            if this_slug != to_trans_info['slug']:
+                conflicting_article = Article(to_trans_info['slug'])
                 if not conflicting_article.new:
                     con_info = conflicting_article.get()
-                    con_title = con_info['title']
+                    con_title = con_info['zh']['title']
                     con_author = con_info['author']
-                    con_info['url'] = conflicting_article.mkurl(
+                    con_info['slug'] = conflicting_article.mkslug(
                         con_title, con_author)
                     conflicting_article.save()
-                translated_info['url'] = to_trans_info['url']
-                this_url = to_trans_info['url']
+                translated_info['slug'] = to_trans_info['slug']
+                this_slug = to_trans_info['slug']
 
             logger.debug(
                 'trust %s as translation of %s',
-                translated_info['url'], old_url)
+                translated_info['slug'], old_slug)
 
-            to_trans_info['trusted_translation'] = translated_info['url']
+            to_trans_info['trusted_translation'] = translated_info['slug']
             translated_info['transinfo']['status'] = translated.TRUSTED
             to_translate.save()
-        elif old_url == this_url:
+        elif old_slug == this_slug:
             translated_info['transinfo']['status'] = translated.TRUSTED
         else:
             translated_info['transinfo']['status'] = translated.AWAIT
@@ -181,22 +184,7 @@ class TranslateHandler(BaseHandler):
 
         result = {
             'error': 0,
-            'redirect': 'http://%s/%s/' % (cfg.jolla_host, this_url),
+            'redirect': 'http://%s/%s/' % (cfg.jolla_host, this_slug),
         }
 
         return self.write(json.dumps(result))
-
-    re_share = re.compile(r'^share\[(?P<key>.*?)\]$')
-    def get_share_argument(self):
-        result = []
-        re_share = self.re_share
-        for k, v in self.request.arguments.items():
-            match = re_share.match(k)
-            if match is not None:
-                if isinstance(v, (list, tuple)):
-                    v = v[0]
-                if py3:
-                    v = v.decode('utf-8')
-                url = match.groupdict()['key']
-                result.append({'name': v, 'url': url})
-        return result

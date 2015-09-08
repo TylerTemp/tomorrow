@@ -77,8 +77,10 @@
       <h4 class="am-article-meta blog-meta">
         by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a>
         posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time>
-        <span class="am-footer-divider">|</span>
-        {% raw ''.join(each['tag']) %}
+        {% if each['tag'] %}
+          <span class="am-footer-divider">|</span>
+          {% raw each['tag'] %}
+        {% end %}
       </h4>
       <div class="am-g blog-content">
         <div class="am-u-lg-{{7 if each['cover'] else 12}}">

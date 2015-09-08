@@ -87,21 +87,6 @@
               <td>{{ article['edit_time'] }}</td>
             </tr>
             <tr>
-              <td>{{ _("license") }}</td>
-              <td>
-                {% if article['license'] == cc_license %}
-                <a href="https://creativecommons.org/licenses/by/4.0/legalcode" target="_blank">
-                  <span class="am-icon-cc"> CC BY 4.0</span>
-                </a>
-                {% elif article['license'] == pub_license %}
-                <a rel="license" href="http://creativecommons.org/publicdomain/mark/1.0/">
-                  <img src="http://i.creativecommons.org/p/mark/1.0/88x31.png"
-                     style="border-style: none;" alt="Public Domain Mark" />
-                </a>
-                {% else %}
-                  Unknown
-                {% end %}
-              </td>
               <tr>
                 <td>{{ _("show email") }}</td>
                 <td

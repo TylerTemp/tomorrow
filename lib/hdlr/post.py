@@ -22,25 +22,18 @@ class PostHandler(BaseHandler):
             raise tornado.web.HTTPError(404, "post %s not found" % slug)
 
         info = article.get()
-        zh = info.pop('content', None)
+        zh = info.pop('zh', None)
         en = info.pop('en', None)
-        use_en = (self.locale.code[:2].lower() != 'zh')
-        if use_en:
-            if en:
-                content = en
-                is_en = True
+        is_en = self.locale.code[:2].lower() != 'zh'
+        if zh and en:
+            if is_en:
+                info.update(en)
             else:
-                content = zh
-                is_en = False
+                info.update(zh)
         else:
-            if zh:
-                content = zh
-                is_en = False
-            else:
-                content = en
-                is_en = True
-        info['content'] = md2html(content)
+            info.update(zh or en)
         info['is_en'] = is_en
+        info['content'] = md2html(info['content'])
         return self.render(
             'post.html',
             **info

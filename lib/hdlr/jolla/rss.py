@@ -1,4 +1,5 @@
 import tornado.web
+import tornado.escape
 import logging
 import time
 try:
@@ -28,22 +29,23 @@ class RssHandler(tornado.web.RequestHandler):
             articles=self.get_tred_jolla()
         )
 
-
     @classmethod
     def get_tred_jolla(cls):
-        for each in Article.find_trusted_jollas(limit=3):
-            info = each['transinfo']
-            content = md2html(each['content'])
-            img = info.get('cover', None) or info['headimg']
+        for each in Article.display_jolla(limit=3):
+            content = md2html(each['content'] or each.get('en'))
+            img = each['cover'] or each['headimg']
             if img:
                 content = '<img src="%s">%s' % (img, content)
+            des = each['description']
+            if not des:
+                des = tornado.escape.xhtml_escape(content[:80]) + '...'
+            else:
+                des = md2html(des)
             result = {
                 'title': each['title'],
                 'link': '//%s/%s/' % (cls.HOST, quote(each['url'])),
                 'author': each['author'],
-                # 'img': info.get('cover', None) or info['headimg'],
-                'descripition': (each['transinfo'].get('description', None)
-                            or each['content'][:80] + '...'),
+                'descripition': des,
                 'content': content,
                 'time': time.ctime(each['createtime'])
             }

@@ -10,22 +10,16 @@
   background: rgba(255, 255, 255, 0.7);
 }
 
+#preview img,
+#preview video {
+  max-width: 100%;
+  height: auto;
+}
+
 #mdEditor {
   margin: 0px;
 }
 
-::-webkit-input-placeholder {
-    font-family: FontAwesome, "iconfont", sans-serif;
-}
-:-moz-placeholder {
-    font-family: FontAwesome, "iconfont", sans-serif;
-}
-::-moz-placeholder {
-    font-family: FontAwesome, "iconfont", sans-serif;
-}
-:-ms-input-placeholder {
-    font-family: FontAwesome, "iconfont", sans-serif;
-}
 
 i.am-icon-checked,
 i.am-icon-unchecked {
@@ -62,10 +56,10 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="slug" class="am-u-sm-2 am-form-label">{{ _("SLUG") }}:</label>
       <div class="am-u-sm-9">
-        <input type="text" id="slug" name="slug" value="{{ slug }}" placeholder="&#xf0c1;*" required="required"/>
+        <input type="text" id="slug" name="slug" value="{{ slug or '' }}" placeholder="&#xf0c1;*" required="required"/>
       </div>
       <div class="am-u-sm-1" style="padding:0px 15px 0px 0px">
-        <button class="am-btn am-btn-block" id="slug-test"><span class="am-icon-question"> {{ _('Test') }}</span></button>
+        <button class="am-btn am-btn-block" id="slug-test" {{ '' if slug else 'disabled' }}><span class="am-icon-question"> {{ _('Test') }}</span></button>
       </div>
     </div>
 
@@ -79,14 +73,14 @@ i.am-icon-unchecked {
 
     <!-- language -->
     <div class="am-form-group">
-      <label for="tag" class="am-u-sm-2 am-form-label">{{ _('Language') }}:</label>
+      <label class="am-u-sm-2 am-form-label">{{ _('Language') }}:</label>
       <div class="am-u-sm-10">
         <label class="am-radio-inline">
-          <input type="radio" name="lang" value="zh" data-am-ucheck {{ 'checked' if lang != 'en' else '' }}>
+          <input type="radio" name="language" value="zh" data-am-ucheck {{ 'checked' if lang != 'en' else '' }}>
           {{ _('Chinese') }}
         </label>
         <label class="am-radio-inline">
-          <input type="radio" name="lang" value="en" data-am-ucheck {{ 'checked' if lang == 'en' else '' }}>
+          <input type="radio" name="language" value="en" data-am-ucheck {{ 'checked' if lang == 'en' else '' }}>
           {{ _('English') }}
         </label>
         <sub>| <a href="./?source={{ 'zh' if lang == 'en' else 'en' }}">{{ _('Load %s content') % _('Chinese' if lang == 'en' else 'English') }}</a></sub>
@@ -113,9 +107,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="description" class="am-u-sm-2 am-form-label">{{ _("Introduction") }}:</label>
       <div class="am-u-sm-10">
-        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe603;)" />
-          {{ description or '' }}
-        </textarea>
+        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe603;)" />{{ description or '' }}</textarea>
       </div>
     </div>
 
@@ -153,8 +145,7 @@ i.am-icon-unchecked {
         <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe603; {{ _('MarkDown Syntax Supported') }}" required="required">{{ content if content else '' }}</textarea>
       </div>
       <div class="am-u-sm-12 am-u-md-6">
-        <div class="am-scrollable-vertical" id="preview" style="border: 1px dashed"  data-lock="true">
-          {% raw md2html(content) if content else '' %}
+        <div class="am-scrollable-vertical" id="preview" style="border: 1px dashed"  data-lock="false">
         </div>
       </div>
     </div>
