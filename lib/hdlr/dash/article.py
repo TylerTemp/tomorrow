@@ -18,6 +18,7 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
 from lib.db import Article, Jolla
 from lib.tool.minsix import py3
+from lib.tool.md import md2html
 from lib.hdlr.dash.base import BaseHandler, ItsMyself
 from lib.config import Config
 sys.path.pop(0)
@@ -32,11 +33,11 @@ class ArticleHandler(BaseHandler):
     @ItsMyself('article/')
     def get(self, user):
 
-        self.xsrf_token
-
         return self.render(
             'dash/article.html',
             articles=self.get_articles(self.current_user['user']),
+            md2html=self.md2html,
+            xsrf_token=self.xsrf_token,
             act=('article', )
         )
 
@@ -45,20 +46,60 @@ class ArticleHandler(BaseHandler):
     def post(self, user):
         self.check_xsrf_cookie()
 
-        if self.get_argument('action') == 'delete':
-            self.delete_article()
+        coll = Article.get_collect()
+        id_obj = ObjectId(self.get_argument('id'))
+        arti_info = coll.find_one({'_id': id_obj})
+        if not arti_info:
+            self.clear()
+            self.set_status(404)
+            self.write(
+                json.dumps({'msg': 'article id %s not exists' % id_obj}))
+            return
+
+        lang = self.get_argument('language', None)
+
+        full_delete = False
+        if ('transinfo' in arti_info and
+                arti_info['transinfo']['status'] == Article.TRUSTED):
+            jolla_url = arti_info['transinfo']['slug']
+            jolla_post = Jolla(jolla_url)
+            assert not jolla_post.new, 'Jolla(%s) not exists' % jolla_url
+            jolla_info = jolla_post.get()
+            logger.info('remove jolla trusted translation %s',
+                        jolla_info['slug'])
+            jolla_info['trusted_translation'] = None
+            logger.info('remove article %s', arti_info['slug'])
+            jolla_post.save()
+            coll.delete_one({'_id': id_obj})
+            full_delete = True
         else:
-            self.save_article()
+            assert lang is not None
+            if lang not in arti_info:
+                self.clear()
+                self.set_status(404)
+                self.write(
+                    json.dumps(
+                        {'msg': 'lang %s for %s not exists' % (lang, id_obj)}))
+                return
+            logger.info(
+                'remove article %s language %s', arti_info['slug'], lang)
+            arti_info.pop(lang)
+            if 'en' not in arti_info and 'zh' not in arti_info:
+                logger.info('remove article %s', arti_info['slug'])
+                coll.delete_one({'_id': id_obj})
+                full_delete = True
+
+        return self.write(json.dumps({'full_delete': full_delete}))
 
     def get_articles(self, user):
         for each in Article.find_by(user):
             if 'zh' in each and 'en' in each:
                 if self.locale.code[:2] != 'zh':
-                    meta = each.pop('en')
+                    meta = each['en']
                 else:
-                    meta = each.pop('zh')
+                    meta = each['zh']
             else:
-                meta = each.pop('zh', None) or each.pop('en')
+                meta = each.get('zh', None) or each['en']
 
             each['id'] = str(each.pop('_id'))
             each['edit_time'] = self.format_time(each.pop('edittime'))
@@ -75,6 +116,10 @@ class ArticleHandler(BaseHandler):
                 each['source_url'] = each['transinfo']['link']
             else:
                 each['edit'] = '/edit/%s/' % each['slug']
+                each['lang'] = {
+                    'zh': 'zh' in each,
+                    'en': 'en' in each
+                }
             each.update(meta)
             yield each
 
@@ -83,47 +128,11 @@ class ArticleHandler(BaseHandler):
             return time.ctime(t)
         return time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
 
-    def save_article(self):
-        coll = Article.get_collect()
-        id_obj = ObjectId(self.get_argument('id'))
-        title = self.get_argument('title')
-        # jQuery will send 'true'/'false', and tornado will not deal this
-        show_email = (self.get_argument('show_email').lower() != 'false')
+    p_re = re.compile(r'^<p>.*?</p>$')
 
-        logger.info('update id(%s): title: %s; show_email: %s; share: %s',
-                    id_obj, title, show_email, share)
+    def md2html(self, text):
+        trans = md2html(text)
+        if self.p_re.match(trans):
+            trans = trans[3:-4]
 
-        assert title
-        coll.update_one(
-            {'_id': id_obj},
-            {'$set':
-                {
-                    'title': title,
-                    'show_email': show_email,
-                }
-            }
-        )
-
-        return self.write(json.dumps({'error': 0}))
-
-    def delete_article(self):
-        coll = Article.get_collect()
-        id_obj = ObjectId(self.get_argument('id'))
-        arti_info = coll.find_one({'_id': id_obj})
-        if not arti_info:
-            raise tornado.web.HTTPError(500,
-                                        'article id %s not exists' % id_obj)
-        if ('transinfo' in arti_info and
-                arti_info['transinfo']['status'] == Article.TRUSTED):
-            jolla_url = arti_info['transinfo']['url']
-            jolla_post = Jolla(jolla_url)
-            assert not jolla_post.new, 'Jolla(%s) not exists' % jolla_url
-            jolla_info = jolla_post.get()
-            logger.info('remove jolla trusted translation %s',
-                        jolla_info['url'])
-            jolla_info['trusted_translation'] = None
-            jolla_post.save()
-        logger.info('remove article %s', arti_info['url'])
-        coll.delete_one(arti_info)
-
-        self.write(json.dumps({'error': 0}))
+        return trans

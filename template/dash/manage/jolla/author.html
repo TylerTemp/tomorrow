@@ -11,10 +11,10 @@
 
 <div class="am-padding-horizontal">
   <div class="am-panel-group" id="authors">
-    {% for name, status in author_and_status %}
+    {% for name, id, status in author_and_status %}
     <div class="am-panel am-panel-default">
       <div class="am-panel-hd">
-        <h4 class="am-panel-title" data-am-collapse="{parent: '#authors', target: '#{{ name.replace(' ', '-') }}'}">
+        <h4 class="am-panel-title" data-am-collapse="{parent: '#authors', target: '#{{ id }}'}">
           {{ name }}
           {% if status %}
             <span class="am-fr am-icon-check am-text-success"></span>
@@ -23,7 +23,7 @@
           {% end %}
         </h4>
       </div>
-      <div id="{{ name.replace(' ', '-') }}" class="am-panel-collapse am-collapse" data-role="detail" data-name="{{ name }}">
+      <div id="{{ id }}" class="am-panel-collapse am-collapse" data-role="detail" data-name="{{ name }}">
         <div class="am-panel-bd">
 
         </div>

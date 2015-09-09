@@ -47,15 +47,17 @@ class PostHandler(BaseHandler):
     def get_article(self, slug):
         article = Article(slug)
         assert not article.new, 'article %s not exists' % slug
+        info = article.get()['zh']
         return self.write(json.dumps({'error': 0,
-                                      'content': article.get()['content']}))
+                                      'content': info['content'],
+                                      'description': info['description']}))
 
     def parse_jolla(self):
         for each in Jolla.all():
             each['id'] = each.pop('_id')
             each['translated'] = each.pop('trusted_translation')
             each['trans_num'] = \
-                Article.find_ref_number(each['url'])
+                Article.find_ref_number(each['slug'])
             yield each
 
     def get_info(self, id):
@@ -64,11 +66,9 @@ class PostHandler(BaseHandler):
             raise tornado.web.HTTPError(404, 'id(%s) not exist' % id)
         result = {}
         link = info['link']
-        if not link.startswith('http'):
-            link = 'http://' + link
         result['link'] = link
         result['title'] = info['title']
-        result['edit'] = '/jolla/task/%s/' % quote(info['url'])
+        result['edit'] = '/jolla/task/%s/' % quote(info['slug'])
         prio = info.get('index', None)
         if prio is not None:
             prio = abs(prio)
@@ -77,17 +77,19 @@ class PostHandler(BaseHandler):
         if trans_slug:
             article = Article(trans_slug)
             trans = article.get()
-            result['trans_title'] = trans['title']
+            d = trans['zh']
+            result['trans_title'] = d['title']
             result['trans_link'] = '/jolla/blog/%s/' % quote(trans_slug)
             result['trans_author_name'] = trans['author']
             result['trans_author_link'] = '/hi/%s/' % quote(trans['author'])
-            result['trans_content'] = trans['content']
+            result['trans_content'] = d['content']
+            result['trans_description'] = d['description']
 
         result['trans'] = collect = []
-        for each in Article.find_ref(info['url']):
-            collect.append({'title': each['title'],
+        for each in Article.find_ref(info['slug']):
+            collect.append({'title': each['zh']['title'],
                             'author': each['author'],
-                            'slug': each['url']})
+                            'slug': each['slug']})
 
         self.write(json.dumps(result))
         self.finish()
@@ -95,7 +97,7 @@ class PostHandler(BaseHandler):
         if trans_slug and info.get('index', None) != trans['index']:
             logger.info('incorrect index %s of %s, fix to %s',
                         trans['index'],
-                        trans['url'],
+                        trans['slug'],
                         result['priority'])
             trans['index'] = result['priority']
             article.save()
@@ -105,7 +107,7 @@ class PostHandler(BaseHandler):
     def post(self, user):
         self.check_xsrf_cookie()
 
-        index = self.get_argument('prority', None)
+        index = self.get_argument('prority', None) or None
         if index:
             index = -abs(int(index))
         _id = ObjectId(self.get_argument('id'))
@@ -116,8 +118,8 @@ class PostHandler(BaseHandler):
         jolla.set(Jolla.find_id(_id))
         jolla_info = jolla.get()
 
-        url = self.get_argument('slug', None)
-        if not url:
+        slug = self.get_argument('slug', None)
+        if not slug:
             trusted = jolla_info['trusted_translation']
             if trusted:
                 jolla_info['trusted_translation'] = None
@@ -125,16 +127,20 @@ class PostHandler(BaseHandler):
                 article_info = article.get()
                 article_info['transinfo']['status'] = Article.AWAIT
                 article.save()
+                logger.info('untrust %s', jolla_info['slug'])
         else:
-            article = Article(url)
-            assert not article.new, 'article %s should not be new' % url
+            article = Article(slug)
+            assert not article.new, 'article %s should not be new' % slug
             content = self.get_argument('content')
             assert content, 'content should never be empty'
+            description = self.get_argument('description', '').strip() or None
             article_info = article.get()
-            article_info['content'] = content
+            article_info['zh']['content'] = content
+            article_info['zh']['description'] = description
             article_info['index'] = index
             article_info['transinfo']['status'] = Article.TRUSTED
-            jolla_info['trusted_translation'] = article_info['url']
+            jolla_info['trusted_translation'] = article_info['slug']
+            article.save()
         self.write(json.dumps({'error': 0}))
         self.finish()
 
@@ -142,7 +148,7 @@ class PostHandler(BaseHandler):
             jolla_info['index'] = index
             coll = Article.get_collect()
             result = coll.update_many(
-                {'board': 'jolla', 'transref': jolla_info['url']},
+                {'board': 'jolla', 'transinfo.slug': jolla_info['slug']},
                 {'$set': {'index': index}})
             logger.debug('updated %s translation', result.modified_count)
             # for each in Article.

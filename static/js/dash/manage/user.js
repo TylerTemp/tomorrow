@@ -256,7 +256,7 @@ $(document).ready(function()
           return false;
         }
 
-        var $submit_btn = $('button[type="submit"]');
+        var $submit_btn = $self.find('button[type="submit"]');
         $submit_btn.btn('loading');
         $fieldset.prop('disabled', true);
         $.ajax(

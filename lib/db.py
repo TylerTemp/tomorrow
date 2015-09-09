@@ -419,8 +419,7 @@ class Article(object):
     # email
     # show_email: True/False
     # transinfo: Jolla translation only
-    # transinfo = {link: , author: , slug: , title: ,
-    #              headimg:, status:, share:, cover: };
+    # transinfo = {link: , author: , slug: , title: , status:};
     # same as Jolla.
     # status: AWAIT/TRUSTED/REJECT
     # index: same as Jolla.index(cache)
@@ -436,7 +435,7 @@ class Article(object):
 
     def add(self, board, author, email, zh=None, en=None, slug=None,
             show_email=True, transinfo=None, index=0,
-            tag=[], headimg=None, cover=None, description=None):
+            tag=[], headimg=None, cover=None):
 
         if slug is None:
             if transinfo is not None:
@@ -502,7 +501,11 @@ class Article(object):
 
     @classmethod
     def find_by(cls, author):
-        return cls._article.find({'author': author})
+        return cls._article.find({'author': author}).sort(
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            )
+        )
 
     def get(self):
         return self.article_info
@@ -627,6 +630,10 @@ class JollaAuthor(object):
     @property
     def new(self):
         return self._info['_id'] is None
+
+    @property
+    def id(self):
+        return self._info['_id']
 
     def save(self, photo=None, description=None, translation=None):
         info = {

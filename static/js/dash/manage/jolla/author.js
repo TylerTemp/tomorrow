@@ -33,7 +33,7 @@ var set_author = function(container, author)
       _('Photo'), _('Introduction'), _('Translation'),
       _('Enter photo url'), _('Enter introduction of author in English'), _('Enter the translation of the introduction'),
       _('Save'), _('Reset'), _('Delete'),
-      author.name, author.name.replace(/\s/g, '-'),
+      author.name, author.id,
       author.photo || '/static/img/user.jpg',
       author.photo || '',
       author.description || '', author.translation || ''
@@ -152,7 +152,7 @@ var set_author = function(container, author)
   });
 }
 
-$(document).ready(function(evt){
+$(function(evt){
   $('#authors').find('[data-role="detail"]').each(function(idx, ele){
     $(this).on('open.collapse.amui', function(evt){
       var self = $(this);

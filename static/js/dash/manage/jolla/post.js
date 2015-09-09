@@ -1,4 +1,4 @@
-$(document).ready(function(evt){
+$(function(evt){
   $('#posts').find('[data-role="detail"]').each(function(idx, ele){
     self = $(this);
     self.on('open.collapse.amui', function(evt){
@@ -40,6 +40,8 @@ $(document).ready(function(evt){
                      '</p>').appendTo(body).find('select');
           $('<p><label>{0}:</label></p>'.format(_('edit content'))).appendTo(body);
           var content = $('<textarea class="am-form-field" style="height:150px;" placeholder="&#xe603; MarkDown Format Required">{0}</textarea>'.format(obj.trans_content || '')).appendTo(body);
+          $('<p><label>{0}:</label></p>'.format(_('edit description'))).appendTo(body);
+          var description = $('<textarea class="am-form-field" placeholder="&#xe603; MarkDown Format Required">{0}</textarea>'.format(obj.trans_description || '')).appendTo(body);
           var error_panel = $('<div></div>').appendTo(body);
           var set_error = function(msg, level)
           {
@@ -63,19 +65,22 @@ $(document).ready(function(evt){
             if (!slug)
             {
               content.prop('disabled', true);
+              description.prop('disabled', true);
+              description.val('');
               return content.val('');
             }
+            option.prop('disabled', true);
+            save_btn.prop('disabled', true);
+            content.prop('disabled', true);
+            description.prop('disabled', true);
+            error_panel.html(
+              '<i class="am-icon-spinner am-icon-pulse"></i>' + _('loading content...')
+            );
             $.ajax(settings={
-              'data': {'slug': slug},
-              'type': 'get',
-              'beforeSend': function(jqXHR, settings)
+              data: {'slug': slug},
+              type: 'get',
+              beforeSend: function(jqXHR, settings)
               {
-                option.prop('disabled', true);
-                save_btn.prop('disabled', true);
-                content.prop('disabled', true);
-                error_panel.html(
-                  '<i class="am-icon-spinner am-icon-pulse"></i>' + _('loading content...')
-                );
                 jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
               }
             }).done(function(data, textStatus, jqXHR){
@@ -83,7 +88,9 @@ $(document).ready(function(evt){
               if (obj.error == 0)
               {
                 set_error();
-                return content.val(obj.content);
+                content.val(obj.content);
+                description.val(obj.description);
+                return;
               }
               else
                 return set_error(_('Sorry, unknown error') + ': ' + obj.error, 'danger');
@@ -97,6 +104,7 @@ $(document).ready(function(evt){
               option.prop('disabled', false);
               save_btn.prop('disabled', false);
               content.prop('disabled', false);
+              description.prop('disabled', false);
             });
           });
           save_btn.click(function(evt){
@@ -109,14 +117,15 @@ $(document).ready(function(evt){
             save_btn.attr('disabled', true).html('<i class="am-icon-spinner am-icon-pulse"></i>');
             set_error();
             $.ajax(settings={
-              'data': {
+              data: {
                 'prority': prority_num,
                 'content': content_val,
+                'description': description.val(),
                 'slug': trans_slug,
                 'id': id
               },
-              'type': 'post',
-              'beforeSend': function(jqXHR, settings)
+              type: 'post',
+              beforeSend: function(jqXHR, settings)
               {
                 jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
               }

@@ -61,11 +61,14 @@ class EditHandler(BaseHandler):
             en = info.pop('en', None)
             result['slug'] = info.pop('slug')
             result.update(info)
-            if source == 'zh':
+            result['title'] = ''
+            result['content'] = ''
+            result['description'] = ''
+            if source == 'zh' and zh:
                 result['title'] = zh['title']
                 result['content'] = zh['content'] or ''
                 result['description'] = zh['description'] or ''
-            else:
+            elif source == 'en' and en:
                 result['title'] = en['title']
                 result['content'] = en['content'] or ''
                 result['description'] = en['description'] or ''

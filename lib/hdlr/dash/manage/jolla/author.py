@@ -61,11 +61,15 @@ class AuthorHandler(BaseHandler):
 
     def get_info(self, name):
         author = JollaAuthor(name)
+        _id = author.id
+        if _id is None:
+            _id = ObjectId()
         self.write(json.dumps({
             'name': author.name,
             'photo': author.photo,
             'description': author.description,
-            'translation': author.translation
+            'translation': author.translation,
+            'id': str(_id)
         }))
 
     def get_all_author(self):
@@ -73,10 +77,10 @@ class AuthorHandler(BaseHandler):
         for each in JollaAuthor.all():
             name = each['name']
             got.add(name)
-            yield name, (each['photo'] and each['translation'])
+            yield name, each['_id'], (each['photo'] and each['translation'])
         for each in Jolla.all():
             name = each['author']
             if name in got:
                 continue
             got.add(name)
-            yield name, False
+            yield name, ObjectId(), False

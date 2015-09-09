@@ -7,153 +7,137 @@
 {% block content %}
 <hr class="am-divider am-divider-default"/>
 
-<div class="am-panel-group" id="articles">
+<div class="am-panel-group">
   {% for article in articles %}
-  <div class="am-panel am-panel-default container">
+  <div class="am-panel am-panel-default">
     <div class="am-panel-hd am-cf am-g">
-      <h4 class="am-panel-title am-u-sm-8 am-u-md-9 am-u-lg-10" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
+      <h4 class="am-panel-title" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
         {{ article['title'] }}
       </h4>
-      <div class="am-u-sm-4 am-u-md-3 am-u-lg-2">
-        <button
-            type="button"
-            class="am-btn am-btn-warning am-btn-xs am-fr"
-            data-role="delete"
-            data-id="{{ article['id'] }}"
-            data-am-loading="{spinner: 'times-circle', loadingText: '', resetText: '<span class= &#34;am-icon-trash &#34;></span>'}">
-          <span class="am-icon-trash"></span>
-        </button>
-        <button
-            type="button"
-            class="am-btn am-btn-primary am-btn-xs am-fr"
-            data-role="edit"
-            data-id="{{ article['id'] }}"
-            data-status="edit"
-            data-am-button
-            data-am-loading="{spinner: 'refresh', loadingText: '', resetText: '<span class= &#34;am-icon-pencil &#34;></span>'}">
-          <span class="am-icon-pencil"></span>
-        </button>
-        <button
-            type="button"
-            class="am-btn am-btn-secondary am-btn-xs am-fr"
-            data-role="undo"
-            data-id="{{ article['id'] }}"
-            style="display:none">
-          <span class="am-icon-undo"></span>
-        </button>
-      </div>
     </div>
     <div id="{{ article['id'] }}" class="am-panel-collapse am-collapse">
       <div class="am-panel-bd">
         <div data-role="info-panel">
-        </div>
-        <table class="am-table">
-          <thead>
-            <tr>
-              <th>{{ _("info") }}</th>
-              <th>{{ _("detail") }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ _("title") }}</td>
-              <td data-role="title">
-                <a href="{{ article['url'] }}">{{ article['title'] }}</a>
-                <input class="am-form-field" style="display:none">
-              </td>
-            </tr>
-            <tr>
-              <td>{{ _("preview") }}</td>
-              <td>{% if article['edit'] %}[<a href="{{ article['edit'] }}">{{ _('edit') }}</a>] {% end %}
-                {{ article['content'][:40] }}...
-              </td>
-            </tr>
-            {% if 'source_url' in article %}
-            <tr>
-              <td>{{ _('source') }}</td>
-              <td><a href="{{ article['source_url'] }}">{{ article['source_title'] }}</a></td>
-            </tr>
-            {% end %}
-            <tr>
-              <td>{{ _("board") }}</td>
-              <td>{{ article['board'] }}</td>
-            </tr>
-            <tr>
-              <td>{{ _("create time") }}</td>
-              <td>{{ article['create_time'] }}</td>
-            </tr>
-            <tr>
-              <td>{{ _("edit time") }}</td>
-              <td>{{ article['edit_time'] }}</td>
-            </tr>
-            <tr>
+          <table class="am-table">
+            <thead>
               <tr>
-                <td>{{ _("show email") }}</td>
-                <td
-                    data-role="show-email"
-                    {{ 'data-true' if article['show_email'] else ''}}>
-                  <span>&#{{ '10004' if article['show_email'] else '10060' }};</span>
-                  <label class="am-checkbox" style="display:none">
-                    <input type="checkbox" data-am-ucheck>
-                    {{ _('Show my email when display the article') }}
-                  </label>
+                <th>{{ _("info") }}</th>
+                <th>{{ _("detail") }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ _("title") }}</td>
+                <td data-role="title">
+                  <a href="{{ article['url'] }}">{{ article['title'] }}</a>
                 </td>
               </tr>
-              {% if 'share' in article %}
               <tr>
-                <td>{{ _("shared") }}</td>
-                <td data-role="share">
-                  <div>
-                    {% raw '; '.join('<a href="{}">{}</a>'.format(each['url'], each['name']) for each in article['share']) %}
-                  </div>
-                  <div class="am-g" style="display:none">
-                    <label class="am-u-sm-3">{{ _('Site Name') }}</label>
-                    <label class="am-u-sm-9">{{ _('URL') }}</label>
-                    <div data-role="share-container">
-                    </div>
-                    <div data-role="new-line" class="am-cf">
-                      <label class="am-fr am-margin-top am-margin-right">
-                        {{ _("Add a new record") }}
-                        <button class="am-btn am-btn-success am-btn-xs am-round" data-role="add-line">
-                          <span class="am-icon-plus"></span>
-                        </button>
-                      </label>
-                    </div>
-                  </div>
+                <td>{{ _('introduction') if article['description'] else _('preview') }}</td>
+                <td>
+                  {% if article['description'] %}
+                    {% raw md2html(article['description']) %}
+                  {% else %}
+                    {{ article['content'][:40] }}...
+                  {% end %}
+                </td>
+              </tr>
+              {% if 'source_url' in article %}
+              <tr>
+                <td>{{ _('source') }}</td>
+                <td><a href="{{ article['source_url'] }}">{{ article['source_title'] }}</a></td>
+              </tr>
+              {% end %}
+              <tr>
+                <td>{{ _("board") }}</td>
+                <td>{{ article['board'] }}</td>
+              </tr>
+
+              {% if 'lang' in article %}
+              <tr>
+                <td>{{ _("language") }}</td>
+                <td>
+                  <span class="{{ 'am-icon-check-square-o' if article['lang']['zh'] else 'am-icon-square-o' }}"> {{ _('Chinese') }}</span>
+                  <span class="{{ 'am-icon-check-square-o' if article['lang']['en'] else 'am-icon-square-o' }}"> {{ _('English') }}</span>
                 </td>
               </tr>
               {% end %}
 
-          </tbody>
-        </table>
+              <tr>
+                <td>{{ _("create time") }}</td>
+                <td>{{ article['create_time'] }}</td>
+              </tr>
+              <tr>
+                <td>{{ _("edit time") }}</td>
+                <td>{{ article['edit_time'] }}</td>
+              </tr>
+              <tr>
+                <tr>
+                  <td>{{ _("show email") }}</td>
+                  <td
+                      data-role="show-email"
+                      {{ 'data-true' if article['show_email'] else ''}}>
+                    <span>&#{{ '10004' if article['show_email'] else '10060' }};</span>
+                  </td>
+                </tr>
+
+            </tbody>
+          </table>
+
+          <div data-role="error-panel">
+          </div>
+
+          <div class="am-cf">
+            <div class="am-fr">
+              {% if 'transinfo' in article %}
+              <form method="post" style="display:inline">
+                <fieldset style="display:inline">
+                  <input name="id" value="{{ article['id'] }}" style="display:none" />
+                  <input name="_xsrf" value="{{ xsrf_token }}" style="display:none" />
+                  <button
+                      type="submit"
+                      class="am-btn am-btn-link am-text-warning am-btn-sm"
+                      data-role="delete"
+                      data-am-loading="{spinner: 'times-circle', loadingText: ''}">
+                    <span class="am-icon-trash"></span>
+                  </button>
+                </fieldset>
+              </form>
+              {% else %}
+                {% for lang in filter(lambda x: article['lang'][x], article['lang']) %}
+                <form method="post" style="display:inline">
+                  <fieldset style="display:inline">
+                    <input name="id" value="{{ article['id'] }}" style="display:none" />
+                    <input name="_xsrf" value="{{ xsrf_token }}" style="display:none" />
+                    <input name="language" value="{{ lang }}" style="display:none" />
+                    <button
+                        type="submit"
+                        class="am-btn am-btn-link am-text-warning am-btn-sm"
+                        data-role="delete"
+                        data-am-loading="{spinner: 'times-circle', loadingText: ''}">
+                      <span class="am-icon-trash"> {{ lang.upper() }}</span>
+                    </button>
+                  </fieldset>
+                </form>
+                {% end %}
+              {% end %}
+              |
+              {% if 'transinfo' in article %}
+                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}"></a>
+                <a class="iconfont icon-md-solid am-link-muted" href="{{ article['edit'] }}?md=true"></a>
+              {% else %}
+                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}?source=zh">ZH</a>
+                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}?source=en">EN</a>
+              {% end %}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   {% end %}
 </div>
 
-
-
-{% for each in articles %}
-  <ul>
-  {% for k, v in each.items() %}
-    <li>{{ k }}:
-      {% if k == 'content' %}
-        {{ v[:50] }}...
-      {% elif isinstance(v, dict) %}
-      <ul>
-        {% for key, value in v.items() %}
-          <li>{{ key }}: {{ value }}</li>
-        {% end %}
-      </ul>
-      {% else %}
-        {{ v }}
-      {% end %}
-    </li>
-  {% end %}
-  </ul>
-  <hr>
-{% end %}
 {% end %}
 
 {% block leg %}
