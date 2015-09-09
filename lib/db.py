@@ -320,7 +320,10 @@ class Jolla(object):
             'tag': tag
         }
 
-        self.jolla_info.update(info)
+        if self.jolla_info is None:
+            self.jolla_info = info
+        else:
+            self.jolla_info.update(info)
         return self.jolla_info
 
     def save(self, t=None):
