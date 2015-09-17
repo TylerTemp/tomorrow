@@ -32,18 +32,18 @@ class RssHandler(tornado.web.RequestHandler):
     @classmethod
     def get_tred_jolla(cls):
         for each in Article.display_jolla(limit=3):
-            content = md2html(each['content'] or each.get('en'))
+            content = md2html(each['zh']['content'])
             img = each['cover'] or each['headimg']
             if img:
                 content = '<img src="%s">%s' % (img, content)
-            des = each['description']
+            des = each['zh']['description']
             if not des:
                 des = tornado.escape.xhtml_escape(content[:80]) + '...'
             else:
                 des = md2html(des)
             result = {
-                'title': each['title'],
-                'link': '//%s/%s/' % (cls.HOST, quote(each['url'])),
+                'title': each['zh']['title'],
+                'link': '//%s/%s/' % (cls.HOST, quote(each['slug'])),
                 'author': each['author'],
                 'descripition': des,
                 'content': content,
