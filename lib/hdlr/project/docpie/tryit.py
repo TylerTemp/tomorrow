@@ -129,10 +129,8 @@ Example:
 
         'exclusive_bad': {
             'doc': '''\
-Usage: pie.py [-v | -vv | -vvv]
-
-This is a bad example. you should use [-vvv | -vv | -v]''',
-            'argv': '-v'
+Usage: pie.py [-v | -vv | -vvv]''',
+            'argv': '-v -v'
         },
 
         'exclusive_rank': {

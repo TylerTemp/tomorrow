@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block site_description %}简单快捷且Pythonic的方式创建命令行接口，只需写一份简单的帮助信息，docpie就可以帮你解析命令行{% end %}
+
 {% block neck %}
   <style>
     h1 {
@@ -111,7 +113,7 @@ Options:
 
 <hr />
 
-<h2>Usage区域</h2>
+<h2>Usage Section</h2>
 
 <p>“<code>Usage</code>”起始于"Usage:"（<em>不区分</em>大小写）。如果还有其他部分的帮助信息，一定要用一个空行隔开即可。</p>
 
@@ -247,17 +249,8 @@ Options:
 </div>
 
 
-<p><strong>注意</strong> <code>|</code>从左往右匹配。一旦匹配成功则会跳过剩下所有的匹配项。也就是说：</p>
-
-<pre><code>Usage: my_program (-vvv | -vv | -v)
-</code></pre>
-
-<div class="am-cf">
-  <small><a class="am-fr" href="./try/?example=exclusive_good">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
-</div>
-
-
-<p>可以匹配<code>-v</code>出现1、2、3次的情形。而</p>
+<p>你可以用它来组织重复元素，这些重复元素会在匹配时计数。
+</p>
 
 <pre><code>Usage: my_program [-v | -vv | -vvv]
 </code></pre>
@@ -266,7 +259,6 @@ Options:
   <small><a class="am-fr" href="./try/?example=exclusive_bad">自己试试 <span class="am-icon-angle-double-right">&nbsp;</span></a></small>
 </div>
 
-<p>则只能匹配<code>-v</code>或空命令行。</p>
 
 <h3 class="mono">重复元素...</h3>
 

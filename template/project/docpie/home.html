@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block site_description %}An easy &amp; pythonic way to create the command-line interface, all you need is to write a man page and let docpie parse command-line for you.{% end %}
+
 {% block neck %}
   <style>
     h1 {
@@ -267,21 +269,12 @@ Options<span style='color:#d2cd86; '>:</span>
       <div class="am-cf">
         <a class="am-fr" href="try/?example=exclusive_rank">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
       </div>
-      <p>The match process will start from left to right. Once a case is matched,
-        all the rest cases are skipped. Which means
-      </p>
-      <pre><code>Usage: my_program (-vvv | -vv | -v)</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=exclusive_good">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p> can match <code>-v -v -v</code>, <code>-vv</code>, <code>-v</code>, but
+      <p>You can also group duplicated elements, they'll be counted when matching.
       </p>
       <pre><code>Usage: my_program [-v | -vv | -vvv]</code></pre>
       <div class="am-cf">
         <a class="am-fr" href="try/?example=exclusive_bad">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
       </div>
-      <p> will only match <code>-v</code> or empty argv.
-      </p>
 
       <h3 class="mono">element...</h3>
 
