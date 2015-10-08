@@ -75,8 +75,11 @@
         <a href="{{ each['link' ]}}">{{ each['title'] }}</a>
       </h3>
       <h4 class="am-article-meta blog-meta">
-        by <a href="{{ each['author_link'] }}">{{ each['author_name'] }}</a>
-        posted on <time datetime="{{ each['post_time_attr'] }}">{{ each['post_time'] }}<time>
+        {% raw _('by {author} posted on {time}').format(
+          author='<a href="%s">%s</a>' % (each['author_link'], each['author_name']),
+          time='<time datetime="%s">%s<time>' % (each['post_time_attr'], each['post_time']))
+        %}
+
         {% if each['tag'] %}
           <span class="am-footer-divider">|</span>
           {% raw each['tag'] %}

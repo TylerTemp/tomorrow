@@ -37,7 +37,7 @@ class HomeHandler(BaseHandler):
 
         limit = self.LIMIT
         offset = limit * (this_page - 1)
-        collected = Article.find_need_shown(offset, limit)
+        collected = Article.find_blog(offset, limit)
 
         total = collected.count()
         has_next_page = (this_page * limit < total)

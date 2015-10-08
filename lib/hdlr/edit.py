@@ -15,7 +15,6 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler, EnsureUser
 from lib.db import Article, User
-from lib.tool.md import md2html
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.edit')
@@ -100,9 +99,16 @@ class EditHandler(BaseHandler):
         if description is not None:
             description = description.strip()
 
-        article = Article(slug)
+        new = True
+        if urlslug:
+            article = Article(unquote(urlslug))
+            new = article.new
+        if new:
+            article = Article(slug)
+
         logger.info('%s new: %s', slug, article.new)
         result = {
+            'slug': slug,
             'board': board or 'blog',
             lang: {
                 'title': title,
@@ -127,5 +133,10 @@ class EditHandler(BaseHandler):
 
         article.save()
 
+        if board == 'jolla':
+            re_slug = '/jolla/blog/%s/'
+        else:
+            re_slug = '/blog/%s/'
+
         return self.write(json.dumps({'error': 0,
-                                      'redirect': '/blog/%s/' % quote(slug)}))
+                                      'redirect': re_slug % quote(slug)}))

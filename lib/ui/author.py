@@ -22,6 +22,6 @@ class AuthorModule(tornado.web.UIModule):
         return self.render_string(
             'uimodule/author.html',
             name=author.name,
-            content=author.translation or author.description,
+            content=author.translation or author.description or '',
             img=author.photo,
         )

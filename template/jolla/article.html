@@ -144,7 +144,7 @@
           <p class="am-article-meta">
             {% raw article['source'] %}{% raw article['tag'] %}
             <br />
-            {% raw _('Posted by %(name)s%(email)s on %(time)s') % {
+            {% raw _('Posted by %(email)s%(name)s on %(time)s') % {
               'name': article['author'],
               'email': article.get('emaillink', ''),
               'time': createtime} %}

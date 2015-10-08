@@ -72,8 +72,9 @@ class Config(object):
                             f.flush()
                         else:
                             secret = val
-
-            ins.secret = secret
+                ins.secret = secret
+            else:
+                ins.secret = None
 
             # logging level
             ins.tmr_level = parse_level(cfg.get("tomorrow_log_level", "DEBUG"))

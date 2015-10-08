@@ -34,6 +34,7 @@ class PostHandler(BaseHandler):
             info.update(zh or en)
         info['is_en'] = is_en
         info['content'] = md2html(info['content'])
+        info['id'] = info.pop('_id')
         return self.render(
             'post.html',
             **info

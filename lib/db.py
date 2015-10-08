@@ -575,13 +575,10 @@ class Article(object):
         return result[skip: skip + limit]
 
     @classmethod
-    def find_need_shown(cls, skip=0, limit=None):
-        result = cls._article.find({
-            '$or': [
-                {'transinfo.status': {'$exists': False}},
-                {'transinfo.status': cls.TRUSTED}
-            ]
-        }).sort(
+    def find_blog(cls, skip=0, limit=None):
+        result = cls._article.find(
+            {'board': 'blog'}
+        ).sort(
             (('index', pymongo.ASCENDING),
              ('createtime', pymongo.DESCENDING)
             )

@@ -1,4 +1,4 @@
-'''
+"""
 Usage:
 main.py [options]
 
@@ -11,11 +11,10 @@ Options:
 --tmr-file=<file>         site logic code file logger.
 --tnd-file=<file>         request/response file logger.
 -h, -?, --help            print this message
-'''
+"""
 
 import logging
 import os
-import time
 import tornado
 import tornado.web
 import tornado.httpserver
@@ -84,17 +83,13 @@ class Application(tornado.web.Application):
             (r'/am/(?P<user>[^/]+)/manage/jolla/author/',
              dash.manage.jolla.AuthorHandler),
             (r'/am/(?P<user>[^/]+)/manage/user/', dash.manage.UserHandler),
-            (r'/am/(?P<user>[^/]+)/manage/message/', dash.manage.MessageHandler),
+            (r'/am/(?P<user>[^/]+)/manage/message/',
+             dash.manage.MessageHandler),
             # profile
             (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
             # jolla
-            (r'/jolla/blog/Early-access:-Sailfish-OS-Aaslakkaj%C3%A4rvi-with-private-browsing-and-more-is-here!/',
-             RedirectHandler,
-             {'to': 'http://%s/sailfish-os-aaslakkajarvi/' % self.config.jolla_host,
-              'permanently': True}),
-            (r'/test/', RedirectHandler, {'to': '/'}),
 
             (r'/jolla/blog/', jolla.BlogHandler),
             (r'/jolla/blog/(favicon\.ico)', tornado.web.StaticFileHandler,
@@ -118,7 +113,8 @@ class Application(tornado.web.Application):
             (r'/edit/(?P<urlslug>[^/]+)/', EditHandler),
 
             (r'/api/load/', jolla.LoadHandler),
-            (r'/api/(?P<source>html|md)/(?P<target>html|md)/', api.MdAndHtmlHandler),
+            (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
+             api.MdAndHtmlHandler),
             (r'/brey/', brey.IndexHandler),
             (r'/brey/exam/', brey.ExamHandler),
             (r'/brey/booklist/', brey.BooklistHandler),

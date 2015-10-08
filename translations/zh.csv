@@ -297,3 +297,5 @@ developer stories,开发者故事
 design,设计
 iterations,迭代
 software updates,软件更新
+by {author} posted on {time},由{author}发布于{time}
+Posted by %(email)s%(name)s on %(time)s,由%(email)s%(name)s发布于%(time)s
