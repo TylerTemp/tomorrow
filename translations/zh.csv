@@ -140,7 +140,7 @@ User Group,用户组
 Show Email,显示邮箱
 Show my email when someone visits my homepage,在我的主页上显示我的邮箱
 You havn't set avatar yet,你还没有设置头像呢
-"Need upload? Visit ""%s"" panel","需要上传？看看“%s”面板吧"
+"Need upload? Visit ""{a}Gallery{a_end}"" panel","需要上传？看看“{a}画廊{a_end}”面板吧"
 Change Avatar (URL),修改头像（地址）
 Set Avatar (URL),设置头像（地址）
 Image,图像
@@ -298,4 +298,14 @@ design,设计
 iterations,迭代
 software updates,软件更新
 by {author} posted on {time},由{author}发布于{time}
-Posted by %(email)s%(name)s on %(time)s,由%(email)s%(name)s发布于%(time)s
+Posted by {email}{name} on {time},由{email}{name}发布于{time}
+Modify,修改
+Value,值
+My Home Page,我的主页
+My Articles,我的文章
+Show Introduction on,显示介绍
+Show Donation on,显示捐助
+My Introduction,自我介绍
+My Donating information,我的捐助信息
+Donating information,捐助信息
+Donating Infomation Status,捐助信息状态

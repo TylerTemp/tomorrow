@@ -1,0 +1,20 @@
+<div class="am-g am-u-sm-centered" id="original-author">
+  {% if img %}
+  <div class="am-u-sm-12 am-u-md-4">
+    <img class="am-circle am-thumbnail am-center" src="{{ img }}">
+  </div>
+  <div class="am-u-sm-12 am-u-md-8">
+    <h6>{{ name }}</h6>
+    <p>
+      {% raw content %}
+    </p>
+  </div>
+  {% else %}
+  <div class="am-u-sm-12">
+    <h6>{{ name }}</h6>
+    <p>
+      {% raw content %}
+    </p>
+  </div>
+  {% end %}
+</div>

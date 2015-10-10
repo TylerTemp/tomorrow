@@ -96,17 +96,26 @@ video {
           </div>
 
           <hr class="am-article-divider">
-          <div class="am-article-bd">
+          <div class="am-article-bd am-margin-xl">
             {% raw content %}
           </div>
+        </article>
 
-          <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tyler" id="comment">
-            <div class="ds-thread"
-                 data-thread-key="{{ id }}"
-                 data-title="{{ title }}"
-                 {% if headimg %}data-image="{{ headimg }}"{% end %}
-                 data-form-position="top"></div>
+        {% if donate %}
+          <hr data-am-widget="divider" style="" class="am-divider am-divider-dashed" />
+          <div class="am-container">
+            {% raw donate or '' %}
           </div>
+        {% end %}
+
+        <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tyler" id="comment">
+          <div class="ds-thread"
+               data-thread-key="{{ id }}"
+               data-title="{{ title }}"
+               {% if headimg %}data-image="{{ headimg }}"{% end %}
+               data-form-position="top">
+          </div>
+        </div>
 
       </div>
     </div>

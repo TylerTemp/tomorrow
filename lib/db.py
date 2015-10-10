@@ -83,7 +83,11 @@ class User(object):
             'pwd': pwd,
             'show_email': show_email,
             'type': type,
-            'active': active
+            'active': active,
+            'intro': {'content': None,
+                      'show_in_home': True, 'show_in_article': False},
+            'donate': {'new': None, 'old': None, 'info': None,
+                       'show_in_home': True, 'show_in_article': True}
         }
         return self.user_info
 
@@ -194,7 +198,6 @@ class Message(object):
     to = None
     content = None
     time = None
-    _id = None
     sender_delete = False
     receiver_status = UNREAD
 

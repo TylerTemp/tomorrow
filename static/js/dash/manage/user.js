@@ -1,6 +1,6 @@
-$(document).ready(function()
+$(function()
 {
-  // the default $().button will cause the button invisiable in middle
+  // the default $().button will cause the button invisible in middle
   // size screen, why?
   $.fn.btn = function(status)
   {
@@ -65,7 +65,7 @@ $(document).ready(function()
       $alert.hide();
       $group.removeClass('am-form-error').addClass('am-form-success');
       return true;
-    }
+    };
 
     var set_error = function(msg, error)
     {
@@ -84,7 +84,7 @@ $(document).ready(function()
       else
         $error_panel.addClass('am-alert-success').removeClass('am-alert-danger');
       return $error_panel.html(msg);
-    }
+    };
 
     var set_field_error = function($field, msg)
     {
@@ -100,7 +100,7 @@ $(document).ready(function()
       }
       $group.removeClass('am-form-success').addClass('am-form-error');
       return $alert.html(msg).show();
-    }
+    };
 
     var check_repwd = function()
     {
@@ -124,7 +124,7 @@ $(document).ready(function()
       if (pwd)
         return pwd == repwd;
       return true;
-    }
+    };
 
     $form.validator(
     {
@@ -193,7 +193,7 @@ $(document).ready(function()
           var val = $field.val();
           // why can't I get minlength?
           var min = $field.prop('minlength') || parseInt($field.data('min-length'));
-          var max = $field.prop('maxlength')
+          var max = $field.prop('maxlength');
 
           if (validity.customError == 'tooShort')
             msg = _('User Name should not shorter than {0} characters').format(min);
@@ -231,100 +231,99 @@ $(document).ready(function()
       }
     });
 
-    $form.submit(function(evt)
+    $form.submit(function(event)
     {
-      evt.preventDefault();
+      event.preventDefault();
       var $self = $(this);
       var $fieldset = $self.find('fieldset');
       var validated = $self.data('amui.validator').isFormValid();
       if (validated.state !== undefined)
         validated = (validated.state() == 'resolved');
-      if (validated)
-      {
-        var values = {};
-        $.each($self.serializeArray(), function(i, field)
-        {
-            values[field.name] = field.value;
-        });
-        var action = values['action'];
-        if ((action == 'invite' || $change_pwd_chk.prop('checked'))
-            && !(check_repwd() && check_pwd()) )
-          return false;
-        if ($.isEmptyObject(values))
-        {
-          console.log('Unexpected sumbit');
-          return false;
-        }
-
-        var $submit_btn = $self.find('button[type="submit"]');
-        $submit_btn.btn('loading');
-        $fieldset.prop('disabled', true);
-        $.ajax(
-          settings={
-            data: values,
-            type: 'post',
-            beforeSend: function(jqXHR, settings)
-            {
-              jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-            }
-          }
-        ).done(function(data, textStatus, jqXHR)
-        {
-          console.log(data);
-          var obj = $.parseJSON(data);
-          if (obj.error == 0)
-          {
-            $form.find('input:checkbox[name="active"]').prop('checked', obj.active);
-            $form.find('input:checkbox[name="show_email"]').prop('checked', obj.show_email);
-            $form.find('input:radio[name="{0}"]'.format(obj.lang) || 'none').click();
-            $form.find('input:radio[name="' + obj.group + '"]').click();
-            $form.find('input:checkbox[name="ss"]').prop('checked', obj.service && ($.inArray('ss', obj.service) != -1));
-            $form.find('input[name="user"]').val(obj.user || '');
-            $form.find('input[name="email"]').val(obj.email || '');
-            $form.find('input[name="avatar"]').val(obj.avatar || '');
-            $form.find('input[name="pwd"]').val(obj.pwd);
-            $form.find('input[name="repwd"]').val(obj.pwd);
-            $form.find('input:checkbox[name="change_pwd"]').uCheck('uncheck');
-            $form.parent().find('img').eq(0).prop('src', obj.avatar || '/static/img/user.jpg');
-            if (action != 'invite')
-            {
-              var $panel = $form.closest('.am-panel');
-              $form.find('legend').html(obj.user || '');
-              $panel.find('.am-panel-title').html(obj.user || '');
-            }
-            return set_error(_('Update Succeed'), false);
-          }
-          else
-          {
-            if (obj.error & 2)
-            {
-              console.log('user exists');
-              set_field_error($form.find('input[name="user"]'), _('User Name is taken. Please try another one'));
-            }
-            if (obj.error & 4)
-            {
-              console.log('email exists');
-              set_field_error($form.find('input[name="email"]'), _('Email is taken. Please try another one'));
-            }
-          }
-        }).fail(function(jqXHR, textStatus, errorThrown)
-        {
-          set_error(
-            _("Sorry, a server error occured, please refresh and retry") +
-            " ({0}: {1})".format(jqXHR.status, errorThrown),
-            true
-          );
-        }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
-        {
-          $form.find('button[type="submit"]').btn('reset');
-          $form.find('fieldset').prop('disabled',false);
-        });
-      }
-      else
+      if (!validated)
       {
         console.log('not submit');
-        return false
+        return false;
       }
+
+      var values = {};
+      $.each($self.serializeArray(), function(i, field)
+      {
+        values[field.name] = field.value;
+      });
+      var action = values['action'];
+      if ((action == 'invite' || $change_pwd_chk.prop('checked'))
+          && !(check_repwd() && check_pwd()) )
+        return false;
+      if ($.isEmptyObject(values))
+      {
+        console.log('Unexpected sumbit');
+        return false;
+      }
+
+      var $submit_btn = $self.find('button[type="submit"]');
+      $submit_btn.btn('loading');
+      $fieldset.prop('disabled', true);
+      $.ajax(
+        settings={
+          data: values,
+          type: 'post',
+          beforeSend: function(jqXHR, settings)
+          {
+            jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
+          }
+        }
+      ).done(function(data, textStatus, jqXHR)
+      {
+        console.log(data);
+        var obj = $.parseJSON(data);
+        if (obj.error == 0)
+        {
+          $form.find('input:checkbox[name="active"]').prop('checked', obj.active);
+          $form.find('input:checkbox[name="show_email"]').prop('checked', obj.show_email);
+          $form.find('input:radio[name="{0}"]'.format(obj.lang) || 'none').click();
+          $form.find('input:radio[name="' + obj.group + '"]').click();
+          $form.find('input:checkbox[name="ss"]').prop('checked', obj.service && ($.inArray('ss', obj.service) != -1));
+          $form.find('input[name="user"]').val(obj.user || '');
+          $form.find('input[name="email"]').val(obj.email || '');
+          $form.find('input[name="avatar"]').val(obj.avatar || '');
+          $form.find('input[name="pwd"]').val(obj.pwd);
+          $form.find('input[name="repwd"]').val(obj.pwd);
+          $form.find('input:checkbox[name="change_pwd"]').uCheck('uncheck');
+          $form.parent().find('img').eq(0).prop('src', obj.avatar || '/static/img/user.jpg');
+          if (action != 'invite')
+          {
+            var $panel = $form.closest('.am-panel');
+            $form.find('legend').html(obj.user || '');
+            $panel.find('.am-panel-title').html(obj.user || '');
+          }
+          return set_error(_('Update Succeed'), false);
+        }
+        else
+        {
+          if (obj.error & 2)
+          {
+            console.log('user exists');
+            set_field_error($form.find('input[name="user"]'), _('User Name is taken. Please try another one'));
+          }
+          if (obj.error & 4)
+          {
+            console.log('email exists');
+            set_field_error($form.find('input[name="email"]'), _('Email is taken. Please try another one'));
+          }
+        }
+      }).fail(function(jqXHR, textStatus, errorThrown)
+      {
+        set_error(
+          _("Sorry, a server error occured, please refresh and retry") +
+          " ({0}: {1})".format(jqXHR.status, errorThrown),
+          true
+        );
+      }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+      {
+        $submit_btn.btn('reset');
+        $fieldset.prop('disabled',false);
+      });
+
     });
 
     $repwd_input.on('input', function()

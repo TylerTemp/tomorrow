@@ -22,7 +22,7 @@ cfg.auto_clean = False
 
 def main():
     if not os.path.exists(cfg.pids_file):
-        return logger.error('file(%s) not exits.')
+        return logger.error('file(%s) not exits.', cfg.pids_file)
 
     with open(cfg.pids_file, 'r+', encoding='utf-8') as f:
         piddict = json.load(f)

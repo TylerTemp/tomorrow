@@ -40,7 +40,7 @@ from lib.hdlr.blacklist import BlackListHandler
 from lib.ui.editor import WysBarModule, MdBarModule
 from lib.ui.iconfont import IconFontModule
 from lib.ui.license import LicenseModule
-from lib.ui.author import AuthorModule
+from lib.ui.author import AuthorModule, JollaAuthorModule
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
@@ -134,6 +134,7 @@ class Application(tornado.web.Application):
                 'MdBar': MdBarModule,
                 'License': LicenseModule,
                 'Author': AuthorModule,
+                'JollaAuthor': JollaAuthorModule,
                 'IconFontCss': IconFontModule,
                 # 'UploadFile': UploadFileModule,
                 # 'UploadImage': UploadImageModule,
@@ -161,7 +162,6 @@ class BareHandler(BaseHandler):
 
 
 def main(port):
-    Config().set_port(port)
     tornado.locale.load_translations(
         os.path.join(rootdir, "translations"))
     # set this tornado will ignore the borwser `Accept-Language` head, why?
@@ -194,12 +194,18 @@ if __name__ == "__main__":
     if tmr_file is None:
         rootlogger.warning("tomorrow file logger disabled")
     else:
-        filelogger(tmr_file, logger, tmr_level)
+        logger.setLevel(tmr_level)
+        handler = logging.FileHandler(tmr_file)
+        logger.addHandler(handler)
+        # filelogger(tmr_file, logger, tmr_level)
 
     if tnd_file is None:
         rootlogger.warning("tornado file logger disabled")
     else:
-        filelogger(tnd_file, tornadologger, tnd_level)
+        tornadologger.setLevel(tnd_level)
+        handler = logging.FileHandler(tnd_file)
+        tornadologger.addHandler(handler)
+        # filelogger(tnd_file, tornadologger, tnd_level)
 
     port = args['--port']
     if port is None:

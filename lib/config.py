@@ -122,26 +122,6 @@ class Config(object):
 
         return cls._ins
 
-    # @classmethod
-    def set_port(self, port):
-        pid = os.getpid()
-
-        with FileLock(self.pids_file),\
-                open(self.pids_file, 'r+', encoding='utf-8') as f:
-
-            val = f.read()
-            if not val:
-                piddict = {}
-            else:
-                piddict = json.loads(val)
-            piddict[pid] = port
-
-            f.seek(0)
-            f.truncate()
-            json.dump(piddict, f, indent=4)
-
-        logger.debug('pid: %s; port: %s at %s', pid, port, self.pids_file)
-
     @staticmethod
     def format_folder(name):
         return name.format(TMPDIR=tempfile.gettempdir())
@@ -155,21 +135,21 @@ def remove():
         with FileLock(cfg.pids_file),\
                 open(cfg.pids_file, 'r+', encoding='utf-8') as f:
             val = f.read()
-            if val:
-                piddict = json.loads(val)
+            if val.strip():
+                pid_2_port = json.loads(val)
             else:
-                piddict = {}
+                pid_2_port = {}
                 delete = True
             if not delete:
                 this_pid = os.getpid()
-                piddict.pop(str(this_pid), None)
+                pid_2_port.pop(this_pid)
                 logger.debug('%s exit', this_pid)
-            if not piddict:
+            if not pid_2_port:
                 delete = True
             if not delete:
                 f.seek(0)
                 f.truncate()
-                json.dump(piddict, f, indent=4)
+                json.dump(pid_2_port, f, indent=2)
 
         if delete:
             logger.debug('delete pid file %s', cfg.pids_file)

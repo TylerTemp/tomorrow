@@ -4,13 +4,9 @@ import logging
 import time
 import re
 try:
-    from urllib.parse import unquote
-    from urllib.parse import quote
-    from urllib.parse import urlsplit
+    from urllib.parse import unquote, quote, urlsplit
 except ImportError:
-    from urlparse import unquote
-    from urlparse import quote
-    from urlparse import urlsplit
+    from urlparse import unquote, quote, urlsplit
 try:
     from itertools import zip_longest
 except ImportError:
@@ -37,8 +33,7 @@ class ArticleHandler(BaseHandler):
         if article.new:
             raise tornado.web.HTTPError(404, "article %s not found" % slug)
 
-        result = self.parse_article(article.get())
-        self.parse_html(result)
+        result = self.parse(article.get())
 
         return self.render(
             'jolla/article.html',
@@ -46,15 +41,22 @@ class ArticleHandler(BaseHandler):
             headimg=result.pop('headimg'),
             createtime=result.pop('createtime'),
             await=result.pop('await'),
-            reject=result.pop('reject')
+            reject=result.pop('reject'),
+            quote=quote
         )
 
-    def parse_article(self, info):
+    def parse(self, info):
+        info = self.parse_db_data(info)
+        self.parse_format(info)
+        self.parse_html(info)
+        return info
+
+    def parse_db_data(self, info):
         result = {
             'title': info['zh']['title'],
             'author': info['author'],
             'email': info['email'],
-            'showmail': info['show_email'],
+            'show_email': info['show_email'],
             'tag': info['tag'],
             'content': info['zh']['content'],
             'original': None,
@@ -80,7 +82,6 @@ class ArticleHandler(BaseHandler):
     p_re = re.compile(r'^<p>.*?</p>$')
 
     def parse_html(self, info):
-
         if info['original'] is not None:
             main = self.get_source(info['original']['link'])
         else:
@@ -92,28 +93,18 @@ class ArticleHandler(BaseHandler):
         info['tag'] = tags
 
         info['content'] = md.md2html(info['content'])
-        if info.pop('showmail'):
-            info['emaillink'] = (
-                '<a href="mailto: %s" rel="author">'
-                    '<span class="am-icon-envelope"></span>'
-                '</a>'
-            ) % info['email']
-        info['author'] = (
-            '<a href="//%s/hi/%s/" target="_blank" rel="author">%s</a>' % (
-                self.HOST,
-                quote(info['author']),
-                info['author'])
-        )
-
-        info['createtime'] = (
-            '<time>%s</time>' % time.strftime(
-                "%Y-%m-%d", time.localtime(info['createtime']))
-        )
 
         if info['description'] is not None:
             info['description'] = md.md2html(info['description'])
             if self.p_re.match(info['description']):
                 info['description'] = info['description'][3:-4]
+
+    def parse_format(self, info):
+        info['createtime'] = (
+            time.strftime("%Y-%m-%d", time.localtime(info['createtime'])))
+
+        if not info.pop('show_email'):
+            info['email'] = None
 
     def get_source(self, link):
         sp = urlsplit(link)
@@ -137,7 +128,7 @@ class ArticleHandler(BaseHandler):
 
     def make_tag(self, tags):
         if tags:
-            yield '|'
+            yield ' | '
         for tag1, tag2 in zip_longest(tags[::2], tags[1::2]):
             first = ('<span class="am-badge am-badge-success am-radius">'
                      '%s'

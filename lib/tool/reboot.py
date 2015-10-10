@@ -6,7 +6,7 @@ import os
 import sys
 import json
 import time
-import subprocess as sp
+import subprocess
 
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
@@ -25,58 +25,72 @@ mainfile = os.path.join(rootdir, 'main.py')
 def run(argv):    # won't wait
     args = ['python', mainfile]
     args.extend(argv)
-    logger.info('start: %s', args)
-    return sp.Popen(args)
+    popen = subprocess.Popen(args, shell=False)
+    pid = popen.pid
+    logger.info('start on %s: %s', pid, args)
+    return pid
 
 
 def directly_run(ports):
+    pid_2_port = {}
     for port in ports:
         args = ['-p', str(port)]
         args.extend(sys.argv[1:])
-        run(args)
+        pid = run(args)
+        pid_2_port[pid] = port
+    return pid_2_port
 
 
 def main():
-    if not os.path.exists(cfg.pids_file):
-        logger.error('file(%s) not exits. Start directly', cfg.pids_file)
-        directly_run(cfg.ports)
-        logger.info('done')
-        return
-
     with FileLock(cfg.pids_file),\
             open(cfg.pids_file, 'r+', encoding='utf-8') as f:
         val = f.read()
-        if not val:
-            return directly_run(cfg.ports)
+        if not val.strip():
+            logger.debug('No running instance, starts directly on %s',
+                         cfg.ports)
+            pid_2_port = directly_run(cfg.ports)
+            f.seek(0)
+            f.truncate()
+            json.dump(pid_2_port, f, indent=2)
+            return
 
-        pid2port = json.loads(val)
-
-    os.unlink(cfg.pids_file)
-
-    port2pid = {port: pid for pid, port in pid2port.items()}
+        running_pid_2_port = json.loads(val)
 
     all_ports = cfg.ports
-    reboot_ports = all_ports.intersection(port2pid)
-    new_ports = all_ports.difference(port2pid)
-    kill_ports = set(port2pid).difference(all_ports)
+    reboot_pid_2_ports = {}
+    kill_pid_2_ports = {}
+    new_ports = all_ports.difference(running_pid_2_port.values())
 
-    directly_run(new_ports)
-    for reboot in reboot_ports:
-        sub = sp.call(['kill', port2pid[reboot]])
+    for old_pid, old_port in running_pid_2_port.items():
+        if old_port in all_ports:
+            reboot_pid_2_ports[old_pid] = old_port
+        else:
+            kill_pid_2_ports[old_pid] = old_port
+
+    now_pid_2_port = directly_run(new_ports)
+
+    for kill_pid, port in reboot_pid_2_ports.items():
+        logger.debug('reboot port %s, kill %s', port, kill_pid)
+        sub = subprocess.call(['kill', kill_pid])
         if sub != 0:
             logger.error('failed to kill pid %s of port %s',
-                         port2pid[reboot], reboot)
-            continue
-        run(['-p', str(reboot)] + sys.argv[1:])
-        logger.debug('sleep %s', cfg.sleep)
-        time.sleep(cfg.sleep)
+                         kill_pid, port)
+        else:
+            new_pid = run(['-p', str(port)] + sys.argv[1:])
+            logger.debug('sleep %s', cfg.sleep)
+            time.sleep(cfg.sleep)
+            now_pid_2_port[new_pid] = port
 
-    for kill in kill_ports:
-        sub = sp.call(['kill', pid])
+    for kill_pid, old_port in kill_pid_2_ports.items():
+        logger.debug('kill %s on port %s', kill_pid, old_port)
+        sub = subprocess.call(['kill', kill_pid])
         if sub != 0:
-            logger.error('failed to kill pid %s of port %s', pid, port)
-            continue
+            logger.error('failed to kill pid %s of port %s',
+                         kill_pid, old_port)
 
+    logger.debug('currently pid to port: %s', now_pid_2_port)
+    with open(cfg.pids_file, 'w', encoding='utf-8') as f:
+        json.dump(now_pid_2_port, f, indent=2)
 
 if __name__ == '__main__':
     main()

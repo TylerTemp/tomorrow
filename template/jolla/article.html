@@ -144,10 +144,10 @@
           <p class="am-article-meta">
             {% raw article['source'] %}{% raw article['tag'] %}
             <br />
-            {% raw _('Posted by %(email)s%(name)s on %(time)s') % {
-              'name': article['author'],
-              'email': article.get('emaillink', ''),
-              'time': createtime} %}
+            {% raw _('Posted by {email}{name} on {time}').format(
+              email=('<a href="mailto:%s" target="_blank"><span class="am-icon-envelope"></span></a>' % article['email']) if article['email'] else '',
+              name='<a href="//%s/hi/%s/">%s</a>' % (MAIN_HOST, quote(article['author']), article['author']),
+              time='<time>%s</time>' % createtime) %}
           </p>
         </div>
 
@@ -159,7 +159,8 @@
           {% raw article['content'] %}
           <!-- Jolla blog author translation -->
           {% if article['original'] %}
-            {% module Author(article['original']['author']) %}
+            <hr class="am-article-divider">
+            {% module JollaAuthor(article['original']['author']) %}
           {% end %}
         </div>
         {% if article['original'] %}
@@ -167,8 +168,15 @@
           <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
         </footer>
         {% end %}
+        <!-- Translator -->
+        <hr class="am-article-divider">
+        {% if article['original'] %}
+          <p>{{ _('Translated by') }}</p>
+        {% end %}
       </article>
-
+      <div class="am-padding-top">
+        {% module Author(article['author']) %}
+      </div>
       <hr class="am-divider am-divider-dotted" />
       <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr" id="comment">
         <div class="ds-thread"

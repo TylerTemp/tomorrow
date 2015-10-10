@@ -4,7 +4,7 @@
 Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
 {% end %}
 
-{% block bg %}｛% end %}
+{% block bg %}{% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="https://dn-tomorrow.qbox.me/admin.css">
@@ -13,8 +13,8 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
     background-color: #E6E6E6;
   }
 </style>
-{% block throat %}
-{% end %}
+  {% block throat %}
+  {% end %}
 {% end %}
 
 {% block nav %}
@@ -88,5 +88,5 @@ Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
     $("#{{ act }}").addClass('highlight');
   });
 </script>
-{% block leg %}{% end %}
+  {% block leg %}{% end %}
 {% end %}

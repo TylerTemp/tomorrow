@@ -44,14 +44,6 @@ class UserHandler(BaseHandler):
             act=('manage', 'manage-user')
         )
 
-    def all_users():
-        for each in User.all():
-            if each['user'] is None:
-                each['user'] = ''
-            if each['email'] is None:
-                each['email'] = ''
-            yield each
-
     @ItsMyself('manage/user/')
     @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
@@ -76,7 +68,6 @@ class UserHandler(BaseHandler):
             'type': User.normal,
             'active': False
         }
-        old_user_info = dict(user_info)
 
         new_user_name = self.get_argument('user', None) or None
         old_user_name = user_info['user']
@@ -127,6 +118,31 @@ class UserHandler(BaseHandler):
             if pwd:
                 pwd = sha256_crypt.encrypt(pwd)
             user_info['pwd'] = pwd
+
+        intro_content = self.get_argument('intro', '').rstrip() or None
+        show_intro_in_home = self.get_bool('intro_in_home')
+        show_intro_in_article = self.get_bool('intro_in_article')
+        intro = {
+            'content': intro_content,
+            'show_in_home': show_intro_in_home,
+            'show_in_article': show_intro_in_article
+        }
+        user_info['intro'] = intro
+
+        donate_new = self.get_argument('donate', '').rstrip() or None
+        donate_old = self.get_argument('donate_old')
+        show_donate_in_home = self.get_bool('donate_in_home')
+        show_donate_in_article = self.get_bool('donate_in_article')
+        donate_info = self.get_argument('donate_info', '').strip() or None
+        donate = {
+            'old': donate_old,
+            'new': donate_new,
+            'show_in_home': show_donate_in_home,
+            'show_in_article': show_donate_in_article,
+            'info': donate_info
+        }
+        user_info['donate'] = donate
+
 
         if action == 'invite':
             User.get_collect().insert_one(user_info)
@@ -230,3 +246,9 @@ class UserHandler(BaseHandler):
                     time.strftime('%Y年%m月%d日，%H:%M', time.localtime(t))
 
         return 'Please verify before' + time.ctime(t)
+
+    def get_bool(self, name, default=False):
+        arg = self.get_argument(name, default)
+        if arg == 'false':
+            return False
+        return bool(arg)

@@ -6,15 +6,9 @@ import tornado.locale
 import logging
 import functools
 try:
-    from urllib.parse import quote
-    from urllib.parse import urlsplit
-    from urllib.parse import urlunsplit
-    from urllib.parse import urljoin
+    from urllib.parse import quote, urlsplit, urlunsplit, urljoin
 except ImportError:
-    from urlparse import quote
-    from urlparse import urlsplit
-    from urlparse import urlunsplit
-    from urlparse import urljoin
+    from urlparse import quote, urlsplit, urlunsplit, urljoin
 
 import sys
 import os
