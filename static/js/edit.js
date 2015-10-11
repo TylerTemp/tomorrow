@@ -5,7 +5,7 @@ $(function(evt)
     if ($preview.data('lock') == 'true')
       return;
     $preview.html(content);
-  }
+  };
 
 
   var count_timer = function()
@@ -14,13 +14,13 @@ $(function(evt)
     if (isNaN(interval) || (interval < 0))
       return;
     timer = setTimeout(function(){preview($mdEditor.getHtml()); count_timer()}, interval * 1000);
-  }
+  };
 
 
   var stop_timer = function()
   {
     clearTimeout(timer);
-  }
+  };
 
 
   var $preview = $('#preview');
@@ -69,9 +69,9 @@ $(function(evt)
     $.ajax(settings={
       data: {
         slug: slug,
-        test: true,
+        test: true
       },
-      method: 'get',
+      method: 'get'
     }).done(function(data, textStatus, jqXHR)
     {
       var result = parseInt(data);
@@ -103,7 +103,7 @@ $(function(evt)
         .prop('disabled', false)
         .removeClass('am-loading');
     });
-  })
+  });
 
   $('#slug').on('input', function(evt)
   {

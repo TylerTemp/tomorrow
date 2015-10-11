@@ -87,17 +87,6 @@ class BaseHandler(tornado.web.RequestHandler):
         if lang is not None:
             self.set_cookie('lang', lang)
 
-    def safe_redirect(self, url):
-        '''replace the host of url to request's host'''
-        split = urlsplit(url)
-        host = self.request.host
-        if split.netloc and (split.netloc != host):
-            logger.warning('prevent: %s -> %s', split.netloc, host)
-            split = list(split)
-            split[1] = host
-            return urlunsplit(split)
-        return url
-
     def get_ssl(self, uri=None):
         uri = uri or self.request.uri
         splited = urlsplit(uri)
@@ -144,6 +133,12 @@ class BaseHandler(tornado.web.RequestHandler):
         if code is None:
             return None
         return tornado.locale.get(code)
+
+    def get_bool(self, name, default=False):
+        arg = self.get_argument(name, default)
+        if arg == 'false':
+            return False
+        return bool(arg)
 
     def get_imgs_and_files(self, user, type):
         allow_update = (type >= User.admin)

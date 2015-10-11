@@ -49,7 +49,8 @@ class EditHandler(BaseHandler):
                   'tag': [],
                   'headimg': '',
                   'cover': '',
-                  'description': ''}
+                  'description': '',
+                  'hide': False}
 
         if urlslug is not None:
             article = Article(urlslug)
@@ -88,7 +89,13 @@ class EditHandler(BaseHandler):
         slug = self.get_argument('slug')
         content = self.get_argument('content')
 
-        tag = [x.strip() for x in self.get_argument('tag', '').split(',')]
+        tag = set()
+        for each_tag in self.get_argument('tag', '').split(','):
+            each = each_tag.strip()
+            if each:
+                tag.add(each)
+        tag = list(tag)
+
         headimg = self.get_argument('headimg', None)
         cover = self.get_argument('cover', None)
         description = self.get_argument('description', None)
@@ -121,7 +128,9 @@ class EditHandler(BaseHandler):
             'tag': tag,
             'headimg': headimg or None,
             'cover': cover or None,
-            'index': None}
+            'index': None,
+            'hide': self.get_bool('hide')
+        }
 
         if article.new:
             result.update({

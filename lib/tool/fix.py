@@ -9,14 +9,11 @@ import json
 from pymongo import ReturnDocument
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import User
+from lib.db import Article
 sys.path.pop(0)
 
-u = User._user
+a = Article._article
 
-for each in u.find({}):
-    each['intro'] = {'content': None,
-                     'show_in_home': True, 'show_in_article': False}
-    each['donate'] = {'new': None, 'old': None, 'info': None,
-                      'show_in_home': True, 'show_in_article': True}
-    u.replace_one({'_id': each['_id']}, each)
+for each in a.find({}):
+    each['hide'] = False
+    a.replace_one({'_id': each['_id']}, each)
