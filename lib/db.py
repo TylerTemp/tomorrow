@@ -441,7 +441,7 @@ class Article(object):
 
     def add(self, board, author, email, zh=None, en=None, slug=None,
             show_email=True, transinfo=None, index=0,
-            tag=[], headimg=None, cover=None, hide=False):
+            tag=[], headimg=None, cover=None):
 
         if slug is None:
             if transinfo is not None:
@@ -464,8 +464,7 @@ class Article(object):
             'edittime': time.time(),
             'index': index,
             'headimg': headimg,
-            'cover': cover,
-            'hide': hide
+            'cover': cover
         }
 
         if zh:
@@ -565,7 +564,6 @@ class Article(object):
     @classmethod
     def display_jolla(cls, skip=0, limit=None):
         result = cls._article.find({
-            'hide': False,
             '$or': [
                 {'board': 'jolla', 'transinfo': {'$exists': False}},
                 {'board': 'jolla', 'transinfo.status': cls.TRUSTED},
@@ -582,7 +580,7 @@ class Article(object):
     @classmethod
     def find_blog(cls, skip=0, limit=None):
         result = cls._article.find(
-            {'board': 'blog', 'hide': False}
+            {'board': 'blog'}
         ).sort(
             (('index', pymongo.ASCENDING),
              ('createtime', pymongo.DESCENDING)

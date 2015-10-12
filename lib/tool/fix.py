@@ -15,5 +15,5 @@ sys.path.pop(0)
 a = Article._article
 
 for each in a.find({}):
-    each['hide'] = False
+    each.pop('hide')
     a.replace_one({'_id': each['_id']}, each)

@@ -49,8 +49,7 @@ class EditHandler(BaseHandler):
                   'tag': [],
                   'headimg': '',
                   'cover': '',
-                  'description': '',
-                  'hide': False}
+                  'description': ''}
 
         if urlslug is not None:
             article = Article(urlslug)
@@ -128,8 +127,7 @@ class EditHandler(BaseHandler):
             'tag': tag,
             'headimg': headimg or None,
             'cover': cover or None,
-            'index': None,
-            'hide': self.get_bool('hide')
+            'index': None
         }
 
         if article.new:
