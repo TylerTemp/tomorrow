@@ -1,438 +1,168 @@
 {% extends "base.html" %}
 
-{% block site_description %}An easy &amp; pythonic way to create the command-line interface, all you need is to write a man page and let docpie parse command-line for you.{% end %}
-
 {% block neck %}
-  <style>
-    h1 {
-      text-align: center;
-      font-family: "Ubuntu Mono", monospace;
-      font-weight: bold !important;
-      font-size: 10rem !important;
-    }
-    h2 {
-      text-align: center;
-      font-size: 4rem;
-      margin: 40px 0px 16px 0px;
-    }
-    h3.mono {
-      font-size: 2.5rem;
-      text-align: center;
-    }
-
-    .mono {
-      font-family: "Ubuntu Mono", monospace;
-    }
-
-    .am-article-meta {
-      text-align: right;
-    }
-    .am-article-lead {
-      text-align: center;
-      font-style: italic;
-    }
-
-    article {
-      font-size: 1.8rem;
-    }
-
-    pre {
-      background-color: #3E4349;
-      color: #fff;
-      font-family: "Ubuntu Mono", monospace;
-      padding: 10px 30px;
-    }
-  </style>
+<link rel="stylesheet" href="/static/css/project/docpie/home.css" />
 {% end %}
 
 {% block stomach %}
-<div class="am-container">
-  <div class="am-cf">
-    <div class="am-fr">
-      Language/语言: <a href="./?lang=zh" data-lang="zh" style="color: #000"><span class="am-icon-square-o"> Chinese/中文</span></a> | <span class="am-icon-check-square-o"> English/英文</span>
+
+<div class="get">
+  <div class="am-g">
+    <div class="am-u-lg-12">
+      <h1 class="get-title"><span class="am-monospace">docpie</span> - {{ _('python command line interface parser') }}</h1>
+
+      <p>
+        {{ _('An easy and Pythonic way to create your POSIX command line interface') }}
+      </p>
+
+      <p>
+        <a href="./document/quick-start/" class="am-btn am-btn-sm get-btn">{{ _('Get Start') }} <span class="am-icon-code"></span></a>
+        <a href="./try/" class="am-btn am-btn-sm get-btn">{{ _('Online Demo') }} <span class="am-icon-cloud"></span></a>
+      </p>
+
     </div>
   </div>
-  <article class="am-article">
-    <div class="am-article-hd">
-      <h1 class="am-article-title am-margin-top-lx">[docpie]</h1>
-      <p class="am-article-meta">TylerTemp</p>
-    </div>
-
-    <div class="am-article-bd am-serif">
-      <p class="am-article-lead am-text-xl">
-        An easy &amp; pythonic way to create the command-line interface
-      </p>
-      <div class="am-cf">
-        <a class="am-fr" href="try/">try it online <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <hr class="am-article-divider" />
-      <p><code>docpie</code> can:
-        <ul>
-          <li>read &amp; analyze the help message you defined, and
-          </li>
-          <li>generate a parser that can convert the command-line your app
-              received and pass a dict to your app.
-          </li>
-        </ul>
-      </p>
-      <p>
-        The help message you give to <code>docpie</code> is quite similar to <code>man
-        </code> page with some formalization. Here is a quick example:
-      </p>
-      <pre>Naval Fate.
-
-Usage<span style='color:#d2cd86; '>:</span>
-  naval_fate ship new <span style='color:#00dddd; '>&lt;</span>name<span style='color:#00dddd; '>></span><span style='color:#d2cd86; '>...</span>
-  naval_fate ship <span style='color:#00dddd; '>&lt;</span>name<span style='color:#00dddd; '>></span> move <span style='color:#00dddd; '>&lt;</span>x<span style='color:#00dddd; '>></span> <span style='color:#00dddd; '>&lt;</span>y<span style='color:#00dddd; '>></span> <span style='color:#d2cd86; '>[</span><span style='color:#00dddd; '>--</span>speed<span style='color:#d2cd86; '>=</span><span style='color:#00dddd; '>&lt;</span>km/h<span style='color:#00dddd; '>></span><span style='color:#d2cd86; '>]</span>
-  naval_fate ship shoot <span style='color:#00dddd; '>&lt;</span>x<span style='color:#00dddd; '>></span> <span style='color:#00dddd; '>&lt;</span>y<span style='color:#00dddd; '>></span>
-  naval_fate mine <span style='color:#d2cd86; '>(</span>set<span style='color:#00dddd; '>|</span>remove<span style='color:#d2cd86; '>)</span> <span style='color:#00dddd; '>&lt;</span>x<span style='color:#00dddd; '>></span> <span style='color:#00dddd; '>&lt;</span>y<span style='color:#00dddd; '>></span> <span style='color:#d2cd86; '>[</span><span style='color:#00dddd; '>--</span>moored<span style='color:#00dddd; '>|</span><span style='color:#00dddd; '>--</span>drifting<span style='color:#d2cd86; '>]</span>
-  naval_fate <span style='color:#00dddd; '>-</span>h <span style='color:#00dddd; '>|</span> <span style='color:#00dddd; '>--</span>help
-  naval_fate <span style='color:#00dddd; '>--</span>version
-
-Options<span style='color:#d2cd86; '>:</span>
-  <span style='color:#00dddd; '>-</span>h <span style='color:#00dddd; '>-</span>? <span style='color:#00dddd; '>--</span>help    Show this screen.
-  <span style='color:#00dddd; '>--</span>version       Show version.
-  <span style='color:#00dddd; '>--</span>speed<span style='color:#d2cd86; '>=</span><span style='color:#00dddd; '>&lt;</span>km/h<span style='color:#00dddd; '>></span>  Speed in knots.<span style='color:#d2cd86; '>[</span>default<span style='color:#d2cd86; '>:</span> <span style='color:#00a800; '>10</span><span style='color:#d2cd86; '>]</span>
-  <span style='color:#00dddd; '>--</span>moored        Moored (anchored) mine.
-  <span style='color:#00dddd; '>--</span>drifting      Drifting mine.
-</pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=ship">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>
-        This example defines several usage patterns in "<code>Usage:</code>"
-        section. Each pattern starts with the executable program name <code>
-        naval_fate</code>, followed by some combinations of <i><code>Command</code></i>
-        (<code>ship</code>, <code>new</code>, <code>move</code>, etc.), <i><code>Argument</code></i>
-        (<code>&lt;name&gt;</code>, <code>&lt;x&gt;</code>, <code>&lt;y&gt;</code>)
-        and <i><code>Option</code></i>(<code>--speed=&lt;km/h&gt;</code>, <code>--version</code>, etc.).
-      </p>
-      <p>
-        Here are also some symbols in "<code>Usage</code>" to indicate the requirement of each element:
-        <code>( )</code>(parentheses) &amp; <code>[ ]</code>(brackets) for <i>
-        required element(s)</i> &amp; <i>optional element(s)</i>; <code>|</code>
-        (pipe) for <i>exclusive cases</i>; <code>...</code>(ellipsis)
-        for <i>repeatable element(s)</i>.
-      </p>
-      <p>
-        Below "<code>Usage</code>" is the "<code>Options</code>" section. The
-        options and descriptions are listed here. It defines the <i>synonymous</i>(e.g.
-        short options <code>-?</code> &amp; <code>-h</code> are the same as long
-        option <code>--help</code>), the <i>expecting argument</i>(e.g. <code>--speed</code>
-        requires one value) and the <i>default value</i>(e.g. by default <code>--speed</code>
-        values <code>"10"</code>) of each option.
-      </p>
-      <p>
-        <code>docpie</code> will generate a parser according to the message
-        above. When the app received the command-line, <code>docpie</code> will
-        parse it into an appropriate key-value pair dictionary. <code>docpie</code>
-        will also automaticly print this message when <code>-h</code>/<code>-?</code>/
-        <code>--help</code> appears in the command-line.
-      </p>
-      <hr class="am-divider am-divider-dashed" />
-      <h2>Usage Section</h2>
-      <p>
-        <code>Usage</code> section starts with "<b>Usage:</b>"
-        (case-<i>insensitive</i>), ends with a <i>visibly</i> empty line.
-        Each usage pattern should starts with your program's name.
-        You can write more than one usage pattern in "<code>Usage</code>" section.
-        The help message must has &amp; only has one "<code>Usage</code>" section.
-      </p>
-      <p>
-        A one usage pattern example may look like:
-        <pre><code>Usage: my_program</code></pre>
-        <div class="am-cf">
-          <a class="am-fr" href="try/?example=empty">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-        </div>
-      </p>
-      <p>
-        A multi usage patterns example may look like:
-        <pre><code>Usage<span style='color:#d2cd86; '>:</span>
-    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> command <span style='color:#00dddd; '>&lt;</span>argument<span style='color:#00dddd; '>&gt;</span> <span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>option
-    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>[</span>optional-command<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>(</span>REQUIRED-ARGUMENT<span style='color:#d2cd86; '>)</span>
-    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#d2cd86; '>(</span><span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>either-this <span style='color:#00dddd; '>|</span> <span style='color:#00dddd; '>-</span><span style='color:#00dddd; '>-</span>or-that<span style='color:#d2cd86; '>)</span>
-    my_program <span style='color:#d2cd86; '>[</span>options<span style='color:#d2cd86; '>]</span> <span style='color:#00dddd; '>&lt;</span>repeatable-arg<span style='color:#00dddd; '>></span><span style='color:#d2cd86; '>...</span></code></pre>
-        <div class="am-cf">
-          <a class="am-fr" href="try/?example=usage_elements">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-        </div>
-      </p>
-      <p>
-        Each <code>Command</code>/<code>Option</code>/<code>Argument</code> is separated
-        by white space or <code>[</code>, <code>]</code>, <code>(</code>,
-        <code>)</code>, <code>|</code>, <code>...</code>. long <code>Option</code>
-        &amp; its expecting argument can be separated by <code>=</code>. The
-        format rules are as follow.
-      </p>
-
-      <h3 class="mono">&lt;argument&gt; ARGUMENT</h3>
-
-      <p>
-        <code>Argument</code> is the word which is surrounded by a pair of
-        <code>&lt;&gt;</code> or the letters are all in upper-case.
-      </p>
-      <pre><code>Usage<span style='color:#d2cd86; '>:</span> my_program <span style='color:#00dddd; '>&lt;</span>input<span style='color:#00dddd; '>&gt;</span> <span style='color:#00dddd; '>&lt;</span>output<span style='color:#00dddd; '>&gt;</span>
-       my_program <span style='color:#00dddd; '>INPUT</span> <span style='color:#00dddd; '>OUTPUT</span></code></pre>
-
-       <div class="am-cf">
-         <a class="am-fr" href="try/?example=usage_argument">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-       </div>
-
-      <h3 class="mono">-o --option</h3>
-
-      <p>
-        <code>Option</code> has two forms: word starts with one dash
-        ("<code>-</code>") followed by one letter is short option,
-        two dashes ("<code>--</code>") followed by serveral letters is
-        long option. Note:
-      </p>
-      <p>
-        <ol>
-          <li> You can write several short options together, e.g. <code>-abc</code>
-            will be interpreted as <code>-a -b -c</code>.
-          </li>
-          <li> When <b>no "<code>Options</code>" section is defined</b>, <code>-a&lt;arg&gt;</code>
-            means <code>Option(-a)</code> excepts one <code>Argument(&lt;arg&gt;)</code>.
-            and <code>-a &lt;arg&gt;</code> means a <code>Option(-a)</code> (with no argument)
-            and a positional <code>Argument(&lt;arg&gt;)</code>.
-          </li>
-          <li> When <b>no "<code>Options</code>" section is defined</b>, <code>--long=&lt;arg&gt;</code>
-            means <code>Option(--long)</code> excepts one <code>Argument(&lt;arg&gt;)</code>.
-            and <code>--long &lt;arg&gt;</code> means a <code>Option(--long)</code> (with no argument)
-            and a positional <code>Argument(&lt;arg&gt;)</code>.
-          </li>
-          <li> If "<code>Options</code>" is defined, the results of later situations in 2
-            &amp; 3 are decided by the announcement in "<code>Options</code>".
-          </li>
-        </ol>
-      </p>
-
-      <h3 class="mono">command</h3>
-
-      <p>
-        Any other words that do not in the format of <code>Argument</code> &amp;
-        <code>Option</code> are interpreted as <code>Command</code>.
-        <pre><code>Usage: get help pull</code></pre>
-        <div class="am-cf">
-          <a class="am-fr" href="try/?example=get_help_pull">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-        </div>
-      </p>
-
-      <h3 class="mono">[Optional Element(s)]</h3>
-
-      <p>
-        Elements inside <code>[]</code> (square brackets) are optional elements.
-        It does not matter if the elements are in the same pair of brackets
-        or not.
-      </p>
-      <pre><code>Usage: my_program [command --option ARGUMENT]</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=optional_all_element">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>is equal to </p>
-      <pre><code>Usage: my_program [command] [--option] [&lt;argument&gt;]</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=optional_respective_element">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-
-      <p>If you need all elements appear or be omitted, use <code>()</code> (see below).
-
-      <p>Then writing options can be easy &amp; human-readable</p>
-
-      <pre><code>Usage: my_program [-docpie]</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=docpie">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-
-      <h3 class="mono">(Required Elements)</h3>
-
-      <p>Any element inside <code>()</code>(parentheses) is required except those
-      which are nested in <code>[]</code></p>
-      <pre><code>Usage: my_program (--this [&lt;arg&gt;] | --that)</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=required_either">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>You can nest <code>()</code> in a <code>[]</code> so when one element
-        appears, others must appear together.
-      </p>
-      <pre><code>Usage: my_program [(command --option ARGUMENT)]</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=optional_required_either">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-
-      <h3 class="mono">this | or | that</h3>
-
-      <p><code>|</code> (pipe) separates elements into several exclusive
-        matching cases. To group them, use <code>()</code> if one case must match or <code>[]</code>
-        if any case is optional.
-      </p>
-      <pre><code>Usage: rank (--first | --second | --third)</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=exclusive_rank">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>You can also group duplicated elements, they'll be counted when matching.
-      </p>
-      <pre><code>Usage: my_program [-v | -vv | -vvv]</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=exclusive_bad">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-
-      <h3 class="mono">element...</h3>
-
-      <p><code>...</code> (ellipsis) means the <b>closest one</b> element/group at
-        left is repeatable.
-      </p>
-      <pre><code>Usage: cp &lt;source&gt;... &lt;target&gt; &lt;logfile&gt;</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=cp">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>Note <code>...</code> only effect the one left element/group. Which means
-      </p>
-      <pre><code>Usage: my_program -a&lt;arg&gt;...
-       my_program --all=&lt;arg&gt;...</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=ellipsis_option">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>indicates that <code>Option(-a)</code> expects repeatable <code>Argument(&lt;arg&gt;)</code>.
-        So does <code>Option(--all)</code>. It can match <code>-a 1 2 3</code>. But
-      </p>
-      <pre><code>Usage: my_program (-a&lt;arg&gt;)...
-       my_program (--all=&lt;arg&gt;)...</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=ellipsis_option_unit">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>means that <code>Option(-a)</code> &amp; <code>Option(--all)</code> themselve
-        are repeatable. It can match <code>--all=1 --all=2 --all=3</code>
-      </p>
-
-      <h3 class="mono">[options]</h3>
-
-      <p><code>[options]</code> is a shortcut for all options listed in
-        "<code>Options</code>" section. You can simply consider it as
-        all optional options. More details are in the next section.
-      </p>
-      <pre><code>Usage:
-  program [options] now
-
-Options:
-  --terminate  terminate the daemon process
-  --reload     reload the config file
-  --restart    restart the service</code></pre>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=terminate_option">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p>is equal to</p>
-      <pre><code>Usage: program [--terminate] [--reload] [--restart] now</pre></code>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=terminate_oneline">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-
-      <h3 class="mono">--</h3>
-
-      <p><code>--</code> (double dashes) usually means the end of the options.
-        Anything after the first <code>--</code> will be considered as
-        positional argument no matter how it looks like. For more information
-        please check <a href="http://unix.stackexchange.com/questions/11376/what-does-double-dash-mean-also-known-as-bare-double-dash"
-        target="_blank">here <span class="am-icon-external-link"> </span></a>.
-        You do not need to declare it in your "Usage", <code>docpie</code> will
-        handle it for you.
-      </p>
-      <pre><code>Usage: cat [&lt;file&gt; ...]</pre></code>
-      <div class="am-cf">
-        <a class="am-fr" href="try/?example=double_dashes_cat">try it <span class="am-icon-angle-double-right">&nbsp;</span></a>
-      </div>
-      <p> Then for <code> -- -v --help</code>, <code>docpie</code> will give <code>-v</code> &amp;
-        <code>--help</code> to <code>&lt;file&gt;</code> instead of handling
-        them as Option.
-      </p>
-      <hr class="am-divider am-divider-dashed" />
-
-      <h2>Options Section</h2>
-      <p>
-        <code>Options</code> defines several options which can be used
-        in your <code>[options]</code> "Usage" shortcut.
-      </p>
-      <p>
-        <code>Options</code> section starts with "<b>Options:</b>"
-        (case-<i>insensitive</i>), ends with a <i>visibly</i> empty line or the
-        end of the help message. In "<code>Options</code>" you can define
-        <ul>
-          <li>the synonymous of a option,</li>
-          <li>the description of a option, and</li>
-          <li>whether a option expects argument and it's default value.</li>
-        </ul>
-      </p>
-
-      <h3>Define Synonymous &amp; Argument</h3>
-
-      Different synonymous option should be separated an optional
-      comma, and one space.
-      <pre><code>-h, -?, --help    # with comma
--v --version      # without comma</code></pre>
-      Use one space to separate the option and the argument. For long option,
-      <code>=</code>(equal) is recommanded. argument follows the same rules
-      of "Argument" in "Usage".
-      <pre><code>-r &lt;file&gt; --read &lt;file&gt;     # without `=`
--w FILE --write=FILE        # with`=`</code></pre>
-
-      <h3>Write Description</h3>
-
-      <p>For inline description, use at least 2 spaces to separate the options.
-        For newline description, indent 2 more spaces for each line.
-      </p>
-      <pre><code>-l --logg                  open the logging.                         # Good. Inline description
--r &lt;file&gt; --read &lt;file&gt;    read the data from the file.              # Good, 2 spaces
-                           if the file does not exists, create one.  # Good, keep the indent
--w FILE --write=FILE
-        write the data to the file                                   # Good, new line indent 2 more spaces
-        create one if not exists                                     # Good, keep the indent
-        raise RuntimeError if fails to create
-        raise IOError if fails to write
-</code></pre>
-
-      <h3>Define Default Value</h3>
-
-      <p>For options that accept argument(s), you can specify a default value.
-        To do so, first write <code>[default:</code>, and a space<code> </code>),
-        followed by your default value, and ends with <code>]</code>. The whole
-        block looks like <code>[default: &lt;your-default-value&gt;]</code>.
-        Put this block to the end of your description.
-      </p>
-
-      <pre><code>--speed=&lt;km/h&gt;    the speed of the ship.[default: inf]    # 'inf'
---ship=&lt;name&gt;     the name of the ship
-                  create one if not exist. [default: ]    # an empty string</code></pre>
-
-    </div>
-  </article>
-  <hr >
-
-  <p>Interested? You can install <code>docpie</code> by
-    <pre><code>pip install docpie</code></pre>
-    or
-    <pre><code>pip install git+git://github.com/TylerTemp/docpie.git</code></pre>
-  </p>
-
-  <p>For source code &amp; full document &amp; BUG report please visit:
-     <a href="https://github.com/TylerTemp/docpie/" target="_blank"><span class="am-icon-github"> github.com/TylerTemp/docpie/</span><span class="am-icon-external-link"></span></a>
-  </p>
-
-  <p class="am-serif" style="font-size: 6rem; text-align:center"><a href="try/"><span class="am-icon-terminal" style="color: #000"> </span> Try <span class="mono am-text-danger">docpie</span> in your browser!</a></p>
-
 </div>
-{% end %}
 
-{% block butt %}
-<script type="text/javascript">
-$(function()
-{
-  $('[data-lang]').click(function(evt)
-  {
-    evt.preventDefault();
-    var lang = $(this).data('lang');
-    console.log('change lang from ' + locale + ' to ' + lang);
-    change_lang(lang);
-    window.location.href = location.pathname;
-  });
-});
-</script>
+<div class="example">
+  <div class="am-g am-container">
+    <div class="am-u-lg-12">
+      <h2 class="example-h2">{{ article['title'] }}</h2>
+      {% raw article['content'] %}
+    </div>
+  </div>
+</div>
+
+<div class="install">
+  <div class="am-g am-container">
+    <div class="am-u-lg-4 am-u-md-6 am-u-sm-12 install-icon">
+      <span class="am-padding-xl am-round am-icon am-icon-download" data-am-scrollspy="{animation:'slide-top', repeat: true}" style="font-size: 120px; color: white"></span>
+      <hr class="am-article-divider am-show-sm-only install-hr">
+    </div>
+    <div class="am-u-lg-8 am-u-md-6 am-u-sm-12">
+      <h2 class="install-title">{{ _('How to Install') }}</h2>
+
+      <ol>
+        <li>{{ _('Install release version:') }}<pre><code class="language-bash">pip install docpie</code></pre></li>
+        <li>{{ _('Install nightly version:') }}<pre><code class="language-bash">pip install git+git://github.com/TylerTemp/docpie.git</code></pre></li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div class="detail">
+  <div class="am-g am-container">
+    <div class="am-u-lg-12">
+      <h2 class="detail-h2">{{ _('Keep It Simple') }}</h2>
+
+      <div class="am-g">
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
+
+          <h3 class="detail-h3">
+            <i class="am-icon-eye am-icon-sm"></i>
+            {{ _('WYSIWYG') }}
+          </h3>
+
+          <p class="detail-p">
+            {{ _('Only need to follow some rules, everything will work as your definition in natural language. As soon as you finish your document, the command line interface is done.') }}
+          </p>
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
+          <h3 class="detail-h3">
+            <i class="am-icon-rocket am-icon-sm"></i>
+            {{ _('Usability') }}
+          </h3>
+
+          <p class="detail-p">
+            {{ _('Default value, counter, exclusive group, required, optional... '
+                 'All these advanced functions can be defined intuitively') }}
+          </p>
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
+          <h3 class="detail-h3">
+            <i class="am-icon-cogs am-icon-sm"></i>
+            {{ _('Customizable') }}
+          </h3>
+
+          <p class="detail-p">
+            {% raw _('It can not only deal with options like <code>--help</code> automaticly, '
+                     'but also provide many useful and handy apis that help you build complex command line interface')%}
+          </p>
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12 detail-mb">
+          <h3 class="detail-h3">
+            <i class="am-icon-history am-icon-sm" style="-moz-transform:scaleX(-1);-webkit-transform:scaleX(-1);-o-transform:scaleX(-1);transform:scaleX(-1);filter:FlipH;"></i>
+            {{ _("Don't Repeat Yourself") }}
+          </h3>
+
+          <p class="detail-p">
+            {{ _('Keep the code side in 2 lines. '
+                 'All you need to do in the future update is simply update the help message.') }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="license">
+  <div class="am-g am-container">
+    <div class="am-u-lg-4 am-u-md-6 am-u-sm-12 install-icon">
+      <span class="am-padding am-btn-success am-round iconfont icon-opensource" data-am-scrollspy="{animation:'scale-up', repeat: true}" style="font-size:80px"></span>
+      <hr class="am-article-divider am-show-sm-only license-hr">
+    </div>
+    <div class="am-u-lg-8 am-u-md-6 am-u-sm-12">
+      <h2 class="license-title">{{ _('MIT Licensed') }}</h2>
+      <p>
+        {% raw _('Released under {a_tag} MIT free / open-sourced license {ext_tag}{a_end} , '
+                'you can easily contain it no matter in personal project, group project, '
+                'open sourced project or close sourced project').format(
+                a_tag='<a class="license-a iconfont icon-opensource" href="https://raw.githubusercontent.com/TylerTemp/docpie/master/LICENSE" target="_blank">',
+                ext_tag='<span class="am-icon-external-link-square"></span>',
+                a_end='</a>'
+        ) %}
+      </p>
+
+      <p>
+        {% raw _('Get {a_tag} source code {ext_tag}{a_end}').format(
+                 a_tag='<a class="license-a am-icon-github" href="https://github.com/TylerTemp/docpie" target="_blank">',
+                 ext_tag='<span class="am-icon-external-link-square"></span>',
+                 a_end='</a>'
+        ) %}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="start">
+  <div class="am-g am-container">
+    <div class="am-u-lg-12">
+      <h2 class="start-h2">{{ _("Let's Get Start!") }}</h2>
+      <div class="am-g">
+        <div class="am-u-md-4 am-u-sm-12 detail-mb" style="text-align: center">
+          <h3 class="detail-h3"><a href="./document/quick-start/" class="am-icon-code"> {{ _('Get Start') }} <span class="am-icon-link"></span></a></h3>
+        </div>
+        <div class="am-u-md-4 am-u-sm-12 detail-mb" style="text-align: center">
+          <h3 class="detail-h3"><a href="./try/" class="am-icon-cloud"> {{ _('Online Demo') }} <span class="am-icon-link"></span></a></h3>
+        </div>
+        <div class="am-u-md-4 am-u-sm-12 detail-mb" style="text-align: center">
+          <h3 class="detail-h3"><a href="https://github.com/TylerTemp/docpie/" class="am-icon-code-fork" target="_blank"> {{ _('Join Developing') }} <span class="am-icon-external-link"></span></a></h3>
+        </div>
+
+        <hr />
+
+        <p>
+          {{ _('If you like this project, you can buy me a beer to help me make it better!') }}
+          <a href="https://dn-tyler.qbox.me/alipay.ico" target="_blank"><img src="https://dn-tyler.qbox.me/alipay.ico"/></a>
+          |
+          <script id='fbxrp91'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=TylerTemp&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbxrp91');</script>
+        </p>
+
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
 {% end %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block active %}{% set active = "document" %}{% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/project/docpie/doc.css" />
+{% end %}
+
+{% block stomach %}
+
+<header class="am-g doc-head">
+  <div class="am-u-sm-12 am-article">
+    <h1 class="am-article-title am-monospace">{{ title }}</h1>
+    <p class="am-article-meta author">TylerTemp</p>
+  </div>
+</header>
+<hr class="am-article-divider"/>
+<div class="am-g am-g-fixed">
+  <div class="am-u-md-9 am-u-md-push-3">
+    <div class="am-g">
+      <div class="am-u-sm-11 am-u-sm-centered">
+
+        <div class="am-cf am-article">
+          {% raw content %}
+          <hr class="am-article-divider">
+          <p>
+            {{ _('If you like this project, you can buy me a beer to help me make it better!') }}
+            <a href="https://dn-tyler.qbox.me/alipay.ico" target="_blank"><img src="https://dn-tyler.qbox.me/alipay.ico"/></a>
+            |
+            <script id='fbxrp91'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=TylerTemp&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbxrp91');</script>
+          </p>
+        </div>
+        <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tyler" id="comment">
+          <div class="ds-thread"
+               data-title="{{ title }}"
+               data-form-position="top">
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="am-u-md-3 am-u-md-pull-9 doc-sidebar">
+    <div class="am-offcanvas" id="sidebar">
+      <div class="am-offcanvas-bar">
+        <ul class="am-nav">
+          <li class="{{ 'am-active' if slug == 'quick-start' else '' }}"><a href="../quick-start/">{{ _('Quick Start') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'install' else '' }}"><a href="../install/">{{ _('Install') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'usage-format' else '' }}"><a href="../usage-format/">{{ _('Usage Format') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'options-format' else '' }}"><a href="../options-format/">{{ _('Options Format') }}</a></li>
+
+          <li class="am-show-md-up"><hr /></li>
+          <li class="am-nav-header">API</li>
+          <li class="{{ 'am-active' if slug == 'basic-apis' else '' }}"><a href="../basic-apis/">{{ _('Basic APIs') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'advanced-apis' else '' }}"><a href="../advanced-apis/">{{ _('Advanced APIs') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'experimental-apis' else '' }}"><a href="../experimental-apis/">{{ _('Experimental APIs') }}</a></li>
+
+          <li class="am-show-md-up"><hr /></li>
+          <li class="am-nav-header am-show-sm-only"></li>
+          <li class="{{ 'am-active' if slug == 'serialize' else '' }}"><a href="../serialize/">{{ _('Serialize') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'known-issue' else '' }}"><a href="../known-issue/">{{ _('Known Issue') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'debug-and-develop' else '' }}"><a href="../debug-and-develop/">{{ _('Debug & Develop') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'change-log-and-todos' else '' }}"><a href="../change-log-and-todos/">{{ _('Change Log & TODOs') }}</a></li>
+
+          <li class="am-show-md-up"><hr /></li>
+          <li class="am-nav-header am-show-sm-only"></li>
+          <li class="{{ 'am-active' if slug == 'why-docpie' else '' }}"><a href="../why-docpie/">{{ _('Why docpie?') }}</a></li>
+          <li class="{{ 'am-active' if slug == 'license' else '' }}"><a href="../license/">{{ _('License') }}</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <a href="#sidebar" class="am-btn am-btn-sm am-btn-success am-icon-bars am-show-sm-only doc-button" data-am-offcanvas><span class="am-sr-only">侧栏导航</span></a>
+</div>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"tyler"};
+  (function()
+  {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.unstable.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0]
+     || document.getElementsByTagName('body')[0]
+    ).appendChild(ds);
+  })();
+</script>
+{% end %}

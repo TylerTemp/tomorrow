@@ -1,4 +1,5 @@
 import tornado.web
+import tornado.gen
 import logging
 import re
 import json
@@ -81,8 +82,6 @@ class LoginHandler(_Handler):
 
         if len(user_or_email) < 2:
             flag |= self.USER_TOO_SHORT
-        if not pwd:
-            flag |= self.PWD_EMPTY
 
         if flag == 0:
             user = User(user_or_email)
@@ -159,7 +158,7 @@ class SigninHandler(_Handler):
         if not email:
             flag |= self.EMAIL_EMPTY
         elif self.EMAIL_RE.match(email) is None:
-            flag |= self.EMAIL_WRONG
+            flag |= self.EMAIL_FORMAT
         if len(pwd) < self.PWD_MIN_LENGTH:
             flag |= self.PWD_TOO_SHORT
 
@@ -217,7 +216,8 @@ class SigninHandler(_Handler):
                 '<p>You can also refresh this page to see if it has been '
                 'sent successfully.</p>').format(user=user, email=email))
             try:
-                mailman.send(user=user_name,
+                mailman.send(name='new_user',
+                             user=user_name,
                              code=code,
                              escaped_code=quote(secret))
             except BaseException as e:
@@ -229,14 +229,14 @@ class SigninHandler(_Handler):
                     user_name,
                     self.locale.translate(
                         'Oops, failed to send the active email. '
-                        'Please visite the secure panel to send it again.'
+                        'Please visit the secure panel to send it again.'
                     ))
             else:
                 Message().send(
                     None,
                     user_name,
                     self.locale.translate(
-                        'Send email succesfully. Please check your email '
+                        'Send email successfully. Please check your email '
                         'account {}'
                     ).format(email)
                 )

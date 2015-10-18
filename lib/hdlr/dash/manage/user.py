@@ -189,7 +189,7 @@ class UserHandler(BaseHandler):
             else:
                 name = 'update_account'
                 kwargs['expire_announce'] = self.format_expire(
-                    user_info['verify'].get('expire', None))
+                    user_info.get('verify', {}).get('expire', None))
             try:
                 mail_man.send(name, **kwargs)
             except BaseException as e:

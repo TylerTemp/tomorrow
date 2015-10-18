@@ -106,6 +106,8 @@ class Application(tornado.web.Application):
             (r'/jolla/task/(?P<urlslug>[^/]+)/', jolla.TaskHandler),
             # project
             (r'/project/docpie/', project.docpie.HomeHandler),
+            (r'/project/docpie/document/', project.docpie.DocHandler),
+            (r'/project/docpie/document/(?P<slug>[^/]+)/', project.docpie.DocHandler),
             (r'/project/docpie/try/', project.docpie.TryHandler),
 
             (r'/blog/(?P<slug>[^/]+)/', PostHandler),

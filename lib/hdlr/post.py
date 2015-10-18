@@ -35,14 +35,15 @@ class PostHandler(BaseHandler):
         info['content'] = md2html(info['content'])
         info['id'] = info.pop('_id')
         author = info['author']
-        author_info = User(author).get()
-        donate_info = author_info.pop('donate')
-        if donate_info['show_in_article']:
-            donate = (donate_info['old']
-                      if donate_info['info']
-                      else donate_info['new'])
-        else:
+        if author is None:
             donate = None
+        else:
+            author_info = User(author).get()
+            donate_info = author_info.pop('donate')
+            if donate_info['show_in_article']:
+                donate = (donate_info['old']
+                          if donate_info['info']
+                          else donate_info['new'])
 
         return self.render(
             'post.html',

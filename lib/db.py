@@ -716,13 +716,6 @@ class Email(object):
 
         return data
 
-class File(object):
-    _file = db.file
-
-    # name: filename
-    # type: file type(mime info)
-    # user_level: least level
-
 if __name__ == '__main__':
     import docopt
     import os

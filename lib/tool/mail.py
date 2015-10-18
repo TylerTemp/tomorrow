@@ -13,7 +13,8 @@ rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.config import Config
 from lib.tool import bashlog
-from lib.db import File, Email as Maildb
+from lib.tool.md import md2html
+from lib.db import Article
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.email')
@@ -90,9 +91,6 @@ class Email(object):
         return self._send_normal(host, me, pwd, [self.to], msg.as_string())
 
     def send(self, name, **kwargs):
-        mail_data = Maildb(name)
-        assert not mail_data.new
-
         if 'zh_CN' in self.config.mail and self.is_zh_mail(self.to):
             logger.debug('send by zh mail')
             mailinfo = self.config.mail['zh_CN']
@@ -100,7 +98,7 @@ class Email(object):
             logger.debug('send by default mail')
             mailinfo = self.config.mail['default']
 
-        mail_content = mail_data.format(self.is_zh)
+        mail_content = self.get_content(name)
 
         me = mailinfo['user']
         pwd = mailinfo['password']
@@ -133,6 +131,17 @@ class Email(object):
     @classmethod
     def is_zh_mail(cls, mail):
         return any(mail.endswith(suffix) for suffix in cls.config.zh_mail_list)
+
+    def get_content(self, name):
+        a = Article(name)
+        assert not a.new
+        info = a.get()
+        if self.is_zh and info['zh']:
+            result = info['zh']
+        else:
+            result = info['en']
+        result['content'] = md2html(result['content'])
+        return result
 
 
 if __name__ == '__main__':

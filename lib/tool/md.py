@@ -35,6 +35,13 @@ extend = (
     # 'markdown.extensions.toc',
     # convert any [[text]] to <a href="/text/" class="wikilink">text</a>
     # 'markdown.extensions.wikilinks',
+    # Table of Contents, https://pythonhosted.org/Markdown/extensions/toc.html
+    # add [TOC] at the top
+    'markdown.extensions.toc',
+    # https://pythonhosted.org/Markdown/extensions/admonition.html
+    # !!! danger
+    #     some text
+    'markdown.extensions.admonition'
 )
 
 # 'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',

@@ -87,6 +87,32 @@ i.am-icon-unchecked {
       </div>
     </div>
 
+    <!-- Author -->
+    <div class="am-form-group">
+      <label class="am-u-sm-2 am-form-label" for="author">{{ _('Author') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="text" id="author" name="author" value="{{ author or '' }}" placeholder="None">
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="am-form-group">
+      <label class="am-u-sm-2 am-form-label" for="email">{{ _('Email') }}:</label>
+      <div class="am-u-sm-10">
+        <input type="email" id="email" name="email" value="{{ email or '' }}" placeholder="None">
+      </div>
+    </div>
+
+    <!-- Show email -->
+    <div class="am-form-group">
+      <label class="am-u-sm-2 am-form-label" for="show_email">{{ _('Show email') }}:</label>
+      <div class="am-u-sm-10">
+        <label class="am-checkbox">
+          <input type="checkbox" id="show_email" name="show_email" data-am-ucheck {{ 'checked' if show_email else '' }}>
+        </label>
+      </div>
+    </div>
+
     <!-- article top image -->
     <div class="am-form-group">
       <label for="headimg" class="am-u-sm-2 am-form-label">{{ _("Heading Image") }}:</label>
@@ -107,7 +133,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="description" class="am-u-sm-2 am-form-label">{{ _("Introduction") }}:</label>
       <div class="am-u-sm-10">
-        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe603;)" />{{ description or '' }}</textarea>
+        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe601;)" />{{ description or '' }}</textarea>
       </div>
     </div>
 
@@ -142,7 +168,7 @@ i.am-icon-unchecked {
     <!-- Edit/Local Preview -->
     <div class="am-g">
       <div class="am-u-sm-12 am-u-md-6">
-        <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe603; {{ _('MarkDown Syntax Supported') }}" required="required">{{ content if content else '' }}</textarea>
+        <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}" required="required">{{ content if content else '' }}</textarea>
       </div>
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-scrollable-vertical" id="preview" style="border: 1px dashed"  data-lock="false">

@@ -49,7 +49,10 @@ class EditHandler(BaseHandler):
                   'tag': [],
                   'headimg': '',
                   'cover': '',
-                  'description': ''}
+                  'description': '',
+                  'author': user_name,
+                  'email': user_info['email'],
+                  'show_email': True}
 
         if urlslug is not None:
             article = Article(urlslug)
@@ -121,9 +124,9 @@ class EditHandler(BaseHandler):
                 'content': content,
                 'description': description or None,
             },
-            'author': self.current_user['user'],
-            'email': self.current_user['email'],
-            'show_email': True,
+            'author': self.get_argument('author', None) or None,
+            'email': self.get_argument('email', None) or None,
+            'show_email': self.get_bool('show_email', False),
             'tag': tag,
             'headimg': headimg or None,
             'cover': cover or None,

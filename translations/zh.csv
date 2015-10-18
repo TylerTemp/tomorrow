@@ -253,7 +253,6 @@ RSS Feed,RSS订阅
 Weibo,微博
 WeChat,微信
 Source Code,源代码
-back to introduction,返回介绍页
 Input your doc string,输入doc内容
 Config,设置
 (See {link}here{end} for detail),(详细请参见{link}这里{end})
@@ -310,3 +309,41 @@ My Donating information,我的捐助信息
 Donating information,捐助信息
 Donating Infomation Status,捐助信息状态
 Translated by,译者
+
+python command line interface parser,python命令行接口解析模块
+An easy and Pythonic way to create your POSIX command line interface,简洁且Pythonic的方式为你的python程序创建POSIX标准命令行接口
+Get Start,开始使用
+Online Demo,在线测试
+How to Install,如何安装
+Install release version:,安装发布版：
+Install nightly version:,安装开发版：
+Keep It Simple,简单明了，无一多余
+WYSIWYG,所见即所得
+"Only need to follow some rules, everything will work as your definition in natural language. As soon as you finish your document, the command line interface is done.","只需遵循简单几个规则，一切都如你自然语言所表达的意思执行。当你简单写完说明文档时，命令行接口已经定义完成。"
+Usability,可用性
+"Default value, counter, exclusive group, required, optional... All these advanced functions can be defined intuitively","默认值、计数、排他分组、可选必选……这些高级功能都以符合人们直觉的方式定义并展示。"
+Customizable,自定义性
+"It can not only deal with options like <code>--help</code> automaticly, but also provide many useful and handy apis that help you build complex command line interface","不但能自动处理<code>--help</code>等参数，还提供满足你日常所需的API，帮助你构建复杂的命令行接口。"
+Don't Repeat Yourself,不重复自己
+"Keep the code side in 2 lines. All you need to do in the future update is simply update the help message.","只需要两行代码即可完成。即使在日后的升级中，也只需要修改文档，即可平滑升级你的命令行接口。"
+MIT Licensed,基于MIT协议
+"Released under {a_tag} MIT free / open-sourced license {ext_tag}{a_end} , you can easily contain it no matter in personal project, group project, open sourced project or close sourced project","基于{a_tag} MIT自由开源协议 {ext_tag}{a_end} 发布，不管是个人项目、团队项目还是开源项目、闭源项目，都可以轻松使用"
+Get {a_tag} source code {ext_tag}{a_end},获取 {a_tag} 源代码 {ext_tag}{a_end}
+"Let's Get Start!","来开始吧！"
+Join Developing,加入开发
+"If you like this project, you can buy me a beer to help me make it better!","如果你喜欢这个项目，可以买我一杯啤酒，让我做的更好！"
+Document,文档
+Demo,演示
+Quick Start,快速开始
+Install,安装
+Usage Format,Usage格式
+Options Format,Options格式
+Basic APIs,基本API
+Advanced APIs,高级API
+Experimental APIs,实验性API
+Serialize,序列化
+Known Issue,已知问题
+Debug & Develop,查错与开发
+Change Log & TODOs,修改日志与将来特性
+License,许可协议
+Why docpie?,为何应该用docpie？

@@ -1,0 +1,114 @@
+.get {
+  background: #1E5B94;
+  color: #fff;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.get-title {
+  font-size: 200%;
+  border: 2px solid #fff;
+  padding: 20px;
+  display: inline-block;
+}
+
+.get-btn {
+  background: #fff;
+}
+
+.example {
+  background: #fff;
+}
+
+.example-h2 {
+  text-align: center;
+  font-size: 150%;
+  margin: 40px 0;
+}
+
+.install {
+  background: #0bb59b;
+  padding: 50px 0;
+}
+
+.install-icon {
+  text-align: center;
+}
+
+.install-hr {
+  border-color: #149C88;
+}
+
+.install-title {
+  font-size: 140%;
+}
+
+.license {
+  background: #009999;
+  padding: 50px 0;
+}
+
+.license-title {
+  font-size: 140%;
+}
+
+.license-icon {
+  text-align: center;
+}
+
+.license-hr {
+  border-color: #149C88;
+}
+
+a.license-a:link {
+  color: #FFFFFF;
+}
+a.license-a:visited {
+  color: #E6E6E6;
+}
+a.license-a:hover {
+  color: #66FFFF;
+}
+a.license-a:active {
+  color: #52CCCC;
+}
+
+.detail {
+  background: #fff;
+}
+
+.detail-h2 {
+  text-align: center;
+  font-size: 150%;
+  margin: 40px 0;
+}
+
+.detail-h3 {
+  color: #1f8dd6;
+}
+
+.detail-p {
+  color: #7f8c8d;
+}
+
+.detail-mb {
+  margin-bottom: 30px;
+}
+
+.footer p {
+  color: #7f8c8d;
+  margin: 0;
+  padding: 15px 0;
+  text-align: center;
+  background: #2d3e50;
+}
+
+.start {
+    background: #fff;
+}
+
+.start-h2 {
+  text-align: center;
+  font-size: 150%;
+  margin: 40px 0;
+}

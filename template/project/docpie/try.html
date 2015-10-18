@@ -1,69 +1,39 @@
 {% extends "base.html" %}
+{% block active %}{% set active = "demo" %}{% end %}
 
 {% block site_description %}{{ _("Try docpie oneline! An easy & pythonic way to create POSIX command line interface") }}{% end %}
 
 {% block title %} Try {% end %}
 
 {% block neck %}
-  <style>
-    h1 {
-      text-align: center;
-      font-family: "Ubuntu Mono", monospace;
-      font-weight: bold !important;
-      font-size: 9rem !important;
-    }
-    i {
-      padding: 8px 0px 0px 0px;
-    }
-    label.am-form-label {
-      padding: 5px 0px 0px 0px !important;
-    }
-  </style>
+<link rel="stylesheet" href="/static/css/project/docpie/try.css" />
 {% end %}
 
 {% block stomach %}
 
 <div class="am-container">
-  <div class="am-cf">
-    <div class="am-fr">
-      Language/语言:
-        <a href="./?lang=zh" data-lang="zh" style="color: #000">
-          <span class="{{ 'am-icon-check-square-o' if locale.code[:2] == 'zh' else 'am-icon-square-o'}}">
-            Chinese/中文
-          </span>
-        </a>
-        |
-        <a href="./?lang=en" data-lang="en" style="color: #000">
-          <span class="{{ 'am-icon-check-square-o' if locale.code[:2] != 'zh' else 'am-icon-square-o'}}">
-            English/英文
-          </span>
-        </a>
-    </div>
-  </div>
-  <h1 style="margin: 0px 0px 16px 0px;"><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
-
-  <p><a href="../"><span class="am-icon-angle-double-left"> {{ _('back to introduction') }}</span></a></p>
+  <h1 class="try-title am-monospace";"><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
 
   <form class="am-form am-form-horizontal">
     <fieldset>
-      <legend class="am-monospace">docpie ({{_('Version')}} {{ version }} / {{ time }})</legend>
+      <legend class="am-monospace">docpie ({{ _('Version') }} {{ version }} / {{ time }})</legend>
 
-      <!-- pie.py -->
+      <!-- Editor -->
 
       <div class="am-form-group" style="font-weight: blod;">
-        <!-- <label for="doc">{{ _('Input your doc string') }}</label> -->
-        <div style="background-color: #3E4349; color:#fff; font-family: 'Ubuntu Mono', monospace; padding: 24px">
-          <span style="color: #999999;"># pie.py</span><br/>
-          <span style="color: #66FF66;">"""</span>
-            <textarea style="background-color: #3E4349; color:#66FF66; font-weight: bold; font-family: 'Ubuntu Mono', monospace;" name="doc" placeholder="{{ _('Input your doc string') }}" required="required">{{ result.get('doc', '') }}</textarea>
-          <span style="color: #66FF66;">"""</span><br><br>
-          <span style="color: #CC00FF;">from</span> docpie <span style="color: #CC00FF;">import</span> docpie</span><br/>
-          <span style="color: #CC00FF;">print</span>(docpie(<span style="color: #E06697;">__doc__</span>))
+        <div class="editor am-monospace">
+          <span class="comment"># <span data-role="file-name">pie.py</span></span><br/>
+          <span class="string">"""</span>
+            <textarea class="doc am-monospace" name="doc" placeholder="{{ _('Input your doc string') }}" required="required">{{ result.get('doc', '') }}</textarea>
+          <span class="string">"""</span><br>
+          <span class="keyword">from</span> docpie <span class="keyword">import</span> docpie</span><br/><br />
+          args = docpie(<span class="magic">__doc__</span>)<br/>
+          <span class="keyword">print</span>(args)
         </div>
       </div>
 
       <!-- Terminal -->
-      <div style="background-color: #610B4B; color: #fff; font-weight: bold; font-family: 'Ubuntu Mono', monospace; padding: 5px">
+      <div class="terminal am-monospace">
         <div class="am-form-group">
           <div style="width: 100%">
             <label for="argv" style="width: 150px; float: left; padding: 4px 0px 0px 0px">
@@ -80,7 +50,7 @@
           <button type="submit"
                   class="am-btn am-btn-success am-fr"
                   data-am-loading="{spinner: 'cog', loadingText: ''}">Enter &#9166;</button>
-          <pre style="background-color: #610B4B; color: #fff; font-weight: bold; font-family: 'Ubuntu Mono', monospace; padding: 0px; margin: 10px; border:0"><code>{{ result['output'] or '' }}</code></pre>
+          <pre class="nohighlight" style="background-color: #610B4B; color: #fff; font-weight: bold; padding: 0; margin: 10px; border:0"><code class="am-monospace">{{ result['output'] or '' }}</code></pre>
           <span data-role="end_dollar" style="color: #F3F781; {{ '' if result['output'] else 'display:none;' }}">$</span>
 
         </div>

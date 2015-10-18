@@ -214,3 +214,47 @@ var IMG_ALLOW = ['jpg', 'jpeg', 'png', 'gif'];
     });
   }
 })(window.jQuery);
+
+$(function(){
+  var codeblocks = $('pre code');
+  if ((!window.no_render_code_block) && codeblocks.length)
+  {
+    console.log('inject highlight');
+
+    var $cssref = document.createElement('link');
+    $cssref.setAttribute("rel", "stylesheet");
+    $cssref.setAttribute("type", "text/css");
+    $cssref.setAttribute("href", '//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/styles/default.min.css');
+
+    var $jsref = document.createElement('script');
+    $jsref.setAttribute('type', 'text/javascript');
+    $jsref.setAttribute('src', '//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.8.0/highlight.min.js');
+
+    document.getElementsByTagName("head")[0].appendChild($cssref);
+    document.getElementsByTagName("head")[0].appendChild($jsref);
+
+    var tried_time = 0;
+    var tried_max_time = 6;
+    var tried_interval = 5000;
+    var highlight_timerepeat = function()
+    {
+      if (!window.hljs)
+      {
+        tried_time += 1;
+        if (tried_time > tried_max_time)
+          return console.log('max retry reached, give up');
+        setTimeout(highlight_timerepeat, tried_interval);
+        console.log('try highlight ' + tried_time);
+      }
+      else
+      {
+        codeblocks.each(function(i, block)
+        {
+          hljs.highlightBlock(block);
+        });
+        console.log('highlighted');
+      }
+    };
+    highlight_timerepeat();
+  }
+});

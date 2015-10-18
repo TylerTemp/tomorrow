@@ -2,6 +2,7 @@
 import logging
 import time
 import json
+import shlex
 import docpie
 try:
     from io import StringIO
@@ -23,9 +24,29 @@ logger = logging.getLogger('tomorrow.project.docpie.try')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
 
-class TryHandler(BaseHandler):
+class StdoutRedirect(StringIO):
 
-    io = StringIO()
+    if sys.hexversion >= 0x03000000:
+        def u(self, string):
+            return string
+    else:
+        def u(self, string):
+            return unicode(string)
+
+    def write(self, s):
+        super(StdoutRedirect, self).write(self.u(s))
+
+    def __enter__(self):
+        self.real_out = sys.stdout
+        sys.stdout = self
+        return super(StdoutRedirect, self).__enter__()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout = self.real_out
+        return super(StdoutRedirect, self).__exit__(exc_type, exc_val, exc_tb)
+
+
+class TryHandler(BaseHandler):
 
     example = {
         'ship':{
@@ -40,11 +61,11 @@ Usage:
   naval_fate -v | --version
 
 Options:
-  -h -? --help   Show this screen.
-  -v --version   Show version.
-  --speed=<kn>   Speed in knots. [default: 10]
-  --moored       Moored (anchored) mine.
-  --drifting     Drifting mine.""",
+  -h -? --help     Show this screen.
+  -v --version     Show version.
+  --speed=<km/h>   Speed in knots. [default: 10]
+  --moored         Moored (anchored) mine.
+  --drifting       Drifting mine.""",
             'argv': 'ship Guardian move 10 50 --speed=20',
             'version': 'Naval Fate 2.0'
         },
@@ -193,12 +214,10 @@ Options:
         'myscript.py': {
             'doc': '''\
 Usage:
-    myscript.py rocks
-    $ python myscript.py rocks
-    $ sudo python myscript.py rocks
-
-This only accept `rocks` as argv.''',
-            'argv': 'rocks',
+    myscript.py config
+    $ python myscript.py make
+    $ sudo python myscript.py make install''',
+            'argv': 'make install',
             'name': 'myscript.py'
         },
         'helloworld': {
@@ -304,8 +323,17 @@ Test docopt issue #209 in docpie''',
             'argv': 'checkout .',
         },
         'mycopy.py': {
-            'doc': 'Usage: mycopy.py <source_file>... <target_directory> <config_file>',
-            'argv': './docpie/*.py ./docpie/test/*.py ~/my_project',
+            'doc': '''My copy script
+
+Usage:
+  cp.py [options] <source_file> <target_file>
+  cp.py [options] <source_file>... <target_directory>
+
+Options:
+  -h -? --help    print this screen
+  --version       print the version of this script
+  -v --verbose    print more information while  running''',
+            'argv': './docpie/*.py ./docpie/utest/*.py ~/my_project',
         },
         'attachopt': {
             'doc': 'Usage: prog -abc',
@@ -442,24 +470,23 @@ Usage: my_program [-docpie]''',
                     'case_sensitive': self.get_bool('case_sensitive'),
                 }
 
-                real_io, sys.stdout = sys.stdout, self.io
 
-                try:
-                    pie = docpie.docpie(doc, 'pie.py ' + argv, **config)
-                except BaseException as e:
-                    output = str(e)
-                    if output == 'None':  # pypy3
-                        output = ''
-                else:
-                    output = str(pie)
+                with StdoutRedirect() as stdout:
+                    args = shlex.split('pie.py ' + argv)
+                    try:
+                        # \r\n can not be handled correctly so far
+                        # It's a bug
+                        pie = docpie.docpie(doc.replace('\r\n', '\n'), args,
+                                            **config)
+                    except BaseException as e:
+                        # logger.critical(get_exc_plus())
+                        # in pypy3, sys.exit() gives e.args[0] = None
+                        output = e.args[0] or ''
+                    else:
+                        output = str(pie)
 
-                sys.stdout = real_io
-
-                if not output.strip():
-                    self.io.seek(0)
-                    output = self.io.read()
-                self.io.seek(0)
-                self.io.truncate()
+                    if not output.strip():
+                        output = stdout.read()
 
                 result['output'] = output
                 result.update(config)
@@ -473,9 +500,6 @@ Usage: my_program [-docpie]''',
             time=self.get_time(),
             result=result
         )
-
-    def get_bool(self, name):
-        return self.get_argument(name, '') not in ('', 'false')
 
     def get_time(self):
         if self.locale.code.startswith('en'):

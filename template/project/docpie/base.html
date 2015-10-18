@@ -2,17 +2,49 @@
 
 {% block main_title %} docpie — Python command-line interface utility {% end %}
 {% block site_kwd %}python,docpie,docopt,option,arguments,parsing,optparse,argparse,getopt{% end %}
+{% block site_description %}An easy &amp; pythonic way to create the command-line interface, all you need is to write a man page and let docpie parse command-line for you.{% end %}
 
 {% block webapp %}{% end %}
-{% block iconfont %}{% end %}
+{% block bg %}{% end %}
 
 {% block nav %}
+  {% block active %}{% set active = "home" %}{% end %}
+<header class="am-topbar am-topbar-fixed-top">
+  <div class="am-container">
+    <h1 class="am-topbar-brand">
+      <a href="/" class="am-monospace">[Docpie]</a>
+    </h1>
 
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
+            data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span
+        class="am-icon-bars"></span></button>
+
+    <div class="am-collapse am-topbar-collapse" id="collapse-head">
+      <ul class="am-nav am-nav-pills am-topbar-nav">
+        <li {% if active == 'home' %} class="am-active" {% end %}><a href="/">{{ _('Home') }}</a></li>
+        <li {% if active == 'document' %} class="am-active" {% end %}><a href="/document/quick-start/">{{ _('Document') }}</a></li>
+        <li {% if active == 'demo' %} class="am-active" {% end %}><a href="/try/">{{ _('Demo') }}</a></li>
+      </ul>
+
+      <div class="am-topbar-right">
+        <ul class="am-nav am-nav-pills am-topbar-nav">
+          {% if locale.code[:2].lower() == 'zh' %}
+          <li class="am-active am-disabled"><a href="./?lang=zh" data-lang="zh" style="color: #000"><span class="am-icon-check-square-o"> 中文</span></a></li>
+          <li><a href="./?lang=en" data-role='switch-lang' data-lang="en" style="color: #000"><span class="am-icon-square-o"> English</span></a></li>
+          {% else %}
+          <li><a href="./?lang=zh" data-role='switch-lang' data-lang="zh" style="color: #000"><span class="am-icon-square-o"> Chinese/中文</span></a></li>
+          <li class="am-active am-disabled"><a href="./?lang=en" data-lang="en" style="color: #000"><span class="am-icon-check-square-o"> English</span></a></li>
+          {% end %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
 {% end %}
 
 {% block body %}
 
-<a href="https://github.com/TylerTemp/docpie/"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://dn-tyler.qbox.me/forkme_left_darkblue.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
+<a href="https://github.com/TylerTemp/docpie/"><img style="position: absolute; top: 1; left: 0; border: 0;" src="https://dn-tyler.qbox.me/forkme_left_darkblue.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
 
   {% block stomach %}
   {% end %}
@@ -20,7 +52,29 @@
 {% end %}
 
 {% block navjs %}
+<script>
+  $("[data-role='switch-lang']").click(function(evt)
+  {
+    evt.preventDefault();
+    var self = $(this);
+    var to_lang = self.data('lang');
+    console.log('switch language from ' + locale + ' to ' + to_lang);
+    $("[data-role='switch-lang-dropper']").dropdown('close');
+    if (to_lang == locale)
+      return;
+    change_lang(to_lang);
+    var msg = '';
+    to_lang_2 = to_lang.substring(0, 2);
 
+    console.log('current: ' + locale + '; set to ' + to_lang_2);
+
+    var refresh = (to_lang_2 !== locale);
+    locale = to_lang_2;
+
+    if (refresh)
+      window.location.href = location.pathname;
+  });
+</script>
 {% end %}
 
 {% block footer %}
