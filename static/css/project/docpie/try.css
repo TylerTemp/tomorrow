@@ -51,6 +51,11 @@
     padding: 5px;
   }
 
+  .terminal-input {
+    background-color: #610B4B !important;
+    color: #fff !important;
+  }
+
   /*#argv {
     border: none;
   }*/

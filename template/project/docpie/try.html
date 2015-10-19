@@ -19,15 +19,15 @@
       <legend class="am-monospace">docpie ({{ _('Version') }} {{ version }} / {{ time }})</legend>
 
       <!-- Editor -->
-
       <div class="am-form-group" style="font-weight: blod;">
         <div class="editor am-monospace">
-          <span class="comment"># <span data-role="file-name">pie.py</span></span><br/>
+          <span class="comment"># <span data-role="file-name">{{ file_name }}</span></span><br/>
           <span class="string">"""</span>
-            <textarea class="doc am-monospace" name="doc" placeholder="{{ _('Input your doc string') }}" required="required">{{ result.get('doc', '') }}</textarea>
+            <textarea class="doc am-monospace" name="doc" placeholder="{{ _('Input your doc string') }}" required="required">{{ doc or '' }}</textarea>
           <span class="string">"""</span><br>
-          <span class="keyword">from</span> docpie <span class="keyword">import</span> docpie</span><br/><br />
-          args = docpie(<span class="magic">__doc__</span>)<br/>
+          <span class="keyword">from</span> docpie <span class="keyword">import</span> docpie<br/><br />
+          args = docpie(<span class="magic">__doc__</span><span id="config">{% for arg_name, arg_value in modified.items() %},
+            {{ arg_name }}={{ arg_value }}{% end %}</span>)<br/>
           <span class="keyword">print</span>(args)
         </div>
       </div>
@@ -37,21 +37,22 @@
         <div class="am-form-group">
           <div style="width: 100%">
             <label for="argv" style="width: 150px; float: left; padding: 4px 0px 0px 0px">
-              <span style="color: #F3F781;">$</span> python pie.py
+              <span style="color: #F3F781;">$</span> python <span data-role="file-name">{{ file_name }}</span>
             </label>
             <div style="overflow: hidden;">
-              <input type="text" id="argv" name="argv" value="{{ result.get('argv', '') }}" placeholder="{{ _('(Input Your command)') }}"
-                     style="background-color: #610B4B; color: #fff">
+              <input class="terminal-input" type="text" id="argv" name="argv" value="{{ argv or '' }}" placeholder="{{ _('(Input Your command)') }}"
+                     >
             </div>
           </div>
         </div>
 
+        <!-- Enter button -->
         <div class="am-cf">
           <button type="submit"
                   class="am-btn am-btn-success am-fr"
                   data-am-loading="{spinner: 'cog', loadingText: ''}">Enter &#9166;</button>
-          <pre class="nohighlight" style="background-color: #610B4B; color: #fff; font-weight: bold; padding: 0; margin: 10px; border:0"><code class="am-monospace">{{ result['output'] or '' }}</code></pre>
-          <span data-role="end_dollar" style="color: #F3F781; {{ '' if result['output'] else 'display:none;' }}">$</span>
+          <pre class="nohighlight" style="background-color: #610B4B; color: #fff; font-weight: bold; padding: 0; margin: 10px; border:0"><code class="am-monospace">{{ output or '' }}</code></pre>
+          <span data-role="end_dollar" style="color: #F3F781; {{ '' if output else 'display:none;' }}">$</span>
 
         </div>
 
@@ -61,37 +62,37 @@
 
       <hr class="am-divider am-divider-dashed" />
 
-      <p>{{ _('Config') }}: {% raw _('(See {link}here{end} for detail)').format(
-                                      link='<a href="https://github.com/TylerTemp/docpie/#basic-usage">',
-                                      end='</a>') %}
-
+      <p class="am-icon-wrench"> {{ _('Config') }}:</p>
+      <!-- help -->
       <div class="am-form-group">
         <label class="am-u-sm-3 am-u-md-2 am-form-label">help:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="help" value="true" {{'checked' if result.get('help', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="help" value="true" {{'checked' if config.get('help', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="help" value="false" {{'checked' if not result.get('help', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="help" value="false" {{'checked' if not config.get('help', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
 
+      <!-- version -->
       <div class="am-form-group">
         <label for="version" class="am-u-sm-3 am-u-md-2 am-form-label">version:</label>
         <div class="am-u-sm-9 am-u-md-10">
-          <input name="version" class="am-form-field" id="version" value="{{ result.get('version', '') or '' }}" placeholder="None">
+          <input name="version" class="am-form-field" id="version" value="{{ config.get('version', '') or '' }}" placeholder="None">
         </div>
       </div>
 
+      <!-- stdopt -->
       <div class="am-form-group">
         <label class="am-u-sm-3 am-u-md-2 am-form-label">stdopt:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="stdopt" value="true" {{'checked' if result.get('stdopt', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="stdopt" value="true" {{'checked' if config.get('stdopt', True) else ''}} data-am-ucheck> True
           </label>
-          <label class="am-radio-inline">
-            <input type="radio" name="stdopt" value="false" {{'checked' if not result.get('stdopt', True) else ''}} data-am-ucheck> False
+          <label class="am-radio-inline am-danger">
+            <input type="radio" name="stdopt" value="false" {{'checked' if not config.get('stdopt', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -100,10 +101,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">attachopt:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="attachopt" value="true" {{'checked' if result.get('attachopt', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="attachopt" value="true" {{'checked' if config.get('attachopt', True) else ''}} data-am-ucheck> True
           </label>
-          <label class="am-radio-inline">
-            <input type="radio" name="attachopt" value="false" {{'checked' if not result.get('attachopt', True) else ''}} data-am-ucheck> False
+          <label class="am-radio-inline am-danger">
+            <input type="radio" name="attachopt" value="false" {{'checked' if not config.get('attachopt', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -112,10 +113,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">attachvalue:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="attachvalue" value="true" {{'checked' if result.get('attachvalue', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="attachvalue" value="true" {{'checked' if config.get('attachvalue', True) else ''}} data-am-ucheck> True
           </label>
-          <label class="am-radio-inline">
-            <input type="radio" name="attachvalue" value="false" {{'checked' if not result.get('attachvalue', True) else ''}} data-am-ucheck> False
+          <label class="am-radio-inline am-danger">
+            <input type="radio" name="attachvalue" value="false" {{'checked' if not config.get('attachvalue', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -124,10 +125,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">auto2dashes:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="auto2dashes" value="true" {{'checked' if result.get('auto2dashes', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="auto2dashes" value="true" {{'checked' if config.get('auto2dashes', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="auto2dashes" value="false" {{'checked' if not result.get('auto2dashes', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="auto2dashes" value="false" {{'checked' if not config.get('auto2dashes', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -135,7 +136,7 @@
       <div class="am-form-group">
         <label for="name" class="am-u-sm-3 am-u-md-2 am-form-label">name:</label>
         <div class="am-u-sm-9 am-u-md-10">
-          <input name="name" class="am-form-field" id="name" value="{{ result.get('name', '') or '' }}" placeholder="None">
+          <input name="name" class="am-form-field" id="name" value="{{ config.get('name', '') or '' }}" placeholder="None">
         </div>
       </div>
 
@@ -143,10 +144,34 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">case_sensitive:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="case_sensitive" value="true" {{'checked' if result.get('case_sensitive', False) else ''}} data-am-ucheck> True
+            <input type="radio" name="case_sensitive" value="true" {{'checked' if config.get('case_sensitive', False) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="case_sensitive" value="false" {{'checked' if not result.get('case_sensitive', False) else ''}} data-am-ucheck> False
+            <input type="radio" name="case_sensitive" value="false" {{'checked' if not config.get('case_sensitive', False) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">optionsfirst:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="optionsfirst" value="true" {{'checked' if config.get('optionsfirst', False) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="optionsfirst" value="false" {{'checked' if not config.get('optionsfirst', False) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">appearedonly:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="appearedonly" value="true" {{'checked' if config.get('appearedonly', False) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="appearedonly" value="false" {{'checked' if not config.get('appearedonly', False) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -166,85 +191,8 @@
 
 {% block butt %}
 <script>
-  $(function(evt)
-  {
-    function h(e)
-    {
-      $(e).css({'height':'auto','overflow-y':'hidden'}).height(e.scrollHeight - 10);
-    }
-
-    $('textarea').each(function()
-    {
-      h(this);
-    }).on('input', function()
-    {
-      h(this);
-    });
-
-    $('[data-lang]').click(function(evt)
-    {
-      evt.preventDefault();
-      var $self = $(this)
-      var lang = $self.data('lang');
-      var $other = (lang == 'en'? $('[data-lang="zh"]'): $('[data-lang="en"]'));
-      $self.find('span')
-        .removeClass('am-icon-check-square-o am-icon-square-o')
-        .addClass('am-icon-check-square-o');
-      $other.find('span')
-        .removeClass('am-icon-check-square-o am-icon-square-o')
-        .addClass('am-icon-square-o');
-      if (locale == lang)
-        return;
-      console.log('change lang from ' + locale + ' to ' + lang);
-      change_lang(lang);
-      window.location.href = location.pathname;
-    });
-
-    $('form').submit(function(evt)
-    {
-      evt.preventDefault();
-      var $form = $(this);
-      var $button = $form.find('button[type="submit"]');
-      var $fieldset = $form.find('fieldset');
-      var $code = $form.find('pre code');
-      var $end_dollar = $form.find('[data-role="end_dollar"]');
-
-      var values = {};
-      $.each($form.serializeArray(), function(i, field)
-      {
-        values[field.name] = field.value;
-      });
-
-      $code.html(
-        '<center><i class="am-icon-spinner am-icon-pulse am-text-xxxl"></i></center>'
-      );
-
-      $button.button('loading');
-      $fieldset.prop('disabled', true);
-      $end_dollar.hide();
-
-      $.ajax(
-        location.pathname,
-        settings={
-          data: values,
-          type: 'get'
-        }
-      ).done(function(data, textStatus, jqXHR)
-      {
-        var obj = $.parseJSON(data);
-        $code.text(obj.output);
-      }).fail(function(jqXHR, textStatus, errorThrown)
-      {
-        var msg = _("Sorry, a server error occured, please refresh and retry") +
-                  " ({0}: {1})".format(jqXHR.status, errorThrown);
-        $code.text(msg);
-      }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
-      {
-        $button.button('reset');
-        $fieldset.prop('disabled', false);
-        $end_dollar.show();
-      })
-    });
-  });
+  var config_status = {% raw jsonlize(modified) %};
+  var no_render_code_block = true;
 </script>
+<script src="/static/js/project/docpie/try.js"></script>
 {% end %}

@@ -255,7 +255,6 @@ WeChat,微信
 Source Code,源代码
 Input your doc string,输入doc内容
 Config,设置
-(See {link}here{end} for detail),(详细请参见{link}这里{end})
 Not support here,这里不支持此参数
 (Input Your command),输入参数
 Find a bug? {mark}Tell me here!{mark_end},发现了个BUG？{mark}告诉我拍死它！{mark_end}
@@ -346,4 +345,4 @@ Known Issue,已知问题
 Debug & Develop,查错与开发
 Change Log & TODOs,修改日志与将来特性
 License,许可协议
-Why docpie?,为何应该用docpie？
+Why docpie?,为何选择docpie？

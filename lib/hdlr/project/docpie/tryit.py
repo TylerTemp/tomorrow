@@ -23,6 +23,11 @@ sys.path.pop(0)
 logger = logging.getLogger('tomorrow.project.docpie.try')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
+try:
+    StrType = basestring
+except NameError:
+    StrType = str
+
 
 class StdoutRedirect(StringIO):
 
@@ -63,11 +68,12 @@ Usage:
 Options:
   -h -? --help     Show this screen.
   -v --version     Show version.
-  --speed=<km/h>   Speed in knots. [default: 10]
+  --speed=<kn>     Speed in knots. [default: 10]
   --moored         Moored (anchored) mine.
   --drifting       Drifting mine.""",
             'argv': 'ship Guardian move 10 50 --speed=20',
-            'version': 'Naval Fate 2.0'
+            'version': 'Naval Fate 2.0',
+            'file_name': 'naval_fate'
         },
 
         'empty': {
@@ -448,16 +454,18 @@ Usage: my_program [-docpie]''',
 
     def get(self):
         example = self.get_argument('example', None)
-        result = {'doc': '', 'argv': '',
-                  'verison': '', 'name': '', 'output': ''}
+        result = self.default
+        result['file_name'] = 'pie.py'
+        output = None
         if example:
             result.update(self.example[example])
         else:
             doc = self.get_argument('doc', None)
-            result['doc'] = doc or ''
+            result['doc'] = doc or None
             if doc:
                 argv = self.get_argument('argv')
                 result['argv'] = argv
+                name = self.get_argument('name', None) or None
                 config = {
                     'help': self.get_bool('help'),
                     # may be empty str
@@ -466,10 +474,14 @@ Usage: my_program [-docpie]''',
                     'attachopt': self.get_bool('attachopt'),
                     'attachvalue': self.get_bool('attachvalue'),
                     'auto2dashes': self.get_bool('auto2dashes'),
-                    'name': self.get_argument('name', None) or None,
+                    'name': name,
                     'case_sensitive': self.get_bool('case_sensitive'),
+                    'optionsfirst': self.get_bool('optionsfirst'),
+                    'appearedonly': self.get_bool('appearedonly')
                 }
 
+                if name is not None:
+                    result['file_name'] = name
 
                 with StdoutRedirect() as stdout:
                     args = shlex.split('pie.py ' + argv)
@@ -479,7 +491,6 @@ Usage: my_program [-docpie]''',
                         pie = docpie.docpie(doc.replace('\r\n', '\n'), args,
                                             **config)
                     except BaseException as e:
-                        # logger.critical(get_exc_plus())
                         # in pypy3, sys.exit() gives e.args[0] = None
                         output = e.args[0] or ''
                     else:
@@ -488,20 +499,47 @@ Usage: my_program [-docpie]''',
                     if not output.strip():
                         output = stdout.read()
 
-                result['output'] = output
                 result.update(config)
 
         if self.is_ajax():
-            return self.write(json.dumps({'output': result['output']}))
+            return self.write(json.dumps({'output': output}))
 
         return self.render(
             'project/docpie/try.html',
             version=docpie.__version__,
             time=self.get_time(),
-            result=result
+            doc=result.pop('doc'),
+            argv=result.pop('argv'),
+            file_name=result.pop('file_name'),
+            output=output,
+            modified=self.diff_config(result),
+            config=result,
+            jsonlize=json.dumps
         )
 
     def get_time(self):
         if self.locale.code.startswith('en'):
             return time.ctime(self.t)
         return time.strftime('%m月%d日，%H:%M', time.localtime(self.t))
+
+    @property
+    def default(self):
+        return {'doc': None, 'argv': None, 'help': True, 'version': None,
+                'stdopt': True, 'attachopt': True, 'attachvalue': True,
+                'auto2dashes': True, 'name': None, 'case_sensitive': False,
+                'optionsfirst': False, 'appearedonly': False}  #, 'extra': {}}
+
+    def diff_config(self, source):
+        default = self.default
+        default.pop('doc')
+        default.pop('argv')
+        result = {}
+        for key, default_value in default.items():
+            # logger.debug('%s = %s / %s', key, default_value, source[key])
+            source_value = source[key]
+            if default_value != source_value:
+                if isinstance(source_value, StrType):
+                    source_value = repr(source_value)
+                result[key] = source_value
+
+        return result
