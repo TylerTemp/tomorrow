@@ -327,6 +327,7 @@ See 'git help <command>' for more information on a specific command.
 
 Test docopt issue #209 in docpie''',
             'argv': 'checkout .',
+            'optionsfirst': True
         },
         'mycopy.py': {
             'doc': '''My copy script

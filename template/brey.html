@@ -51,13 +51,13 @@
       class="am-icon-bars"></span></button>
   <div class="am-collapse am-topbar-collapse" id="nav-collapse">
     <ul class="am-nav am-nav-pills am-topbar-nav">
-      <li>
-        <a href="/exam/"><span class="am-icon-pencil-square-o"> {{ _('Pepare for JAVA') }}</span></a>
+      <li class="{{ 'am-active' if slug == 'java' else '' }}">
+        <a href="/java/"><span class="am-icon-pencil-square-o"> {{ _('Pepare for JAVA') }}</span></a>
       </li>
-      <li>
+      <li class="{{ 'am-active' if slug == 'booklist' else '' }}">
         <a href="/booklist/"><span class="am-icon-book"> {{ _('Booklist') }}</span></a>
       </li>
-      <li>
+      <li class="{{ 'am-active' if slug == 'news' else '' }}">
         <a href="/news/"><span class="am-icon-newspaper-o"> {{ _('News') }}</span></a>
       </li>
     </ul>
@@ -84,5 +84,7 @@
   </div>
 </div>
 {% end %}
+
+{% block navjs %}{% end %}
 
 {% block footer %}{% end %}

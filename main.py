@@ -117,10 +117,8 @@ class Application(tornado.web.Application):
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
              api.MdAndHtmlHandler),
-            (r'/brey/', brey.IndexHandler),
-            (r'/brey/exam/', brey.ExamHandler),
-            (r'/brey/booklist/', brey.BooklistHandler),
-            (r'/brey/news/', brey.NewsHandler),
+            (r'/brey/', brey.BreyHandler),
+            (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),
