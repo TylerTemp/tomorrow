@@ -45,11 +45,10 @@ class AuthorHandler(BaseHandler):
             author.remove()
             logger.info('delete author %s', name)
             return self.write(json.dumps({'error': 0, 'name': name}))
-        author.photo = self.get_argument('photo').strip() or None
-        author.description = self.get_argument('description').strip() or None
-        author.translation = self.get_argument('translation').strip() or None
+        author.photo = self.get_argument('photo', '').strip() or None
+        author.description = self.get_argument('description', '').strip() or None
+        author.translation = self.get_argument('translation', '').strip() or None
         author.save()
-#        logger.info('modify author %s', author)
         return self.write(json.dumps({
             'error': 0,
             'name': author.name,

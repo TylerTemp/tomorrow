@@ -21,9 +21,9 @@
 
     <div class="am-collapse am-topbar-collapse" id="collapse-head">
       <ul class="am-nav am-nav-pills am-topbar-nav">
-        <li {% if active == 'home' %} class="am-active" {% end %}><a href="/">{{ _('Home') }}</a></li>
-        <li {% if active == 'document' %} class="am-active" {% end %}><a href="/document/quick-start/">{{ _('Document') }}</a></li>
-        <li {% if active == 'demo' %} class="am-active" {% end %}><a href="/try/">{{ _('Demo') }}</a></li>
+        <li {% if active == 'home' %} class="am-active" {% end %}><a href="/" class="am-icon-home"> {{ _('Home') }}</a></li>
+        <li {% if active == 'document' %} class="am-active" {% end %}><a href="/document/quick-start/" class="am-icon-lightbulb-o"> {{ _('Document') }}</a></li>
+        <li {% if active == 'demo' %} class="am-active" {% end %}><a href="/try/" class="am-icon-flask"> {{ _('Demo') }}</a></li>
       </ul>
 
       <div class="am-topbar-right">

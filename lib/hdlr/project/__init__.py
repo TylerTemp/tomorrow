@@ -1,3 +1,3 @@
 from . import docpie
 
-__all__ = ('docpie',)
+__all__ = ('docpie')

@@ -21,8 +21,9 @@ import tornado.httpserver
 import tornado.options
 import tornado.locale
 import tornado.autoreload
+import tornado.ioloop
 
-from lib.tool.bashlog import stdoutlogger, filelogger, parse_level
+from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
 from lib.hdlr import brey
