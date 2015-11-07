@@ -48,7 +48,6 @@ class AuthorHandler(BaseHandler):
         author.photo = self.get_argument('photo', '').strip() or None
         author.description = self.get_argument('description', '').strip() or None
         author.translation = self.get_argument('translation', '').strip() or None
-        logger.info(author.translation)
         author.save()
         author = JollaAuthor(name)
         return self.write(json.dumps({
