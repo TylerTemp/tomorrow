@@ -649,8 +649,7 @@ class JollaAuthor(object):
         coll = self._jolla_author
         if self._info['_id'] is not None:
             _id = self._info['_id']
-            info['_id'] = _id
-            coll.replace_one({'id': _id}, info)
+            coll.replace_one({'_id': _id}, info)
         else:
             _id = coll.insert_one(info).inserted_id
         self._info.clear()
