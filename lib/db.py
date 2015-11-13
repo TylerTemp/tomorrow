@@ -715,6 +715,35 @@ class Email(object):
 
         return data
 
+
+class Wordz(object):
+    # spell: []
+    # meaning: {type: [], ...}
+    # pronounce: str
+    # tag: []
+    # by: str
+    # public: True/False
+
+    _wordz = db.wordz
+
+    def save(self, spell, meaning, pronounce, tag, by, public, _id=None):
+        result = locals()
+        result.pop('self')
+        if _id is None:
+            result.pop('_id')
+            self._wordz.insert_one(result)
+        else:
+            self._wordz.find_one_and_replace({'_id': _id}, result)
+
+    @classmethod
+    def find_by_user(cls, user):
+        return cls._wordz.find({'by': user})
+
+    @classmethod
+    def find_tag(cls, tag):
+        return cls._wordz.find({'tag': tag})
+
+
 if __name__ == '__main__':
     import docopt
     import os

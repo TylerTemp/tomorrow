@@ -111,6 +111,10 @@ class Application(tornado.web.Application):
             (r'/project/docpie/document/(?P<slug>[^/]+)/', project.docpie.DocHandler),
             (r'/project/docpie/try/', project.docpie.TryHandler),
 
+            (r'/project/wordz/', project.wordz.HomeHandler),
+            (r'/project/wordz/quiz/', project.wordz.QuizHandler),
+            (r'/project/wordz/modify/', project.wordz.ModifyHandler),
+
             (r'/blog/(?P<slug>[^/]+)/', PostHandler),
             (r'/edit/', EditHandler),
             (r'/edit/(?P<urlslug>[^/]+)/', EditHandler),

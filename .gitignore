@@ -75,6 +75,7 @@ comes.today.html
 log
 tomorrow.comes.today_sha256_en
 .idea
+cloud.comes.today_sha256_en.zip
 
 # store the uploaded file
 static/upload

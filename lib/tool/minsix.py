@@ -9,8 +9,8 @@ py2 = (not py3)
 # Note: avoid using 'x' mode when in py2 & pypy3
 # open
 try:  # py3 only
-    FileExistsError
-    FileNotFoundError
+    FileExistsError = FileExistsError  # for import
+    FileNotFoundError = FileNotFoundError  # for import
 except NameError:  # py2/pypy3
     pypy3 = py3
 
@@ -22,8 +22,6 @@ except NameError:  # py2/pypy3
 
 else:
     pypy3 = False
-    FileExistsError = FileExistsError  # for import
-    FileNotFoundError = FileNotFoundError  # for import
 
 if py2:
     import codecs

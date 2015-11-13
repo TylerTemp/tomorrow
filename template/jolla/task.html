@@ -132,7 +132,7 @@
     <div id="wysiwyg-area" style="{{ 'display:none' if use_md else '' }}">
       <div class="am-btn-toolbar" id="wysiwygEditorToolbar">
         {% module WysBar(upload_img=imgs, upload_file=files) %}
-        <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><span class="iconfont icon-md-solid"></span></button>
+        <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><span class="iconfont icon-mdsolid"></span></button>
         <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
       </div>
       <div class="am-form-field needsclick" id="wysiwygEditor" tabindex="0" contentEditable="true">

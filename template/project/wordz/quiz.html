@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block active %}{% set active = "quiz" %}{% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/select2.css">
+<style>
+  #color-page {
+    background-color: rgba(255, 255, 102, 0.1);
+  }
+
+  #page-box {
+    padding-top: 50px;
+    max-width: 750px;
+  }
+
+  .type {
+    font-weight: bold;
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+</style>
+{% end %}
+
+{% block body %}
+
+<div class="am-g-fixed am-u-sm-centered">
+    <div class="am-g am-margin-vertical-xl am-padding-vertical-xl" id="color-page">
+      <div class="am-form am-u-sm-12 am-u-sm-centered" id="page-box">
+        <!-- Words Page -->
+        <div id="words-page">
+          <h2>{{ _('Select Words to Get Start') }}</h2>
+          <hr />
+
+          <div class="am-form-group">
+            <label for="select-tags">{{ _('Select Tags of Glossary') }}</label>
+            <select class="am-form-filed" id="select-tags" multiple="multiple"  style="width: 100%">
+            {% for tag in tags %}
+              <option value="{{ tag }}">{{ tag }}</option>
+            {% end %}
+            </select>
+          </div>
+
+          <div class="am-form-group" id="word-list">
+            <table class="am-table am-table-striped am-table-hover am-table-compact">
+              <thead>
+                <tr>
+                  <th>
+                    <label class="am-checkbox">
+                      <input type="checkbox" data-am-ucheck>
+                    </label>
+                  </th>
+                  <th>{{ _('Spell') }}</th>
+                  <th>{{ _('Meaning') }}</th>
+                  <th>{{ _('Pronounce') }}</th>
+                  <th>{{ _('Tags') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="am-form-group am-cf">
+            <button class="am-btn am-btn-primary am-fr"
+                    id="tag-confirm"
+                    data-am-loading="{spinner: 'refresh', loadingText: ''}">
+              <span class="am-icon-check"></span>
+            </button>
+          </div>
+        </div>
+        <!-- Words Page | End -->
+        <!-- Config Page -->
+        <div id="config-page">
+          <h2>{{ _('Config') }}</h2>
+          <hr />
+
+          <div class="am-form-group">
+            <label class="am-checkbox">
+              <input id="config-repeat-till-right" type="checkbox" data-am-ucheck checked>
+              {{ _('Appear a word repeatedly till I spell it right') }}
+            </label>
+          </div>
+
+          <div class="am-form-group">
+            <label class="am-radio">
+              <input type="radio" name="config-order" value="shuffle" data-am-ucheck checked>
+              {{ _('Shuffle') }}
+            </label>
+            <label class="am-radio">
+              <input type="radio" name="config-order" value="ascend" data-am-ucheck>
+              {{ _('Ascend') }}
+            </label>
+            <label class="am-radio">
+              <input type="radio" name="config-order" value="descend" data-am-ucheck>
+              {{ _('Descend') }}
+            </label>
+          </div>
+
+          <div class="am-form-group">
+            <label for="config-show-chars">{{ _('Show first x character(s)') }}</label>
+            <input type="number" id="config-show-chars" value="0" min="0" style="display: inline !important; width: 50%">
+          </div>
+
+          <div class="am-form-group am-cf">
+            <button class="am-btn am-btn-primary am-fr am-icon-check"></button>
+          </div>
+
+        </div>
+        <!-- Config Page | End -->
+
+        <!-- Quiz Page -->
+        <div id="quiz-page">
+          <h2>{{ _('Quiz Begins!') }}</h2>
+          <hr />
+
+          <form id="quiz-form">
+            <fieldset>
+              <div class="am-form-group" id="meaning">
+                <p><span class="type">[v]</span> meanings </p>
+                <p><span class="type">[v]</span> meanings </p>
+                <p><span class="type">[v]</span> meanings </p>
+              </div>
+
+              <div class="am-form-group">
+                <input type="text" name="answer" placeholder="{{ _('Input your answer') }}">
+                <div class="am-progress am-progress-striped am-active">
+                  <div class="am-progress-bar" style="width: 0%">--/-- --%</div>
+                </div>
+              </div>
+
+              <div class="am-form-group am-cf">
+                <button type="submit" class="am-btn am-btn-primary am-fr am-icon-check"></button>
+                <button class="am-btn am-btn-default am-icon-flask"></button>
+                <button class="am-btn am-btn-default am-icon-cog"></button>
+                <button class="am-btn am-btn-default am-icon-save"></button>
+              </div>
+            </fieldset>
+          </form>
+
+        </div>
+        <!-- Quiz Page | End -->
+      </div>
+
+    </div>
+</div>
+
+
+{% end %}
+
+{% block butt %}
+<script src="/static/js/select2.min.js"></script>
+<script src="/static/js/project/wordz/quiz.js"></script>
+{% end %}

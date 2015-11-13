@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz | {% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
+<style>
+  .label {
+    margin-top: 0.6em;
+  }
+</style>
+{% end %}
+
+{% block active %}{% set active = "modify" %}{% end %}
+
+{% block body %}
+<form class="am-g-fixed am-center am-padding-xl">
+  <!-- Spell -->
+  <div class="am-g">
+    <label class="am-u-sm-2 am-text-right label" for="spell">
+      {{ _('Spell') }}
+    </label>
+    <div class="am-u-sm-10">
+      <input class="am-form-field" name="spell" id="spell" data-role="tagsinput">
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="am-g">
+    <label class="am-u-sm-2 am-text-right label">
+      {{ _('Type') }}
+    </label>
+    <label class="am-u-sm-10 label">
+      {{ _('Meaning') }}
+    </label>
+  </div>
+
+  <div class="am-g">
+    <div class="am-u-sm-2">
+      <input class="am-form-field">
+    </div>
+    <div class="am-u-sm-9">
+      <input class="am-form-field">
+    </div>
+    <button class="am-btn am-u-sm-1 am-icon-trash"></button>
+  </div>
+
+  <div class="am-g am-margin-vertical-sm">
+    <div class="am-u-sm-2">
+      <input class="am-form-field">
+    </div>
+    <div class="am-u-sm-9">
+      <input class="am-form-field">
+    </div>
+    <button class="am-btn am-u-sm-1 am-icon-trash"></button>
+  </div>
+
+</form>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/amazeui.tagsinput.min.js"></script>
+<script src="/static/js/project/wordz/modify.js"></script>
+{% end %}
