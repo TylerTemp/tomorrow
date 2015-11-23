@@ -42,6 +42,17 @@
               <option value="{{ tag }}">{{ tag }}</option>
             {% end %}
             </select>
+            <div class="am-progress am-progress-striped am-active">
+              <div class="am-progress-bar" style="width: 0" id="tags-loading"></div>
+            </div>
+          </div>
+
+          <div class="am-form-group am-cf">
+            <button class="am-btn am-btn-primary am-fr"
+                    id="tag-confirm"
+                    data-am-loading="{spinner: 'refresh', loadingText: ''}">
+              <span class="am-icon-check"></span>
+            </button>
           </div>
 
           <div class="am-form-group" id="word-list">
@@ -50,7 +61,7 @@
                 <tr>
                   <th>
                     <label class="am-checkbox">
-                      <input type="checkbox" data-am-ucheck>
+                      <input type="checkbox" id="select-all" data-am-ucheck>
                     </label>
                   </th>
                   <th>{{ _('Spell') }}</th>
@@ -64,52 +75,69 @@
             </table>
           </div>
 
-          <div class="am-form-group am-cf">
-            <button class="am-btn am-btn-primary am-fr"
-                    id="tag-confirm"
-                    data-am-loading="{spinner: 'refresh', loadingText: ''}">
-              <span class="am-icon-check"></span>
-            </button>
-          </div>
         </div>
         <!-- Words Page | End -->
         <!-- Config Page -->
-        <div id="config-page">
+        <form id="config-page">
           <h2>{{ _('Config') }}</h2>
           <hr />
+          <fieldset>
+            <div class="am-form-group">
+              <label class="am-checkbox">
+                <input name="spell" type="checkbox" data-am-ucheck checked>
+                {{ _('Give meaning and spell the word') }}
+              </label>
+              <label class="am-checkbox">
+                <input name="choose-word" type="checkbox" data-am-ucheck>
+                {{ _('Give meaning and choose the word') }}
+              </label>
+              <label class="am-checkbox">
+                <input name="choose-meaning" type="checkbox" data-am-ucheck>
+                {{ _('Give word and choose the meaning') }}
+              </label>
+            </div>
 
-          <div class="am-form-group">
-            <label class="am-checkbox">
-              <input id="config-repeat-till-right" type="checkbox" data-am-ucheck checked>
-              {{ _('Appear a word repeatedly till I spell it right') }}
-            </label>
-          </div>
+            <div class="am-form-group">
+              <label class="am-radio">
+                <input type="radio" name="order" value="shuffle" data-am-ucheck checked>
+                {{ _('Shuffle') }}
+              </label>
+              <label class="am-radio">
+                <input type="radio" name="order" value="ascend" data-am-ucheck>
+                {{ _('Ascend') }}
+              </label>
+              <label class="am-radio">
+                <input type="radio" name="order" value="descend" data-am-ucheck>
+                {{ _('Descend') }}
+              </label>
+            </div>
 
-          <div class="am-form-group">
-            <label class="am-radio">
-              <input type="radio" name="config-order" value="shuffle" data-am-ucheck checked>
-              {{ _('Shuffle') }}
-            </label>
-            <label class="am-radio">
-              <input type="radio" name="config-order" value="ascend" data-am-ucheck>
-              {{ _('Ascend') }}
-            </label>
-            <label class="am-radio">
-              <input type="radio" name="config-order" value="descend" data-am-ucheck>
-              {{ _('Descend') }}
-            </label>
-          </div>
+            <div class="am-form-group">
+              <label class="am-checkbox">
+                <input name="repeat-till-right" type="checkbox" data-am-ucheck checked>
+                {{ _('Appear a word repeatedly till I answer it right') }}
+              </label>
+            </div>
 
-          <div class="am-form-group">
-            <label for="config-show-chars">{{ _('Show first x character(s)') }}</label>
-            <input type="number" id="config-show-chars" value="0" min="0" style="display: inline !important; width: 50%">
-          </div>
+            <div class="am-form-group">
+              <label class="am-checkbox">
+                <input name="click-to-go" type="checkbox" data-am-ucheck checked>
+                {{ _('Click to go when choosing') }}
+              </label>
+            </div>
 
-          <div class="am-form-group am-cf">
-            <button class="am-btn am-btn-primary am-fr am-icon-check"></button>
-          </div>
+            <div class="am-form-group">
+              <label for="config-show-chars">{{ _('Show first x character(s)') }}</label>
+              <input type="number" id="config-show-chars" name="show-chars" value="0" min="0" style="display: inline !important; width: 50%" required>
+            </div>
 
-        </div>
+            <div class="am-form-group am-cf">
+              <button type="submit" class="am-btn am-btn-primary am-fr am-icon-check"></button>
+            </div>
+
+          </fieldset>
+
+        </form>
         <!-- Config Page | End -->
 
         <!-- Quiz Page -->
@@ -117,9 +145,10 @@
           <h2>{{ _('Quiz Begins!') }}</h2>
           <hr />
 
-          <form id="quiz-form">
+          <!-- Question/Spell | Start -->
+          <form id="form-spell">
             <fieldset>
-              <div class="am-form-group" id="meaning">
+              <div class="am-form-group" id="question-meaning-spell">
                 <p><span class="type">[v]</span> meanings </p>
                 <p><span class="type">[v]</span> meanings </p>
                 <p><span class="type">[v]</span> meanings </p>
@@ -127,19 +156,69 @@
 
               <div class="am-form-group">
                 <input type="text" name="answer" placeholder="{{ _('Input your answer') }}">
-                <div class="am-progress am-progress-striped am-active">
-                  <div class="am-progress-bar" style="width: 0%">--/-- --%</div>
-                </div>
               </div>
 
-              <div class="am-form-group am-cf">
-                <button type="submit" class="am-btn am-btn-primary am-fr am-icon-check"></button>
-                <button class="am-btn am-btn-default am-icon-flask"></button>
-                <button class="am-btn am-btn-default am-icon-cog"></button>
-                <button class="am-btn am-btn-default am-icon-save"></button>
+              <div class="am-form-group">
+                <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
               </div>
+
             </fieldset>
           </form>
+          <!-- Question/Spell | End -->
+
+          <!-- Question/Choose | Start -->
+          <form id="form-choose-word">
+            <fieldset>
+              <div class="am-form-group" id="question-choose">
+                <p><span class="type">[v]</span> meanings;
+                   <span class="type">[v]</span> meanings;
+                   <span class="type">[v]</span> meanings
+                </p>
+              </div>
+              <div class="am-form-group">
+                <label class="am-radio">
+                  <input type="radio" name="answer" value="A" data-am-ucheck>
+                  A. Choose one
+                </label>
+                <label class="am-radio">
+                  <input type="radio" name="answer" value="B" data-am-ucheck>
+                  B. Choose two
+                </label>
+                <label class="am-radio">
+                  <input type="radio" name="answer" value="C" data-am-ucheck>
+                  C. Choose three
+                </label>
+                <label class="am-radio">
+                  <input type="radio" name="answer" value="D" data-am-ucheck>
+                  D. Choose four
+                </label>
+              </div>
+              <div class="am-form-group">
+                <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
+              </div>
+
+            </fieldset>
+          </form>
+          <!-- Question/Choose | End -->
+
+          <!-- Status | Start -->
+          <div class="am-u-sm-8" id="display">
+            <div class="am-progress am-progress-striped am-active">
+              <div class="am-progress-bar" id="display-bar" style="width: 0">--/-- --%</div>
+            </div>
+            <div id="display-text">
+
+            </div>
+          </div>
+          <!-- Status | End -->
+
+          <!-- Config Button | Start -->
+          <div class="am-u-sm-4 am-cf">
+            <button class="am-btn am-btn-default am-icon-save am-fr" data-role="save"></button>
+            <button class="am-btn am-btn-default am-icon-cog am-fr" data-role="re-config"></button>
+            <button class="am-btn am-btn-default am-icon-flask am-fr" data-role="re-select"></button>
+          </div>
+          <!-- Config Button | End -->
 
         </div>
         <!-- Quiz Page | End -->

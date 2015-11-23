@@ -130,13 +130,13 @@ class EditHandler(BaseHandler):
             'tag': tag,
             'headimg': headimg or None,
             'cover': cover or None,
+            'edittime': time.time(),
             'index': None
         }
 
         if article.new:
             result.update({
                 'createtime': time.time(),
-                'edittime': time.time()
             })
 
         article.get().update(result)

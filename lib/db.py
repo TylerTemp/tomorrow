@@ -419,10 +419,9 @@ class Article(object):
     # title
     # slug: title.replace(" ", "-")(Unique)
     # board
-    # content
-    # license(int)
     # author
     # email
+    # zh/en = {title: ,content: ,description}
     # show_email: True/False
     # transinfo: Jolla translation only
     # transinfo = {link: , author: , slug: , title: , status:};
