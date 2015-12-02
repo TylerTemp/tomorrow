@@ -1,0 +1,57 @@
+{% extends "../../amaze_jquery_base.html" %}
+
+{% block head_end %}
+<link rel="stylesheet" href="https://dn-tomorrow.qbox.me/admin.css">
+<style>
+  .highlight {
+    background-color: #F7F7F7;
+  }
+</style>
+  {% block neck %}
+  {% end %}
+
+{% end %}
+
+{% block body %}
+  {% block nav %}
+  {% end %}
+
+  <!--[if lte IE 9]>
+  <p class="browsehappy">
+  {% raw _("""You are using a browser which is <strong>out of date</strong> and we can't handle it correctly. Please <a href="http://updatemybrowser.org/" target="_blank">update your browser</a>, THX!""") %}
+  </p>
+  <![endif]-->
+
+  <div class="am-cf admin-main">
+
+    <!-- sidebar start -->
+    <div class="admin-sidebar am-offcanvas" id="admin-offcanvas">
+      <div class="am-offcanvas-bar admin-offcanvas-bar">
+        <ul class="am-list admin-sidebar-list">
+          {% block side_bar %}
+          {% end %}
+        </ul>
+      </div>
+    </div>
+
+    <!-- content start -->
+    <div class="admin-content">
+      <div class="am-cf am-padding">
+        <div class="am-fl am-cf">{% block guide %}{% end %}</div>
+      </div>
+      {% block content %}
+      {% end %}
+    </div>
+
+  </div>
+<a class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+{% end %}
+
+{% block body_end %}
+  <!--[if lt IE 9]>
+  <script src="https://dn-tomorrow.qbox.me/modernizr.2.8.3.js"></script>
+  <script src="https://dn-tomorrow.qbox.me/amazeui.ie8polyfill.min.js"></script>
+  <![endif]-->
+  {% block butt %}
+  {% end %}
+{% end %}

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block subtitle %} {{ _('Message') }}{% end %}
+
+{% block highlight %}
+  {% set highlight = ['message'] %}
+{% end %}
+
+{% block guide %}<span class="am-icon-comments-o"> <strong class="am-text-primary am-text-lg">{{ _("Message") }}</strong></span> / <small>{{ _("All messages you received") }}</small>{% end %}
+
+{% block content %}
+
+<hr class="am-divider am-divider-default"/>
+
+<form class="am-form" method="post" action="{{ request.uri }}">
+  <fieldset class="am-padding-horizontal-lg">
+    {% raw xsrf_form_html() %}
+    <div class="am-form-group">
+      <label for="user">{{ _('To') }}:</label>
+      <input type="text" id="user" name="user" placeholder="{{ _('Enter user name or email') }}">
+      <span class="am-icon-info-circle am-text-primary"></span> <small>{{ _('Leave it blank if you want to send to site owner') }}</small>
+    </div>
+    <div class="am-form-group">
+      <label for="content">{{ _('Message') }}:</label>
+      <textarea id="content" name="msg" placeholder="{{ _('Enter the content') }}"></textarea>
+    </div>
+    <div class="am-form-group am-cf">
+      <button
+          type="submit"
+          class="am-btn am-btn-primary"
+          id="sumbit"
+          data-am-loading="{spinner: 'spinner', loadingText: '', resetText: '<span class=&#34;am-icon-send&#34;> {{ _('Send') }}</span>'}">
+        <span class="am-icon-send"> {{ _('Send') }}</span>
+      </button>
+    </div>
+  </fieldset>
+</form>
+
+<div id="info-panel" class="am-padding-horizontal-lg">
+</div>
+
+<div class="am-padding-horizontal-lg">
+  <hr class="am-divider am-divider-default"/>
+</div>
+
+<div class="am-padding">
+  {% set idx = -1 %}
+  <ul class="am-comments-list am-comments-list-flip">
+  {% for idx, each in enumerate(msg) %}
+    <li class="am-comment">
+      {% if each['from'] is None %}
+        <span class="am-comment-avatar am-btn am-btn-primary am-icon-user-plus"></span>
+      {% elif '@' in each['from'] %}
+        <a class="am-comment-avatar am-btn am-btn-warning" href="mailto:{{ each['from'] }}"><span class="am-icon-envelope-o"></span></a>
+      {% elif each['avatar'] is None %}
+        <a href="{{ each['url'] }}">
+          <span class="am-icon-user am-comment-avatar am-btn am-btn-success"></span>
+        </a>
+      {% else %}
+        <a href="{{ each['url'] }}">
+          <img class="am-comment-avatar" src="{{ each['avatar'] or '/static/img/user.jpg' }}"/>
+        </a>
+      {% end %}
+      <div class="am-comment-main">
+        <header class="am-comment-hd">
+          <div class="am-comment-meta">
+            {% if each['url'] is None %}
+              <span class="am-comment-author">{% raw each['from'] or '<span class="am-icon-star"> System</span>' %}</span>
+            {% else %}
+              <u><a class="am-comment-author" href="{{ each['url'] }}" class="am-comment-author">{{ each['from'] }}</a></u>
+            {% end %}
+            |
+            <time datetime="{{ each['time_attr'] }}">{{ each['time_read'] }}</time>
+          </div>
+        </header>
+
+        <div class="am-comment-bd">
+          {% raw each['content'] %}
+        </div>
+        <div data-role="info-panel">
+        </div>
+        <div class="am-cf">
+          <button
+              class="am-btn am-btn-warning am-btn-xs am-round am-fr am-margin-xs"
+              data-am-popover="{content: '{{ _('Delete') }}', trigger: 'hover focus'}"
+              data-role="delete"
+              data-am-loading="{spinner: 'times', loadingText: '', resetText: '<span class=&#34;am-icon-trash&#34;></span>'}"
+              data-id="{{ each['id'] }}">
+            <span class="am-icon-trash"></span>
+          </button>
+          {% if each['from'] is not None and '@' in each['from'] %}
+            <a
+                href="mailto:{{ each['from'] }}"
+                class="am-btn am-btn-primary am-btn-xs am-round am-fr am-margin-xs"
+                data-am-popover="{content: '{{ _('Send an Email') }}', trigger: 'hover focus'}">
+              <span class="am-icon-envelope"></span>
+            </a>
+          {% else %}
+          <button
+              class="am-btn am-btn-primary am-btn-xs am-round am-fr am-margin-xs"
+              data-am-popover="{content: '{{ _('Reply') }}', trigger: 'hover focus'}"
+              data-role="reply"
+              data-name="{{ each['from'] or '' }}">
+            <span class="am-icon-send"></span>
+          </button>
+          {% end %}
+        </div>
+      </div>
+    </li>
+  {% else %}
+  </ul>
+    {% if idx == -1 %}
+    <div class="am-alert" data-am-alert>
+      <button type="button" class="am-close">&times;</button>
+      <p>{{ _("You have no unread message") }}</p>
+    </div>
+    {% end %}
+
+  {% end %}
+</div>
+{% end %}
+
+{% block leg %}
+  <script src="/static/js/dash/message.js"></script>
+{% end %}

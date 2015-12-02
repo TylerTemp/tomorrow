@@ -1,0 +1,330 @@
+{% extends "../base.html" %}
+
+{% block subtitle %} | {{ _('Message') }} &#60; {{ _('Manage') }}{% end %}
+
+{% block highlight %}
+  {% set highlight = ['manage', 'manage-message'] %}
+{% end %}
+
+{% block guide %}
+<span class="am-icon-comments-o"> <strong class="am-text-primary am-text-lg">{{ _("Message") }}</strong></span> / <small>{{ _("Manage all the messages in this site") }}</small>
+{% end %}
+
+{% block content %}
+
+<hr class="am-divider am-divider-default">
+
+<div class="am-margin-lg" style="text-align:center">
+  <label for="select-user">{{ _('select a user') }}</label>
+  <select name="user" id="select-user" data-am-selected="{searchBox: 1, placeholder: '{{ _('select a user') }}', maxHeight: '500px'}">
+    <option value="." selected>&lt;Admin&gt;</option>
+    {% for each in all_users %}
+    <option value="{{ each['user'] or each['email'] }}">{{ '%s/%s' % (each['user'], each['email']) }}</option>
+    {% end %}
+  </select>
+</div>
+
+<div class="am-tabs" data-am-tabs>
+  <ul class="am-tabs-nav am-nav am-nav-tabs">
+    <li class="am-active"><a href="#sent-tab"><span class="am-icon-download"> {{ _('Recived Message') }}</span></a></li>
+    <li><a href="#received-tab"><span class="am-icon-upload"> {{ _('Sent Message')}}</span></a></li>
+    <li><a href="#send-tab"><span class="am-icon-send"> {{ _('Send') }}</span></a></li>
+  </ul>
+
+  <div class="am-tabs-bd">
+    <div class="am-tab-panel am-fade am-in am-active" id="sent-tab">
+    {% set num = -1 %}
+      <ul class="am-comments-list am-comments-list-flip">
+      {% for num, each in enumerate(receive) %}
+
+      <li class="am-comment">
+        {% if each['from'] is None %}
+          <span class="am-comment-avatar am-btn am-btn-primary am-icon-user-plus"></span>
+        {% elif '@' in each['from'] %}
+          <a class="am-comment-avatar am-btn am-btn-warning" href="mailto:{{ each['from'] }}"><span class="am-icon-envelope-o"></span></a>
+        {% else %}
+          <a href="/hi/{{ quote(each['from']) }}/message/">
+            <img class="am-comment-avatar" src="{{ each['from_avatar'] or '/static/img/user.jpg' }}"/>
+          </a>
+        {% end %}
+        <div class="am-comment-main">
+          <header class="am-comment-hd">
+            <div class="am-comment-meta">
+              {% if each['from'] is None %}
+                <div class="am-comment-author am-inline"><span class="am-icon-star"> System</span></div>
+              {% else %}
+                <u><a class="am-comment-author" href="/hi/{{ quote(each['from']) }}/message/" class="am-comment-author">{{ each['from'] }}</a></u>
+              {% end %}
+              |
+              <time datetime="{{ each['time_attr'] }}">{{ each['time_read'] }}</time>
+            </div>
+          </header>
+          <div class="am-comment-bd">
+            <form class="am-form am-form-horizontal" action="{{ request.uri }}" method="post">
+              <fieldset>
+                {% raw xsrf_form_html() %}
+                <input type="hidden" name="action" value="modify">
+                <input type="hidden" name="id" value="{{ each['_id'] }}">
+                <div class="am-g-collapse">
+                  <div class="am-form-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-download"></i>
+                    <input class="am-form-field" name="send-to" placeholder="Administor" value="{{ each['to'] or each['to_email'] or '' }}">
+                  </div>
+                  <div class="am-form-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-upload"></i>
+                    <input class="am-form-field" name="send-by" placeholder="Administor" value="{{ each['from'] or each['from_email'] or '' }}">
+                  </div>
+                </div>
+
+                <div class="am-g-collapse">
+                  <div class="am-from-group am-input-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-calendar"></i>
+                    <input type="text"
+                           name="date"
+                           value="{{ each['date_read'] }}"
+                           placeholder="mm/dd/yy({{ _('Default: today') }})"
+                           data-am-datepicker="{ {% if not locale.code.startswith('zh') %} locale: 'en_US', {% end %} autoClose: 0, format: 'mm/dd/yy'}"
+                           style="padding-left:25px;"/>
+                  </div>
+                  <div class="am-from-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-clock-o"></i>
+                    <input type="text"
+                           name="time"
+                           value="{{ each['time_pick'] }}"
+                           placeholder="HH:MM:SS({{ _('Default: now') }})"
+                           style="padding-left:25px;"
+                    />
+                  </div>
+                </div>
+                <div class="am-g-collapse">
+                  <div class="am-form-group am-u-sm-12">
+                    <textarea name="content" class="am-margin-top" style="height:100px" required placeholder="{{ _('Enter the message content') }} (&#xe601; {{ _('MarkDown Syntax Supported') }})">
+                      {{ each['content'] }}
+                    </textarea>
+                  </div>
+                </div>
+                <div class="am-form-group am-u-sm-12">
+                  <label class="am-checkbox">
+                    <input type="checkbox" name="sender-deleted"  {{ 'checked' if each['sender_delete'] else ''}}> {{ 'Sender Deleted' }}
+                  </label>
+                </div>
+                <div class="am-form-group am-u-sm-12">
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="-1" {{ 'checked' if each['receiver_status'] == -1 else '' }}> {{ _('Read') }}
+                  </label>
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="0" {{ 'checked' if each['receiver_status'] == 0 else '' }}> {{ _('Unread') }}
+                  </label>
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="1" {{ 'checked' if each['receiver_status'] == 1 else '' }}> {{ _('Deleted') }}
+                  </label>
+                </div>
+                <div class="am-form-group am-cf">
+                  <button
+                      type="submit"
+                      class="am-btn am-btn-primary am-fr"
+                      data-am-loading="{spinner:'refresh', loadingText: ''}">
+                    <span class="am-icon-save"></span>
+                  </button>
+                  <button
+                      class="am-btn am-btn-warning am-fr am-margin-right"
+                      data-role="delete"
+                      data-am-loading="{spinner:'cog', loadingText: ''}">
+                    <span class="am-icon-trash"></span>
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </li>
+      {% else %}
+        {% if num == -1 %}
+        <div class="am-alert" data-am-alert>
+          <button type="button" class="am-close">&times;</button>
+          <p>{{ _("You have no unread message") }}</p>
+        </div>
+        {% end %}
+      </ul>
+      {% end %}
+    </div>
+
+
+    <div class="am-tab-panel am-fade" id="received-tab">
+    <ul class="am-comments-list am-comments-list-flip">
+    {% set num = -1 %}
+    {% for num, each in enumerate(sent) %}
+
+
+      <li class="am-comment am-comment-flip">
+        {% if each['to'] is None %}
+          <span class="am-comment-avatar am-btn am-btn-primary am-icon-user-plus"></span>
+        {% elif '@' in each['to'] %}
+          <a class="am-comment-avatar am-btn am-btn-warning" href="mailto:{{ each['to'] }}"><span class="am-icon-envelope-o"></span></a>
+        {% else %}
+          <a href="/hi/{{ quote(each['to']) }}/message/">
+            <img class="am-comment-avatar" src="{{ each['to_avatar'] or '/static/img/user.jpg' }}"/>
+          </a>
+        {% end %}
+        <div class="am-comment-main">
+          <header class="am-comment-hd">
+            <div class="am-comment-meta">
+              {% if each['to'] is None %}
+                <div class="am-comment-author am-inline"><span class="am-icon-star"> System</span></div>
+              {% else %}
+                <u><a class="am-comment-author" href="/hi/{{ quote(each['to']) }}/message/" class="am-comment-author">{{ each['to'] }}</a></u>
+              {% end %}
+              |
+              <time datetime="{{ each['time_attr'] }}">{{ each['time_read'] }}</time>
+            </div>
+          </header>
+          <div class="am-comment-bd">
+            <form class="am-form am-g-collapse" action="{{ request.uri }}" method="post">
+              <fieldset>
+                {% raw xsrf_form_html() %}
+                <input type="hidden" name="action" value="modify">
+                <input type="hidden" name="id" value="{{ each['_id'] }}">
+                <div class="am-g-collapse">
+                  <div class="am-form-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-download"></i>
+                    <input class="am-form-field" name="send-to" placeholder="Administor" value="{{ each['to'] or each['to_email'] or '' }}">
+                  </div>
+                  <div class="am-form-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-upload"></i>
+                    <input class="am-form-field" name="send-by" placeholder="Administor" value="{{ each['from'] or each['from_email'] or '' }}">
+                  </div>
+                </div>
+
+                <div class="am-g-collapse">
+                  <div class="am-from-group am-input-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-calendar"></i>
+                    <input type="text"
+                           name="date"
+                           value="{{ each['date_read'] }}"
+                           placeholder="mm/dd/yy({{ _('Default: today') }})"
+                           data-am-datepicker="{ {% if not locale.code.startswith('zh') %} locale: 'en_US', {% end %} autoClose: 0, format: 'mm/dd/yy'}"
+                           style="padding-left:25px;"/>
+                  </div>
+                  <div class="am-from-group am-u-sm-12 am-u-md-6 am-form-icon">
+                    <i class="am-icon-clock-o"></i>
+                    <input type="text"
+                           name="time"
+                           value="{{ each['time_pick'] }}"
+                           placeholder="HH:MM:SS({{ _('Default: now') }})"
+                           style="padding-left:25px;"
+                    />
+                  </div>
+                </div>
+                <div class="am-g-collapse">
+                  <div class="am-form-group am-u-sm-12">
+                    <textarea name="content" class="am-margin-top" style="height:100px" required placeholder="{{ _('Enter the message content') }} (&#xe601; {{ _('MarkDown Syntax Supported') }})">
+                      {{ each['content'] }}
+                    </textarea>
+                  </div>
+                </div>
+                <div class="am-form-group am-u-sm-12">
+                  <label class="am-checkbox">
+                    <input type="checkbox" name="sender-deleted"  {{ 'checked' if each['sender_delete'] else ''}}> {{ 'Sender Deleted' }}
+                  </label>
+                </div>
+                <div class="am-form-group am-u-sm-12">
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="-1" {{ 'checked' if each['receiver_status'] == -1 else '' }}> {{ _('Read') }}
+                  </label>
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="0" {{ 'checked' if each['receiver_status'] == 0 else '' }}> {{ _('Unread') }}
+                  </label>
+                  <label class="am-radio-inline">
+                    <input type="radio" name="receiver-status" value="1" {{ 'checked' if each['receiver_status'] == 1 else '' }}> {{ _('Deleted') }}
+                  </label>
+                </div>
+                <div class="am-form-group am-cf">
+                  <button
+                      type="submit"
+                      class="am-btn am-btn-primary am-fr"
+                      data-am-loading="{spinner:'refresh', loadingText: ''}">
+                    <span class="am-icon-save"></span>
+                  </button>
+                  <button
+                      class="am-btn am-btn-warning am-fr am-margin-right"
+                      data-role="delete"
+                      data-am-loading="{spinner:'cog', loadingText: ''}">
+                    <span class="am-icon-trash"></span>
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </li>
+
+
+
+
+    {% else %}
+      {% if num == -1 %}
+      <div class="am-alert" data-am-alert>
+        <button type="button" class="am-close">&times;</button>
+        <p>{{ _("You havn't sent any message or all messages have been deleted") }}</p>
+      </div>
+      {% end %}
+    </ul>
+    {% end %}
+    </div>
+    <div class="am-tab-panel am-fade" id="send-tab">
+      <form class="am-form am-form-horizontal" action="{{ request.uri }}" method="post" data-am-validator>
+        <fieldset>
+          {% raw xsrf_form_html() %}
+          <input name="action" value="send" style="display:none"/>
+          <div class="am-form-group am-u-sm-6">
+            <label for="send-to">{{ _('Send to') }}</label>
+            <select id="send-to" name="send-to" minchecked="1" required multiple minlength="1" data-am-selected="{btnWidth: '80%', searchBox: 1, placeholder: '{{ _('select receivers') }}', maxHeight: '500px'}">
+              <option value=".">&lt;Admin&gt;</option>
+              {% for each in all_users %}
+              <option value="{{ each['_id'] }}">{{ '%s/%s' % (each['user'], each['email']) }}</option>
+              {% end %}
+            </select>
+          </div>
+          <div class="am-form-group am-u-sm-6">
+            <label for="send-by">{{ _('Send by') }}</label>
+            <select id="send-by" name="send-by" required data-am-selected="{btnWidth: '80%', searchBox: 1, placeholder: '{{ _('select a sender') }}', maxHeight: '500px'}">
+              <option value="." selected="selected">&lt;Admin&gt;</option>
+              {% for each in all_users %}
+              <option value="{{ each['_id'] }}">{{ '%s/%s' % (each['user'], each['email']) }}</option>
+              {% end %}
+            </select>
+          </div>
+          <div class="am-form-group">
+            <input type="text" name="title" class="am-novalidate" placeholder="Enter the title (sending email required)"/>
+          </div>
+          <div class="am-form-group">
+            <textarea name="content" style="height:150px" required placeholder="{{ _('Enter the message content') }} (&#xe601; {{ _('MarkDown Syntax Supported') }})"></textarea>
+          </div>
+          <div class="am-form-group">
+            <label class="am-checkbox">
+              <input type="checkbox" name="method" value="email" minchecked="1" required data-am-ucheck checked="checked"> {{ _('Send as email') }}
+            </label>
+            <label class="am-checkbox">
+              <input type="checkbox" name="method" value="msg" data-am-ucheck checked="checked"> {{ _('Send as message') }}
+            </label>
+          </div>
+          <div class="am-form-group am-cf">
+            <button
+                class="am-btn am-btn-primary am-fr"
+                type="submit"
+                data-am-loading="{spinner: 'spinner', loadingText: ''}">
+              <span class="am-icon-paper-plane-o"> {{ _('Send') }}</span>
+            </button>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% end %}
+
+
+{% block leg %}
+<script src="/static/js/dash/manage/message.js"></script>
+{% end %}

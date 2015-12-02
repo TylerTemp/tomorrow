@@ -1,0 +1,41 @@
+header img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+}
+
+img.cover-img {
+  width: 100%;
+  height: auto;
+}
+
+.white {
+  background-color: #fff !important;
+}
+
+#bread-crumbs {
+  color: #fff;
+}
+
+#bread-crumbs a:link {
+  color: #fff;
+}
+#bread-crumbs a:visited {
+  color: #fff;
+}
+#bread-crumbs a:hover {
+  color: #fff;
+  text-decoration:underline;
+}
+
+.am-footer-default {
+  background-color: transparent;
+  color: #fff;
+}
+.am-footer-default p {
+  color: #fff;
+}
+
+.am-footer-default a {
+  color: #fff;
+}

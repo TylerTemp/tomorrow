@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{{ _("Signin") }}{% end %}
+{% block neck %}
+<style>
+  .header {
+    text-align: center;
+  }
+  .header h1 {
+    font-size: 200%;
+    color: #333;
+    margin-top: 30px;
+  }
+  .header p {
+    font-size: 14px;
+  }
+</style>
+{% end %}
+
+{% block body %}
+<div class="header">
+  <div class="am-g">
+    <a href="/"><h1>{{ _('Tomorrow Comes Today') }}</h1></a>
+  </div>
+  <hr class="am-divider am-divider-default"/>
+</div>
+<div class="am-g">
+  <div class="am-u-lg-6 am-u-md-8 am-u-sm-centered">
+    <h2>{{ _('Signin') }}</h2>
+    <hr class="am-divider am-divider-default">
+
+    {% if not ssl %}
+    <div class="am-alert am-alert-danger" data-am-alert>
+      <button type="button" class="am-close">&times;</button>
+      <p>{{ _("Sorry, my site doesn't support SSL secure data transfer so far. Please ensure you're under a secure network environment.") }}</p>
+    </div>
+    {% end %}
+
+    <form method="post" class="am-form" action="{{ request.uri }}">
+      {% raw xsrf_form_html() %}
+      <div class="am-form-group">
+        <label for="user">{{ _('User Name') }}:</label>
+        <input type="text" name="user" id="user" placeholder="{{ _('Enter your user name') }}">
+        <!-- <label class="error-panel"></label> -->
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-form-group">
+        <label for="email">{{ _('Email') }}:</label>
+        <input type="email" name="email" id="email" placeholder="{{ _('Enter your email') }}">
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-form-group">
+        <label for="pwd">{{ _('Password') }}:</label>
+        <input type="password" name="pwd" id="pwd" placeholder="{{ _('Enter your password') }}">
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-form-group">
+        <label for="re-pwd">{{ _('Confirm Password') }}:</label>
+        <input type="password" id="re-pwd" placeholder="{{ _('Re-enter your password') }}">
+        <label class="error-panel" style="display:none"></label>
+      </div>
+      <div class="am-alert am-alert-danger" id="server-error" style="display:none">
+      </div>
+      <div class="am-cf">
+        <label>{{ _("Already have an account?") }} <a href="{{ login }}">{{ _("Login") }}</a></label>
+        <button type="button" id="submit"
+            class="am-btn am-btn-primary am-btn-sm am-fr"
+            data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">
+          {{ _('Signin') }}
+        </button>
+      </div>
+    </form>
+
+    <hr>
+  </div>
+</div>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/auth/signin.js"></script>
+{% end %}

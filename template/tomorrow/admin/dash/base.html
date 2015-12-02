@@ -1,0 +1,100 @@
+{% extends "../admin_base.html" %}
+
+{% block title %}
+Hi, {{ user_name }}{% block subtitle %}{% end %}
+{% end %}
+
+{% block nav %}
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <a href="/"><strong>{{ _("Tomorrow Comes Today") }}</strong></a>  | <span class="am-icon-cog"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
+  </div>
+  <div class="am-dropdown am-topbar-brand am-fr" data-am-dropdown  data-role="switch-lang-dropper">
+    <button class="am-btn am-btn-success am-dropdown-toggle am-btn-sm"><span class="am-icon-globe"> </span> <span class="am-icon-caret-down"></span></button>
+    <ul class="am-dropdown-content">
+      <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+        <a href="./?lang=zh" data-role="switch-lang" data-lang="zh"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+      </li>
+      <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+        <a href="./?lang=en" data-role="switch-lang" data-lang="en"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+      </li>
+    </ul>
+  </div>
+</header>
+{% end %}
+
+
+{% block side_bar %}
+
+  {% block highlight %}
+    {% set highlight = [] %}
+  {% end %}
+
+<li><a class="{{ 'highlight' if 'home' in highlight else '' }}" data-act="home" href="{{ main_url }}/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
+<li><a class="{{ 'highlight' if 'info' in highlight else '' }}" href="{{ main_url }}/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
+<li><a class="{{ 'highlight' if 'secure' in highlight else '' }}" href="{{ main_url }}/secure/"><span class="am-icon-lock am-icon-fw"></span> {{ _("Security")}} </a></li>
+<li><a class="{{ 'highlight' if 'article' in highlight else '' }}" href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
+<li><a class="{{ 'highlight' if 'message' in highlight else '' }}" href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Message")}} {% if MESSAGENUM %}<span class="am-badge am-badge-secondary am-margin-right am-fr">{{ MESSAGENUM }}</span>{% end %}</a></li>
+
+{% if SERVICE %}
+<!-- Service | start -->
+<li class="admin-parent">
+  <a class="am-cf {{ 'highlight' if 'service' in highlight else '' }}" data-act="service" data-am-collapse="{target: '#service'}"><span class="am-icon-cloud"></span> {{ _('Service') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+  <ul class="am-list am-collapse admin-sidebar-sub am-in" id="service">
+    {% if 'ss' in SERVICE %}
+    <li><a class="{{ 'highlight' if 'service-ss' in highlight else '' }}" href="{{ main_url }}/service/ss/"><span class="am-icon-send am-icon-fw"></span> {{ _('ShadowSocks')}}</a></li>
+    {% end %}
+  </ul>
+</li>
+<!-- Service | end -->
+{% end %}
+
+{% if user_type > NORMAL %}
+<!-- Upload | start -->
+<li class="admin-parent">
+  <a class="am-cf {{ 'highlight' if 'uploaded' in highlight else '' }}" data-am-collapse="{target: '#uploaded'}"><span class="am-icon-cloud"></span> {{ _('Uploaded') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+  <ul class="am-list am-collapse admin-sidebar-sub am-in" id="uploaded">
+    <li><a class="{{ 'highlight' if 'uploaded-img' in highlight else '' }}" href="{{ main_url }}/img/"><span class="am-icon-file-image-o am-icon-fw"></span> {{ _("Gallery")}}</a></li>
+    <li><a class="{{ 'highlight' if 'uploaded-file' in highlight else '' }}" href="{{ main_url }}/file/"><span class="am-icon-file am-icon-fw"></span> {{ _("File")}}</a></li>
+  </ul>
+</li>
+<!-- Upload | end -->
+
+<!-- manage | start -->
+<li class="admin-parent">
+  <a class="am-cf {{ 'highlight' if 'manage' in highlight else '' }}" data-am-collapse="{target: '#manage'}"><span class="am-icon-wrench"></span> {{ _('Manage') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+  <ul class="am-list am-collapse admin-sidebar-sub am-in" id="manage">
+    <!-- manage-jolla | start -->
+    <li>
+      <a class="am-cf {{ 'highlight' if 'manage-jolla' in highlight else '' }}" data-am-collapse="{target: '#jolla'}"><span class="iconfont icon-jolla"></span> {{ _('Jolla') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
+      <ul class="am-list am-collapse admin-sidebar-sub am-in" id="jolla">
+        <li>
+          <a class="{{ 'highlight' if 'manage-jolla-post' in highlight else '' }}" href="{{ main_url }}/manage/jolla/post/"><span class="am-icon-newspaper-o"> {{ _("Post")}}</span></a>
+        </li>
+        <li>
+          <a class="{{ 'highlight' if 'manage-jolla-author' in highlight else '' }}" href="{{ main_url }}/manage/jolla/author/"><span class="am-icon-pencil"> {{ _("Author")}}</span></a>
+        </li>
+      </ul>
+    </li>
+    <!-- manage-jolla | end -->
+    <li><a class="{{ 'highlight' if 'manage-user' in highlight else '' }}" href="https://{{ MAIN_HOST }}{{ main_url }}/manage/user/"><span class="am-icon-user am-icon-fw"></span> {{ _('User') }}</a></li>
+    <li><a class="{{ 'highlight' if 'manage-message' in highlight else '' }}" href="https://{{ MAIN_HOST }}{{ main_url }}/manage/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _('Message') }}</a></li>
+  </ul>
+</li>
+<!-- manage | end -->
+{% end %}
+<li><a href="/logout/" id="signout"><span class="am-icon-sign-out am-icon-fw"></span> {{ _("Logout")}} </a></li>
+{% end %}
+<!-- side_bar | end-->
+
+{% block butt %}
+  <script>
+    $("#signout").click(function(evt)
+    {
+      evt.preventDefault();
+      logout();
+      return window.location.href = '/';
+    });
+  </script>
+  {% block leg %}{% end %}
+{% end %}

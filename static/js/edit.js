@@ -126,6 +126,13 @@ $(function(evt)
         .html('<span class="am-icon-eye"></span>')
   });
 
+  $mdEditor.mouseup(function(event)
+  {
+    var $this = $(this);
+    var height = $this.outerHeight();
+    $preview.css('height', height);
+  });
+
   $('#local-preview').click(function(evt)
   {
     evt.preventDefault();

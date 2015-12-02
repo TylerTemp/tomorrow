@@ -105,10 +105,7 @@ class TryHandler(BaseHandler):
                 with StdoutRedirect() as stdout:
                     args = shlex.split('pie.py ' + argv)
                     try:
-                        # \r\n can not be handled correctly so far
-                        # It's a bug
-                        pie = docpie.docpie(doc.replace('\r\n', '\n'), args,
-                                            **config)
+                        pie = docpie.docpie(doc, args, **config)
                     except BaseException as e:
                         # in pypy3, sys.exit() gives e.args[0] = None
                         output = e.args[0] or ''

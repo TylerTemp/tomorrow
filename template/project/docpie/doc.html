@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block active %}{% set active = "document" %}{% end %}
 
+{% block sub_title %} {{ _('Document') }} | {% end %}
+
 {% block throat %}
 <link rel="stylesheet" href="/static/css/project/docpie/doc.css" />
 {% end %}
@@ -26,7 +28,7 @@
             {{ _('If you like this project, you can buy me a beer to help me make it better!') }}
             <a href="https://dn-tyler.qbox.me/alipay.ico" target="_blank"><img src="https://dn-tyler.qbox.me/alipay.ico"/></a>
             |
-            <script id='fbxrp91'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=TylerTemp&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbxrp91');</script>
+            <a href="https://flattr.com/submit/auto?user_id=TylerTemp&url=http%3A%2F%2Fdocpie.comes.today" target="_blank"><img src="//button.flattr.com/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
           </p>
         </div>
         <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tyler" id="comment">
@@ -80,7 +82,7 @@
   {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
-    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.unstable.js';
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
     ds.charset = 'UTF-8';
     (document.getElementsByTagName('head')[0]
      || document.getElementsByTagName('body')[0]

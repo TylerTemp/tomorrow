@@ -1,6 +1,7 @@
 import tornado.web
 import tornado.escape
 import logging
+import random
 try:
     from urllib.parse import quote
     from urllib.parse import urlsplit
@@ -42,7 +43,8 @@ class BlogHandler(BaseHandler):
             'jolla/blog.html',
             articles=self.parse_jolla(result),
             this_page=page,
-            has_next_page=has_next_page
+            has_next_page=has_next_page,
+            # animate=self.random_animation_class,
         )
 
     def parse_jolla(self, collected):
@@ -105,3 +107,16 @@ class BlogHandler(BaseHandler):
                           '%s'
                           '</span>') % self.locale.translate(tag2)
             yield second
+
+    animation_classes = [
+        'fade', 'scale-up',
+        'scale-down', 'slide-top',
+        'slide-bottom', 'slide-left',
+        'slide-right',
+        # 'shake',
+        # 'spin'
+    ]
+
+    # def random_animation_class(self):
+    #     cls = self.animation_classes
+    #     return random.choice(cls)

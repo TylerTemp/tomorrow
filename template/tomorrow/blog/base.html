@@ -1,0 +1,212 @@
+{% extends "../../amaze_jquery_base.html" %}
+
+{% block title %}
+  {% block main_title %}{% end %} | {{ _("Tomorrow Comes Today") }}
+{% end %}
+
+{% block head_end %}
+  <style>
+    body {
+      background: #F7F5EC url("//{{ MAIN_HOST }}/static/img/bg.jpg") repeat scroll 0 0
+    }
+    .am-footer-default {
+      background: rgba(255, 255, 255, 0.5);
+    }
+  </style>
+
+  {% block neck %}{% end %}
+{% end %}
+
+{% block body %}
+
+  <header class="am-topbar">
+    <div class="am-container">
+      <h1 class="am-topbar-brand">
+        <a href="/">{{ _("Tomorrow.Comes.Today") }}</a>
+      </h1>
+      <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
+              data-am-collapse="{target: '#nav-collapse'}">
+        <span class="am-sr-only">导航切换</span>
+        <span class="am-icon-bars"></span>
+      </button>
+      <div class="am-collapse am-topbar-collapse" id="nav-collapse">
+        <ul class="am-nav am-nav-pills am-topbar-nav">
+          <li class="{{ 'am-active' if nav_active == 'home' else '' }}">
+            <a href="/"><span class="am-icon-home"> {{ _('Home') }}</span></a>
+          </li>
+          <li class="am-dropdown" data-am-dropdown>
+            <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+              {{ _('Category') }}<span class="am-icon-caret-down"></span>
+            </a>
+            <ul class="am-dropdown-content">
+              <!-- <li class="am-dropdown-header"></li> -->
+              <li class="{{ 'am-active' if nav_active == 'jolla_blog' else '' }}">
+                <a href="//{{ JOLLA_HOST }}/"><span class="iconfont icon-jolla"> {{ _('Jolla Blog') }}</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="am-dropdown" data-am-dropdown>
+            <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+              {{ _('Project') }}<span class="am-icon-caret-down"></span>
+            </a>
+            <ul class="am-dropdown-content">
+              <!-- <li class="am-dropdown-header"></li> -->
+              <li>
+                <a class="am-monospace" href="http://docpie.comes.today"><span class="iconfont icon-python"></span> [docpie]</a>
+              </li>
+              <li>
+                <a class="am-monospace" href="/project/wordz/"><span class="am-icon-medium" style="transform:rotate(200deg);-ms-transform:rotate(200deg);-moz-transform:rotate(200deg);-webkit-transform:rotate(200deg);-o-transform:rotate(200deg);"></span> Wordz</a>
+              </li>
+              <li class="am-divider"></li>
+              <li>
+                <a class="am-monospace am-icon-github" href="https://github.com/TylerTemp/DroidSailizedIcon" target="_blank"> DroidSailizedIcon <span class="am-icon-external-link"> </a>
+              </li>
+              <li>
+                <a class="am-monospace am-icon-github" href="https://github.com/TylerTemp/qstart" target="_blank"> QStart <span class="am-icon-external-link"> </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="am-topbar-right am-topbar-btn">
+          <div class="am-dropdown" data-am-dropdown  data-role="switch-lang-dropper">
+            <button class="am-btn am-btn-success am-dropdown-toggle am-btn-sm"><span class="am-icon-globe"> 语言/Language</span> <span class="am-icon-caret-down"></span></button>
+            <ul class="am-dropdown-content">
+              <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+                <a href="./?lang=zh" data-role="switch-lang" data-lang="zh"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+              </li>
+              <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+                <a href="./?lang=en" data-role="switch-lang" data-lang="en"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {% if user_name is None %}
+        <div class="am-topbar-left am-topbar-right am-topbar-btn">
+          <div class="am-dropdown" data-am-dropdown>
+            <button class="am-btn am-btn-default am-dropdown-toggle am-btn-sm"><span class="am-icon-user"></span></button>
+            <ul class="am-dropdown-content">
+              <li>
+                <a href="/login/"><span class="am-icon-sign-in am-icon-fw"> {{ _('Login') }}</span></a>
+              </li>
+              <li>
+                <a href="/signin/"><span class="am-icon-user-plus am-icon-fw"> {{ _('Signin') }}</span></a>
+              </li>
+            </ul>
+          </div>
+
+        {% else %}
+        <div class="am-topbar-left am-topbar-right am-topbar-btn">
+          <div class="am-dropdown" data-am-dropdown>
+            <button class="am-btn am-btn-primary am-dropdown-toggle am-btn-sm"><span class="am-icon-user"> {{ user_name }}</span> <span class="am-icon-caret-down"></span></button>
+
+            <ul class="am-dropdown-content">
+              <li>
+                <a href="{{ user_link }}"><span class="am-icon-dashboard am-icon-fw"> {{ _('Dashboard') }}</span></a>
+              </li>
+              <li class="am-divider"></li>
+              <li class="{{ 'am-active' if nav_active == 'new_post' else '' }}">
+                <a href="/edit/"><span class="am-icon-plus am-icon-fw"> {{ _('New Post') }}</span></a>
+              </li>
+              <li class="{{ 'am-active' if nav_active == 'jolla_task' else '' }}">
+                <a href="/jolla/task/"><span class="iconfont icon-jolla"> {{ _('New Jolla Translation') }}</span></a>
+              </li>
+              <li class="{{ 'am-active' if nav_active == 'jolla_tr' else '' }}">
+                <a href="/jolla/translate/"><span class="am-icon-language am-icon-fw"> {{ _('Translate a Jolla Post') }}</span></a>
+              </li>
+              <li class="am-divider"></li>
+              <li>
+                <a href="/logout/"><span class="am-icon-sign-out am-icon-fw"> {{ _('Logout')}}</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        {% end %}
+
+      </div>
+    </div>
+  </header>
+
+  {% block shoulder %}
+  {% end %}
+
+  <div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
+    <a href="#top" title="{{ _('Back to Top') }}">
+      <span class="am-gotop-title">回到顶部</span>
+      <i class="am-gotop-icon am-icon-chevron-up"></i>
+    </a>
+  </div>
+
+  <footer class="am-footer am-footer-default">
+    <div>
+      <a href="//tomorrow.comes.today">tomorrow.comes.today</a> <span class="am-footer-divider">|</span>
+        <small>&#169; 2015 <a href="mailto:tylertempdev@gmail.com">TylerTemp</a></small>
+
+    </div>
+
+    <div class="am-footer-miscs">
+      <p>
+      {% if locale.code.startswith('zh') %}
+        <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> 七牛</a> &amp;
+        <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
+        强力驱动
+      {% else %}
+      Powered by
+        <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> QiNiu</a> &amp;
+        <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
+      {% end %}
+      <span class="am-footer-divider">|</span>
+      <a href="https://github.com/TylerTemp/tomorrow" target="_blank"><span class="am-icon-github am-text-warning"> {{ _('Source Code') }}</span></a>
+      </p>
+      <p>
+        {% raw _('All the content in this website without copyright specification is under {a}CC License {img}{a_end}').format(
+          a='<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">',
+          img='<img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" style="display: inline"/>',
+          a_end='</a>') %}
+      </p>
+    </div>
+  </footer>
+
+{% end %}
+{% block body_end %}
+<script>
+  $("[data-role='switch-lang']").click(function(evt)
+  {
+    evt.preventDefault();
+    var self = $(this);
+    var to_lang = self.data('lang');
+    console.log('switch language from ' + locale + ' to ' + to_lang);
+    $("[data-role='switch-lang-dropper']").dropdown('close');
+    if (to_lang == locale)
+      return;
+    change_lang(to_lang);
+    var msg = '';
+    to_lang_2 = to_lang.substring(0, 2);
+
+    console.log('current: ' + locale + '; set to ' + to_lang_2);
+
+    var partly_support = (to_lang_2 !== 'zh');
+    var refresh = (to_lang_2 !== locale);
+    var refresh_now = false;
+    locale = to_lang_2;
+
+    if (partly_support)
+      msg += 'Please note: this is a Chinese website. Most articles will still be in Chinese.\n';
+    if (refresh)
+      msg += _('Refreshing page is required to change language. Refresh now?');
+
+    if (refresh)
+      refresh_now = confirm(msg);
+    else if (msg)
+      return alert(msg);
+    else
+      return ;
+
+    if (refresh_now)
+      window.location.href = location.pathname;
+  });
+</script>
+  {% block butt %}
+  {% end %}
+{% end %}

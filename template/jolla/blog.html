@@ -1,69 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %}
+{% block main_title %}
   {{ _("Unofficical Jolla Chinese Blog") }} |
 {% end %}
 
 {% block neck %}
-<style>
-
-  header img {
-    width: 100%;
-    height: auto;
-    max-width: 400px;
-  }
-
-  img.cover-img {
-    width: 100%;
-    height: auto;
-  }
-
-  .white {
-    background-color: #fff !important;
-  }
-
-  #bread-crumbs {
-    color: #fff;
-  }
-
-  #bread-crumbs a:link {
-    color: #fff;
-  }
-  #bread-crumbs a:visited {
-    color: #fff;
-  }
-  #bread-crumbs a:hover {
-    color: #fff;
-    text-decoration:underline;
-  }
-
-  .am-footer-default {
-    background-color: transparent;
-    color: #fff;
-  }
-  .am-footer-default p {
-    color: #fff;
-  }
-
-  .am-footer-default a {
-    color: #fff;
-  }
-
-</style>
+<link rel="stylesheet" href="{{ static_path('css/jolla/blog.css') }}">
 {% end %}
 
-{% block nav %}{% end %}
-
-{% block body %}
+{% block stomach %}
 <div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
   <div class="am-u-sm-12 am-margin-left" style="color: #fff">
-    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow<a/>
+    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow</a>
   </div>
 </div>
 
 <header>
   <div class="am-margin am-text-center">
-    <a href="/"><img alt="{{ _("Jolla Unofficial Chinese Blog") }}" src="https://dn-jolla.qbox.me/blog_header.png"></a>
+    <a href="/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
   </div>
 </header>
 
@@ -98,7 +52,7 @@
     </div>
   {% else %}
     <!-- horizontal blog box -->
-    <div class="am-g">
+    <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
       <div class="am-margin-horizontal-xs am-margin-vertical-sm">
         <div class="white am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
           <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
@@ -129,7 +83,7 @@
   <ul class="am-avg-sm-1 am-avg-md-2">
   {% for idx, each in enumerate(articles) %}
 
-    <li>
+    <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
         {% if each['img'] %}
         <a href="{{ each['slug'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block subtitle %} &#62; {{ _('Message') }}{% end %}
+
+{% block guide %}<span class="am-icon-comments-o"> <strong class="am-text-primary am-text-lg">{{ _("Message") }}</strong></span> / <small>{{ _("Leave %s a message") % user_name }}</small>{% end %}
+
+{% block highlight %}
+  {% set highlight = 'message' %}
+{% end %}
+
+{% block content %}
+
+<hr class="am-divider am-divider-default"/>
+
+<form class="am-form" method="post" action="{{ request.uri }}"  data-am-validator>
+
+  <fieldset class="am-padding-horizontal-lg">
+    <legend>{{ _("Leave %s a message") % user_name }}</legend>
+    {% raw xsrf_form_html() %}
+    <div class="am-form-group">
+      <label for="content">{{ _('Message') }}:</label>
+      <textarea id="content" name="msg" placeholder="{{ _('Enter the content') }}" required></textarea>
+    </div>
+    <div class="am-form-group">
+    {% if visitor %}
+      <input id="user" name="user" value="{{ visitor }}" style="display:none">
+    {% else %}
+      <label for="user">{{ _("Your email") }}:</label>
+      <input type="email" id="user" name="user" placeholder="{{ _('Enter your email') }}" required>
+    {% end %}
+    </div>
+    <div id="info-panel">
+    </div>
+    <div class="am-form-group am-cf">
+      <button
+          type="submit"
+          class="am-btn am-btn-primary am-fr"
+          id="sumbit"
+          data-am-loading="{spinner: 'spinner', loadingText: '', resetText: '<span class=&#34;am-icon-send&#34;> {{ _('Send') }}</span>'}">
+        <span class="am-icon-send"> {{ _('Send') }}</span>
+      </button>
+    </div>
+  </fieldset>
+</form>
+
+{% end %}
+
+{% block leg %}
+<script>
+$(document).ready(function()
+{
+  $('form').submit(function(evt)
+  {
+    evt.preventDefault();
+    var user = $("#user").val();
+    var msg = $("#content").val();
+    var btn = $("#submit");
+    var info_panel = $("#info-panel");
+
+    var set_info = function(msg, level)
+    {
+      if (!msg)
+        return info_panel.html('');
+
+      level = level? 'am-alert-' + level: '';
+      return info_panel.html(
+        '<div class="am-alert ' + level + '" data-am-alert>' +
+          '<button type="button" class="am-close">&times;</button>' +
+          '<p>' + msg + '</p>' +
+        '</div>'
+      );
+    }
+
+    $.ajax(
+      settings = {
+        'data': {
+          'user': user,
+          'msg': msg
+        },
+        'type': 'post',
+        'beforeSend': function(jqXHR, settings)
+        {
+          jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
+          set_info();
+          btn.button('loading');
+        }
+    }).done(function(data, textStatus, jqXHR)
+    {
+      console.log(data);
+      var obj = $.parseJSON(data);
+      if (obj.error == 0)
+        return set_info(
+          _("Send to {0} successfully").format(obj.to),
+          'success'
+        );
+
+      errors = [];
+      if (obj.error & 1)
+        errors.push(_('Content should not be empty'));
+      if (obj.error & 2)
+        errors.push(_('Invalid email'));
+
+      if (errors.length == 0)
+        return set_info(
+          _('Sorry, unknown error') + ': ' + obj.error,
+          'danger'
+        );
+      return set_info(_('Sorry, error(s) occured') + ': ' + errors.join('; '), 'danger');
+    }).fail(function(jqXHR, textStatus, errorThrown)
+    {
+      return set_info(
+        _("Sorry, a server error occured, please refresh and retry") +
+        " ({0}: {1})".format(jqXHR.status, errorThrown),
+        'danger'
+      );
+    }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+    {
+      btn.button('reset');
+    });
+
+    return false;
+  });
+});
+</script>
+{% end %}

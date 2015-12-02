@@ -15,6 +15,7 @@ Options:
 
 import logging
 import os
+import sys
 import tornado
 import tornado.web
 import tornado.httpserver
@@ -23,25 +24,22 @@ import tornado.locale
 import tornado.autoreload
 import tornado.ioloop
 
+rootdir = os.path.dirname(__file__)
+sys.path.insert(0, rootdir)
+
 from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
-from lib.hdlr import brey
-from lib.hdlr import project
-from lib.hdlr import dash, hi, jolla, auth, api
-from lib.hdlr.base import BaseHandler
-from lib.hdlr.home import HomeHandler
-from lib.hdlr.edit import EditHandler
-from lib.hdlr.post import PostHandler
-from lib.hdlr.notfound import AddSlashOr404Handler
-from lib.hdlr.redirect import RedirectHandler
-from lib.hdlr.verify import VerifyHandler
-from lib.hdlr.blacklist import BlackListHandler
+from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler
+from lib.hdlr import brey, jolla, tomorrow, api
+from lib.hdlr.project import docpie, wordz
 
 from lib.ui.editor import WysBarModule, MdBarModule
 from lib.ui.iconfont import IconFontModule
 from lib.ui.license import LicenseModule
 from lib.ui.author import AuthorModule, JollaAuthorModule
+sys.path.pop(0)
+
 
 tornadologger = logging.getLogger('tornado')
 for _hdlr in tornadologger.handlers:
@@ -53,8 +51,6 @@ for _filter in tornadologger.filters:
 
 logger = logging.getLogger('tomorrow')
 
-rootdir = os.path.dirname(__file__)
-
 Config().auto_clean = True
 
 
@@ -64,60 +60,62 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = (
             # display
-            (r'/', HomeHandler),
+            (r'/', tomorrow.blog.HomeHandler),
             (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
-            (r'/page/(?P<page>\d+)/', HomeHandler),
+            (r'/page/(?P<page>\d+)/', tomorrow.blog.HomeHandler),
             # auth
-            (r'/login/', auth.LoginHandler),
-            (r'/signin/', auth.SigninHandler),
-            (r'/logout/', auth.LogoutHandler),
-            (r'/verify/(?P<code>[^/]+)/', VerifyHandler),
+            (r'/login/', tomorrow.blog.LoginHandler),
+            (r'/signin/', tomorrow.blog.SigninHandler),
+            (r'/logout/', tomorrow.blog.LogoutHandler),
+            (r'/verify/(?P<code>[^/]+)/', tomorrow.blog.VerifyHandler),
             # dashboard
-            (r'/am/(?P<user>[^/]+)/', dash.DashboardHandler),
-            (r'/am/(?P<user>[^/]+)/info/', dash.InfoHandler),
-            (r'/am/(?P<user>[^/]+)/secure/', dash.SecureHandler),
-            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/', dash.FileHandler),
-            (r'/am/(?P<user>[^/]+)/article/', dash.ArticleHandler),
-            (r'/am/(?P<user>[^/]+)/message/', dash.MessageHandler),
+            (r'/am/(?P<user>[^/]+)/', tomorrow.dash.DashboardHandler),
+            (r'/am/(?P<user>[^/]+)/info/', tomorrow.dash.InfoHandler),
+            (r'/am/(?P<user>[^/]+)/secure/', tomorrow.dash.SecureHandler),
+            (r'/am/(?P<user>[^/]+)/(?P<to>file|img)/',
+             tomorrow.dash.FileHandler),
+            (r'/am/(?P<user>[^/]+)/article/', tomorrow.dash.ArticleHandler),
+            (r'/am/(?P<user>[^/]+)/message/', tomorrow.dash.MessageHandler),
             (r'/am/(?P<user>[^/]+)/manage/jolla/post/',
-             dash.manage.jolla.PostHandler),
+             tomorrow.dash.manage.jolla.PostHandler),
             (r'/am/(?P<user>[^/]+)/manage/jolla/author/',
-             dash.manage.jolla.AuthorHandler),
-            (r'/am/(?P<user>[^/]+)/manage/user/', dash.manage.UserHandler),
+             tomorrow.dash.manage.jolla.AuthorHandler),
+            (r'/am/(?P<user>[^/]+)/manage/user/',
+             tomorrow.dash.manage.UserHandler),
             (r'/am/(?P<user>[^/]+)/manage/message/',
-             dash.manage.MessageHandler),
+             tomorrow.dash.manage.MessageHandler),
             # profile
-            (r'/hi/(?P<user>[^/]+)/', hi.DashboardHandler),
-            (r'/hi/(?P<user>[^/]+)/article/', hi.ArticleHandler),
-            (r'/hi/(?P<user>[^/]+)/message/', hi.MessageHandler),
+            (r'/hi/(?P<user>[^/]+)/', tomorrow.hi.DashboardHandler),
+            (r'/hi/(?P<user>[^/]+)/article/', tomorrow.hi.ArticleHandler),
+            (r'/hi/(?P<user>[^/]+)/message/', tomorrow.hi.MessageHandler),
             # jolla
 
-            (r'/jolla/blog/', jolla.BlogHandler),
-            (r'/jolla/blog/(favicon\.ico)', tornado.web.StaticFileHandler,
+            (r'/jolla/(favicon\.ico)', tornado.web.StaticFileHandler,
              {'path': os.path.join(rootdir, 'static')}),
+            (r'/jolla/blog/', jolla.BlogHandler),
             (r'/jolla/blog/page/1/',
              RedirectHandler,
              {'to': '//' + self.config.jolla_host, 'permanently': True}),
             (r'/jolla/blog/page/(\d+)/', jolla.BlogHandler),
-            (r'/jolla/blog/feed/', jolla.RssHandler),
-            (r'/jolla/blog/(?P<slug>[^/]+)/', jolla.ArticleHandler),
-            (r'/jolla/translate/', jolla.ListHandler),
-            (r'/jolla/translate/(?P<slug>[^/]+)/', jolla.TranslateHandler),
+            (r'/jolla/feed/', jolla.RssHandler),
+            (r'/jolla/tr/', jolla.ListHandler),
+            (r'/jolla/tr/(?P<slug>[^/]+)/', jolla.TranslateHandler),
             (r'/jolla/task/', jolla.TaskHandler),
             (r'/jolla/task/(?P<urlslug>[^/]+)/', jolla.TaskHandler),
+            (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             # project
-            (r'/project/docpie/', project.docpie.HomeHandler),
-            (r'/project/docpie/document/', project.docpie.DocHandler),
-            (r'/project/docpie/document/(?P<slug>[^/]+)/', project.docpie.DocHandler),
-            (r'/project/docpie/try/', project.docpie.TryHandler),
+            (r'/project/docpie/', docpie.HomeHandler),
+            (r'/project/docpie/document/', docpie.DocHandler),
+            (r'/project/docpie/document/(?P<slug>[^/]+)/', docpie.DocHandler),
+            (r'/project/docpie/try/', docpie.TryHandler),
 
-            (r'/project/wordz/', project.wordz.HomeHandler),
-            (r'/project/wordz/quiz/', project.wordz.QuizHandler),
-            (r'/project/wordz/modify/', project.wordz.ModifyHandler),
+            (r'/project/wordz/', wordz.HomeHandler),
+            (r'/project/wordz/quiz/', wordz.QuizHandler),
+            (r'/project/wordz/modify/', wordz.ModifyHandler),
 
-            (r'/blog/(?P<slug>[^/]+)/', PostHandler),
-            (r'/edit/', EditHandler),
-            (r'/edit/(?P<urlslug>[^/]+)/', EditHandler),
+            (r'/blog/(?P<slug>[^/]+)/', tomorrow.blog.ArticleHandler),
+            (r'/edit/', tomorrow.blog.EditHandler),
+            (r'/edit/(?P<urlslug>[^/]+)/', tomorrow.blog.EditHandler),
 
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
@@ -141,8 +139,6 @@ class Application(tornado.web.Application):
                 'Author': AuthorModule,
                 'JollaAuthor': JollaAuthorModule,
                 'IconFontCss': IconFontModule,
-                # 'UploadFile': UploadFileModule,
-                # 'UploadImage': UploadImageModule,
                 },
         }
 
@@ -156,14 +152,6 @@ class Application(tornado.web.Application):
             logger.warning('debug is on')
 
         super(Application, self).__init__(handlers, **settings)
-
-
-class BareHandler(BaseHandler):
-
-    def get(self, *a, **k):
-        self.write('''Sorry, this page is building...<br>
-            a: %s<br>
-            k: %s''' % (a, k))
 
 
 def main(port):
@@ -182,11 +170,11 @@ def main(port):
 
 
 if __name__ == "__main__":
-    from docpie import docpie
+    from docpie import docpie as pie
+
+    args = dict(pie(__doc__))
 
     config = Config()
-
-    args = docpie(__doc__)
 
     rootlogger = logging.getLogger()
     stdoutlogger(rootlogger, logging.DEBUG, True)

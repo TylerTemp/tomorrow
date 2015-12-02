@@ -1,13 +1,12 @@
-{% extends "../../base.html" %}
+{% extends "../../amaze_jquery_base.html" %}
 
-{% block main_title %} docpie — Python command-line interface utility {% end %}
+{% block title %} {% block sub_title %}{% end %} docpie - Python command-line interface utility {% end %}
 {% block site_kwd %}python,docpie,docopt,option,arguments,parsing,optparse,argparse,getopt{% end %}
 {% block site_description %}An easy &amp; pythonic way to create the command-line interface, all you need is to write a man page and let docpie parse command-line for you.{% end %}
 
 {% block webapp %}{% end %}
-{% block bg %}{% end %}
 
-{% block neck %}
+{% block head_end %}
 <style>
   .am-topbar-fixed-top {
     z-index: 1100;
@@ -24,7 +23,7 @@
   {% end %}
 {% end %}
 
-{% block nav %}
+{% block body %}
   {% block active %}{% set active = "home" %}{% end %}
 <header class="am-topbar am-topbar-fixed-top">
   <div class="am-container">
@@ -57,9 +56,6 @@
     </div>
   </div>
 </header>
-{% end %}
-
-{% block body %}
 
 <a href="https://github.com/TylerTemp/docpie/" class="github-banner"><img src="https://dn-tyler.qbox.me/forkme_left_darkblue.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
 
@@ -68,32 +64,30 @@
 
 {% end %}
 
-{% block navjs %}
-<script>
-  $("[data-role='switch-lang']").click(function(evt)
-  {
-    evt.preventDefault();
-    var self = $(this);
-    var to_lang = self.data('lang');
-    console.log('switch language from ' + locale + ' to ' + to_lang);
-    $("[data-role='switch-lang-dropper']").dropdown('close');
-    if (to_lang == locale)
-      return;
-    change_lang(to_lang);
-    var msg = '';
-    to_lang_2 = to_lang.substring(0, 2);
+{% block body_end %}
+  <script>
+    $("[data-role='switch-lang']").click(function(evt)
+    {
+      evt.preventDefault();
+      var self = $(this);
+      var to_lang = self.data('lang');
+      console.log('switch language from ' + locale + ' to ' + to_lang);
+      $("[data-role='switch-lang-dropper']").dropdown('close');
+      if (to_lang == locale)
+        return;
+      change_lang(to_lang);
+      var msg = '';
+      to_lang_2 = to_lang.substring(0, 2);
 
-    console.log('current: ' + locale + '; set to ' + to_lang_2);
+      console.log('current: ' + locale + '; set to ' + to_lang_2);
 
-    var refresh = (to_lang_2 !== locale);
-    locale = to_lang_2;
+      var refresh = (to_lang_2 !== locale);
+      locale = to_lang_2;
 
-    if (refresh)
-      window.location.href = location.pathname;
-  });
-</script>
-{% end %}
-
-{% block footer %}
-
+      if (refresh)
+        window.location.href = location.pathname;
+    });
+  </script>
+  {% block butt %}
+  {% end %}
 {% end %}

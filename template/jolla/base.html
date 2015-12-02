@@ -1,6 +1,6 @@
-{% extends "../base.html" %}
+{% extends "../amaze_jquery_base.html" %}
 
-{% block main_title %}Jolla Comes Today{% end %}
+{% block title %}{% block main_title %}{% end %}Jolla Comes Today{% end %}
 
 {% block webapp %%}
   <!-- Add to homescreen for Chrome on Android -->
@@ -21,7 +21,7 @@
 {% block site_description %}{{ _("Unofficial Jolla Chinese blog. Chinese translation of Jolla's posts and other ideas about Jolla") }}{% end %}
 {% block site_kwd %}Jolla,Jolla博客,Jolla中文博客,Jolla翻译,Jolla非官方中文博客{% end %}
 
-{% block bg %}
+{% block head_end %}
 <style>
   body {
     background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
@@ -32,9 +32,15 @@
     background-color: #5BA2A1;
   }
 </style>
+  {% block neck %}
+  {% end %}
 {% end %}
 
-{% block footer %}
+{% block body %}
+
+  {% block stomach %}
+  {% end %}
+
 <footer class="am-footer am-footer-default">
   <div>
     <a href="//jolla.comes.today">jolla.comes.today</a> <span class="am-footer-divider">|</span>
@@ -73,7 +79,7 @@
 </footer>
 {% end %}
 
-{% block butt %}
+{% block body_end %}
 <script>
 $(function()
 {
@@ -100,6 +106,6 @@ $(function()
   });
 });
 </script>
-{% block leg %}{% end %}
+  {% block leg %}{% end %}
 
 {% end %}

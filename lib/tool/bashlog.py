@@ -178,15 +178,23 @@ def parse_level(level):
     return level
 
 if __name__ == '__main__':
-    logger = getlogger('test1', DEBUG)
+    import tempfile
+    import os
+    logger = stdoutlogger('test1', DEBUG)
     logger.debug('debug')
     logger.info('info')
     logger.warning('warning')
     logger.error('error')
     logger.critical('critical')
-    logger = getlogger('test2', DEBUG, False)
+    logger = stdoutlogger('test2', DEBUG, False)
     logger.debug('debug')
     logger.info('info')
     logger.warning('warning')
     logger.error('error')
     logger.critical('critical')
+
+    f = os.path.join(tempfile.gettempdir(),
+                     os.path.splitext(os.path.split(__file__)[-1])[0] + '.log')
+
+    filelogger(f, logger)
+    logger.critical('test')

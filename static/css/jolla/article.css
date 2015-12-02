@@ -1,0 +1,86 @@
+header img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+}
+
+#title-img {
+  width: 100%;
+  height: auto;
+}
+
+#white-bg-box {
+  background-color: #FFF;
+}
+
+article h1 {
+  text-align: center;
+}
+
+article p img {
+  max-width: 100%;
+  height: auto;
+  /*margin: 0em 0em 0em -2em;*/
+}
+
+#page-box {
+  padding-top: 50px;
+  max-width: 600px;
+
+}
+
+.am-article-bd p {
+  text-indent: 2em;
+}
+
+.am-article-bd li p {
+  text-indent: 0em;
+}
+
+.footnote p,
+#original-author p {
+  text-indent: 0em;
+}
+
+#bread-crumbs {
+  color: #fff;
+}
+
+#bread-crumbs a:link {
+  color: #fff;
+}
+#bread-crumbs a:visited {
+  color: #fff;
+}
+#bread-crumbs a:hover {
+  color: #fff;
+  text-decoration:underline;
+}
+
+.am-footer-default {
+  background-color: transparent;
+  color: #fff;
+}
+.am-footer-default p {
+  color: #fff;
+}
+
+.am-footer-default a {
+  color: #fff;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
+ruby {
+  background-color: rgba(213, 241, 211, 0.4);
+  margin: 4px;
+  padding: 0px 2px;
+}
+
+ruby > rt {
+  font-style: italic;
+  color: #4DB651;
+}

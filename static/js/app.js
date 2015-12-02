@@ -4,7 +4,7 @@ String.prototype.format = function(){
     function(m,i){
       return args[i];
     });
-}
+};
 
 
 var I18N = {
@@ -166,7 +166,7 @@ var logout = function(evt)
   cookie.unset('active', '/');
   cookie.unset('service', '/');
   // cookie.unset('lang', '/');
-}
+};
 
 var change_lang = function(lang)
 {
@@ -175,7 +175,7 @@ var change_lang = function(lang)
   if (!lang)
     return ;
   cookie.set('lang', lang, undefined, '/');
-}
+};
 
 
 // for login/signin

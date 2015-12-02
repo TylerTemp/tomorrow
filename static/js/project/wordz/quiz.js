@@ -426,7 +426,7 @@ $(function ()
     this.SHUFFLE = shuffle;
     this.ASCEND = ascend;
     this.DESCEND = descend;
-    this.sort_by = SHUFFLE;
+    this.sort_by = shuffle;
   };
   Recorder.prototype.words;
   Recorder.prototype.current;

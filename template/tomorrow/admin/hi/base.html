@@ -1,0 +1,33 @@
+{% extends "../admin_base.html" %}
+
+{% block title %}
+Hi {{ visitor or 'there' }}, I'm {{ user_name }}{% block subtitle %}{% end %}
+{% end %}
+
+{% block nav %}
+<header class="am-topbar admin-header">
+  <div class="am-topbar-brand">
+    <a href="/"><strong>{{ _("Tomorrow Comes Today") }}</strong></a>  | <span class="am-icon-smile-o"></span> <small> <u><a href="{{ main_url }}/">{{ user_name }}</a></u></small>
+  </div>
+  <div class="am-dropdown am-topbar-brand am-fr" data-am-dropdown  data-role="switch-lang-dropper">
+    <button class="am-btn am-btn-success am-dropdown-toggle am-btn-sm"><span class="am-icon-globe"> </span> <span class="am-icon-caret-down"></span></button>
+    <ul class="am-dropdown-content">
+      <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
+        <a href="./?lang=zh" data-role="switch-lang" data-lang="zh"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
+      </li>
+      <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
+        <a href="./?lang=en" data-role="switch-lang" data-lang="en"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
+      </li>
+    </ul>
+  </div>
+</header>
+{% end %}
+
+{% block side_bar %}
+  {% block highlight %}
+    {% set highlight = None %}
+  {% end %}
+  <li><a class="{{ 'highlight' if highlight == 'home'  else '' }}" href="{{ main_url }}/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
+  <li><a class="{{ 'highlight' if highlight == 'article'  else '' }}" href="{{ main_url }}/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
+  <li><a class="{{ 'highlight' if highlight == 'message'  else '' }}" href="{{ main_url }}/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Leave a Message")}} </a></li>
+{% end %}
