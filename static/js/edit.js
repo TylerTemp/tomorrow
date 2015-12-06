@@ -1,10 +1,24 @@
 $(function(evt)
 {
+  var _adjust_width = function(element, width)
+  {
+    var $this = $(element);
+    var this_width = $this.outerWidth();
+    if (this_width > width)
+      $this.css('width', width);
+  };
   var preview = function(content)
   {
     if ($preview.data('lock') == 'true')
       return;
+    var width = $preview.outerWidth();
     $preview.html(content);
+    var $images = $preview.find('img');
+    if ($images.length)
+      $images.each(function(index){ _adjust_width(this, width)});
+    var $videos = $preview.find('video');
+    if ($videos.length)
+      $videos.each(function(index){ _adjust_width(this, width)});
   };
 
 

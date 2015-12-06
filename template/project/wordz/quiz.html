@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
+{% block sub_title %} Take a Quiz | {% end %}
 {% block active %}{% set active = "quiz" %}{% end %}
 
-{% block neck %}
+{% block head_end %}
 <link rel="stylesheet" href="/static/css/select2.css">
 <style>
   #color-page {
@@ -25,212 +26,212 @@
 </style>
 {% end %}
 
-{% block body %}
+{% block content %}
 
 <div class="am-g-fixed am-u-sm-centered">
-    <div class="am-g am-margin-vertical-xl am-padding-vertical-xl" id="color-page">
-      <div class="am-form am-u-sm-12 am-u-sm-centered" id="page-box">
-        <!-- Words Page -->
-        <div id="words-page">
-          <h2>{{ _('Select Words to Get Start') }}</h2>
-          <hr />
+  <div class="am-g am-margin-vertical-xl am-padding-vertical-xl" id="color-page">
+    <div class="am-form am-u-sm-12 am-u-sm-centered" id="page-box">
+      <!-- Words Page -->
+      <div id="words-page">
+        <h2>{{ _('Select Words to Get Start') }}</h2>
+        <hr />
+
+        <div class="am-form-group">
+          <label for="select-tags">{{ _('Select Tags of Glossary') }}</label>
+          <select class="am-form-filed" id="select-tags" multiple="multiple"  style="width: 100%">
+          {% for tag in tags %}
+            <option value="{{ tag }}">{{ tag }}</option>
+          {% end %}
+          </select>
+          <div class="am-progress am-progress-striped am-active">
+            <div class="am-progress-bar" style="width: 0" id="tags-loading"></div>
+          </div>
+        </div>
+
+        <div class="am-form-group am-cf">
+          <button class="am-btn am-btn-primary am-fr"
+                  id="tag-confirm"
+                  data-am-loading="{spinner: 'refresh', loadingText: ''}">
+            <span class="am-icon-check"></span>
+          </button>
+        </div>
+
+        <div class="am-form-group" id="word-list">
+          <table class="am-table am-table-striped am-table-hover am-table-compact">
+            <thead>
+              <tr>
+                <th>
+                  <label class="am-checkbox">
+                    <input type="checkbox" id="select-all" data-am-ucheck>
+                  </label>
+                </th>
+                <th>{{ _('Spell') }}</th>
+                <th>{{ _('Meaning') }}</th>
+                <th>{{ _('Pronounce') }}</th>
+                <th>{{ _('Tags') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <!-- Words Page | End -->
+      <!-- Config Page -->
+      <form id="config-page">
+        <h2>{{ _('Config') }}</h2>
+        <hr />
+        <fieldset>
+          <div class="am-form-group">
+            <label class="am-checkbox">
+              <input name="spell" type="checkbox" data-am-ucheck checked>
+              {{ _('Give meaning and spell the word') }}
+            </label>
+            <label class="am-checkbox">
+              <input name="choose-word" type="checkbox" data-am-ucheck>
+              {{ _('Give meaning and choose the word') }}
+            </label>
+            <label class="am-checkbox">
+              <input name="choose-meaning" type="checkbox" data-am-ucheck>
+              {{ _('Give word and choose the meaning') }}
+            </label>
+          </div>
 
           <div class="am-form-group">
-            <label for="select-tags">{{ _('Select Tags of Glossary') }}</label>
-            <select class="am-form-filed" id="select-tags" multiple="multiple"  style="width: 100%">
-            {% for tag in tags %}
-              <option value="{{ tag }}">{{ tag }}</option>
-            {% end %}
-            </select>
-            <div class="am-progress am-progress-striped am-active">
-              <div class="am-progress-bar" style="width: 0" id="tags-loading"></div>
-            </div>
+            <label class="am-radio">
+              <input type="radio" name="order" value="shuffle" data-am-ucheck checked>
+              {{ _('Shuffle') }}
+            </label>
+            <label class="am-radio">
+              <input type="radio" name="order" value="ascend" data-am-ucheck>
+              {{ _('Ascend') }}
+            </label>
+            <label class="am-radio">
+              <input type="radio" name="order" value="descend" data-am-ucheck>
+              {{ _('Descend') }}
+            </label>
+          </div>
+
+          <div class="am-form-group">
+            <label class="am-checkbox">
+              <input name="repeat-till-right" type="checkbox" data-am-ucheck checked>
+              {{ _('Appear a word repeatedly till I answer it right') }}
+            </label>
+          </div>
+
+          <div class="am-form-group">
+            <label class="am-checkbox">
+              <input name="click-to-go" type="checkbox" data-am-ucheck checked>
+              {{ _('Click to go when choosing') }}
+            </label>
+          </div>
+
+          <div class="am-form-group">
+            <label for="config-show-chars">{{ _('Show first x character(s)') }}</label>
+            <input type="number" id="config-show-chars" name="show-chars" value="0" min="0" style="display: inline !important; width: 50%" required>
           </div>
 
           <div class="am-form-group am-cf">
-            <button class="am-btn am-btn-primary am-fr"
-                    id="tag-confirm"
-                    data-am-loading="{spinner: 'refresh', loadingText: ''}">
-              <span class="am-icon-check"></span>
-            </button>
+            <button type="submit" class="am-btn am-btn-primary am-fr am-icon-check"></button>
           </div>
 
-          <div class="am-form-group" id="word-list">
-            <table class="am-table am-table-striped am-table-hover am-table-compact">
-              <thead>
-                <tr>
-                  <th>
-                    <label class="am-checkbox">
-                      <input type="checkbox" id="select-all" data-am-ucheck>
-                    </label>
-                  </th>
-                  <th>{{ _('Spell') }}</th>
-                  <th>{{ _('Meaning') }}</th>
-                  <th>{{ _('Pronounce') }}</th>
-                  <th>{{ _('Tags') }}</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
+        </fieldset>
 
-        </div>
-        <!-- Words Page | End -->
-        <!-- Config Page -->
-        <form id="config-page">
-          <h2>{{ _('Config') }}</h2>
-          <hr />
+      </form>
+      <!-- Config Page | End -->
+
+      <!-- Quiz Page -->
+      <div id="quiz-page">
+        <h2>{{ _('Quiz Begins!') }}</h2>
+        <hr />
+
+        <!-- Question/Spell | Start -->
+        <form id="form-spell">
           <fieldset>
-            <div class="am-form-group">
-              <label class="am-checkbox">
-                <input name="spell" type="checkbox" data-am-ucheck checked>
-                {{ _('Give meaning and spell the word') }}
-              </label>
-              <label class="am-checkbox">
-                <input name="choose-word" type="checkbox" data-am-ucheck>
-                {{ _('Give meaning and choose the word') }}
-              </label>
-              <label class="am-checkbox">
-                <input name="choose-meaning" type="checkbox" data-am-ucheck>
-                {{ _('Give word and choose the meaning') }}
-              </label>
+            <div class="am-form-group" id="question-meaning-spell">
+              <p><span class="type">[v]</span> meanings </p>
+              <p><span class="type">[v]</span> meanings </p>
+              <p><span class="type">[v]</span> meanings </p>
             </div>
 
             <div class="am-form-group">
-              <label class="am-radio">
-                <input type="radio" name="order" value="shuffle" data-am-ucheck checked>
-                {{ _('Shuffle') }}
-              </label>
-              <label class="am-radio">
-                <input type="radio" name="order" value="ascend" data-am-ucheck>
-                {{ _('Ascend') }}
-              </label>
-              <label class="am-radio">
-                <input type="radio" name="order" value="descend" data-am-ucheck>
-                {{ _('Descend') }}
-              </label>
+              <input type="text" name="answer" placeholder="{{ _('Input your answer') }}">
             </div>
 
             <div class="am-form-group">
-              <label class="am-checkbox">
-                <input name="repeat-till-right" type="checkbox" data-am-ucheck checked>
-                {{ _('Appear a word repeatedly till I answer it right') }}
-              </label>
-            </div>
-
-            <div class="am-form-group">
-              <label class="am-checkbox">
-                <input name="click-to-go" type="checkbox" data-am-ucheck checked>
-                {{ _('Click to go when choosing') }}
-              </label>
-            </div>
-
-            <div class="am-form-group">
-              <label for="config-show-chars">{{ _('Show first x character(s)') }}</label>
-              <input type="number" id="config-show-chars" name="show-chars" value="0" min="0" style="display: inline !important; width: 50%" required>
-            </div>
-
-            <div class="am-form-group am-cf">
-              <button type="submit" class="am-btn am-btn-primary am-fr am-icon-check"></button>
+              <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
             </div>
 
           </fieldset>
-
         </form>
-        <!-- Config Page | End -->
+        <!-- Question/Spell | End -->
 
-        <!-- Quiz Page -->
-        <div id="quiz-page">
-          <h2>{{ _('Quiz Begins!') }}</h2>
-          <hr />
-
-          <!-- Question/Spell | Start -->
-          <form id="form-spell">
-            <fieldset>
-              <div class="am-form-group" id="question-meaning-spell">
-                <p><span class="type">[v]</span> meanings </p>
-                <p><span class="type">[v]</span> meanings </p>
-                <p><span class="type">[v]</span> meanings </p>
-              </div>
-
-              <div class="am-form-group">
-                <input type="text" name="answer" placeholder="{{ _('Input your answer') }}">
-              </div>
-
-              <div class="am-form-group">
-                <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
-              </div>
-
-            </fieldset>
-          </form>
-          <!-- Question/Spell | End -->
-
-          <!-- Question/Choose | Start -->
-          <form id="form-choose-word">
-            <fieldset>
-              <div class="am-form-group" id="question-choose">
-                <p><span class="type">[v]</span> meanings;
-                   <span class="type">[v]</span> meanings;
-                   <span class="type">[v]</span> meanings
-                </p>
-              </div>
-              <div class="am-form-group">
-                <label class="am-radio">
-                  <input type="radio" name="answer" value="A" data-am-ucheck>
-                  A. Choose one
-                </label>
-                <label class="am-radio">
-                  <input type="radio" name="answer" value="B" data-am-ucheck>
-                  B. Choose two
-                </label>
-                <label class="am-radio">
-                  <input type="radio" name="answer" value="C" data-am-ucheck>
-                  C. Choose three
-                </label>
-                <label class="am-radio">
-                  <input type="radio" name="answer" value="D" data-am-ucheck>
-                  D. Choose four
-                </label>
-              </div>
-              <div class="am-form-group">
-                <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
-              </div>
-
-            </fieldset>
-          </form>
-          <!-- Question/Choose | End -->
-
-          <!-- Status | Start -->
-          <div class="am-u-sm-8" id="display">
-            <div class="am-progress am-progress-striped am-active">
-              <div class="am-progress-bar" id="display-bar" style="width: 0">--/-- --%</div>
+        <!-- Question/Choose | Start -->
+        <form id="form-choose-word">
+          <fieldset>
+            <div class="am-form-group" id="question-choose">
+              <p><span class="type">[v]</span> meanings;
+                 <span class="type">[v]</span> meanings;
+                 <span class="type">[v]</span> meanings
+              </p>
             </div>
-            <div id="display-text">
-
+            <div class="am-form-group">
+              <label class="am-radio">
+                <input type="radio" name="answer" value="0" data-am-ucheck>
+                A. Choose one
+              </label>
+              <label class="am-radio">
+                <input type="radio" name="answer" value="1" data-am-ucheck>
+                B. Choose two
+              </label>
+              <label class="am-radio">
+                <input type="radio" name="answer" value="2" data-am-ucheck>
+                C. Choose three
+              </label>
+              <label class="am-radio">
+                <input type="radio" name="answer" value="3" data-am-ucheck>
+                D. Choose four
+              </label>
             </div>
-          </div>
-          <!-- Status | End -->
+            <div class="am-form-group">
+              <button type="submit" class="am-btn am-btn-primary am-btn-block am-icon-check"></button>
+            </div>
 
-          <!-- Config Button | Start -->
-          <div class="am-u-sm-4 am-cf">
-            <button class="am-btn am-btn-default am-icon-save am-fr" data-role="save"></button>
-            <button class="am-btn am-btn-default am-icon-cog am-fr" data-role="re-config"></button>
-            <button class="am-btn am-btn-default am-icon-flask am-fr" data-role="re-select"></button>
-          </div>
-          <!-- Config Button | End -->
+          </fieldset>
+        </form>
+        <!-- Question/Choose | End -->
 
+        <!-- Status | Start -->
+        <div class="am-u-sm-8" id="display">
+          <div class="am-progress am-progress-striped am-active">
+            <div class="am-progress-bar" id="display-bar" style="width: 0">--/-- --%</div>
+          </div>
+          <div id="display-text">
+
+          </div>
         </div>
-        <!-- Quiz Page | End -->
-      </div>
+        <!-- Status | End -->
 
+        <!-- Config Button | Start -->
+        <div class="am-u-sm-4 am-cf">
+          <button class="am-btn am-btn-default am-icon-save am-fr" data-role="save" data-am-popover="{content: '{{ _('Save Process') }}', trigger: 'hover focus'}" disabled="disabled"></button>
+          <button class="am-btn am-btn-default am-icon-cog am-fr" data-role="re-config" data-am-popover="{content: '{{ _('Change Config') }}', trigger: 'hover focus'}"></button>
+          <button class="am-btn am-btn-default am-icon-list-ol am-fr" data-role="re-select" data-am-popover="{content: '{{ _('Change Words List') }}', trigger: 'hover focus'}"></button>
+        </div>
+        <!-- Config Button | End -->
+
+      </div>
+      <!-- Quiz Page | End -->
     </div>
+
+  </div>
 </div>
 
 
 {% end %}
 
-{% block butt %}
+{% block body_end %}
 <script src="/static/js/select2.min.js"></script>
 <script src="/static/js/project/wordz/quiz.js"></script>
 {% end %}

@@ -1,13 +1,12 @@
-{% extends "../../base.html" %}
+{% extends "../../amaze_jquery_base.html" %}
 
-{% block main_title %} Wordz {% end %}
+{% block title %}{% block sub_title %}{% end %} Wordz {% end %}
 {% block site_kwd %}glossary quiz, vocabulary quiz{% end %}
 {% block site_description %}Make your own glossary and quiz{% end %}
 
 {% block webapp %}{% end %}
-{% block bg %}{% end %}
 
-{% block nav %}
+{% block body %}
   {% block active %}{% set active = "home" %}{% end %}
 <header class="am-topbar am-topbar-fixed-top">
   <div class="am-container">
@@ -31,11 +30,5 @@
     </div>
   </div>
 </header>
-{% end %}
-
-{% block navjs %}
-{% end %}
-
-{% block footer %}
-
+  {% block content %}{% end %}
 {% end %}

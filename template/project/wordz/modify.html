@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Quiz | {% end %}
+{% block sub_title %}Quiz | {% end %}
 
-{% block neck %}
+{% block head_end %}
 <link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
 <style>
   .label {
@@ -13,7 +13,7 @@
 
 {% block active %}{% set active = "modify" %}{% end %}
 
-{% block body %}
+{% block content %}
 <form class="am-g-fixed am-center am-padding-xl">
   <!-- Spell -->
   <div class="am-g">
@@ -58,7 +58,7 @@
 </form>
 {% end %}
 
-{% block butt %}
+{% block body_end %}
 <script src="/static/js/amazeui.tagsinput.min.js"></script>
 <script src="/static/js/project/wordz/modify.js"></script>
 {% end %}

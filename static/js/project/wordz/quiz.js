@@ -40,15 +40,77 @@ var descend_str = function(a, b)
 $(function ()
 {
 // <Controller>
-  var Controller = function()
+  //  <init>
+  var Controller = function(quiz_page, config_page)
   {
+    this.quiz = quiz_page;
+    this.config = config_page;
+  };
+  Controller.prototype.quiz;
+  Controller.prototype.config;
+  // </init>
+  // <change tags>
+  Controller.prototype.on_change_words = function(words)
+  {
+    this.quiz.set_words(words);
+    this.switch_page('config');
+  };
+  // </change tags>
 
+  // <change config>
+  Controller.prototype.on_change_config = function(config)
+  {
+    var switch_as = {shuffle: this.quiz.SHUFFLE,
+                     ascend: this.quiz.ASCEND,
+                     descend: this.quiz.DESCEND
+    };
+    console.log(config);
+    this.quiz.question_format = [];
+    if (config.spell_word)
+      this.quiz.question_format.push('spell_word');
+    if (config.choose_word)
+      this.quiz.question_format.push('choose_word');
+    if (config.choose_meaning)
+      this.quiz.question_format.push('choose_meaning');
+
+    this.quiz.show_words = config.show_chars;
+    this.quiz.repeat_wrong = config.repeat_till_right;
+
+    this.quiz.sort_by = switch_as[config.order];
+    this.quiz.put_current_back();
+    this.quiz.sort();
+    console.log('sorted');
+    this.quiz.next_question(this.config.next_format());
+    this.switch_page('quiz');
+  };
+  // </change config>
+
+  Controller.prototype.switch_page = function(page)
+  {
+    var words = $('#words-page');
+    var config = $('#config-page');
+    var quiz = $('#quiz-page');
+    words.hide();
+    config.hide();
+    quiz.hide();
+    switch (page)
+    {
+      case 'quiz':
+        quiz.show();
+        break;
+      case 'config':
+        config.show();
+        break;
+      case 'words':
+        words.show();
+        break;
+    }
   };
 // </Controller>
 
-// <TagSelector>
+// <TagPage>
   // <init>
-  var TagSelector = function($table_body, $bar){
+  var TagPage = function($table_body, $bar){
     this.tags = {};
     this.shown_id = [];
     this.id_to_word = {};
@@ -56,15 +118,15 @@ $(function ()
     this.$bar = $bar;
   };
 
-  TagSelector.prototype.tags;
-  TagSelector.prototype.shown_id;
-  TagSelector.prototype.id_to_word;
-  TagSelector.prototype.$table_body;
-  TagSelector.prototype.$bar;
+  TagPage.prototype.tags;
+  TagPage.prototype.shown_id;
+  TagPage.prototype.id_to_word;
+  TagPage.prototype.$table_body;
+  TagPage.prototype.$bar;
   // </init>
 
   // <load tag>
-  TagSelector.prototype.load = function(tag, ok_callback, fail_callback, always_callback)
+  TagPage.prototype.load = function(tag, ok_callback, fail_callback, always_callback)
   {
     var self = this;
     // <cache>
@@ -98,8 +160,8 @@ $(function ()
   };
   // <load tag>
 
-  // <add words to obj>
-  TagSelector.prototype.add_words = function(words)
+  // <add words to self.id_to_word>
+  TagPage.prototype.add_words = function(words)
   {
     for (var index in words)
     {
@@ -107,10 +169,10 @@ $(function ()
       this.id_to_word[word_obj.id] = word_obj;
     }
   };
-  // </add words to obj>
+  // </add words to self.id_to_word>
 
   // <render words>
-  TagSelector.prototype.render_words = function(words, offset)
+  TagPage.prototype.render_words = function(words, offset)
   {
     // <get string>
     var shown = this.shown_id;
@@ -139,7 +201,7 @@ $(function ()
   // <render words>
 
   // <get word string>
-  TagSelector.prototype.get_render_string = function(word)
+  TagPage.prototype.get_render_string = function(word)
   {
     // <parse meaning>
     var meanings = [];
@@ -178,7 +240,7 @@ $(function ()
   // </get word string>
 
   // <process bar>
-  TagSelector.prototype.render_bar = function(num, content, error)
+  TagPage.prototype.render_bar = function(num, content, error)
   {
     var $bar = this.$bar;
     var text;
@@ -200,7 +262,7 @@ $(function ()
   // </process bar>
 
   // <callback result>
-  TagSelector.prototype.report = function(callback)
+  TagPage.prototype.report = function(callback)
   {
     var $checked_inputs = this.$table_body.find('input[type="checkbox"]:checked');
     var words = [];
@@ -218,11 +280,11 @@ $(function ()
     callback(words);
   };
   // </callback result>
-// </TagSelector>
+// </TagPage>
 
-// <Config>
+// <ConfigPage>
   // <init>
-  var Config = function($form)
+  var ConfigPage = function($form)
   {
     this.$form = $form;
     this.spell_word = null;
@@ -235,18 +297,18 @@ $(function ()
     this._get_result();
   };
 
-  Config.prototype.$form;
-  Config.prototype.spell_word;
-  Config.prototype.choose_word;
-  Config.prototype.choose_meaning;
-  Config.prototype.order;
-  Config.prototype.repeat_till_right;
-  Config.prototype.click_to_go;
-  Config.prototype.show_chars;
+  ConfigPage.prototype.$form;
+  ConfigPage.prototype.spell_word;
+  ConfigPage.prototype.choose_word;
+  ConfigPage.prototype.choose_meaning;
+  ConfigPage.prototype.order;
+  ConfigPage.prototype.repeat_till_right;
+  ConfigPage.prototype.click_to_go;
+  ConfigPage.prototype.show_chars;
   // </init>
 
   // <refresh status>
-  Config.prototype._get_result = function()
+  ConfigPage.prototype._get_result = function()
   {
     var $form = this.$form;
     this.spell_word = $form.find('input[name="spell"]').prop('checked');
@@ -263,15 +325,29 @@ $(function ()
   };
   // </refresh status>
 
+  // <question format>
+  ConfigPage.prototype.next_format = function()
+  {
+    var result = [];
+    if (this.spell_word)
+      result.push('spell_word');
+    if (this.choose_word)
+      result.push('choose_word');
+    if (this.choose_meaning)
+      result.push('choose_meaning');
+    return result[Math.floor(Math.random() * result.length)]
+  };
+  // </question format>
+
   // <callback result>
-  Config.prototype.report = function(callback)
+  ConfigPage.prototype.report = function(callback)
   {
     this._get_result();
     return callback(this);
   };
   // </callback result>
 
-// </Config>
+// </ConfigPage>
 
 // <Question>
   // <init>
@@ -309,8 +385,8 @@ $(function ()
       var value = options[index];
       if (value === undefined)
       {
-        $(this).parent().hide();
-        return;
+        $(this).closest('.am-radio').hide();
+        return true;
       }
 
       var prefix = null;
@@ -330,7 +406,7 @@ $(function ()
           break;
       }
 
-      $(this).html(prefix + '. ' + value);
+      $(this).closest('.am-radio').text(prefix + '. ' + value);
     });
   };
   // </set choose>
@@ -411,51 +487,69 @@ $(function ()
   // </text>
 // </Display>
 
-// <Recorder>
+// <QuizPage>
   // <init>
-  var Recorder = function()
+  var QuizPage = function(question, display)
   {
     var shuffle = 0;
     var ascend = 1;
     var descend = 2;
-    this.words = [];
+    this.words = [];  // All words
     this.current = [];
     this.next = [];  // Wrong, and need to test again
     this.record = {};  // key: word, value: array of wrong answer
 
+    this.anwser = null;    // set to list
+    this.word = null;
+
+    // config
     this.SHUFFLE = shuffle;
     this.ASCEND = ascend;
     this.DESCEND = descend;
     this.sort_by = shuffle;
+
+    this.question_format = null;
+    this.repeat_wrong = true;
+    this.show_words = 0;
+
+    this.question = question;
+    this.display = display;
   };
-  Recorder.prototype.words;
-  Recorder.prototype.current;
-  Recorder.prototype.next;
-  Recorder.prototype.record;
-  Recorder.prototype.sort_by;
+  QuizPage.prototype.words;
+  QuizPage.prototype.current;
+  QuizPage.prototype.next;
+  QuizPage.prototype.record;
+  QuizPage.prototype.anwser;
+  QuizPage.prototype.word;
+  QuizPage.prototype.sort_by;
+  QuizPage.prototype.question_format;
+  QuizPage.prototype.repeat_wrong;
+  QuizPage.prototype.show_words;
+  QuizPage.prototype.qustion;
+  QuizPage.prototype.display;
   // </init>
 
   // <empty>
-  Recorder.prototype.empty = function()
+  QuizPage.prototype.empty = function()
   {
     return this.current.length && this.next.length;
   };
   // </empty>
 
   // <get>
-    // <get spell>
-  Recorder.prototype.get_spell = function()
+    // <get word>
+  QuizPage.prototype.get_word = function()
   {
     if (! this.current.length)
       this.next_round();
     var words = this.current.pop(0);
     return words;
   };
-    // </get spell>
+    // </get word>
   // </get>
 
   // <add next>
-  Recorder.prototype.next_round = function()
+  QuizPage.prototype.next_round = function()
   {
     this.current.concat(this.next);
     this.next = [];
@@ -464,7 +558,7 @@ $(function ()
   // </add next>
 
   // <sort>
-  Recorder.prototype.sort = function()
+  QuizPage.prototype.sort = function()
   {
     var sort_by = this.sort_by;
     if (sort_by == this.SHUFFLE)
@@ -485,25 +579,194 @@ $(function ()
     }
   };
   // </sort>
-// </Recorder>
+
+  // <set words>
+  QuizPage.prototype.set_words = function(words)
+  {
+    this.words = words;
+    this.current = words;
+    this.next = [];
+    this.word = null;
+    this.anwser = null;
+    this.sort();
+  };
+  // </set words>
+
+  // <next question>
+  QuizPage.prototype.next_question = function(format)
+  {
+    if (this.empty())
+      return false;
+
+    var word = this.get_word();
+    this.set_page(word, format);
+
+    return true
+  };
+  // </next question>
+
+  // <set page>
+  QuizPage.prototype.set_page = function(word, format)
+  {
+    console.log(word);
+    var correct;
+
+    if (format == 'spell_word')
+    {
+      var displays = [];
+      if (word.pronounce)
+        displays.push('/ ' + word.pronounce + ' /');
+      for (var type in word.meaning)
+      {
+        var mean = '';
+        if (type)
+          mean += ('&lt;' + type + '&gt;');
+        mean += word.meaning[type];
+        displays.push(mean);
+      }
+      this.question.set_input(displays.join('<br />'));
+      this.anwser = word.meaning;
+    }
+    // </spell word>
+    else    // select
+    {
+      var to_choose = this.shuffle_4(word);
+      shuffle(to_choose);
+      currect = to_choose.indexOf(word);
+      this.anwser = [currect];
+    // <choose word>
+      if (format == 'choose_word')
+      {
+        var displays = [];
+        if (word.pronounce)
+          displays.push('/ ' + word.pronounce + ' /');
+        for (var type in word.meaning)
+        {
+          var mean = '';
+          if (type)
+            mean += ('&lt;' + type + '&gt;');
+          mean += word.meaning[type];
+          displays.push(mean);
+        }
+        var display = displays.join('<br />');
+        var to_choose_strs = [];
+        for (var index in to_choose)
+        {
+          to_choose_strs.push(to_choose[index].spell.join('; '))
+        }
+        this.question.set_choose(display, to_choose_strs);
+        console.log(display, to_choose_strs);
+      }
+    // </choose word>
+    // <choose meaning>
+      else    // choose_meaning
+      {
+        var displays = [];
+        var types = [];
+        for (var type in word.meaning)
+          if (type)
+            types.push(type);
+        if (types.length !== 0)
+          displays.push('&lt;' + types.join('/') + '&gt;');
+        displays.push(word.spell.join('; '));
+
+        var to_choose_str = [];
+        for (var index in to_choose)
+        {
+          var this_word = to_choose[index];
+          var meanings = [];
+          for (var type in this_word.meaning)
+          {
+            $.merge(meanings, this_word.meaning[type]);
+          }
+          console.log(meanings);
+          to_choose_str.push(meanings.join('; '))
+        }
+
+        this.question.set_choose(displays.join(' '), to_choose_str);
+        console.log(displays, to_choose_str);
+    // <choose meaning>
+      }
+    }
+  };
+  // </set page>
+
+  // <get random words>
+  QuizPage.prototype.shuffle_4 = function(word)
+  {
+    if (this.words.length <= 4)
+    {
+      return new Array(this.words)
+    }
+
+    var word_id = word.id;
+    var id_2_word = {word_id: word};
+    while (Object.keys(id_2_word).length < 4)
+    {
+      var random_item = this.words[Math.floor(Math.random() * this.words.length)];
+      if (id_2_word[random_item.id] === undefined)
+        id_2_word[random_item.id] = random_item;
+    }
+
+    var result = [];
+    for (var key in id_2_word)
+    {
+      result.push(id_2_word[key]);
+    }
+    return result;
+  };
+  // </get random words>
+
+  // <put back>
+  QuizPage.prototype.put_current_back = function()
+  {
+    if (this.word != null)
+      this.current.unshift(this.word);
+    this.word = null;
+    this.anwser = null;
+  };
+  // </put back>
+
+  // <check answer>
+  QuizPage.prototype.check_answer = function(answer)
+  {
+    var currect = false;
+    for (var index in answer)
+    {
+      if (this.anwser.indexOf(answer[index]) != -1)
+      {
+        currect = true;
+        break;
+      }
+    }
+  };
+  // </check answer>
+// </QuizPage>
+
+  var tag_page = new TagPage($('#word-list tbody'), $('#tags-loading'));
 
   var $config_form = $('#config-page');
-  var tag_selector = new TagSelector($('#word-list tbody'), $('#tags-loading'));
-  var config = new Config($config_form);
+  var config_page = new ConfigPage($config_form);
+
   var question = new Question($('#form-spell'), $('#form-choose-word'));
+
   var display = new Display();
-  var record = new Recorder();
+
+  var quiz_page = new QuizPage(question, display);
+
+  var controller = new Controller(quiz_page, config_page);
+
   var $confirm_btn = $('#tag-confirm');
   $confirm_btn.click(function(event)
   {
     event.preventDefault();
-    tag_selector.report(function(words) { for (var index in words) console.log(words[index])});
+    tag_page.report(function(words){ controller.on_change_words(words); });
   });
 
   $config_form.submit(function(event)
   {
     event.preventDefault();
-    config.report(function(config){ console.log(config); });
+    config_page.report(function(config){ controller.on_change_config(config); });
   });
 
   var $tag_select = $('#select-tags');
@@ -513,19 +776,19 @@ $(function ()
   });
   $tag_select.on('select2:select', function(name, event)
   {
-    tag_selector.render_bar(0);
+    tag_page.render_bar(0);
     var tag = name.params.data.text;
     console.log(tag);
     $confirm_btn.button('loading');
-    tag_selector.render_bar(10, _('loading'));
-    tag_selector.load(
+    tag_page.render_bar(10, _('loading'));
+    tag_page.load(
       tag,
-      function(){ tag_selector.render_bar(20, _('inserting')); },
+      function(){ tag_page.render_bar(20, _('inserting')); },
       function(jqXHR, textStatus, errorThrown)
       {
-        tag_selector.render_bar(undefined, '' + jqXHR.status + ': ' + errorThrown, true);
+        tag_page.render_bar(undefined, '' + jqXHR.status + ': ' + errorThrown, true);
       },
-      function(){ $confirm_btn.button('reset'); tag_selector.render_bar(100); });
+      function(){ $confirm_btn.button('reset'); tag_page.render_bar(100); });
   });
 
   // <select all>
