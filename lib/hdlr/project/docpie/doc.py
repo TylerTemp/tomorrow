@@ -29,8 +29,6 @@ class DocHandler(BaseHandler):
         else:
             unquote_slug = unquote(slug)
 
-        print(self.request.uri)
-
         info = Article(unquote_slug).get()
 
         if self.locale.code[:2] == 'zh':
