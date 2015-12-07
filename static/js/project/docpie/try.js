@@ -7,7 +7,7 @@ $(function(evt)
               .height(element.scrollHeight - 10);
   };
 
-  $('textarea').each(function()
+  $('textarea.doc').each(function()
   {
     adjust_height(this);
   }).on('input', function()
@@ -46,11 +46,11 @@ $(function(evt)
       if (arg_value === undefined)
         continue;
       switch (arg_value) {
-        case ('true'):
+        case ('on'):
         case (true):
             arg_value = 'True';
             break;
-        case ('false'):
+        case (''):
         case (false):
             arg_value = 'False';
             break;
@@ -75,7 +75,7 @@ $(function(evt)
   $help.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('help', value, 'true');
+    set_value('help', value, 'on');
   });
   $version.blur(function(event)
   {
@@ -89,22 +89,22 @@ $(function(evt)
   $stdopt.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('stdopt', value, 'true');
+    set_value('stdopt', value, 'on');
   });
   $attachopt.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('attachopt', value, 'true');
+    set_value('attachopt', value, 'on');
   });
   $attachvalue.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('attachvalue', value, 'true');
+    set_value('attachvalue', value, 'on');
   });
   $auto2dashes.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('auto2dashes', value, 'true');
+    set_value('auto2dashes', value, 'on');
   });
   $name.blur(function(event)
   {
@@ -123,17 +123,17 @@ $(function(evt)
   $case_sensitive.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('case_sensitive', value, 'false');
+    set_value('case_sensitive', value, '');
   });
   $optionsfirst.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('optionsfirst', value, 'false');
+    set_value('optionsfirst', value, '');
   });
   $appearedonly.change(function(event)
   {
     var value = $(this).filter(':checked').val();
-    set_value('appearedonly', value, 'false');
+    set_value('appearedonly', value, '');
   });
     // </bind>
   // </monitor-config>
@@ -150,7 +150,8 @@ $(function(evt)
     var values = {};
     $.each($form.serializeArray(), function(i, field)
     {
-      values[field.name] = field.value;
+      if (field.value)
+        values[field.name] = field.value;
     });
 
     $code.html(
@@ -184,4 +185,47 @@ $(function(evt)
     })
   });
   // </form>
+  // <bug report>
+  $('#bug-report-guide').click(function(event)
+  {
+    event.preventDefault();
+    $('#bug-report-container').fadeIn(200);
+    var $form = $('form');
+    var values = {};
+    $.each($form.serializeArray(), function(i, field)
+    {
+      if (field.value)
+        values[field.name] = field.value;
+    });
+    delete values['exec'];
+    var doc = values['doc'];
+    var argv = values['argv'];
+    var output = $form.find('pre code').text();
+    var $display = $('#bug-report-info');
+    var main_url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+    var url = URI(main_url);
+    url.search(values);
+
+    var msg = "Hey man. I was using your package but it does not work as expected. My __doc__" +
+        (doc? ":\n\n```\n" + doc + "\n```\n\n": "is empty.\n\n" ) +
+
+        "But when I give argv as" + (argv? ": \n\n```\n" + argv + "\n```\n\n": " empty, ") +
+
+        "it give the result" +
+        ($.trim(output)? ":\n\n```\n" + output + "\n```\n\n": " as empty.\n\n") +
+
+        "WTF? What the hell was going on?\n\n" +
+        "`docpie` version: " + version_and_time + "\n\n" +
+        "Here is the [online demo](" + url.toString() + ")";
+
+    $display.val(msg);
+    adjust_height($display[0]);
+  });
+  $('#bug-report-cancel').click(function(event)
+  {
+    event.preventDefault();
+    $('#bug-report-container').fadeOut(100);
+  });
+  // </bug report>
 });

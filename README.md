@@ -75,5 +75,6 @@ use `python main.py --help` for more detail
 * `static/js/md2html.js` is under MIT license, by Dominic Baggott, Ash Berlin & Christoph Dorn <christoph@christophdorn.com> (http://www.christophdorn.com)
 * `lib/tool/filelock.py` is edited from source [github: dmfrey/ FileLock](https://github.com/dmfrey/FileLock)
 * [highlight.js](https://highlightjs.org/) - Syntax highlighting for the Web
+* [medialize-URI.js](https://github.com/medialize/URI.js) - JavaScript URL mutation library
 
 Note for the file `static/img/user.jpg`, I can not find the source, nor do I know the license. If you know the source/license, or it has infringed your right, please tell me at <tylertempdev@gmail.com>.

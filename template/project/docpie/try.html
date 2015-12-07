@@ -40,8 +40,8 @@
               <span style="color: #F3F781;">$</span> python <span data-role="file-name">{{ file_name }}</span>
             </label>
             <div style="overflow: hidden;">
-              <input class="terminal-input" type="text" id="argv" name="argv" value="{{ argv or '' }}" placeholder="{{ _('(Input Your command)') }}"
-                     >
+              <input class="terminal-input" type="text" id="argv" name="argv"
+                     value="{{ argv or '' }}" placeholder="{{ _('(Input Your command)') }}">
             </div>
           </div>
         </div>
@@ -58,20 +58,37 @@
 
       </div>
 
-      <p>{% raw _('Find a bug? {mark}Tell me here!{mark_end}').format(mark='<a href="https://github.com/TylerTemp/docpie/issues" target="_blank"><span class="am-icon-bug">', mark_end='</span></a>') %}</p>
+      <p>{% raw _('Find a bug? {mark}Tell me here!{mark_end}').format(mark='<a href="https://github.com/TylerTemp/docpie/issues" target="_blank" id="bug-report-guide"><span class="am-icon-bug">', mark_end='</span></a>') %}</p>
+
+      <div id="bug-report-container" style="display: none;">
+        <p>1. Open
+          <a href="https://github.com/TylerTemp/docpie/issues/new" target="_blank">
+            this page
+            <span class="am-icon-external-link-square"></span>
+          </a>.</p>
+        <p>2. Copy the following content to the new page</p>
+        <hr />
+        <textarea class="am-form-filed" id="bug-report-info"></textarea>
+        <div class="am-g am-cf am-padding-top">
+          <button class="am-btn am-fr" id="bug-report-cancel">{{ _('Cancel') }}</button>
+        </div>
+      </div>
 
       <hr class="am-divider am-divider-dashed" />
 
       <p class="am-icon-wrench"> {{ _('Config') }}:</p>
+
+      <input name="exec" value="on" style="display: none"/>
+
       <!-- help -->
       <div class="am-form-group">
         <label class="am-u-sm-3 am-u-md-2 am-form-label">help:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="help" value="true" {{'checked' if config.get('help', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="help" value="on" {{'checked' if config.get('help', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="help" value="false" {{'checked' if not config.get('help', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="help" value="" {{'checked' if not config.get('help', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -89,10 +106,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">stdopt:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="stdopt" value="true" {{'checked' if config.get('stdopt', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="stdopt" value="on" {{'checked' if config.get('stdopt', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline am-danger">
-            <input type="radio" name="stdopt" value="false" {{'checked' if not config.get('stdopt', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="stdopt" value="" {{'checked' if not config.get('stdopt', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -101,10 +118,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">attachopt:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="attachopt" value="true" {{'checked' if config.get('attachopt', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="attachopt" value="on" {{'checked' if config.get('attachopt', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline am-danger">
-            <input type="radio" name="attachopt" value="false" {{'checked' if not config.get('attachopt', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="attachopt" value="" {{'checked' if not config.get('attachopt', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -113,10 +130,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">attachvalue:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="attachvalue" value="true" {{'checked' if config.get('attachvalue', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="attachvalue" value="on" {{'checked' if config.get('attachvalue', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline am-danger">
-            <input type="radio" name="attachvalue" value="false" {{'checked' if not config.get('attachvalue', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="attachvalue" value="" {{'checked' if not config.get('attachvalue', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -125,10 +142,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">auto2dashes:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="auto2dashes" value="true" {{'checked' if config.get('auto2dashes', True) else ''}} data-am-ucheck> True
+            <input type="radio" name="auto2dashes" value="on" {{'checked' if config.get('auto2dashes', True) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="auto2dashes" value="false" {{'checked' if not config.get('auto2dashes', True) else ''}} data-am-ucheck> False
+            <input type="radio" name="auto2dashes" value="" {{'checked' if not config.get('auto2dashes', True) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -144,10 +161,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">case_sensitive:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="case_sensitive" value="true" {{'checked' if config.get('case_sensitive', False) else ''}} data-am-ucheck> True
+            <input type="radio" name="case_sensitive" value="on" {{'checked' if config.get('case_sensitive', False) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="case_sensitive" value="false" {{'checked' if not config.get('case_sensitive', False) else ''}} data-am-ucheck> False
+            <input type="radio" name="case_sensitive" value="" {{'checked' if not config.get('case_sensitive', False) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -156,10 +173,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">optionsfirst:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="optionsfirst" value="true" {{'checked' if config.get('optionsfirst', False) else ''}} data-am-ucheck> True
+            <input type="radio" name="optionsfirst" value="on" {{'checked' if config.get('optionsfirst', False) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="optionsfirst" value="false" {{'checked' if not config.get('optionsfirst', False) else ''}} data-am-ucheck> False
+            <input type="radio" name="optionsfirst" value="" {{'checked' if not config.get('optionsfirst', False) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -168,10 +185,10 @@
         <label class="am-u-sm-3 am-u-md-2 am-form-label">appearedonly:</label>
         <div class="am-u-sm-9 am-u-md-10">
           <label class="am-radio-inline">
-            <input type="radio" name="appearedonly" value="true" {{'checked' if config.get('appearedonly', False) else ''}} data-am-ucheck> True
+            <input type="radio" name="appearedonly" value="on" {{'checked' if config.get('appearedonly', False) else ''}} data-am-ucheck> True
           </label>
           <label class="am-radio-inline">
-            <input type="radio" name="appearedonly" value="false" {{'checked' if not config.get('appearedonly', False) else ''}} data-am-ucheck> False
+            <input type="radio" name="appearedonly" value="" {{'checked' if not config.get('appearedonly', False) else ''}} data-am-ucheck> False
           </label>
         </div>
       </div>
@@ -199,6 +216,8 @@
 <script>
   var config_status = {% raw jsonlize(modified) %};
   var no_render_code_block = true;
+  var version_and_time = "{{ version }} / {{ time }}";
 </script>
+<script src="/static/js/project/docpie/URI.js"></script>
 <script src="/static/js/project/docpie/try.js"></script>
 {% end %}
