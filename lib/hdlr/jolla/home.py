@@ -77,7 +77,7 @@ class HomeHandler(BaseHandler):
         netloc = sp.netloc
         if netloc in ('blog.jolla.com', 'together.jolla.com'):
             return '<span class="iconfont icon-jolla"> </span>'
-        elif netloc == 'reviewjolla.blogspot.com':
+        elif netloc.startswith('reviewjolla.blogspot.'):
             return '<img src="https://dn-jolla.qbox.me/reviewjolla.ico" style="display: inline">'
         elif netloc == 'www.jollausers.com':
             return '<img src="https://dn-jolla.qbox.me/jollausers.ico" style="display: inline">'

@@ -6,38 +6,30 @@
 
 {% end %}
 
-{% block bg %}
-<link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
-<style>
-  body {
-    background: #F7F5EC url("//{{ MAIN_HOST }}/static/img/bg.jpg") repeat scroll 0px 0px
-  }
-</style>
-{% end %}
-
 {% block neck %}
 <link rel="stylesheet" href="/static/css/editor.css">
+<link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
 <style>
-#load {
-  float: left;
-}
-#wysiwygEditor, #mdEditor {
-  min-height: 450px;
-}
+  #load {
+    float: left;
+  }
+  #wysiwygEditor, #mdEditor {
+    min-height: 450px;
+  }
 
-#preview_popup p img {
-  max-width: 100%;
-  height: auto;
-  margin: 0em 0em 0em -2em;
-}
+  #preview_popup p img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 0 0 -2em;
+  }
 
-#preview_popup p {
-  text-indent: 2em;
-}
+  #preview_popup p {
+    text-indent: 2em;
+  }
 
-#preview_popup .footnote p {
-  text-indent: 0em;
-}
+  #preview_popup .footnote p {
+    text-indent: 0;
+  }
 
 </style>
 {% end %}
@@ -77,7 +69,7 @@
             class="am-btn am-btn-primary am-btn-sm am-fr"
             data-am-loading="{spinner: 'spinner', loadingText: ''}">
           {{ _('Load') }}
-        </botton>
+        </button>
       </div>
     </div>
 

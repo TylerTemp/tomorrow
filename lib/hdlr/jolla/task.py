@@ -149,7 +149,7 @@ class TaskHandler(BaseHandler):
         article.save()
 
         red_url = article.get()['slug']
-        redirect = '/jolla/translate/%s/' % quote(red_url)
+        redirect = '/jolla/tr/%s/' % quote(red_url)
         logger.debug("new jolla translate task: %s", title)
         self.write(json.dumps({'error': 0, 'redirect': redirect}))
         self.finish()

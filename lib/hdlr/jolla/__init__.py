@@ -7,5 +7,5 @@ from .article import ArticleHandler
 from .home import HomeHandler
 from .rss import RssHandler
 
-__all__ = ('ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler'
-           'BlogHandler', 'ArticleHandler', 'HomeHandler', 'RssHandler')
+__all__ = ('ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler',
+           'ArticleHandler', 'HomeHandler', 'RssHandler')
