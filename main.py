@@ -92,11 +92,11 @@ class Application(tornado.web.Application):
 
             (r'/jolla/(favicon\.ico)', tornado.web.StaticFileHandler,
              {'path': os.path.join(rootdir, 'static')}),
-            (r'/jolla/', jolla.BlogHandler),
+            (r'/jolla/', jolla.HomeHandler),
             (r'/jolla/page/1/',
              RedirectHandler,
              {'to': '//' + self.config.jolla_host, 'permanently': True}),
-            (r'/jolla/page/(\d+)/', jolla.BlogHandler),
+            (r'/jolla/page/(\d+)/', jolla.HomeHandler),
             (r'/jolla/feed/', jolla.RssHandler),
             (r'/jolla/tr/', jolla.ListHandler),
             (r'/jolla/tr/(?P<slug>[^/]+)/', jolla.TranslateHandler),

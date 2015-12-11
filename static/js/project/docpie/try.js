@@ -207,7 +207,7 @@ $(function(evt)
     var url = URI(main_url);
     url.search(values);
 
-    var msg = "Hey man. I was using your package but it does not work as expected. My __doc__" +
+    var msg = "Hey man. I was using your package but it does not work as expected. My `__doc__`" +
         (doc? ":\n\n```\n" + doc + "\n```\n\n": "is empty.\n\n" ) +
 
         "But when I give argv as" + (argv? ": \n\n```\n" + argv + "\n```\n\n": " empty, ") +
