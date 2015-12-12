@@ -14,13 +14,13 @@
 {% block stomach %}
 <div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
   <div class="am-u-sm-12 am-margin-left" style="color: #fff">
-    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow<a/>
+    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow</a>
   </div>
 </div>
 
 <header>
   <div class="am-margin-lg am-text-center">
-    <a href="//{{ JOLLA_HOST }}/"><img alt="{{ _("Jolla Unofficial Chinese Blog") }}" src="https://dn-jolla.qbox.me/blog_header.png"></a>
+    <a href="//{{ JOLLA_HOST }}/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
   </div>
 </header>
 
@@ -61,8 +61,8 @@
   </div>
 
 
-  {% if headimg %}
-    <img src="{{ headimg }}" id="title-img">
+  {% if img %}
+    <img src="{{ img }}" id="title-img">
   {% end %}
   <div class="am-g am-margin-bottom-xl" id="white-bg-box">
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
@@ -70,11 +70,12 @@
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article['title'] }}</h1>
           <p class="am-article-meta">
-            {% raw article['source'] %}{% raw article['tag'] %}
+            {% raw make_source(article['source']) %}
+            {% raw ('| ' + ''.join(make_tag(article['tag']))) if article['tag'] else '' %}
             <br />
             {% raw _('Posted by {email}{name} on {time}').format(
-              email=('<a href="mailto:%s" target="_blank"><span class="am-icon-envelope"></span></a>' % article['email']) if article['email'] else '',
-              name='<a href="//%s/hi/%s/">%s</a>' % (MAIN_HOST, quote(article['author']), article['author']),
+              email=('<a href="mailto:%s" target="_blank"><span class="am-icon-envelope"></span></a>' % author['email']) if author['email'] else '',
+              name='<a href="//%s/hi/%s/">%s</a>' % (MAIN_HOST, quote(author['name']), author['name']),
               time='<time>%s</time>' % createtime) %}
           </p>
         </div>
@@ -86,31 +87,71 @@
           {% end %}
           {% raw article['content'] %}
           <!-- Jolla blog author translation -->
-          {% if article['original'] %}
+          {% if original %}
             <hr class="am-article-divider">
-            {% module JollaAuthor(article['original']['author']) %}
+            <div class="am-g am-u-sm-centered" id="original-author">
+            {% if original['author']['photo'] %}
+            <div class="am-u-sm-12 am-u-md-4">
+              <img class="am-circle am-thumbnail am-center" src="{{ original['author']['photo'] }}">
+            </div>
+            <div class="am-u-sm-12 am-u-md-8">
+              <h6>{{ original['author']['name'] }}</h6>
+              {% raw original['author']['intro'] or '' %}
+            </div>
+            {% elif original['author']['intro'] %}
+            <div class="am-u-sm-12">
+              <h6>{{ original['author']['name'] }}</h6>
+              {% raw original['author']['intro'] %}
+            </div>
+            {% end %}
+          </div>
           {% end %}
+
         </div>
-        {% if article['original'] %}
+
+        {% if original %}
         <footer>
-          <p>原文由 {{ article['original']['author'] }} 发布于 <a href="{{ article['original']['link'] }}">{{ article['original']['title'] }}</a>
+          <p>原文由 {{ original['author']['name'] }} 发布于
+            <a href="{{ original['link'] }}">{{ original['title'] }}</a>
+          </p>
         </footer>
         {% end %}
         <!-- Translator -->
         <hr class="am-article-divider">
-        {% if article['original'] %}
+        {% if original %}
           <p>{{ _('Translated by') }}</p>
         {% end %}
       </article>
       <div class="am-padding-top">
-        {% module Author(article['author']) %}
+
+
+        <div class="am-g am-u-sm-centered">
+          {% if author['photo'] %}
+          <div class="am-u-sm-3">
+            <a href="//{{ MAIN_HOST }}/hi/{{ author['name'] }}/">
+              <img class="am-circle am-thumbnail am-center" src="{{ author['photo'] }}">
+            </a>
+          </div>
+          <div class="am-u-sm-9">
+          {% else %}
+          <div class="am-u-sm-12">
+          {% end %}
+            <div class="am-margin-horizontal">
+              <a href="//{{ MAIN_HOST }}/hi/{{ author['name'] }}/"><h6>{{ author['name'] }}</h6></a>
+              {% raw author['intro'] or '' %}
+              {% raw author['donate'] or '' %}
+            </div>
+          </div>
+        </div>
+
+
       </div>
       <hr class="am-divider am-divider-dotted" />
       <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr" id="comment">
         <div class="ds-thread"
              data-thread-key="{{ article['id'] }}"
              data-title="{{ article['title'] }}"
-             {% if headimg %}data-image="{{ headimg }}"{% end %}
+             {% if img %}data-image="{{ img }}"{% end %}
              data-form-position="top"></div>
       </div>
 

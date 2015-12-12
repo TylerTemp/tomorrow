@@ -60,10 +60,11 @@
               <a href="{{ each['slug'] }}"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
             </div>
             <div>
-              {% raw each['source'] %}{% raw each['tag'] %}
+              {% raw make_source(each['source']) %}
+              {% raw ('| ' + ''.join(make_tag(each['tag']))) if each['tag'] else '' %}
             </div>
             <div class="am-article-bd">
-              {% raw each['descripition'] %}
+              {% raw each['descripition'] or (each['preview'] + '...') %}
             </div>
           </article>
           <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
@@ -94,10 +95,11 @@
               <a href="{{ each['slug'] }}"><h2 class="am-article-title am-margin-top">{{ each['title'] }}</h2></a>
             </div>
             <div>
-              {% raw each['source'] %}{% raw each['tag'] %}
+              {% raw make_source(each['source']) %}
+              {% raw ('| ' + ''.join(make_tag(each['tag']))) if each['tag'] else '' %}
             </div>
             <div class="am-article-bd">
-              {% raw each['descripition'] %}
+              {% raw each['descripition'] or (each['preview'] + '...') %}
             </div>
           </article>
           <div class="am-cf">

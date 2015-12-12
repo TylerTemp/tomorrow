@@ -35,9 +35,6 @@ from lib.hdlr import brey, jolla, tomorrow, api
 from lib.hdlr.project import docpie, wordz
 
 from lib.ui.editor import WysBarModule, MdBarModule
-from lib.ui.iconfont import IconFontModule
-from lib.ui.license import LicenseModule
-from lib.ui.author import AuthorModule, JollaAuthorModule
 sys.path.pop(0)
 
 
@@ -135,10 +132,6 @@ class Application(tornado.web.Application):
             'ui_modules': {
                 'WysBar': WysBarModule,
                 'MdBar': MdBarModule,
-                'License': LicenseModule,
-                'Author': AuthorModule,
-                'JollaAuthor': JollaAuthorModule,
-                'IconFontCss': IconFontModule,
                 },
         }
 

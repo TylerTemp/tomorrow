@@ -2,7 +2,7 @@ import tornado.web
 import tornado.escape
 import logging
 import time
-import re
+import json
 try:
     from urllib.parse import unquote, quote, urlsplit
 except ImportError:
@@ -12,12 +12,12 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
+from .base import BaseHandler
 import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
-from lib.db import Article
+from lib.db import Article, JollaAuthor, User
 from lib.tool import md
 from lib.config import Config
 sys.path.pop(0)
@@ -33,111 +33,110 @@ class ArticleHandler(BaseHandler):
         if article.new:
             raise tornado.web.HTTPError(404, "article %s not found" % slug)
 
-        result = self.parse(article.get())
+        result = self.formal(article.get())
+        if result.get('original', None):
+            result['original']['author'] = self.original_author(
+                    result['original']['author'])
+
+        result['author'] = self.this_author(result['author'])
+        result['author']['email'] = result.pop('email')
+
+        if self.get_argument('format', None) == 'json':
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps(result))
+            return
 
         return self.render(
             'jolla/article.html',
             article=result,
-            headimg=result.pop('headimg'),
+            img=result.pop('img'),
             createtime=result.pop('createtime'),
+            original=result.pop('original'),
+            author=result.pop('author'),
             await=result.pop('await'),
             reject=result.pop('reject'),
-            quote=quote
+            quote=quote,
+            make_tag=self.make_tag,
+            make_source=self.make_source
         )
 
-    def parse(self, info):
+    def formal(self, info):
         info = self.parse_db_data(info)
         self.parse_format(info)
-        self.parse_html(info)
+        self.parse_time(info)
         return info
 
     def parse_db_data(self, info):
         result = {
             'title': info['zh']['title'],
             'author': info['author'],
-            'email': info['email'],
-            'show_email': info['show_email'],
             'tag': info['tag'],
             'content': info['zh']['content'],
             'original': None,
-            'headimg': info['headimg'],
+            'img': info['headimg'],
             'description': info['zh']['description'],
             'createtime': info['createtime'],
+            'edittime': info['edittime'],
             'await': False,
             'reject': False,
             'id': str(info['_id'])
         }
 
-        if 'transinfo' in info:
+        if info.get('transinfo', None):
             result['original'] = {
                 'title': info['transinfo']['title'],
                 'author': info['transinfo']['author'],
                 'link': info['transinfo']['link'],
             }
+            result['source'] = self.get_source_name(info['transinfo']['link'])
             result['await'] = info['transinfo']['status'] == Article.AWAIT
             result['reject'] = info['transinfo']['status'] == Article.REJECT
+        else:
+            result['source'] = None
+
+        result['email'] = info['email'] if info['show_email'] else None
 
         return result
 
-    p_re = re.compile(r'^<p>.*?</p>$')
-
-    def parse_html(self, info):
-        if info['original'] is not None:
-            main = self.get_source(info['original']['link'])
-        else:
-            main = ('<span class="am-badge am-badge-warning">%s</span>' %
-                        self.locale.translate('original'))
-        tags = ' '.join(self.make_tag(info['tag']))
-
-        info['source'] = main
-        info['tag'] = tags
-
+    def parse_time(self, info):
         info['content'] = md.md2html(info['content'])
 
         if info['description'] is not None:
-            info['description'] = md.md2html(info['description'])
-            if self.p_re.match(info['description']):
-                info['description'] = info['description'][3:-4]
+            info['description'] = self.md_description_to_html(
+                    info['description'])
 
     def parse_format(self, info):
         info['createtime'] = (
             time.strftime("%Y-%m-%d", time.localtime(info['createtime'])))
+        info['edittime'] = (
+            time.strftime("%Y-%m-%d", time.localtime(info['edittime'])))
 
-        if not info.pop('show_email'):
-            info['email'] = None
+    def original_author(self, name):
+        meta = {
+            'name': name,
+            'photo': None,
+            'intro': None
+        }
+        jolla_author = JollaAuthor(name)
+        if not jolla_author.new:
+            meta['photo'] = jolla_author.photo
+            meta['intro'] = jolla_author.translation
+        return meta
 
-    def get_source(self, link):
-        sp = urlsplit(link)
-        netloc = sp.netloc
-        if netloc in ('blog.jolla.com', 'together.jolla.com'):
-            return '<span class="iconfont icon-jolla"> </span>'
-        elif netloc == 'reviewjolla.blogspot.com':
-            return '<img src="https://dn-jolla.qbox.me/reviewjolla.ico" style="display: inline">'
-        elif netloc == 'www.jollausers.com':
-            return '<img src="https://dn-jolla.qbox.me/jollausers.ico" style="display: inline">'
+    def this_author(self, name):
+        user = User(name)
+        info = user.get()
+        intro = info['intro']
+        donate_info = info['donate']
+        if not donate_info['show_in_article']:
+            donate = None
+        elif donate_info['info']:
+            donate = donate_info['old']
         else:
-            sep = netloc.split('.')
-            if len(sep) == 2:
-                name = sep[0]
-            elif len(sep) == 3:
-                name = sep[1]
-            else:
-                name = netloc
-
-            return '<span class="am-badge am-badge-secondary">%s</span>' % name
-
-    def make_tag(self, tags):
-        if tags:
-            yield ' | '
-        for tag1, tag2 in zip_longest(tags[::2], tags[1::2]):
-            first = ('<span class="am-badge am-badge-success am-radius">'
-                     '%s'
-                     '</span>') % self.locale.translate(tag1)
-            yield first
-            if tag2 is None:
-                second = ''
-            else:
-                second = ('<span class="am-badge am-badge-primary am-radius">'
-                          '%s'
-                          '</span>') % self.locale.translate(tag2)
-            yield second
+            donate = donate_info['new']
+        return {
+            'name': name,
+            'photo': info.get('img', None),
+            'intro': intro['content'] if intro['show_in_article'] else None,
+            'donate': donate
+        }

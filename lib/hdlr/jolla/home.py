@@ -1,23 +1,19 @@
 import tornado.web
 import tornado.escape
 import logging
-import random
+import json
 try:
-    from urllib.parse import quote
-    from urllib.parse import urlsplit
+    from urllib.parse import quote, urlsplit
 except ImportError:
     from urllib import quote
     from urlparse import urlsplit
-try:
-    from itertools import zip_longest
-except ImportError:
-    from itertools import izip_longest as zip_longest
+
+from .base import BaseHandler
 
 import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
 from lib.db import Article
 from lib.config import Config
 from lib.tool.md import md2html
@@ -32,78 +28,67 @@ class HomeHandler(BaseHandler):
     HOST = _cfg.jolla_host
 
     def get(self, page=1):
-        page = int(page)
-        skip = (page - 1) * self.LIMIT
-        limit = self.LIMIT
+        render_json = (self.get_argument('format', None) == 'json')
+
+        if render_json:
+            skip = int(self.get_argument('offset', 0))
+            limit = self.get_argument('limit', None)
+            if limit is not None:
+                limit = int(limit)
+            ahead_num = skip
+        else:
+            page = int(page)
+            skip = (page - 1) * self.LIMIT
+            limit = self.LIMIT
+            ahead_num = page * limit
+
         result = Article.display_jolla(skip, limit)
         total = result.count()
-        has_next_page = (page * limit < total)
+        has_next_page = (total - ahead_num)
+        articles=self.formal(result)
+
+        if render_json:
+            articles = list(articles)
+            has_next_page -= len(articles)
+            self.set_header('Content-Type', 'application/json')
+            self.write(json.dumps({
+                'articles': articles,
+                'rest': has_next_page,
+                'total': len(articles)
+            }))
+            return
 
         return self.render(
-            'jolla/blog.html',
-            articles=self.parse_jolla(result),
+            'jolla/home.html',
+            articles=articles,
             this_page=page,
             has_next_page=has_next_page,
-            # animate=self.random_animation_class,
+            make_source=self.make_source,
+            make_tag=self.make_tag,
         )
 
-    def parse_jolla(self, collected):
+    def formal(self, collected):
         for each in collected:
             if 'transinfo' in each:
-                main = self.get_source(each['transinfo']['link'])
+                source_name = self.get_source_name(each['transinfo']['link'])
             else:
-                main = ('<span class="am-badge am-badge-warning">%s</span>' %
-                        self.locale.translate('original'))
+                source_name = None
 
-            tags = ' '.join(self.make_tag(each['tag']))
-
-            des = each['zh']['description']
-            if des is None:
-                des = tornado.escape.xhtml_escape(each['zh']['content'][:80]) + '...'
+            preview = tornado.escape.xhtml_escape(each['zh']['content'][:80])
+            markdown_des = each['zh']['description']
+            if markdown_des is None:
+                des = None
             else:
-                des = md2html(des)
+                des = self.md_description_to_html(markdown_des)
             result = {
                 'title': each['zh']['title'],
-                'slug': '//%s/%s/' % (self.HOST, quote(each['slug'])),
+                'slug': quote(each['slug']),
+                'link': '//%s/%s/' % (self.HOST, quote(each['slug'])),
                 'img': each['cover'] or each['headimg'],
+                'markdown_descripition': markdown_des,
                 'descripition': des,
-                'source': main,
-                'tag': tags
+                'preview': preview,
+                'source': source_name,
+                'tag': each['tag']
             }
             yield result
-
-    def get_source(self, link):
-        sp = urlsplit(link)
-        netloc = sp.netloc
-        if netloc in ('blog.jolla.com', 'together.jolla.com'):
-            return '<span class="iconfont icon-jolla"> </span>'
-        elif netloc.startswith('reviewjolla.blogspot.'):
-            return '<img src="https://dn-jolla.qbox.me/reviewjolla.ico" style="display: inline">'
-        elif netloc == 'www.jollausers.com':
-            return '<img src="https://dn-jolla.qbox.me/jollausers.ico" style="display: inline">'
-        else:
-            sep = netloc.split('.')
-            if len(sep) == 2:
-                name = sep[0]
-            elif len(sep) == 3:
-                name = sep[1]
-            else:
-                name = netloc
-
-            return '<span class="am-badge am-badge-secondary">%s</span>' % name
-
-    def make_tag(self, tags):
-        if tags:
-            yield '|'
-        for tag1, tag2 in zip_longest(tags[::2], tags[1::2]):
-            first = ('<span class="am-badge am-badge-success am-radius">'
-                     '%s'
-                     '</span>') % self.locale.translate(tag1)
-            yield first
-            if tag2 is None:
-                second = ''
-            else:
-                second = ('<span class="am-badge am-badge-primary am-radius">'
-                          '%s'
-                          '</span>') % self.locale.translate(tag2)
-            yield second
