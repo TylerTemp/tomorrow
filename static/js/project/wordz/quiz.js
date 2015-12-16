@@ -80,7 +80,7 @@ $(function ()
     this.quiz.put_current_back();
     this.quiz.sort();
     console.log('sorted');
-    this.quiz.next_question(this.config.next_format());
+    this.quiz.next_question();
     this.switch_page('quiz');
   };
   // </change config>
@@ -325,20 +325,6 @@ $(function ()
   };
   // </refresh status>
 
-  // <question format>
-  ConfigPage.prototype.next_format = function()
-  {
-    var result = [];
-    if (this.spell_word)
-      result.push('spell_word');
-    if (this.choose_word)
-      result.push('choose_word');
-    if (this.choose_meaning)
-      result.push('choose_meaning');
-    return result[Math.floor(Math.random() * result.length)]
-  };
-  // </question format>
-
   // <callback result>
   ConfigPage.prototype.report = function(callback)
   {
@@ -406,7 +392,11 @@ $(function ()
           break;
       }
 
-      $(this).closest('.am-radio').text(prefix + '. ' + value);
+      console.log(prefix + '. ' + value);
+
+      var node = $(this).closest('.am-radio')[0];
+      var text_node = node.childNodes[3];
+      text_node.nodeValue = prefix + '. ' + value;
     });
   };
   // </set choose>
@@ -593,22 +583,29 @@ $(function ()
   // </set words>
 
   // <next question>
-  QuizPage.prototype.next_question = function(format)
+  QuizPage.prototype.next_question = function()
   {
     if (this.empty())
       return false;
 
     var word = this.get_word();
-    this.set_page(word, format);
+    this.set_page(word, this.next_format());
 
     return true
   };
   // </next question>
 
+  QuizPage.prototype.next_format = function()
+  {
+    var result = this.question_format;
+    return result[Math.floor(Math.random() * result.length)]
+  };
+
   // <set page>
   QuizPage.prototype.set_page = function(word, format)
   {
     console.log(word);
+    console.log(format);
     var correct;
 
     if (format == 'spell_word')
@@ -741,14 +738,25 @@ $(function ()
     }
   };
   // </check answer>
+
+  // <get answer>
+  QuizPage.prototype.report_result = function(result)
+  {
+    console.log(result);
+  };
+  // </get answer>
+
 // </QuizPage>
+
+  var $spell_form = $('#form-spell');
+  var $choose_form = $('#form-choose-word');
 
   var tag_page = new TagPage($('#word-list tbody'), $('#tags-loading'));
 
   var $config_form = $('#config-page');
   var config_page = new ConfigPage($config_form);
 
-  var question = new Question($('#form-spell'), $('#form-choose-word'));
+  var question = new Question($spell_form, $choose_form);
 
   var display = new Display();
 
@@ -767,6 +775,22 @@ $(function ()
   {
     event.preventDefault();
     config_page.report(function(config){ controller.on_change_config(config); });
+  });
+
+  $spell_form.submit(function(event)
+  {
+    event.preventDefault();
+    $form = $(this);
+    var result = $form.find('[name="answer"]').val();
+    quiz_page.report_result(result);
+  });
+
+  $choose_form.submit(function(event)
+  {
+    event.preventDefault();
+    $form = $(this);
+    var result = $form.find('[name="answer"]:checked').val();
+    quiz_page.report_result(parseInt(result));
   });
 
   var $tag_select = $('#select-tags');
