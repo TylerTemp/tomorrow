@@ -1,0 +1,132 @@
+{% extends "../amaze_jquery_base.html" %}
+
+{% block title %}在线PTS指数计算器{% end %}
+
+{% block webapp %}
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="TakeOut"/>
+  <link rel="apple-touch-icon-precomposed" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="{{ static_path('i/app-icon72x72@2x.png') }}">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+{% end %}
+
+{% block iconfont %}{% end %}
+
+{% block head_end %}
+<link rel="stylesheet" href="/static/css/utility/take_out_calculate/home.css">
+{% end %}
+
+{% block body %}
+
+<div id="amz-home">
+ <section id="amz-hero">
+  <div class="amz-container am-cf">
+   <div class="amz-mascot am-scrollspy-init am-scrollspy-inview am-animation-slide-left" data-am-scrollspy="{animation: 'slide-left', delay: 100}">
+    <img alt="mascot-xiaoMeng" class="am-img-responsive" src="http://s.amazeui.org/assets/2.x/i/ui/mascot.png"/>
+   </div>
+   <div class="amz-hero-intro">
+    <div class="amz-hero-headings">
+     <h1 class="am-scrollspy-init am-scrollspy-inview am-animation-slide-left" data-am-scrollspy="{animation:'slide-left'}">
+      PTS指数计算器
+     </h1>
+
+      <p class="am-text-xl am-scrollspy-init" data-am-scrollspy="{animation:'slide-right', delay: 500}">
+        公式中P为点单价格，t为外卖送达时间
+      </p>
+      <p class="am-text-xl am-scrollspy-init" data-am-scrollspy="{animation:'slide-right', delay: 530}">
+        v为个人价值时间比系数，S为用户评星数
+      </p>
+      <p class="am-text-xl am-scrollspy-init" data-am-scrollspy="{animation:'slide-right', delay: 560}">
+        同家餐厅使用不同APP点单时，PTS指数越小
+      </p>
+      <p class="am-text-xl am-scrollspy-init" data-am-scrollspy="{animation:'slide-right', delay: 590}">
+        用该APP点单的性价比越高
+      </p>
+    </div>
+    <div class="help" data-am-scrollspy="{animation:'slide-bottom', delay: 590}">
+       * 由于个人价值时间比系数涉及个人隐私，请自行计算后输入。<br />
+       * v=年薪/8760
+    </div>
+   </div>
+  </div>
+ </section>
+ <section class="amz-features">
+
+
+  <form class="am-form am-form-horizontal am-g-fixed am-center am-padding-xl">
+    <fieldset>
+      <legend>PTS指数计算器</legend>
+      <div class="am-form-group">
+        <label for="p" class="am-u-sm-2 am-u-md-2 am-form-label">P(元)</label>
+        <div class="am-u-sm-10 am-u-md-4">
+          <input type="number" step="0.01" min="0" id="p" name="p" placeholder="点单价格" required="required">
+        </div>
+
+        <label for="t" class="am-u-sm-2 am-u-md-2 am-form-label">t(时)</label>
+        <div class="am-u-sm-10 am-u-md-4">
+          <input type="number" step="0.01" min="0" id="t" name="t" placeholder="外卖送达时间" required="required">
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="v" class="am-u-sm-2 am-u-md-2 am-form-label">v(元/时)</label>
+        <div class="am-u-sm-10 am-u-md-4">
+          <input type="number" step="0.01" min="0" id="v" name="v" placeholder="个人价值时间比" required="required">
+        </div>
+
+        <label for="s" class="am-u-sm-2 am-u-md-2 am-form-label">S(<span class="am-icon-star"></span>)</label>
+        <div class="am-u-sm-10 am-u-md-4">
+          <input type="number" step="0.1" min="0" max="5" id="s" name="s" placeholder="用户评星数" required="required">
+        </div>
+      </div>
+
+
+      <div class="am-form-group">
+        <div class="am-u-sm-12 am-cf">
+          <button type="submit" class="am-btn am-btn-primary am-fr am-icon-calculator"
+            data-am-loading="{spinner: 'cog', loadingText: ''}">
+            计算
+          </button>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+ </section>
+
+ <section class="amz-credits">
+
+  <div class="amz-container">
+
+   <header id="caculation" style="display: none">
+    <h1>
+     <i class="am-icon-spinner am-icon-pulse"></i> 计算中...
+    </h1>
+    <div class="am-progress am-progress-striped am-active ">
+      <div class="am-progress-bar am-progress-bar-secondary"  style="width: 0%"></div>
+    </div>
+   </header>
+
+   <h1 id="result" style="text-align: center; display: none">
+     PTS指数 J = <span id="result-num"></span>
+   </h1>
+
+  </div>
+
+ </section>
+</div>
+{% end %}
+
+{% block body_end %}
+<script src="/static/js/utility/take_out_calculate/home.js"></script>
+{% end %}

@@ -52,6 +52,7 @@ $(function ()
   // <change tags>
   Controller.prototype.on_change_words = function(words)
   {
+    console.log('set words for quiz');
     this.quiz.set_words(words);
     this.switch_page('config');
   };
@@ -80,8 +81,9 @@ $(function ()
     this.quiz.put_current_back();
     this.quiz.sort();
     console.log('sorted');
-    this.quiz.next_question();
     this.switch_page('quiz');
+    if (!this.quiz.next_question())
+      alert('empty?');
   };
   // </change config>
 
@@ -341,10 +343,12 @@ $(function ()
   {
     this.$input_form = $input_form;
     this.$choose_form = $choose_form;
+    this.timer = null;
   };
 
   Question.prototype.$input_form;
   Question.prototype.$choose_form;
+  Question.prototype.timer;
   // </init>
 
   // <set input>
@@ -406,22 +410,53 @@ $(function ()
   {
     this.$input_form.find('input[type="text"]').val("");
     this.$choose_form.find('radio').prop('checked', false).parent().show();
-    this.$input_form.find('[type="submit"]')
-        .removeClass('am-icon-times am-btn-danger')
-        .addClass('am-icon-check am-btn-primary');
-    this.$choose_form.find('[type="submit"]')
-        .removeClass('am-icon-times am-btn-danger')
-        .addClass('am-icon-check am-btn-primary');
+    this.reset_button();
+    if (this.timer !== null)
+    {
+      clearTimeout(this.timer);
+    }
   };
 
   Question.prototype.not_right = function()
   {
+    var self = this;
     this.$input_form.find('[type="submit"]')
-        .addClass('am-icon-times am-btn-danger')
-        .removeClass('am-icon-check am-btn-primary');
+        .addClass('am-icon-times am-btn-danger am-animation-shake')
+        .removeClass('am-icon-hand-pointer-o am-btn-primary');
     this.$choose_form.find('[type="submit"]')
-        .addClass('am-icon-times am-btn-danger')
-        .removeClass('am-icon-check am-btn-primary');
+        .addClass('am-icon-times am-btn-danger am-animation-shake')
+        .removeClass('am-icon-hand-pointer-o am-btn-primary');
+    if (this.timer !== null)
+    {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(function(){ self.reset_button() }, 1500);
+  };
+
+  Question.prototype.right = function()
+  {
+    var self = this;
+    this.$input_form.find('[type="submit"]')
+        .addClass('am-icon-check am-btn-success')
+        .removeClass('am-icon-hand-pointer-o am-btn-primary');
+    this.$choose_form.find('[type="submit"]')
+        .addClass('am-icon-check am-btn-success')
+        .removeClass('am-icon-hand-pointer-o am-btn-primary');
+    if (this.timer !== null)
+    {
+      clearTimeout(this.timer);
+    }
+    this.timer = setTimeout(function(){ self.reset_button() }, 1500);
+  };
+
+  Question.prototype.reset_button = function()
+  {
+    this.$input_form.find('[type="submit"]')
+        .removeClass('am-icon-times am-btn-danger am-animation-shake am-btn-success am-icon-check')
+        .addClass('am-icon-hand-pointer-o am-btn-primary');
+    this.$choose_form.find('[type="submit"]')
+        .removeClass('am-icon-times am-btn-danger am-animation-shake am-btn-success am-icon-check')
+        .addClass('am-icon-hand-pointer-o am-btn-primary');
   };
   // </reset>
 // </Question>
@@ -485,12 +520,12 @@ $(function ()
     var ascend = 1;
     var descend = 2;
     this.words = [];  // All words
-    this.current = [];
+    this.current = [];    // Current words pipe
     this.next = [];  // Wrong, and need to test again
     this.record = {};  // key: word, value: array of wrong answer
 
     this.anwser = null;    // set to list
-    this.word = null;
+    this.word = null;    // current testing word
 
     // config
     this.SHUFFLE = shuffle;
@@ -522,7 +557,7 @@ $(function ()
   // <empty>
   QuizPage.prototype.empty = function()
   {
-    return this.current.length && this.next.length;
+    return !(this.current.length || this.next.length);
   };
   // </empty>
 
@@ -589,7 +624,9 @@ $(function ()
       return false;
 
     var word = this.get_word();
-    this.set_page(word, this.next_format());
+    var format = this.next_format();
+    console.log('set next question', format, word);
+    this.set_page(word, format);
 
     return true
   };
@@ -606,8 +643,7 @@ $(function ()
   {
     console.log(word);
     console.log(format);
-    var correct;
-
+    this.word = word;
     if (format == 'spell_word')
     {
       var displays = [];
@@ -622,7 +658,7 @@ $(function ()
         displays.push(mean);
       }
       this.question.set_input(displays.join('<br />'));
-      this.anwser = word.meaning;
+      this.anwser = word.spell;
     }
     // </spell word>
     else    // select
@@ -685,6 +721,7 @@ $(function ()
     // <choose meaning>
       }
     }
+    console.log('currect anwser: ' + this.anwser);
   };
   // </set page>
 
@@ -727,22 +764,49 @@ $(function ()
   // <check answer>
   QuizPage.prototype.check_answer = function(answer)
   {
-    var currect = false;
+    console.log(answer);
+    console.log(this.anwser);
+    //var currect = false;
     for (var index in answer)
     {
       if (this.anwser.indexOf(answer[index]) != -1)
       {
-        currect = true;
-        break;
+        return true;
       }
     }
+    return false;
   };
   // </check answer>
 
   // <get answer>
   QuizPage.prototype.report_result = function(result)
   {
-    console.log(result);
+
+    var correct = this.check_answer(result);
+    if (!correct)
+    {
+      var num = this.record[this.word] || 0;
+      num += 1;
+      this.record[this.word] = num;
+      console.log(this.word.spell.join(';') + ' -> ' + num);
+      if (this.repeat_wrong)
+      {
+        this.next.push(this.word);
+      }
+    }
+
+    var has_question = this.next_question();
+    if (!has_question)
+      return alert('no more');
+
+    if (!correct)
+    {
+      console.log('not right');
+      this.question.not_right();
+    }
+    else
+      this.question.right();
+    console.log('next word');
   };
   // </get answer>
 
@@ -782,7 +846,7 @@ $(function ()
     event.preventDefault();
     $form = $(this);
     var result = $form.find('[name="answer"]').val();
-    quiz_page.report_result(result);
+    quiz_page.report_result(result.split(';'));
   });
 
   $choose_form.submit(function(event)
@@ -790,7 +854,7 @@ $(function ()
     event.preventDefault();
     $form = $(this);
     var result = $form.find('[name="answer"]:checked').val();
-    quiz_page.report_result(parseInt(result));
+    quiz_page.report_result([parseInt(result)]);
   });
 
   var $tag_select = $('#select-tags');

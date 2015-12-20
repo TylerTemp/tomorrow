@@ -31,7 +31,7 @@ from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
 from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler
-from lib.hdlr import brey, jolla, tomorrow, api
+from lib.hdlr import brey, jolla, tomorrow, api, utility
 from lib.hdlr.project import docpie, wordz
 
 from lib.ui.editor import WysBarModule, MdBarModule
@@ -117,8 +117,11 @@ class Application(tornado.web.Application):
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
              api.MdAndHtmlHandler),
+
             (r'/brey/', brey.BreyHandler),
             (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),
+
+            (r'/utility/pts/', utility.TakeOutCalculateHandler),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', AddSlashOr404Handler),

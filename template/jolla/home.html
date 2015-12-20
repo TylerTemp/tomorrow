@@ -57,7 +57,7 @@
         <div class="white am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
           <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
             <div class="am-article-hd">
-              <a href="/{{ each['slug'] }}"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
+              <a href="/{{ each['slug'] }}/"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
             </div>
             <div>
               {% raw make_source(each['source']) %}
@@ -73,7 +73,7 @@
         </div>
         {% if each['img'] %}
         <div class="am-u-sm-12 am-u-md-6">
-          <a href="{{ each['slug'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>
+          <a href="/{{ each['slug'] }}/"><img class="cover-img" src="{{ each['img'] }}"></a>
         </div>
         {% end %}
       </div>
@@ -87,12 +87,12 @@
     <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
         {% if each['img'] %}
-        <a href="/{{ each['slug'] }}"><img class="cover-img" src="{{ each['img'] }}"></a>
+        <a href="/{{ each['slug'] }}/"><img class="cover-img" src="{{ each['img'] }}"></a>
         {% end %}
         <div class="title-box">
           <article class="am-article  am-margin-horizontal-lg">
             <div class="am-article-hd">
-              <a href="/{{ each['slug'] }}"><h2 class="am-article-title am-margin-top">{{ each['title'] }}</h2></a>
+              <a href="/{{ each['slug'] }}/"><h2 class="am-article-title am-margin-top">{{ each['title'] }}</h2></a>
             </div>
             <div>
               {% raw make_source(each['source']) %}
