@@ -2,7 +2,8 @@ import logging
 try:
     from urllib.parse import unquote, urlsplit, urlunsplit, urljoin
 except ImportError:
-    from urllib import unquote, urlsplit, urlunsplit, urljoin
+    from urlparse import urlsplit, urlunsplit, urljoin
+    from urllib import unquote
 
 import sys
 import os

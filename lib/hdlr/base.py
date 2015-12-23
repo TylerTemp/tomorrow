@@ -8,7 +8,8 @@ import functools
 try:
     from urllib.parse import quote, urlsplit, urlunsplit, urljoin
 except ImportError:
-    from urlparse import quote, urlsplit, urlunsplit, urljoin
+    from urllib import quote
+    from urlparse import urlsplit, urlunsplit, urljoin
 
 import sys
 import os

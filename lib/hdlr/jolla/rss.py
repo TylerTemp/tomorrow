@@ -5,7 +5,7 @@ import time
 try:
     from urllib.parse import quote
 except ImportError:
-    from urlparse import quote
+    from urllib import quote
 
 import sys
 import os

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block sub_title %} | Error {{ code }}{% end %}
+
+{% block active %}{% set active = None %}{% end %}
+
+{% block stomach %}
+<div class="am-g am-g-fixed am-padding-xl" style="text-align: center">
+  <h1>Oops, error {{ code }}</h1>
+  <p>{{ message }}</p>
+</div>
+{% end %}

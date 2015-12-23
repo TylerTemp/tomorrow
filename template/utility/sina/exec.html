@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block sub_title %} | Run A Command{% end %}
+
+{% block active %}{% set active = "exec" %}{% end %}
+
+{% block stomach %}
+<div class="am-g am-g-fixed am-padding-xl">
+  {% if error %}
+  <div class="am-alert am-alert-warning" data-am-alert>
+    <button type="button" class="am-close">&times;</button>
+    <p>Oops, failed to get the weibo account info.</p>
+    <p>{{ error }}</p>
+  </div>
+  {% else %}
+
+  <article class="am-comment"> <!-- 评论容器 -->
+    <a href="http://weibo.com/{{ user_info['profile_url'] }}/">
+      <img class="am-comment-avatar" src="{{ user_info['avatar_hd'] or user_info['avatar_large'] }}"/> <!-- 评论者头像 -->
+    </a>
+
+    <div class="am-comment-main"> <!-- 评论内容容器 -->
+      <header class="am-comment-hd">
+        <!--<h3 class="am-comment-title">评论标题</h3>-->
+        <div class="am-comment-meta"> <!-- 评论元数据 -->
+          <a href="http://weibo.com/{{ user_info['profile_url'] }}/" class="am-comment-author">{{ user_info['screen_name'] }}</a> <!-- 评论者 -->
+          at <time datetime="">{{ user_info['created_at'] }}</time>
+        </div>
+      </header>
+
+      <div class="am-comment-bd">
+        <p>{{ user_info['status']['text'] }}</p>
+
+        {% if user_info['status'].get('thumbnail_pic', False) %}
+        <figure data-am-widget="figure" class="am am-figure am-figure-default" data-am-figure="{pureview: 'true'}">
+          <img src="{{ user_info['status']['thumbnail_pic'] }}"
+               {% if user_info['status'].get('original_pic', False) %}
+               data-rel="{{ user_info['status']['original_pic'] }}"
+               {% end %}/>
+        </figure>
+        {% end %}
+
+        {% if user_info['status'].get('pic_urls', False) %}
+          <hr />
+          <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2 am-avg-md-3 am-avg-lg-4 am-gallery-imgbordered" data-am-gallery="{pureview: 'true'}" >
+            {% for each in user_info['status']['pic_urls'] %}
+            <li>
+              <div class="am-gallery-item">
+                <img src="{{ each['thumbnail_pic'] }}"/>
+              </div>
+            </li>
+            {% end %}
+          </ul>
+        {% end %}
+
+      </div> <!-- 评论内容 -->
+    </div>
+  </article>
+  <hr />
+  {% end %}
+</div>
+{% end %}

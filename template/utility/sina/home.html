@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block throat %}
+<style>
+  h1 {
+    text-align: center;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+<div class="am-g am-g-fixed">
+  <h1 class="am-padding-xl">Test Your Sina Weibo API Online</h1>
+  <p>You can test your sina weibo API here.</p>
+  <p>We will only save your data in encrypted cookies, only on your browser.</p>
+  <p>Use it at your own risk.</p>
+
+  <form class="am-form">
+    <fieldset>
+
+      <legend>You App Info</legend>
+
+      <div class="am-form-group am-form-icon">
+        <i class="am-icon-key"></i>
+        <input type="text" class="am-form-field" name="app-key" placeholder="APP Key" value="{{ key or '' }}" required="required" />
+      </div>
+
+      <div class="am-form-group am-form-icon">
+        <i class="am-icon-magic"></i>
+        <input type="text" class="am-form-field" name="app-secret" placeholder="APP Secret" value="{{ secret or '' }}" required="required" />
+      </div>
+
+      <div class="am-form-group">
+        <label>Callback URL:</label> https://tomorrow.comes.today/utility/sina/callback/
+      </div>
+
+      <div class="am-form-group">
+        <label>Cancel URL:(no effect so far)</label> <del>https://tomorrow.comes.today/utility/sina/cancel/</del>
+      </div>
+
+      <div class="am-form-group am-cf">
+        <button class="am-fr am-btn am-btn-primary" type="submit" data-am-loading="{spinner: 'cog', loadingText: ''}">
+          <span class="am-icon-rocket"></span>
+        </button>
+      </div>
+
+    </fieldset>
+
+    {% if error == 'not-auth' %}
+    <div class="am-alert am-alert-danger" data-am-alert>
+      <button type="button" class="am-close">&times;</button>
+      <p>You must auth your app here first.</p>
+    </div>
+    {% end %}
+
+  </form>
+</div>
+{% end %}
+
+{% block body_end %}
+<script src="/static/js/utility/sina/home.js"></script>
+{% end %}

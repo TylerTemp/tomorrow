@@ -117,6 +117,10 @@ class Application(tornado.web.Application):
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
              api.MdAndHtmlHandler),
+            (r'/utility/sina/', utility.sina.HomeHandler),
+            (r'/utility/sina/callback/', utility.sina.CallbackHandler),
+            (r'/utility/sina/exec/', utility.sina.ExecHandler),
+            (r'/utility/sina/[^/]+/', utility.sina.NotFoundHandler),
 
             (r'/brey/', brey.BreyHandler),
             (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),

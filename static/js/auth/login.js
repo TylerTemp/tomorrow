@@ -38,7 +38,7 @@ var set_user_error = function(error, is_email)
     default:
       set_error(user_obj);
   };
-}
+};
 
 var set_pwd_error = function(error)
 {
@@ -57,14 +57,14 @@ var set_pwd_error = function(error)
     default:
       set_error(pwd_obj);
   }
-}
+};
 
 
 var enterSubmit = function(evt)
 {
   if (evt.keyCode == 13)
     $('form').submit();
-}
+};
 
 
 $(document).ready(function(){

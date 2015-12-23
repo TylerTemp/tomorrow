@@ -1,0 +1,73 @@
+{% extends "../../amaze_jquery_base.html" %}
+
+{% block title %}
+  {{ _('Sina Weibo API Online Test') }}
+  {% block sub_title %}{% end %}
+{% end %}
+
+{% block site_kwd %}sina,weibo,api{% end %}
+{% block site_description %}{{ _('Sina Weibo API Online Test') }}{% end %}
+
+{% block webapp %}{% end %}
+
+{% block head_end %}
+<style>
+  .am-topbar-fixed-top {
+    z-index: 1100;
+  }
+  .github-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: 0;
+    z-index: 1200;
+  }
+
+  .am-pureview {
+    z-index: 1201;
+  }
+
+</style>
+  {% block throat %}
+  {% end %}
+{% end %}
+
+{% block body %}
+  {% block active %}{% set active = "home" %}{% end %}
+<header class="am-topbar am-topbar-fixed-top">
+  <div class="am-container">
+    <h1 class="am-topbar-brand">
+      <a href="/utility/sina/" class="am-monospace">Sina API Test</a>
+    </h1>
+
+    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-secondary am-show-sm-only"
+            data-am-collapse="{target: '#collapse-head'}"><span class="am-sr-only">导航切换</span> <span
+        class="am-icon-bars"></span></button>
+
+    <div class="am-collapse am-topbar-collapse" id="collapse-head">
+      <ul class="am-nav am-nav-pills am-topbar-nav">
+        <li {% if active == 'home' %} class="am-active" {% end %}><a href="/utility/sina/" class="am-icon-home"> {{ _('Home') }}</a></li>
+        <li {% if active == 'exec' %} class="am-active" {% end %}><a href="/utility/sina/exec/" class="am-icon-lightbulb-o"> {{ _('Execute') }}</a></li>
+      </ul>
+
+      <!--<div class="am-topbar-right">-->
+        <!--<ul class="am-nav am-nav-pills am-topbar-nav">-->
+          <!--{% if locale.code[:2].lower() == 'zh' %}-->
+          <!--<li class="am-active am-disabled"><a href="./?lang=zh" data-lang="zh" style="color: #000"><span class="am-icon-check-square-o"> 中文</span></a></li>-->
+          <!--<li><a href="./?lang=en" data-role='switch-lang' data-lang="en" style="color: #000"><span class="am-icon-square-o"> English</span></a></li>-->
+          <!--{% else %}-->
+          <!--<li><a href="./?lang=zh" data-role='switch-lang' data-lang="zh" style="color: #000"><span class="am-icon-square-o"> Chinese/中文</span></a></li>-->
+          <!--<li class="am-active am-disabled"><a href="./?lang=en" data-lang="en" style="color: #000"><span class="am-icon-check-square-o"> English</span></a></li>-->
+          <!--{% end %}-->
+        <!--</ul>-->
+      <!--</div>-->
+    </div>
+  </div>
+</header>
+
+<a href="https://github.com/TylerTemp/tomorrow/" class="github-banner"><img src="https://dn-tyler.qbox.me/forkme_left_darkblue.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
+
+  {% block stomach %}
+  {% end %}
+
+{% end %}

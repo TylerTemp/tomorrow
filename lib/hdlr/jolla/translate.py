@@ -7,7 +7,7 @@ try:
     from urllib.parse import quote
     from urllib.parse import unquote
 except ImportError:
-    from urlparse import quote
+    from urllib import quote
     from urlparse import unquote
 
 import sys

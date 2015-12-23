@@ -8,10 +8,8 @@ try:
     from urllib.parse import urljoin
     from urllib.parse import urlsplit
 except ImportError:
-    from urlparse import quote
-    from urlparse import unquote
-    from urlparse import urljoin
-    from urlparse import urlsplit
+    from urllib import quote
+    from urlparse import unquote, urljoin, urlsplit
 
 import sys
 import os

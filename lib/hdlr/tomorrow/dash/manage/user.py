@@ -1,3 +1,4 @@
+# coding: utf-8
 import logging
 import json
 import re
@@ -6,7 +7,7 @@ from passlib.hash import sha256_crypt
 try:
     from urllib.parse import quote
 except ImportError:
-    from urlparse import quote
+    from urllib import quote
 
 from lib.hdlr.base import EnsureUser, EnsureSsl
 from lib.db import User, Message, Article, Jolla

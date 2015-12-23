@@ -6,7 +6,8 @@ import json
 try:
     from urllib.parse import unquote, quote, urlsplit
 except ImportError:
-    from urlparse import unquote, quote, urlsplit
+    from urllib import quote
+    from urlparse import unquote, urlsplit
 try:
     from itertools import zip_longest
 except ImportError:
