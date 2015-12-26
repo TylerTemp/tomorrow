@@ -289,7 +289,7 @@
           ImageUpload.urlname = name;
           options.insertImagePreviewPanel.html(
             '<img src="' + dataUrl + '">'
-          )
+          );
           $.ajax(
             url = options.uploadImageUrl,
             settings = {

@@ -4,6 +4,48 @@
 
 {% block active %}{% set active = "exec" %}{% end %}
 
+{% block throat %}
+<style>
+  .tt-menu {
+    border-style: dotted;
+    border-width: 1px;
+    background-color: white;
+  }
+
+  .tt-cursor {
+    background-color: rgb(102, 255, 255);
+  }
+
+  .am-form-group.am-form-icon {
+    margin-bottom: 0;
+  }
+
+  .help {
+    font-size: 12px;
+    color: green;
+  }
+
+  .data-value {
+    display: inline;
+    width: 80%;
+    padding: .5em;
+    font-size: 1.6rem;
+    line-height: 1.2;
+    color: #555;
+    vertical-align: middle;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 0;
+    -webkit-appearance: none;
+    -webkit-transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out;
+  }
+</style>
+{% end %}
+
 {% block stomach %}
 <div class="am-g am-g-fixed am-padding-xl">
   {% if error %}
@@ -14,15 +56,15 @@
   </div>
   {% else %}
 
-  <article class="am-comment"> <!-- 评论容器 -->
+  <article class="am-comment">
     <a href="http://weibo.com/{{ user_info['profile_url'] }}/">
       <img class="am-comment-avatar" src="{{ user_info['avatar_hd'] or user_info['avatar_large'] }}"/> <!-- 评论者头像 -->
     </a>
 
-    <div class="am-comment-main"> <!-- 评论内容容器 -->
+    <div class="am-comment-main">
       <header class="am-comment-hd">
-        <!--<h3 class="am-comment-title">评论标题</h3>-->
-        <div class="am-comment-meta"> <!-- 评论元数据 -->
+        <!--<h3 class="am-comment-title"></h3>-->
+        <div class="am-comment-meta">
           <a href="http://weibo.com/{{ user_info['profile_url'] }}/" class="am-comment-author">{{ user_info['screen_name'] }}</a> <!-- 评论者 -->
           at <time datetime="">{{ user_info['created_at'] }}</time>
         </div>
@@ -30,33 +72,86 @@
 
       <div class="am-comment-bd">
         <p>{{ user_info['status']['text'] }}</p>
-
-        {% if user_info['status'].get('thumbnail_pic', False) %}
-        <figure data-am-widget="figure" class="am am-figure am-figure-default" data-am-figure="{pureview: 'true'}">
-          <img src="{{ user_info['status']['thumbnail_pic'] }}"
-               {% if user_info['status'].get('original_pic', False) %}
-               data-rel="{{ user_info['status']['original_pic'] }}"
-               {% end %}/>
-        </figure>
-        {% end %}
-
-        {% if user_info['status'].get('pic_urls', False) %}
-          <hr />
-          <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2 am-avg-md-3 am-avg-lg-4 am-gallery-imgbordered" data-am-gallery="{pureview: 'true'}" >
-            {% for each in user_info['status']['pic_urls'] %}
-            <li>
-              <div class="am-gallery-item">
-                <img src="{{ each['thumbnail_pic'] }}"/>
-              </div>
-            </li>
-            {% end %}
-          </ul>
-        {% end %}
-
-      </div> <!-- 评论内容 -->
+      </div>
     </div>
   </article>
   <hr />
   {% end %}
+
+  <form class="am-form">
+    <fieldset>
+      <legend>API Method</legend>
+      <div class="help">Token: {{ token }}</div>
+
+      <div class="am-form-group">
+        <label for="func">Method Name</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-weibo"></i>
+          <input type="text" class="am-form-field" name="func" id="func" placeholder="Input Weibo API Name" value="" required="required" />
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label>Method</label>
+          <label class="am-radio-inline">
+            <input type="radio" name="method" value="get" data-am-ucheck checked="checked"> GET
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="method" value="post" data-am-ucheck> POST
+          </label>
+      </div>
+
+      <label>Arguments</label>
+      <table class="am-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody id="arguments">
+          <tr>
+            <td><input type="text"></td>
+            <td>
+              <select>
+                <option value="string" selected="selected">string</option>
+                <option value="int">int</option>
+                <option value="binary">binary</option>
+              </select>
+            </td>
+            <td><input type="text"></td>
+            <td><button class="am-btn am-icon-times" data-role="delete"></button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="am-form-group am-cf">
+
+        <button type="submit"
+                class="am-btn am-btn-primary am-fr am-margin-sm"
+                data-am-loading="{spinner: 'spinner', loadingText: ''}">
+          <span class="am-icon-coffee"></span>
+        </button>
+
+        <button class="am-btn am-btn-primary am-fr am-margin-sm" data-role="add">
+          <span class="am-icon-plus"></span>
+        </button>
+
+      </div>
+    </fieldset>
+  </form>
+
+  <hr />
+
+  <div id="result"></div>
+
 </div>
+
+{% end %}
+
+{% block body_end %}
+<script src="/static/js/typeahead.bundle.min.js"></script>
+<script src="/static/js/utility/sina/exec.js"></script>
 {% end %}

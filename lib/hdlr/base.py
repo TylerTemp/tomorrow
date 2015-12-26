@@ -192,6 +192,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
 
 class EnsureSsl(object):
+
     def __init__(self, permanent=False):
         self._prem = permanent
 
