@@ -1,8 +1,8 @@
-{% extends "base.html" %}
+{% extends "amaze_jquery_base.html" %}
 {% block title %} {{ page_title }} {% end %}{% block main_title %}{% end %}
 {% block webapp %}{% end %}
 
-{% block neck %}
+{% block head_end %}
 <style>
   body {
     background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
@@ -40,34 +40,18 @@
 </style>
 {% end %}
 
-{% block nav %}
-
+{% block body %}
 <header class="am-topbar">
+  <div class="am-container">
   <h1 class="am-topbar-brand">
-    <span class="am-icon-home"> <a href="/">{{ _("Home") }}</a></span>
+    <a href="/"><span class="am-icon-home"> {{ _("Home") }}</span></a>
   </h1>
   <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only"
           data-am-collapse="{target: '#nav-collapse'}"><span class="am-sr-only">导航切换</span> <span
       class="am-icon-bars"></span></button>
-  <div class="am-collapse am-topbar-collapse" id="nav-collapse">
-    <ul class="am-nav am-nav-pills am-topbar-nav">
-      <li class="{{ 'am-active' if slug == 'java' else '' }}">
-        <a href="/java/"><span class="am-icon-pencil-square-o"> {{ _('Pepare for JAVA') }}</span></a>
-      </li>
-      <li class="{{ 'am-active' if slug == 'booklist' else '' }}">
-        <a href="/booklist/"><span class="am-icon-book"> {{ _('Booklist') }}</span></a>
-      </li>
-      <li class="{{ 'am-active' if slug == 'news' else '' }}">
-        <a href="/news/"><span class="am-icon-newspaper-o"> {{ _('News') }}</span></a>
-      </li>
-    </ul>
-  </div>
+    </div>
 </header>
 
-
-{% end %}
-
-{% block body %}
 <div class="am-u-sm-centered am-g-fixed">
   <div class="am-g am-margin-bottom-xl" id="white-bg-box">
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
@@ -84,7 +68,3 @@
   </div>
 </div>
 {% end %}
-
-{% block navjs %}{% end %}
-
-{% block footer %}{% end %}
