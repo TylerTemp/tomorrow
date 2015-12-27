@@ -1,6 +1,6 @@
 import logging
 import json
-from weibo import APIClient
+from weibo import Client
 
 from .base import BaseHandler, EnsureSsl
 
@@ -23,28 +23,14 @@ class HomeHandler(BaseHandler):
     def post(self):
         app_key = self.get_argument('app-key')
         app_secret = self.get_argument('app-secret')
+        self.set_app(app_key, app_secret)
         host = self.request.host
-        client = APIClient(app_key=app_key, app_secret=app_secret,
-                           redirect_uri=''.join(
-                               ('https://',
-                                host,
-                                '/utility/sina/callback/')))
+        client = Client(api_key=app_key, api_secret=app_secret,
+                        redirect_uri=''.join(
+                            ('https://',
+                             host,
+                             '/utility/sina/callback/')))
 
-        msg = None
-        try:
-            url = client.get_authorize_url()
-        except BaseException as e:
-            msg = str(e)
-        else:
-            self.set_app(app_key, app_secret)
-
-        if msg is None:
-            result = {'url': url}
-        else:
-            self.clear()
-            self.set_status(500)
-            result = {'msg': msg}
-
-        return self.write(json.dumps(result))
+        return self.write(json.dumps({'url': client.authorize_url}))
 
 

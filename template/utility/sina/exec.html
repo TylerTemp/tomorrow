@@ -81,7 +81,16 @@
   <form class="am-form">
     <fieldset>
       <legend>API Method</legend>
-      <div class="help">Token: {{ token }}</div>
+      <div class="help"><b>Token:</b>
+        {% if token %}
+          <br />
+          {% for key, value in token.items() %}
+            {{ key }}: {{ value }} <br />
+          {% end %}
+        {% else %}
+          --
+        {% end %}
+      </div>
 
       <div class="am-form-group">
         <label for="func">Method Name</label>

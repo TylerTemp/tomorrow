@@ -1,5 +1,5 @@
 import logging
-from weibo import APIClient
+from weibo import Client
 
 from .base import BaseHandler
 
@@ -11,12 +11,11 @@ class CallbackHandler(BaseHandler):
     def get(self):
         code = self.get_argument('code')
         key, secret = self.get_app()
-        client = APIClient(app_key=key, app_secret=secret,
-                           redirect_uri=self.callback_url)
+        client = Client(api_key=key, api_secret=secret,
+                        redirect_uri=self.callback_url)
 
-        r = client.request_access_token(code)
+        client.set_code(code)
 
-        access_token = r.access_token
-        expires_in = r.expires_in
-        self.set_auth(access_token, expires_in)
+        result = client.token
+        self.set_auth(result)
         return self.redirect('/utility/sina/exec/')

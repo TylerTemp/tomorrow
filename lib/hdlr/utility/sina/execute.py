@@ -2,8 +2,15 @@ import logging
 import json
 import base64
 from pprint import pformat
-from weibo import APIClient, APIError
+from weibo import Client
 import sys
+try:
+    from io import BytesIO
+except ImportError:
+    try:
+        from cStringIO import StringIO as BytesIO
+    except ImportError:
+        from StringIO import StringIO as BytesIO
 
 py3 = sys.version_info[0] >= 3
 
@@ -16,7 +23,8 @@ class ExecHandler(BaseHandler):
 
     def initialize(self):
         self.key, self.secret = self.get_app()
-        self.token, self.expire = self.get_auth()
+        self.token = self.get_auth()
+        self.access_token = self.token['access_token'] if self.token else None
         self._client = None
         self.error = None
 
@@ -37,32 +45,29 @@ class ExecHandler(BaseHandler):
     @property
     def client(self):
         if self._client is None:
-            client = APIClient(app_key=self.key, app_secret=self.secret,
-                               redirect_uri=self.callback_url)
-            client.set_access_token(self.token, self.expire)
+            client = Client(api_key=self.key, api_secret=self.secret,
+                            redirect_uri=self.callback_url, token=self.token)
             self._client = client
 
         return self._client
 
     def get_user_info(self):
+        # return None, 'ERROR'
         try:
-            result = self.client.account.get_uid.get(access_token=self.token)
-        except APIError as e:
-            return None, str(e)
+            result = self.client.get('account/get_uid',
+                                     access_token=self.access_token)
         except BaseException as e:
             logger.info(e)
-            return None, 'Unknown Error'
+            return None, str(e)
         else:
             uid = result['uid']
 
         try:
-            result = self.client.users.show.get(
-                    access_token=self.token, uid=uid)
-        except APIError as e:
-            return None, str(e)
+            result = self.client.get('users/show',
+                                     access_token=self.access_token, uid=uid)
         except BaseException as e:
             logger.info(e)
-            return None, 'Unknown Error'
+            return None, str(e)
         else:
             return result, None
 
@@ -71,16 +76,15 @@ class ExecHandler(BaseHandler):
         method = self.get_argument('method')
         arguments = self.get_argument('arguments')
 
-        func = self.parse_func(func_name, method)
+        func = self.client.get if method.lower() == 'get' else self.client.post
         args = self.parse_arguments(arguments)
 
         if self.error is None:
             try:
-                result = func(**args)
+                result = func(func_name, **args)
             except BaseException as e:
                 logger.error(e)
                 self.error = str(e)
-                raise
 
         if self.error is None:
             j_str = json.dumps(result, indent=2, ensure_ascii=False)
@@ -91,13 +95,6 @@ class ExecHandler(BaseHandler):
 
         return self.write(j_str)
 
-    def parse_func(self, func_name, method):
-        current = self.client
-        for each in func_name.split('/'):
-            logger.debug(each)
-            current = getattr(current, each)
-        logger.debug(method)
-        return getattr(current, method.lower())
 
     def parse_arguments(self, arguments):
         args = json.loads(arguments)
@@ -114,8 +111,7 @@ class ExecHandler(BaseHandler):
                 value = self.b64_to_binary(value)
 
             logger.debug('name: %s; type: %s; value: %s',
-                         name, type_,
-                         value[:50] if type_ == 'binary' else value)
+                         name, type_, value)
 
             result[name] = value
 
@@ -138,5 +134,5 @@ class ExecHandler(BaseHandler):
             logger.info(e)
             self.error = 'binary file format error'
         else:
-            return bindata
+            return BytesIO(bindata)
 

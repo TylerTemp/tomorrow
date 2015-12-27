@@ -1,4 +1,5 @@
 import logging
+import json
 try:
     from urllib.parse import urlunsplit
 except ImportError:
@@ -13,6 +14,7 @@ from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.utiltiy.sina.base')
+logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 class BaseHandler(BaseHandler):
@@ -33,18 +35,15 @@ class BaseHandler(BaseHandler):
         secret = self.get_secure_cookie('app-secret').decode('utf-8')
         return (key, secret)
 
-    def set_auth(self, token, expire):
-        self.set_secure_cookie('auth-token', token, expires_days=None)
-        self.set_secure_cookie('auth-expire', str(expire), expires_days=None)
+    def set_auth(self, token):
+        self.set_secure_cookie('auth', json.dumps(token), expires_days=None)
 
     def get_auth(self):
-        token = self.get_secure_cookie('auth-token')
+        token = self.get_secure_cookie('auth')
         if token is None:
-            return None, None
+            return None
 
-        token = token.decode('utf-8')
-        expire = int(self.get_secure_cookie('auth-expire'))
-        return token, expire
+        return json.loads(token.decode('utf-8'))
 
     @property
     def callback_url(self):
