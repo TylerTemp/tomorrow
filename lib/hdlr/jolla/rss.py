@@ -37,9 +37,7 @@ class RssHandler(tornado.web.RequestHandler):
             if img:
                 content = '<img src="%s">%s' % (img, content)
             des = each['zh']['description']
-            if not des:
-                des = tornado.escape.xhtml_escape(content[:80]) + '...'
-            else:
+            if des:
                 des = md2html(des)
             result = {
                 'title': each['zh']['title'],

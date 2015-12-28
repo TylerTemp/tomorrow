@@ -71,7 +71,7 @@
           <h1 class="am-article-title">{{ article['title'] }}</h1>
           <p class="am-article-meta">
             {% raw make_source(article['source']) %}
-            {% raw ('| ' + ''.join(make_tag(article['tag']))) if article['tag'] else '' %}
+            {% raw ('| ' + ' '.join(make_tag(article['tag']))) if article['tag'] else '' %}
             <br />
             {% raw _('Posted by {email}{name} on {time}').format(
               email=('<a href="mailto:%s" target="_blank"><span class="am-icon-envelope"></span></a>' % author['email']) if author['email'] else '',

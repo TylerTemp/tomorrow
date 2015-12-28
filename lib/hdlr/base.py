@@ -166,11 +166,24 @@ class BaseHandler(tornado.web.RequestHandler):
             return list(filenames)
 
     def write_error(self, status_code, **kwargs):
+        if self.if_debug(status_code, **kwargs):
+            return
+
         if status_code == 404:
             return self.render('404.html')
+
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))
         logging.error('%s' % get_exc_plus())
+
+        # uncomment this line for py2
+        # return self.__class__.write_error(self, status_code, **kwargs)
+        # uncomment this line for py3
+        return super(BaseHandler, self).write_error(status_code, **kwargs)
+
+    def if_debug(self, status_code, **kwargs):
+        request = self.request
+        url = urlunsplit((request.protocol, request.host, request.uri, '', ''))
         if self.application.settings['debug']:
             self.write('''
                 <html>
@@ -179,16 +192,12 @@ class BaseHandler(tornado.web.RequestHandler):
                     </head>
                     <body>
                         <h1>%s</h1>
-                        <pre>%s</pre>
+                        <pre>%s\n\n%s</pre>
                     </body>
-                </html>''' % (status_code, status_code, get_exc_plus()))
-            return self.flush()
-
-        else:
-            # uncomment this line for py2
-            # return self.__class__.write_error(self, status_code, **kwargs)
-            # uncomment this line for py3
-            return super(BaseHandler, self).write_error(status_code, **kwargs)
+                </html>''' % (status_code, status_code, url,get_exc_plus()))
+            self.flush()
+            return True
+        return False
 
 
 class EnsureSsl(object):
@@ -206,6 +215,14 @@ class EnsureSsl(object):
             return func(ins, *a, **k)
 
         return wrapper
+
+
+class StaticFileHandler(tornado.web.StaticFileHandler):
+
+    def get(self):
+        path, file = os.path.split(self.root)
+        self.root = path
+        return super(StaticFileHandler, self).get(path=file)
 
 
 class EnsureUser(object):

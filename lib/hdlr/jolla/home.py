@@ -44,19 +44,21 @@ class HomeHandler(BaseHandler):
 
         result = Article.display_jolla(skip, limit)
         total = result.count()
-        has_next_page = (total - ahead_num)
+        current_rest_articles = (total - ahead_num)
         articles=self.formal(result)
 
         if render_json:
             articles = list(articles)
-            has_next_page -= len(articles)
+            rest_articles = current_rest_articles - len(articles)
             self.set_header('Content-Type', 'application/json')
             self.write(json.dumps({
                 'articles': articles,
-                'rest': has_next_page,
+                'rest': rest_articles,
                 'total': len(articles)
             }))
             return
+
+        has_next_page = (page * limit < total)
 
         return self.render(
             'jolla/home.html',
@@ -68,7 +70,9 @@ class HomeHandler(BaseHandler):
         )
 
     def formal(self, collected):
+        is_empty = True
         for each in collected:
+            is_empty = False
             if 'transinfo' in each:
                 source_name = self.get_source_name(each['transinfo']['link'])
             else:
@@ -92,3 +96,6 @@ class HomeHandler(BaseHandler):
                 'tag': each['tag']
             }
             yield result
+
+        if is_empty:
+            raise tornado.web.HTTPError(404, 'No posts on this page')

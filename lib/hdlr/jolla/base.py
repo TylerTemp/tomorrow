@@ -1,4 +1,5 @@
 import re
+import logging
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -13,6 +14,8 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
 sys.path.pop(0)
+
+logger = logging.getLogger('tomorrow.jolla.base')
 
 
 class BaseHandler(BaseHandler):
@@ -74,3 +77,20 @@ class BaseHandler(BaseHandler):
         if search:
             return search.group(1)
         return result
+
+    def write_error(self, status_code, **kwargs):
+        # if self.if_debug(status_code, **kwargs):
+        #     return
+
+        msg = str(status_code)
+        if True:  # status_code == 404:
+            msg = 'Page Not Found'
+            if 'exc_info' in kwargs:
+                exc_info = kwargs['exc_info']
+                if exc_info and len(exc_info) >= 2:
+                    msg = getattr(exc_info[1], 'log_message', None) or msg
+
+        return self.render(
+            'jolla/error.html',
+            msg=msg or 'Unknown ERROR'
+        )

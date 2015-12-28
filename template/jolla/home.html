@@ -23,9 +23,6 @@
 
 <div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
   <div class="am-g am-margin-horizontal-xs" id="bread-crumbs">
-    <!-- <div class="am-u-sm-6" style="text-align: left">
-      <span class="am-icon-arrow-circle-left"> <a class="am-text-sm" href="//{{ MAIN_HOST }}/">{{ _('Back to tomorrow') }}<a/></span>
-    </div> -->
     <div class="am-cf">
 
       <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
@@ -43,42 +40,34 @@
     </div>
   </div>
   <!-- first article -->
-  {% try %}
-    {% set each = next(articles) %}
-  {% except StopIteration %}
-    <div class="am-alert" data-am-alert>
-      <button type="button" class="am-close">&times;</button>
-      <p>{{ _("No article here") }}</p>
-    </div>
-  {% else %}
-    <!-- horizontal blog box -->
-    <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
-      <div class="am-margin-horizontal-xs am-margin-vertical-sm">
-        <div class="white am-u-sm-12 am-u-md-{{ 6 if each['img'] else 12 }}">
-          <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
-            <div class="am-article-hd">
-              <a href="/{{ each['slug'] }}/"><h2 class="am-article-title am-text-xl">{{ each['title'] }}</h2></a>
-            </div>
-            <div>
-              {% raw make_source(each['source']) %}
-              {% raw ('| ' + ''.join(make_tag(each['tag']))) if each['tag'] else '' %}
-            </div>
-            <div class="am-article-bd">
-              {% raw each['descripition'] or (each['preview'] + '...') %}
-            </div>
-          </article>
-          <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
-            <a class="am-btn am-btn-success am-fr" href="{{ each['slug'] }}">{{ _("Continue reading") }}</a>
+  {% set first = next(articles) %}
+  <!-- horizontal blog box -->
+  <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
+    <div class="am-margin-horizontal-xs am-margin-vertical-sm">
+      <div class="white am-u-sm-12 am-u-md-{{ 6 if first['img'] else 12 }}">
+        <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
+          <div class="am-article-hd">
+            <a href="/{{ first['slug'] }}/"><h2 class="am-article-title am-text-xl">{{ first['title'] }}</h2></a>
           </div>
+          <div>
+            {% raw make_source(first['source']) %}
+            {% raw ('| ' + ' '.join(make_tag(first['tag']))) if first['tag'] else '' %}
+          </div>
+          <div class="am-article-bd">
+            {% raw first['descripition'] or (first['preview'] + '...') %}
+          </div>
+        </article>
+        <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
+          <a class="am-btn am-btn-success am-fr" href="{{ first['slug'] }}">{{ _("Continue reading") }}</a>
         </div>
-        {% if each['img'] %}
-        <div class="am-u-sm-12 am-u-md-6">
-          <a href="/{{ each['slug'] }}/"><img class="cover-img" src="{{ each['img'] }}"></a>
-        </div>
-        {% end %}
       </div>
+      {% if first['img'] %}
+      <div class="am-u-sm-12 am-u-md-6">
+        <a href="/{{ first['slug'] }}/"><img class="cover-img" src="{{ first['img'] }}"></a>
+      </div>
+      {% end %}
     </div>
-  {% end %}
+  </div>
   <!-- first article | end -->
 
   <ul class="am-avg-sm-1 am-avg-md-2">
@@ -96,7 +85,7 @@
             </div>
             <div>
               {% raw make_source(each['source']) %}
-              {% raw ('| ' + ''.join(make_tag(each['tag']))) if each['tag'] else '' %}
+              {% raw ('| ' + ' '.join(make_tag(each['tag']))) if each['tag'] else '' %}
             </div>
             <div class="am-article-bd">
               {% raw each['descripition'] or (each['preview'] + '...') %}

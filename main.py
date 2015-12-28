@@ -30,7 +30,8 @@ sys.path.insert(0, rootdir)
 from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
-from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler
+from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler,\
+                     StaticFileHandler
 from lib.hdlr import brey, jolla, tomorrow, api, utility
 from lib.hdlr.project import docpie, wordz
 
@@ -56,10 +57,16 @@ class Application(tornado.web.Application):
 
     def __init__(self):
         handlers = (
+            # static
+            (r'/static/(.*)', tornado.web.StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static')}),
             # display
             (r'/', tomorrow.blog.HomeHandler),
             (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/page/(?P<page>\d+)/', tomorrow.blog.HomeHandler),
+            (r'/blog/(?P<slug>[^/]+)/', tomorrow.blog.ArticleHandler),
+            (r'/edit/', tomorrow.blog.EditHandler),
+            (r'/edit/(?P<urlslug>[^/]+)/', tomorrow.blog.EditHandler),
             # auth
             (r'/login/', tomorrow.blog.LoginHandler),
             (r'/signin/', tomorrow.blog.SigninHandler),
@@ -85,6 +92,10 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/', tomorrow.hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', tomorrow.hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', tomorrow.hi.MessageHandler),
+            (r'/robots.txt', StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static', 'robots', 'blog.txt')}),
+            (r'/(favicon\.ico)', tornado.web.StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static')}),
             # jolla
 
             (r'/jolla/(favicon\.ico)', tornado.web.StaticFileHandler,
@@ -99,30 +110,37 @@ class Application(tornado.web.Application):
             (r'/jolla/tr/(?P<slug>[^/]+)/', jolla.TranslateHandler),
             (r'/jolla/task/', jolla.TaskHandler),
             (r'/jolla/task/(?P<urlslug>[^/]+)/', jolla.TaskHandler),
+            (r'/jolla/robots.txt', StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static', 'robots', 'jolla.txt')}),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             # project
             (r'/project/docpie/', docpie.HomeHandler),
             (r'/project/docpie/document/', docpie.DocHandler),
             (r'/project/docpie/document/(?P<slug>[^/]+)/', docpie.DocHandler),
             (r'/project/docpie/try/', docpie.TryHandler),
+            (r'/project/docpie/robots.txt', StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static', 'robots', 'docpie.txt')}),
+            (r'/project/docpie/(favicon\.ico)', tornado.web.StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static')}),
 
             (r'/project/wordz/', wordz.HomeHandler),
             (r'/project/wordz/quiz/', wordz.QuizHandler),
             (r'/project/wordz/modify/', wordz.ModifyHandler),
 
-            (r'/blog/(?P<slug>[^/]+)/', tomorrow.blog.ArticleHandler),
-            (r'/edit/', tomorrow.blog.EditHandler),
-            (r'/edit/(?P<urlslug>[^/]+)/', tomorrow.blog.EditHandler),
-
             (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
              api.MdAndHtmlHandler),
+
             (r'/utility/sina/', utility.sina.HomeHandler),
             (r'/utility/sina/callback/', utility.sina.CallbackHandler),
             (r'/utility/sina/exec/', utility.sina.ExecHandler),
             (r'/utility/sina/[^/]+/', utility.sina.NotFoundHandler),
 
             (r'/brey/', brey.BreyHandler),
+            (r'/brey/robots.txt', StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static', 'robots', 'brey.txt')}),
+            (r'/brey/(favicon\.ico)', tornado.web.StaticFileHandler,
+             {'path': os.path.join(rootdir, 'static')}),
             (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),
 
             (r'/utility/pts/', utility.TakeOutCalculateHandler),
@@ -133,7 +151,6 @@ class Application(tornado.web.Application):
 
         settings = {
             'template_path': os.path.join(rootdir, 'template'),
-            'static_path': os.path.join(rootdir, 'static'),
             'debug': self.config.debug,
             'login_url': '/login/',
             'ui_modules': {
@@ -156,7 +173,7 @@ class Application(tornado.web.Application):
 
 def main(port):
     tornado.locale.load_translations(
-        os.path.join(rootdir, "translations"))
+        os.path.join(rootdir, 'translations'))
     # set this tornado will ignore the borwser `Accept-Language` head, why?
     # tornado.locale.set_default_locale('zh')
     tornado.autoreload.watch(

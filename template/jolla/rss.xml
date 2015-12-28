@@ -21,6 +21,11 @@
     <pubDate>{{ each['time'] }}</pubDate>
     <description>{{ each['descripition'] }}</description>
     <content:encoded>
+      {% if each['descripition'] %}
+        <div style="border-style: dotted; border-width: 1px; padding: 2px; margin: 5px">
+          {% raw each['descripition'] %}
+        </div>
+      {% end %}
       {{ each['content'] }}
     </content:encoded>
   </item>

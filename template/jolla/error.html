@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block main_title %}{{ msg }} | {% end %}
+
+{% block neck %}
+<link rel="stylesheet" href="{{ static_path('css/jolla/blog.css') }}">
+{% end %}
+
+{% block stomach %}
+<header>
+  <div class="am-margin-lg am-text-center">
+    <a href="//{{ JOLLA_HOST }}/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
+  </div>
+</header>
+<div class="am-g am-g-fixed">
+  <section class="am-panel am-panel-danger">
+    <header class="am-panel-hd">
+      <h3 class="am-panel-title">{{ _('Oops, something went wrong') }}</h3>
+    </header>
+    <div class="am-panel-bd">
+      {{ msg }}
+    </div>
+  </section>
+</div>
+{% end %}
