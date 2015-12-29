@@ -41,13 +41,15 @@ $(function ()
 {
 // <Controller>
   //  <init>
-  var Controller = function(quiz_page, config_page)
+  var Controller = function(quiz_page, config_page, finished_page)
   {
     this.quiz = quiz_page;
     this.config = config_page;
+    this.finished = finished_page;
   };
   Controller.prototype.quiz;
   Controller.prototype.config;
+  Controller.prototype.finished;
   // </init>
   // <change tags>
   Controller.prototype.on_change_words = function(words)
@@ -82,8 +84,7 @@ $(function ()
     this.quiz.sort();
     console.log('sorted');
     this.switch_page('quiz');
-    if (!this.quiz.next_question())
-      alert('empty?');
+    this.quiz.next_question();
   };
   // </change config>
 
@@ -92,9 +93,11 @@ $(function ()
     var words = $('#words-page');
     var config = $('#config-page');
     var quiz = $('#quiz-page');
+    var finished = $('#finished-page');
     words.hide();
     config.hide();
     quiz.hide();
+    finished.hide();
     switch (page)
     {
       case 'quiz':
@@ -106,7 +109,38 @@ $(function ()
       case 'words':
         words.show();
         break;
+      case 'finished':
+        finished.show();
+        break;
     }
+  };
+
+  Controller.prototype.finish = function()
+  {
+    console.log('finished handling');
+    console.log(this);
+    var record = this.quiz.record;
+    var words = this.quiz.words;
+    console.log('words', words);
+    var results = [];
+    for (var id in record)
+    {
+      var num = record[id];
+      for (var index in words)
+      {
+        var this_word = words[index];
+        if (this_word.id == id)
+        {
+          var clone_word = $.extend({}, this_word);
+          clone_word['error_times'] = num;
+          results.push(clone_word);
+          console.log('find', clone_word);
+          break;
+        }
+      }
+    }
+    this.finished.set(results, words.length);
+    this.switch_page('finished');
   };
 // </Controller>
 
@@ -539,6 +573,8 @@ $(function ()
 
     this.question = question;
     this.display = display;
+
+    this.finished_callback = undefined;
   };
   QuizPage.prototype.words;
   QuizPage.prototype.current;
@@ -552,11 +588,14 @@ $(function ()
   QuizPage.prototype.show_words;
   QuizPage.prototype.qustion;
   QuizPage.prototype.display;
+  QuizPage.prototype.finished_callback;
   // </init>
 
   // <empty>
   QuizPage.prototype.empty = function()
   {
+    if (this.word)
+      return false;
     return !(this.current.length || this.next.length);
   };
   // </empty>
@@ -576,9 +615,11 @@ $(function ()
   // <add next>
   QuizPage.prototype.next_round = function()
   {
-    this.current.concat(this.next);
+    console.log('next round: current:', this.current.length, 'next:', this.next.length);
+    this.current = this.current.concat(this.next);
     this.next = [];
     this.sort();
+    console.log('next round done: current:', this.current.length);
   };
   // </add next>
 
@@ -586,6 +627,7 @@ $(function ()
   QuizPage.prototype.sort = function()
   {
     var sort_by = this.sort_by;
+    console.log('sort by ' + sort_by);
     if (sort_by == this.SHUFFLE)
     {
       shuffle(this.current);
@@ -614,21 +656,32 @@ $(function ()
     this.word = null;
     this.anwser = null;
     this.sort();
+    console.log('set words num', this.words.length);
   };
   // </set words>
+
+  // <process>
+  QuizPage.prototype.process = function()
+  {
+    var total = this.words.length ;
+    return (total - this.current.length - this.next.length) / total;
+  };
+  // </process>
 
   // <next question>
   QuizPage.prototype.next_question = function()
   {
     if (this.empty())
+    {
+      $.event.trigger('finished');
       return false;
+    }
 
     var word = this.get_word();
     var format = this.next_format();
     console.log('set next question', format, word);
     this.set_page(word, format);
-
-    return true
+    return true;
   };
   // </next question>
 
@@ -671,8 +724,8 @@ $(function ()
       if (format == 'choose_word')
       {
         var displays = [];
-        if (word.pronounce)
-          displays.push('/ ' + word.pronounce + ' /');
+        // if (word.pronounce)
+        //   displays.push('/ ' + word.pronounce + ' /');
         for (var type in word.meaning)
         {
           var mean = '';
@@ -683,9 +736,15 @@ $(function ()
         }
         var display = displays.join('<br />');
         var to_choose_strs = [];
+        console.log(to_choose);
         for (var index in to_choose)
         {
-          to_choose_strs.push(to_choose[index].spell.join('; '))
+          var this_word = to_choose[index];
+          console.log(this_word);
+          to_choose_strs.push(
+            this_word.spell.join('; ') +
+            (this_word.pronounce? ' /' + this_word.pronounce + '/ ': '')
+          );
         }
         this.question.set_choose(display, to_choose_strs);
         console.log(display, to_choose_strs);
@@ -701,7 +760,10 @@ $(function ()
             types.push(type);
         if (types.length !== 0)
           displays.push('&lt;' + types.join('/') + '&gt;');
-        displays.push(word.spell.join('; '));
+        displays.push(
+          word.spell.join('; ') +
+          (word.pronounce? ' /' + word.pronounce + '/': '')
+        );
 
         var to_choose_str = [];
         for (var index in to_choose)
@@ -728,21 +790,31 @@ $(function ()
   // <get random words>
   QuizPage.prototype.shuffle_4 = function(word)
   {
-    if (this.words.length <= 4)
+    if (this.current.length <= 3)
     {
-      return new Array(this.words)
+      console.log('no enough on current pipe, next round');
+      this.next_round();
+    }
+
+    var result = [];
+    if (this.current.length <= 3)
+    {
+      console.log('no enough on current pipe, return all');
+      console.log('current pipe', this.current);
+      result = this.current.slice();
+      result.push(word);
+      return result;
     }
 
     var word_id = word.id;
     var id_2_word = {word_id: word};
     while (Object.keys(id_2_word).length < 4)
     {
-      var random_item = this.words[Math.floor(Math.random() * this.words.length)];
+      var random_item = this.current[Math.floor(Math.random() * this.current.length)];
       if (id_2_word[random_item.id] === undefined)
         id_2_word[random_item.id] = random_item;
     }
 
-    var result = [];
     for (var key in id_2_word)
     {
       result.push(id_2_word[key]);
@@ -779,25 +851,29 @@ $(function ()
   // </check answer>
 
   // <get answer>
-  QuizPage.prototype.report_result = function(result)
+  QuizPage.prototype.report_result = function(result, extra)
   {
 
     var correct = this.check_answer(result);
+    var this_word = this.word;
     if (!correct)
     {
-      var num = this.record[this.word] || 0;
+      var num = this.record[this.word.id] || 0;
       num += 1;
-      this.record[this.word] = num;
+      this.record[this.word.id] = num;
       console.log(this.word.spell.join(';') + ' -> ' + num);
       if (this.repeat_wrong)
       {
+        console.log('wrong, put back', this.word);
         this.next.push(this.word);
       }
     }
 
+    this.word = null;
+
     var has_question = this.next_question();
     if (!has_question)
-      return alert('no more');
+      return ;
 
     if (!correct)
     {
@@ -806,11 +882,125 @@ $(function ()
     }
     else
       this.question.right();
+    this.set_process(this.process(), correct, this_word, extra);
     console.log('next word');
   };
   // </get answer>
 
+  QuizPage.prototype.finished = function()
+  {
+    this.finished_callback(this.record);
+  };
+
+  // <set process>
+  QuizPage.prototype.set_process = function(process, correct, word, extra)
+  {
+    var display = this.display;
+    var ratio = (process * 100).toFixed();
+    if (ratio > 100)
+      ratio = 100;
+    //shown, num, label, error
+    var shown = null;
+    if (!correct)
+    {
+      var spell = word.spell.join('; ');
+      var pronounce = word.pronounce? (' /' + word.pronounce + '/ '): '';
+      var means = [];
+      for (var key in word.meaning)
+      {
+        if (key)
+          means.push('&lt;' + key + '&gt; ');
+        means.push(word.meaning[key].join(';'));
+      }
+      var mean = means.join('<br />');
+      shown = ('Oops, your anwser (<span class="am-text-danger">' + extra + '</span>) is wrong: <br />'  +
+               spell + pronounce + '<br />' +
+               mean);
+    }
+    display.set(shown, ratio, ratio + '%', !correct);
+  };
+  // </set process>
+
 // </QuizPage>
+
+// <FinishedPage>
+  var FinishedPage = function()
+  {
+    this.page = $('#finished-page-content');
+  };
+  FinishedPage.prototype.page;
+
+  FinishedPage.prototype.set = function(record, words_num)
+  {
+    var cls = ['', 'am-progress-bar-secondary', 'am-progress-bar-success', 'am-progress-bar-warning',
+               'am-progress-bar-danger'];
+    var cls_num = cls.length;
+    var total = 0;
+    for (var index in record)
+    {
+      var this_word = record[index];
+      total += this_word.error_times;
+    }
+
+    var sub_bars = [];
+    var t_rows = [];
+    for (var index in record)
+    {
+      var word = record[index];
+      var num = word.error_times;
+      console.log(word, num);
+      var this_cls = cls[index % cls_num];
+      var ratio = (num * 100 / total).toFixed();
+      var spell = word.spell.join(';');
+
+      sub_bars.push(
+        '<div class="am-progress-bar ' + this_cls + '" style="width: ' + ratio + '%">' +
+          spell + ' ' + num +
+        '</div>'
+      );
+
+      var meanings = [];
+      for (var type in word.meaning)
+      {
+        var t = type? '&lt;' + type + '&gt; ': '';
+        meanings.push(t + word.meaning[type].join(';'));
+      }
+
+      t_rows.push(
+        '<tr>' +
+          '<td>' + spell + '</td>' +
+          '<td>' + (word.pronounce || '' ) + '</td>' +
+          '<td>' + word.error_times + '</td>' +
+          '<td>' + meanings.join('<br />') + '</td>' +
+        '</tr>'
+      );
+    }
+    //var sum = '<p><b>Total:</b>' + total + '/' + words_num + '</p>';
+    var right_num = words_num - record.length;
+    var total_ratio = (right_num * 100 / words_num).toFixed();
+    var shown_in_end = total_ratio < 50;
+    var label = 'Accuracy: ' + right_num + '/' + words_num + '(' + total_ratio + '%)';
+    var sum = (
+      '<div class="am-progress">' + (shown_in_end? label: '') +
+        '<div class="am-progress-bar am-progress-bar-success" style="width: ' + total_ratio + '%">' + (shown_in_end? '': label) + '</div>' +
+      '</div>');
+    var bar = '<div class="am-progress">' + sub_bars.join('') + '</div>';
+    var table = (
+      '<table class="am-table am-table-bordered am-table-striped am-table-hover am-table-compact">' +
+        '<thead><tr>' +
+          '<th>' + _('Word') + '</th>' +
+          '<th>' + _('Pronounce') + '</th>' +
+          '<th>' + _('Wrong Times') + '</th>' +
+          '<th>' + _('Meaning') + '</th>' +
+        '</tr></thead>' +
+        '<tbody>' +
+          t_rows.join('') +
+        '</tbody>' +
+      '</table>'
+    );
+    this.page.html(sum + bar + table);
+  };
+// </FinishedPage>
 
   var $spell_form = $('#form-spell');
   var $choose_form = $('#form-choose-word');
@@ -826,7 +1016,10 @@ $(function ()
 
   var quiz_page = new QuizPage(question, display);
 
-  var controller = new Controller(quiz_page, config_page);
+  var finished_page = new FinishedPage();
+
+  var controller = new Controller(quiz_page, config_page, finished_page);
+  $(document).on('finished', function(){ controller.finish.call(controller) });
 
   var $confirm_btn = $('#tag-confirm');
   $confirm_btn.click(function(event)
@@ -846,15 +1039,17 @@ $(function ()
     event.preventDefault();
     $form = $(this);
     var result = $form.find('[name="answer"]').val();
-    quiz_page.report_result(result.split(';'));
+    quiz_page.report_result(result.split(';'), result);
   });
 
   $choose_form.submit(function(event)
   {
     event.preventDefault();
     $form = $(this);
-    var result = $form.find('[name="answer"]:checked').val();
-    quiz_page.report_result([parseInt(result)]);
+    var $result = $form.find('[name="answer"]:checked');
+    var result = $result.val();
+    var extra = $result.closest('label').text();
+    quiz_page.report_result([parseInt(result)], $.trim(extra));
   });
 
   var $tag_select = $('#select-tags');
