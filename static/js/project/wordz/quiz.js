@@ -386,13 +386,17 @@ $(function ()
   // </init>
 
   // <set input>
-  Question.prototype.set_input = function(display)
+  Question.prototype.set_input = function(display, alpha)
   {
     this.reset();
     var $input_form = this.$input_form;
     $input_form.show();
     this.$choose_form.hide();
     $input_form.find('#question-meaning-spell').html(display);
+    var $input = $input_form.find('input[name="answer"]');
+    $input.focus();
+    if (alpha)
+      $input.val(alpha);
   };
   // </set input>
 
@@ -604,7 +608,7 @@ $(function ()
     // <get word>
   QuizPage.prototype.get_word = function()
   {
-    if (! this.current.length)
+    if (!this.current.length)
       this.next_round();
     var words = this.current.pop(0);
     return words;
@@ -651,7 +655,7 @@ $(function ()
   QuizPage.prototype.set_words = function(words)
   {
     this.words = words;
-    this.current = words;
+    this.current = words.slice();
     this.next = [];
     this.word = null;
     this.anwser = null;
@@ -664,13 +668,14 @@ $(function ()
   QuizPage.prototype.process = function()
   {
     var total = this.words.length ;
-    return (total - this.current.length - this.next.length) / total;
+    return (total - this.current.length - this.next.length - 1) / total;
   };
   // </process>
 
   // <next question>
   QuizPage.prototype.next_question = function()
   {
+    console.log('before next question, words:', this.words);
     if (this.empty())
     {
       $.event.trigger('finished');
@@ -710,7 +715,10 @@ $(function ()
         mean += word.meaning[type];
         displays.push(mean);
       }
-      this.question.set_input(displays.join('<br />'));
+
+      var shown_alpha = word.spell[0].substring(0, this.show_words);
+      console.log(shown_alpha);
+      this.question.set_input(displays.join('<br />'), shown_alpha);
       this.anwser = word.spell;
     }
     // </spell word>
@@ -740,7 +748,6 @@ $(function ()
         for (var index in to_choose)
         {
           var this_word = to_choose[index];
-          console.log(this_word);
           to_choose_strs.push(
             this_word.spell.join('; ') +
             (this_word.pronounce? ' /' + this_word.pronounce + '/ ': '')
@@ -790,27 +797,18 @@ $(function ()
   // <get random words>
   QuizPage.prototype.shuffle_4 = function(word)
   {
-    if (this.current.length <= 3)
-    {
-      console.log('no enough on current pipe, next round');
-      this.next_round();
-    }
-
     var result = [];
-    if (this.current.length <= 3)
+    if (this.words.length <= 4)
     {
       console.log('no enough on current pipe, return all');
-      console.log('current pipe', this.current);
-      result = this.current.slice();
-      result.push(word);
-      return result;
+      return this.words.slice();
     }
 
     var word_id = word.id;
     var id_2_word = {word_id: word};
     while (Object.keys(id_2_word).length < 4)
     {
-      var random_item = this.current[Math.floor(Math.random() * this.current.length)];
+      var random_item = this.words[Math.floor(Math.random() * this.words.length)];
       if (id_2_word[random_item.id] === undefined)
         id_2_word[random_item.id] = random_item;
     }
@@ -873,15 +871,20 @@ $(function ()
 
     var has_question = this.next_question();
     if (!has_question)
-      return ;
-
+    {
+      console.log('no questions');
+      return;
+    }
     if (!correct)
     {
       console.log('not right');
       this.question.not_right();
     }
     else
+    {
+      console.log('correct');
       this.question.right();
+    }
     this.set_process(this.process(), correct, this_word, extra);
     console.log('next word');
   };
@@ -908,9 +911,8 @@ $(function ()
       var means = [];
       for (var key in word.meaning)
       {
-        if (key)
-          means.push('&lt;' + key + '&gt; ');
-        means.push(word.meaning[key].join(';'));
+        var type = key? ('&lt;' + key + '&gt; '): '';
+        means.push(type + word.meaning[key].join(';'));
       }
       var mean = means.join('<br />');
       shown = ('Oops, your anwser (<span class="am-text-danger">' + extra + '</span>) is wrong: <br />'  +
