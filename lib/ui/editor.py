@@ -1,7 +1,7 @@
 import tornado.web
 import logging
 
-logger = logging.getLogger('romorrow.ui.editor')
+logger = logging.getLogger('tomorrow.ui.editor')
 
 
 class WysBarModule(tornado.web.UIModule):

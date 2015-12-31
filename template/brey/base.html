@@ -1,5 +1,5 @@
-{% extends "amaze_jquery_base.html" %}
-{% block title %} {{ page_title }} {% end %}{% block main_title %}{% end %}
+{% extends "../amaze_jquery_base.html" %}
+{% block title %}{% block page_title %} {% end %}A Page for My Friend{% end %}
 {% block webapp %}{% end %}
 
 {% block head_end %}
@@ -57,10 +57,14 @@
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
       <article class="am-article">
         <div class="am-article-hd">
-          <h1 class="am-article-title">{{ title }}</h1>
+          <h1 class="am-article-title">
+            {% block post_title %}
+            {% end %}
+          </h1>
           <hr class="am-article-divider">
           <div class="am-article-bd">
-            {% raw content %}
+            {% block content %}
+            {% end %}
           </div>
         </div>
       </article>

@@ -22,11 +22,9 @@ class ArticleHandler(BaseHandler):
     @ItsNotMyself('article/')
     def get(self, user):
         user_name = unquote(user)
-        main_url = '/hi/' + user
 
         return self.render(
             'tomorrow/admin/hi/article.html',
-            main_url=main_url,
             user_name=user_name,
             articles=self.get_articles(user_name),
         )

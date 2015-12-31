@@ -4,6 +4,24 @@
 
 {% block neck %}
 <link rel="stylesheet" href="{{ static_path('css/jolla/blog.css') }}">
+<style>
+  h1 {
+    text-align: center;
+  }
+
+  .content {
+    text-align: center;
+  }
+
+  .shadow {
+    -webkit-box-shadow: 7px 11px 40px 4px rgba(127,127,127,0.55);
+    -moz-box-shadow:    7px 11px 40px 4px rgba(127,127,127,0.55);
+    box-shadow:         7px 11px 40px 4px rgba(127,127,127,0.55);
+    border-radius: 20px;
+    background-color: rgba(255,255,255,0.3);
+  }
+
+</style>
 {% end %}
 
 {% block stomach %}
@@ -12,14 +30,32 @@
     <a href="//{{ JOLLA_HOST }}/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
   </div>
 </header>
+
 <div class="am-g am-g-fixed">
-  <section class="am-panel am-panel-danger">
-    <header class="am-panel-hd">
-      <h3 class="am-panel-title">{{ _('Oops, something went wrong') }}</h3>
-    </header>
-    <div class="am-panel-bd">
-      {{ msg }}
-    </div>
-  </section>
+  <div class="shadow am-padding-xl">
+    <h1>{{ _('Oops, I just swallowed a bug') }} :(</h1>
+    {% module ErrorImage(code) %}
+    <p class="content">
+      {% raw msg or "Unknown Error" %}
+    </p>
+    <hr />
+
+    <p class="am-padding-horizontal-lg">
+      {{ _("I'm sorry for the inconvenience, please tell me by") }}:
+      <span class="am-icon-email"></span>
+      <a class="am-icon-envelope am-link-muted" href="mailto:tylertempdev@gmail.com"> {{ _('Email') }}</a>
+      |
+      <a class="am-icon-google-plus am-link-muted" href="https://plus.google.com/+TylerTemp" target="_black"> G+</a>
+      |
+      <a class="am-icon-twitter am-link-muted" href="https://twitter.com/Tyler_Temp_" target="_black"> Twitter</a>
+      |
+      <a class="am-icon-wechat am-link-muted" href="https://dn-tyler.qbox.me/mywechat.png" target="_black"> {{ _('WeChat') }}</a>
+      |
+      <a class="am-icon-weibo am-link-muted" href="http://weibo.com/tylertemp" target="_black"> {{ _('Weibo') }}</a>
+      |
+      <a class="am-icon-commenting am-link-muted" href="//{{ MAIN_HOST }}/hi/TylerTemp/"> {{ _('Message') }}</a>
+    </p>
+  </div>
 </div>
+
 {% end %}

@@ -16,7 +16,6 @@ class DashboardHandler(BaseHandler):
 
     @ItsNotMyself('')
     def get(self, user):
-        main_url = '/hi/' + user
 
         user_name = unquote(user)
         u = User(user_name)
@@ -52,6 +51,5 @@ class DashboardHandler(BaseHandler):
             user_email=user_email,
             user_intro=intro,
             user_donate=donate,
-            main_url=main_url,
             article_num=Article.num_by(user_name)
         )

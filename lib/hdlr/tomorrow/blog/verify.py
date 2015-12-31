@@ -9,12 +9,18 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
+from .base import EnsureSsl, BaseHandler
+
+import sys
+import os
+
+sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db import User, Article, Message
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
-from lib.hdlr.base import EnsureSsl, BaseHandler
+sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.dash.verify')
+logger = logging.getLogger('tomorrow.blog.verify')
 
 
 class VerifyHandler(BaseHandler):

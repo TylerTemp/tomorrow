@@ -1,3 +1,4 @@
+from .base import BaseHandler
 from .list import ListHandler
 from .task import TaskHandler
 from .load import LoadHandler
@@ -7,5 +8,5 @@ from .article import ArticleHandler
 from .home import HomeHandler
 from .rss import RssHandler
 
-__all__ = ('ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler',
-           'ArticleHandler', 'HomeHandler', 'RssHandler')
+__all__ = ['ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler',
+           'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler']

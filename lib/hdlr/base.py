@@ -3,8 +3,10 @@ provide some convenient methods'''
 
 import tornado.web
 import tornado.locale
+import tornado.escape
 import logging
 import functools
+import json
 try:
     from urllib.parse import quote, urlsplit, urlunsplit, urljoin
 except ImportError:
@@ -26,6 +28,24 @@ logger = logging.getLogger("tomorrow.base")
 
 class BaseHandler(tornado.web.RequestHandler):
     cfg = Config()
+
+    def get(self, *a, **k):
+        splited = urlsplit(self.request.uri)
+        if not splited.path.endswith('/'):
+            to_list = list(splited)
+            to_list[2] = splited.path + '/'
+            return self.redirect(urlunsplit(to_list), True)
+        raise tornado.web.HTTPError(404)
+
+    def post(self, *a, **k):
+        if self.is_ajax():
+            self.clear()
+            self.set_status(405)
+            self.write(json.dumps({'code': -1, 'message': 'Method Not Allowed',
+                                   'error': -1}))
+            return
+
+        raise tornado.web.HTTPError(405, 'Method Not Allowed')
 
     def render(self, template_name, **kwargs):
         kwargs['ssl'] = self.is_ssl()
@@ -181,6 +201,21 @@ class BaseHandler(tornado.web.RequestHandler):
         # uncomment this line for py3
         return super(BaseHandler, self).write_error(status_code, **kwargs)
 
+    def get_error(self, status_code, **kwargs):
+        msg = None
+
+        if self.application.settings['debug']:
+            msg = '<pre><code>%s</code></pre>' % get_exc_plus()
+
+        elif status_code == 404:
+            msg = 'Page Not Found'
+            if 'exc_info' in kwargs:
+                exc_info = kwargs['exc_info']
+                if exc_info and len(exc_info) >= 2:
+                    msg = getattr(exc_info[1], 'log_message', None) or msg
+
+        return msg
+
     def if_debug(self, status_code, **kwargs):
         request = self.request
         url = urlunsplit((request.protocol, request.host, request.uri, '', ''))
@@ -192,9 +227,11 @@ class BaseHandler(tornado.web.RequestHandler):
                     </head>
                     <body>
                         <h1>%s</h1>
-                        <pre>%s\n\n%s</pre>
+                        <pre>%s</pre>
+                        <pre><code>%s</code></pre>
                     </body>
-                </html>''' % (status_code, status_code, url,get_exc_plus()))
+                </html>''' % (status_code, status_code, url,
+                              tornado.escape.xhtml_escape(get_exc_plus())))
             self.flush()
             return True
         return False

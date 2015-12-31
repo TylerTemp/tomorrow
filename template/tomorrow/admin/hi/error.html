@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block subtitle %} | {{ msg }}{% end %}
+
+{% block highlight %}
+  {% set highlight = [] %}
+{% end %}
+
+{% block guide %}
+  <span class="am-icon-bug"> <strong class="am-text-primary am-text-lg">{{ code }}</strong></span>
+  /
+  <small>{{  msg[:50] if msg else 'Unknown Error'  }}</small>
+{% end %}
+
+{% block content %}
+  {% module ErrorImage(code) %}
+  <div class="am-padding">{% raw msg or 'Unknown Error'  %}</div>
+{% end %}

@@ -1,4 +1,5 @@
 import tornado.locale
+import tornado.web
 try:
     from urllib.parse import unquote
 except ImportError:
@@ -24,12 +25,15 @@ class BreyHandler(BaseHandler):
             page_title = None
             article_slug = 'brey-' + slug
 
-        article = Article(article_slug).get()['en']
+        article_result = Article(article_slug)
+        if article_result.new:
+            raise tornado.web.HTTPError(404, 'page "%s" not found' % slug)
+        article = article_result.get()['en']
         if page_title is None:
-            page_title = '%s | Hi Brey' %  article['title']
+            page_title = article['title']
 
         return self.render(
-            'brey.html',
+            'brey/brey.html',
             slug=slug,
             page_title=page_title,
             title=article['title'],
@@ -38,3 +42,12 @@ class BreyHandler(BaseHandler):
 
     def get_user_locale(self):
         return tornado.locale.get('en')
+
+    def write_error(self, status_code, **kwargs):
+        msg = self.get_error(status_code, **kwargs)
+
+        return self.render(
+            'brey/error.html',
+            code=status_code,
+            msg=msg,
+        )

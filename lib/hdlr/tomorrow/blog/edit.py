@@ -8,16 +8,16 @@ try:
 except ImportError:
     from urllib import unquote
     from urllib import quote
+from .base import BaseHandler, EnsureUser
 
 import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler, EnsureUser
 from lib.db import Article, User
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.edit')
+logger = logging.getLogger('tomorrow.blog.edit')
 
 
 class EditHandler(BaseHandler):

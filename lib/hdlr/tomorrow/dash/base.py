@@ -61,3 +61,12 @@ class BaseHandler(BaseHandler):
             template_name,
             **kwargs
         )
+
+    def write_error(self, status_code, **kwargs):
+        msg = self.get_error(status_code, **kwargs)
+
+        return self.render(
+            'tomorrow/admin/dash/error.html',
+            code=status_code,
+            msg=msg
+        )

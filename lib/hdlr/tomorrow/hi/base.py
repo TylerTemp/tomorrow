@@ -23,6 +23,7 @@ class ItsNotMyself(object):
             unquoted = unquote(user)
             u = User(unquoted)
             if u.new:
+                ins.user_name = user
                 raise tornado.web.HTTPError(404, 'User %s not found' % unquoted)
             if (ins.current_user is not None and
                     ins.current_user['user'] == unquoted):
@@ -41,7 +42,19 @@ class BaseHandler(BaseHandler):
         if 'visitor' not in kwargs:
             kwargs['visitor'] = self.current_user and self.current_user['user']
 
+        if 'user_name' not in kwargs:
+            kwargs['user_name'] = getattr(self, 'user_name', '-')
+
         return super(BaseHandler, self).render(
             template_name,
             **kwargs
+        )
+
+    def write_error(self, status_code, **kwargs):
+        msg = self.get_error(status_code, **kwargs)
+
+        return self.render(
+            'tomorrow/admin/hi/error.html',
+            code=status_code,
+            msg=msg
         )

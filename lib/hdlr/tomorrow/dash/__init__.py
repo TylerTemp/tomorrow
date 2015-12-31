@@ -1,3 +1,4 @@
+from .base import BaseHandler
 from .dash import DashboardHandler
 from .info import InfoHandler
 from .secure import SecureHandler
@@ -7,4 +8,4 @@ from .message import MessageHandler
 from . import manage
 
 __all__ = ['DashboardHandler', 'InfoHandler', 'SecureHandler', 'FileHandler',
-           'ArticleHandler', 'MessageHandler', 'manage']
+           'ArticleHandler', 'MessageHandler', 'BaseHandler', 'manage']

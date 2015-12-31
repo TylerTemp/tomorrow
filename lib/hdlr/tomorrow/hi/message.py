@@ -21,11 +21,9 @@ class MessageHandler(BaseHandler):
     @ItsNotMyself('message/')
     def get(self, user):
         user_name = unquote(user)
-        main_url = '/hi/' + user
 
         return self.render(
             'tomorrow/admin/hi/message.html',
-            main_url=main_url,
             user_name=user_name
         )
 

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block page_title %}
+  {{ page_title }} |
+{% end %}
+
+{% block post_title %}
+  {{ title }}
+{% end %}
+
+{% block content %}
+  {% raw content %}
+{% end %}

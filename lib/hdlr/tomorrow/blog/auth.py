@@ -10,18 +10,17 @@ except ImportError:
     from urllib import quote
     from urllib import urlencode
 
+from .base import BaseHandler
 import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
 from lib.db import User, Message
 from lib.tool.mail import Email
-from lib.tool.generate import generate
 from lib.hdlr.base import EnsureSsl
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.auth')
+logger = logging.getLogger('tomorrow.blog.auth')
 
 
 class _Handler(BaseHandler):

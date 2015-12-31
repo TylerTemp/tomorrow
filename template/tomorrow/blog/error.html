@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block main_title %}{{ msg }} | {% end %}
+
+{% block shoulder %}
+  <div class="am-g am-g-fixed">
+    <h1 class="am-center" style="text-align: center">It's dead, Jim!</h1>
+    {% module ErrorImage(code) %}
+    {% raw msg or 'Unknown Error' %}
+    <hr />
+    <p class="am-padding-horizontal-lg">
+      {{ _("My blog is broken, could you please tell me by") }}:
+      <span class="am-icon-email"></span>
+      <a class="am-icon-envelope am-link-muted" href="mailto:tylertempdev@gmail.com"> {{ _('Email') }}</a>
+      |
+      <a class="am-icon-google-plus am-link-muted" href="https://plus.google.com/+TylerTemp" target="_black"> G+</a>
+      |
+      <a class="am-icon-twitter am-link-muted" href="https://twitter.com/Tyler_Temp_" target="_black"> Twitter</a>
+      |
+      <a class="am-icon-wechat am-link-muted" href="https://dn-tyler.qbox.me/mywechat.png" target="_black"> {{ _('WeChat') }}</a>
+      |
+      <a class="am-icon-weibo am-link-muted" href="http://weibo.com/tylertemp" target="_black"> {{ _('Weibo') }}</a>
+      |
+      <a class="am-icon-commenting am-link-muted" href="//{{ MAIN_HOST }}/hi/TylerTemp/"> {{ _('Message') }}</a>
+
+    </p>
+  </div>
+{% end %}

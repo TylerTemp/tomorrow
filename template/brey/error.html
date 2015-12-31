@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block page_title %}
+  {{ code }} |
+{% end %}
+
+{% block post_title %}
+  ERROR: {{ msg or 'Unknown Error' }}
+{% end %}
+
+{% block content %}
+  {% module ErrorImage(code) %}
+  {% raw msg or 'Unknown Error' %}
+{% end %}

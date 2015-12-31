@@ -1,5 +1,6 @@
 import re
 import logging
+import tornado.escape
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -11,7 +12,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
+from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
 sys.path.pop(0)
 
@@ -79,18 +80,9 @@ class BaseHandler(BaseHandler):
         return result
 
     def write_error(self, status_code, **kwargs):
-        # if self.if_debug(status_code, **kwargs):
-        #     return
-
-        msg = str(status_code)
-        if True:  # status_code == 404:
-            msg = 'Page Not Found'
-            if 'exc_info' in kwargs:
-                exc_info = kwargs['exc_info']
-                if exc_info and len(exc_info) >= 2:
-                    msg = getattr(exc_info[1], 'log_message', None) or msg
-
+        msg = self.get_error(status_code, **kwargs)
         return self.render(
             'jolla/error.html',
-            msg=msg or 'Unknown ERROR'
+            code=status_code,
+            msg=msg
         )

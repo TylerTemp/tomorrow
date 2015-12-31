@@ -31,11 +31,11 @@ from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
 from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler,\
-                     StaticFileHandler
+                     StaticFileHandler, BaseHandler
 from lib.hdlr import brey, jolla, tomorrow, api, utility
 from lib.hdlr.project import docpie, wordz
 
-from lib.ui.editor import WysBarModule, MdBarModule
+from lib.ui import WysBarModule, MdBarModule, ErrorImageModule
 sys.path.pop(0)
 
 
@@ -72,6 +72,8 @@ class Application(tornado.web.Application):
             (r'/signin/', tomorrow.blog.SigninHandler),
             (r'/logout/', tomorrow.blog.LogoutHandler),
             (r'/verify/(?P<code>[^/]+)/', tomorrow.blog.VerifyHandler),
+            (r'/(page|blog|edit|login|signin|logout|verify)/.*?',
+             tomorrow.blog.BaseHandler),
             # dashboard
             (r'/am/(?P<user>[^/]+)/', tomorrow.dash.DashboardHandler),
             (r'/am/(?P<user>[^/]+)/info/', tomorrow.dash.InfoHandler),
@@ -88,10 +90,12 @@ class Application(tornado.web.Application):
              tomorrow.dash.manage.UserHandler),
             (r'/am/(?P<user>[^/]+)/manage/message/',
              tomorrow.dash.manage.MessageHandler),
+            (r'/am/.*', tomorrow.dash.BaseHandler),
             # profile
             (r'/hi/(?P<user>[^/]+)/', tomorrow.hi.DashboardHandler),
             (r'/hi/(?P<user>[^/]+)/article/', tomorrow.hi.ArticleHandler),
             (r'/hi/(?P<user>[^/]+)/message/', tomorrow.hi.MessageHandler),
+            (r'/hi/.*', tomorrow.hi.BaseHandler),
             (r'/robots.txt', StaticFileHandler,
              {'path': os.path.join(rootdir, 'static', 'robots', 'blog.txt')}),
             (r'/(favicon\.ico)', tornado.web.StaticFileHandler,
@@ -113,6 +117,7 @@ class Application(tornado.web.Application):
             (r'/jolla/robots.txt', StaticFileHandler,
              {'path': os.path.join(rootdir, 'static', 'robots', 'jolla.txt')}),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
+            (r'/jolla/.*', jolla.BaseHandler),
             # project
             (r'/project/docpie/', docpie.HomeHandler),
             (r'/project/docpie/document/', docpie.DocHandler),
@@ -157,7 +162,8 @@ class Application(tornado.web.Application):
             'ui_modules': {
                 'WysBar': WysBarModule,
                 'MdBar': MdBarModule,
-                },
+                'ErrorImage': ErrorImageModule,
+            },
         }
 
         if self.config.set_secret:

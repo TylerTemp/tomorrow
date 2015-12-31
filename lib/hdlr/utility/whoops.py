@@ -54,7 +54,6 @@ class WoopseHandler(tornado.web.RequestHandler):
         return (left, top)
 
     def get_num_file(self, num):
-        logger.debug('get png num %s', num)
         with open(os.path.join(self.base, '%s.png' % num), 'rb') as f:
             return BytesIO(f.read())
 
@@ -70,13 +69,10 @@ class WoopseHandler(tornado.web.RequestHandler):
         for each in surfaces:
             this_width = each.get_width()
             this_height = each.get_height()
-            logger.debug('width: %s; height: %s', this_width, this_height)
             width += (this_width + gap)
             height = max(height, this_height)
         else:
             width -= gap
-
-        logger.debug('num line: %s, %s', width, height)
 
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
         surface_context = cairo.Context(surface)
