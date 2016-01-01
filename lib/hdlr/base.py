@@ -145,10 +145,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def is_ssl(self):
         return (self.request.protocol == 'https')
 
-    @property
-    def db(self):    # lazy-load
-        return self.application.settings['db']
-
     def get_user_locale(self):
         code = self.get_argument('lang', self.get_cookie('lang', None))
         if code is None:
@@ -190,8 +186,7 @@ class BaseHandler(tornado.web.RequestHandler):
         logger.debug('%s - %s' % (r.remote_ip, r.host))
         logging.error('%s' % get_exc_plus())
 
-        # msg = self.get_error(status_code, **kwargs)
-        msg = 'ERROR'
+        msg = self.get_error(status_code, **kwargs)
         return self.render(
             'error.html',
             code=status_code,
@@ -202,7 +197,8 @@ class BaseHandler(tornado.web.RequestHandler):
         msg = None
 
         if self.settings['debug']:
-            msg = '<pre><code>%s</code></pre>' % tornado.escape.xhtml_escape(get_exc_plus())
+            msg = ('<pre><code>%s</code></pre>' %
+                   tornado.escape.xhtml_escape(get_exc_plus()))
 
         elif status_code == 404:
             msg = 'Page Not Found'
