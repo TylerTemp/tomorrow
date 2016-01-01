@@ -17,7 +17,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import Article
+from lib.db import Article, User
 from lib.config import Config
 from lib.tool.md import md2html
 sys.path.pop(0)
@@ -30,6 +30,8 @@ class HomeHandler(BaseHandler):
     LIMIT = _cfg.home_post_limit
     CHARS = _cfg.home_description_limit
     JOLLA = _cfg.jolla_host
+    _u = User('TylerTemp').get()
+    OWNER_IMG = _u['img']
     # HOST = _cfg.main_host
 
     def get(self, page=1):
@@ -47,7 +49,8 @@ class HomeHandler(BaseHandler):
             nav_active='home',
             posts=self.parse_posts(collected),
             this_page=this_page,
-            has_next_page=has_next_page
+            has_next_page=has_next_page,
+            owner_img=self.OWNER_IMG
         )
 
     def parse_posts(self, collected):

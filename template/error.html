@@ -1,0 +1,92 @@
+{% extends "amaze_jquery_base.html" %}
+
+{% block title %}ERROR: {{ code }}{% end %}
+
+{% block head_end %}
+<style>
+  body {
+    background-color: rgba(127,127,127, 1);
+    color: white;
+  }
+  .github-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    border: 0;
+    z-index: 1200;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .shadow {
+    -webkit-box-shadow: 7px 11px 40px 4px rgba(127,127,127,0.55);
+    -moz-box-shadow:    7px 11px 40px 4px rgba(127,127,127,0.55);
+    box-shadow:         7px 11px 40px 4px rgba(127,127,127,0.55);
+    border-radius: 20px;
+    background-color: rgba(255,255,255,0.3);
+  }
+
+  .bug {
+    font-size:120px;
+    color: red;
+  }
+
+  a.back-link {
+    color: #2129ff;
+  }
+
+  a.back-link:hover {
+    color: #737fff;
+  }
+
+  .contact-info {
+    text-align: right;
+  }
+
+  .contact {
+    margin: 10px;
+  }
+
+</style>
+{% end %}
+
+{% block body %}
+  <a href="https://github.com/TylerTemp/tomorrow/" class="github-banner"><img src="https://dn-tyler.qbox.me/forkme_left_darkblue.png" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png"></a>
+  <h1>Oops, this is embarrassing...</h1>
+  <div class="am-g am-g-fixed">
+    <div class="am-padding">
+      <div class="shadow am-padding-xl">
+        {% module ErrorImage(code) %}
+
+        <div class="am-g">
+          <span class="am-icon-bug bug am-u-sm-12 am-u-md-2" data-am-scrollspy="{animation: 'scale-down'}"></span>
+          <div class="am-u-sm-12 am-u-md-10">
+            You get this page because:
+            {% raw msg or 'of an unknown reason' %}
+            <br />
+            You can go back to:
+            <ul>
+              <li><a href="https://tomorrow.comes.today" class="am-icon-home back-link"> tomorrow comes today <span class="am-icon-link"></span></a> </li>
+              <li><a href="https://jolla.comes.today" class="iconfont icon-jolla back-link"> {{ _('Jolla Blog') }} <span class="am-icon-link"></span></a> </li>
+              <li><a href="http://docpie.comes.today" class="iconfont icon-python back-link"> [docpie] <span class="am-icon-link"></span></a> </li>
+            </ul>
+          </div>
+        </div>
+
+        <hr />
+        <div class="contact-info">
+          <a class="am-icon-envelope am-icon-btn contact" href="mailto:tylertempdev@gmail.com" data-am-scrollspy="{animation:'slide-bottom', delay: 0}"></a>
+          <a class="am-icon-github am-icon-btn contact" href="https://github.com/TylerTemp/" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 100}"></a>
+          <a class="am-icon-google-plus am-icon-btn contact" href="https://plus.google.com/+TylerTemp" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 200}"></a>
+          <a class="am-icon-twitter am-icon-btn contact" href="https://twitter.com/Tyler_Temp_" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 300}"></a>
+          <a class="am-icon-wechat am-icon-btn contact" href="https://dn-tyler.qbox.me/mywechat.png" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 400}"></a>
+          <a class="am-icon-weibo am-icon-btn contact" href="http://weibo.com/tylertemp" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 500}"></a>
+          <a class="am-icon-commenting am-icon-btn contact" href="//{{ MAIN_HOST }}/hi/TylerTemp/" data-am-scrollspy="{animation:'slide-bottom', delay: 600}"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% end %}

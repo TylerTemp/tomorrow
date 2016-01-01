@@ -1,8 +1,7 @@
 from .blacklist import BlackListHandler
-from .notfound import AddSlashOr404Handler
 from .redirect import RedirectHandler
 from .base import StaticFileHandler, BaseHandler
 
-__all__ = ['BlackListHandler', 'AddSlashOr404Handler', 'RedirectHandler',
+__all__ = ['BlackListHandler', 'RedirectHandler',
            'brey', 'api', 'jolla', 'project', 'tomorrow', 'base',
            'StaticFileHandler', 'BaseHandler']

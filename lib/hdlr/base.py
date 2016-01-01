@@ -186,26 +186,23 @@ class BaseHandler(tornado.web.RequestHandler):
             return list(filenames)
 
     def write_error(self, status_code, **kwargs):
-        if self.if_debug(status_code, **kwargs):
-            return
-
-        if status_code == 404:
-            return self.render('404.html')
-
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))
         logging.error('%s' % get_exc_plus())
 
-        # uncomment this line for py2
-        # return self.__class__.write_error(self, status_code, **kwargs)
-        # uncomment this line for py3
-        return super(BaseHandler, self).write_error(status_code, **kwargs)
+        # msg = self.get_error(status_code, **kwargs)
+        msg = 'ERROR'
+        return self.render(
+            'error.html',
+            code=status_code,
+            msg=msg,
+        )
 
     def get_error(self, status_code, **kwargs):
         msg = None
 
-        if self.application.settings['debug']:
-            msg = '<pre><code>%s</code></pre>' % get_exc_plus()
+        if self.settings['debug']:
+            msg = '<pre><code>%s</code></pre>' % tornado.escape.xhtml_escape(get_exc_plus())
 
         elif status_code == 404:
             msg = 'Page Not Found'
@@ -215,26 +212,6 @@ class BaseHandler(tornado.web.RequestHandler):
                     msg = getattr(exc_info[1], 'log_message', None) or msg
 
         return msg
-
-    def if_debug(self, status_code, **kwargs):
-        request = self.request
-        url = urlunsplit((request.protocol, request.host, request.uri, '', ''))
-        if self.application.settings['debug']:
-            self.write('''
-                <html>
-                    <head>
-                        <title>%s</title>
-                    </head>
-                    <body>
-                        <h1>%s</h1>
-                        <pre>%s</pre>
-                        <pre><code>%s</code></pre>
-                    </body>
-                </html>''' % (status_code, status_code, url,
-                              tornado.escape.xhtml_escape(get_exc_plus())))
-            self.flush()
-            return True
-        return False
 
 
 class EnsureSsl(object):
@@ -287,11 +264,8 @@ class EnsureUser(object):
             if self._active and not user_info['active']:
                 error.append('actived user only')
             if error:
-                ins.clear()
-                ins.set_status(403)
-                msg = '<p>Permission denied: %s</p>' % '; '.join(error)
-                ins.write(msg)
-                return ins.finish()
+                msg = 'Permission denied: %s' % '; '.join(error)
+                raise tornado.web.HTTPError(403, msg)
             return func(ins, *a, **k)
 
         return tornado.web.authenticated(wrapper)

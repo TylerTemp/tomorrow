@@ -32,29 +32,31 @@
 </header>
 
 <div class="am-g am-g-fixed">
-  <div class="shadow am-padding-xl">
-    <h1>{{ _('Oops, I just swallowed a bug') }} :(</h1>
-    {% module ErrorImage(code) %}
-    <p class="content">
-      {% raw msg or "Unknown Error" %}
-    </p>
-    <hr />
+  <div class="am-padding">
+    <div class="shadow am-padding-xl">
+      <h1>{{ _('Oops, I just swallowed a bug') }} :(</h1>
+      {% module ErrorImage(code) %}
+      <p class="content">
+        {% raw msg or "Unknown Error" %}
+      </p>
+      <hr />
 
-    <p class="am-padding-horizontal-lg">
-      {{ _("I'm sorry for the inconvenience, please tell me by") }}:
-      <span class="am-icon-email"></span>
-      <a class="am-icon-envelope am-link-muted" href="mailto:tylertempdev@gmail.com"> {{ _('Email') }}</a>
-      |
-      <a class="am-icon-google-plus am-link-muted" href="https://plus.google.com/+TylerTemp" target="_black"> G+</a>
-      |
-      <a class="am-icon-twitter am-link-muted" href="https://twitter.com/Tyler_Temp_" target="_black"> Twitter</a>
-      |
-      <a class="am-icon-wechat am-link-muted" href="https://dn-tyler.qbox.me/mywechat.png" target="_black"> {{ _('WeChat') }}</a>
-      |
-      <a class="am-icon-weibo am-link-muted" href="http://weibo.com/tylertemp" target="_black"> {{ _('Weibo') }}</a>
-      |
-      <a class="am-icon-commenting am-link-muted" href="//{{ MAIN_HOST }}/hi/TylerTemp/"> {{ _('Message') }}</a>
-    </p>
+      <p class="am-padding-horizontal-lg">
+        {{ _("I'm sorry for the inconvenience, please tell me by") }}:
+        <span class="am-icon-email"></span>
+        <a class="am-icon-envelope am-link-muted" href="mailto:tylertempdev@gmail.com"> {{ _('Email') }}</a>
+        |
+        <a class="am-icon-google-plus am-link-muted" href="https://plus.google.com/+TylerTemp" target="_black"> G+</a>
+        |
+        <a class="am-icon-twitter am-link-muted" href="https://twitter.com/Tyler_Temp_" target="_black"> Twitter</a>
+        |
+        <a class="am-icon-wechat am-link-muted" href="https://dn-tyler.qbox.me/mywechat.png" target="_black"> {{ _('WeChat') }}</a>
+        |
+        <a class="am-icon-weibo am-link-muted" href="http://weibo.com/tylertemp" target="_black"> {{ _('Weibo') }}</a>
+        |
+        <a class="am-icon-commenting am-link-muted" href="//{{ MAIN_HOST }}/hi/TylerTemp/"> {{ _('Message') }}</a>
+      </p>
+    </div>
   </div>
 </div>
 

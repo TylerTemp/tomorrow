@@ -30,7 +30,7 @@ sys.path.insert(0, rootdir)
 from lib.tool.bashlog import stdoutlogger, parse_level
 from lib.config import Config
 
-from lib.hdlr import BlackListHandler, AddSlashOr404Handler, RedirectHandler,\
+from lib.hdlr import BlackListHandler, RedirectHandler,\
                      StaticFileHandler, BaseHandler
 from lib.hdlr import brey, jolla, tomorrow, api, utility
 from lib.hdlr.project import docpie, wordz
@@ -152,7 +152,7 @@ class Application(tornado.web.Application):
             (r'/utility/pts/', utility.TakeOutCalculateHandler),
 
             (r'.*?\.php$(?i)', BlackListHandler),
-            (r'.*', AddSlashOr404Handler),
+            (r'.*', BaseHandler),
         )
 
         settings = {

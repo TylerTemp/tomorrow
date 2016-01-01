@@ -27,6 +27,19 @@ class WoopseHandler(tornado.web.RequestHandler):
 
         self.write(self.mk_img(num))
 
+    def _cache(func):
+        _cache_result = {}
+
+        def wrapper(self, nums):
+            if nums not in _cache_result:
+                result = func(self, nums)
+                _cache_result[nums] = result
+
+            return _cache_result[nums]
+
+        return wrapper
+
+    @_cache
     def mk_img(self, nums):
         source_png = self.puzzle_png
         source_png.seek(0)

@@ -69,6 +69,10 @@
   border-right: 1px solid #eeeeee;
 }
 
+.am-offcanvas.am-active {
+  z-index: 1201;
+}
+
 .admonition.note {
   border-radius: 5px 25px;
   border-style:dotted;

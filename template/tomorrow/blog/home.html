@@ -61,6 +61,20 @@
       max-height: 125px;
     }
   }
+
+  .contact {
+    font-size: 11px;
+    margin: 1px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    line-height: 27px;
+    border-radius: 50%;
+    background-color: #eee;
+    color: #555;
+  }
 </style>
 {% end %}
 
@@ -117,12 +131,23 @@
 
   <div class="am-u-md-4 blog-sidebar">
     <div class="am-panel-group">
-      <!-- <section class="am-panel am-panel-default">
-        <div class="am-panel-hd">{{ 'Category' }}</div>
+
+      <section class="am-panel am-panel-default">
         <div class="am-panel-bd">
-          <a class="am-btn am-btn-success am-btn-sm" href="#"></a>
+          <div class="am-cf">
+            <img src="{{ owner_img }}" class="am-img-responsive am-round am-img-thumbnail am-fl am-margin-sm" style="max-width: 100px; max-height: 100px;">
+            <p>{{ _("I'm TylerTemp, python programmer. Welcome to my blog") }} :)</p>
+          </div>
+          <hr />
+          <a class="am-icon-envelope am-icon-btn am-icon-sm contact" href="mailto:tylertempdev@gmail.com" data-am-scrollspy="{animation:'slide-bottom', delay: 0}"></a>
+          <a class="am-icon-github am-icon-btn am-icon-sm contact" href="https://github.com/TylerTemp/" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 100}"></a>
+          <a class="am-icon-google-plus am-icon-btn am-icon-sm contact" href="https://plus.google.com/+TylerTemp" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 200}"></a>
+          <a class="am-icon-twitter am-icon-btn am-icon-sm contact" href="https://twitter.com/Tyler_Temp_" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 300}"></a>
+          <a class="am-icon-wechat am-icon-btn am-icon-sm contact" href="https://dn-tyler.qbox.me/mywechat.png" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 400}"></a>
+          <a class="am-icon-weibo am-icon-btn am-icon-sm contact" href="http://weibo.com/tylertemp" target="_black" data-am-scrollspy="{animation:'slide-bottom', delay: 500}"></a>
+          <a class="am-icon-commenting am-icon-btn am-icon-sm contact" href="//{{ MAIN_HOST }}/hi/TylerTemp/" data-am-scrollspy="{animation:'slide-bottom', delay: 600}"></a>
         </div>
-      </section> -->
+      </section>
 
       <section class="am-panel am-panel-default">
         <div class="am-panel-hd">{{ _('Category') }}</div>
