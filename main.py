@@ -71,6 +71,7 @@ class Application(tornado.web.Application):
             (r'/login/', tomorrow.blog.LoginHandler),
             (r'/signin/', tomorrow.blog.SigninHandler),
             (r'/logout/', tomorrow.blog.LogoutHandler),
+            (r'/oauth2/authorize/', tomorrow.oauth2.AuthorizeHandler),
             (r'/verify/(?P<code>[^/]+)/', tomorrow.blog.VerifyHandler),
             (r'/(page|blog|edit|login|signin|logout|verify)/.*?',
              tomorrow.blog.BaseHandler),

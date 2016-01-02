@@ -1,3 +1,3 @@
-from . import blog, dash, hi
+from . import blog, dash, hi, oauth2
 
-__all__ = ['blog', 'dash', 'hi']
+__all__ = ['blog', 'dash', 'hi', 'oauth2']

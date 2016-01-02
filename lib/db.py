@@ -742,6 +742,11 @@ class Wordz(object):
     def find_tag(cls, tag):
         return cls._wordz.find({'tag': tag})
 
+class Auth(object):
+    _auth = db.auth
+
+    def __init__(self, client_id):
+        self.callback = 'callback'
 
 if __name__ == '__main__':
     import docopt
