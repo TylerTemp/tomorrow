@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+  App Authorization
+{% end %}
+
+{% block body %}
+  <form class="am-form" method="POST">
+    <fieldset>
+      <legend>{{ _('Authorization') }}</legend>
+      <p>{{ app_name }} would like to:</p>
+      <ul>
+        <li>{{ _('Get your basic information') }}</li>
+      </ul>
+      {% raw xsrf_form_html() %}
+      <button type="submit" class="am-btn am-btn-primary">
+        <span class="am-icon-check"></span>
+      </button>
+    </fieldset>
+  </form>
+{% end %}

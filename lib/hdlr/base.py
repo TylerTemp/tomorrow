@@ -186,6 +186,13 @@ class BaseHandler(tornado.web.RequestHandler):
         logger.debug('%s - %s' % (r.remote_ip, r.host))
         logging.error('%s' % get_exc_plus())
 
+        if self.is_ajax():
+            self.clear()
+            self.write(
+                json.dumps({'code': -1, 'message': 'Unknown Error',
+                            'error': -1}))
+            return
+
         msg = self.get_error(status_code, **kwargs)
         return self.render(
             'error.html',

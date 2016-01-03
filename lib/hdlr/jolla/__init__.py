@@ -7,6 +7,8 @@ from .home import HomeHandler
 from .article import ArticleHandler
 from .home import HomeHandler
 from .rss import RssHandler
+from .login import LoginHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler',
-           'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler']
+           'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
+           'LoginHandler']

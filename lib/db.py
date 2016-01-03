@@ -126,6 +126,9 @@ class User(object):
     def get(self):
         return self.user_info
 
+    def authed_app(self, app_key):
+        return self._user.find_one({'app.key': app_key})
+
     @classmethod
     def generate(cls):
         collect = cls._user
@@ -744,9 +747,32 @@ class Wordz(object):
 
 class Auth(object):
     _auth = db.auth
+    CODE_TIMEOUT = 60 * 10
 
     def __init__(self, client_id):
-        self.callback = 'callback'
+        self.callback = 'jolla.comes.today/tomorrow/callback'
+        self.name = 'test'
+
+    def set_code(self, code):
+        timeout = self.CODE_TIMEOUT
+        now = time.time()
+        expire_at = now + timeout
+        logger.debug('set code %s expire at %s', code, expire_at)
+
+    def save(self):
+        pass
+
+    def get_expire(self, code):
+        return time.time() + 10
+
+    def clear_code(self, code):
+        logger.debug('clear code')
+
+    def __bool__(self):
+        """App exists"""
+        return True
+
+    __nonzero__ = __bool__
 
 if __name__ == '__main__':
     import docopt
