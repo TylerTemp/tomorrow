@@ -8,7 +8,8 @@ from .article import ArticleHandler
 from .home import HomeHandler
 from .rss import RssHandler
 from .login import LoginHandler
+from .oauth import OAuthHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'LoadHandler', 'TranslateHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
-           'LoginHandler']
+           'LoginHandler', 'OAuthHandler']

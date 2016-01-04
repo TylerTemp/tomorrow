@@ -9,7 +9,7 @@ from lib.hdlr.base import BaseHandler
 from lib.db import Jolla
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.jolla.list')
+logger = logging.getLogger('jolla.list')
 
 # todo: pagination
 class ListHandler(BaseHandler):

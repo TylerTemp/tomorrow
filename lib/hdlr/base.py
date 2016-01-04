@@ -204,6 +204,11 @@ class BaseHandler(tornado.web.RequestHandler):
         msg = None
 
         if self.settings['debug']:
+            if self.is_ajax():
+                exc_info = kwargs['exc_info']
+                return (getattr(exc_info[1], 'log_message', None) or
+                        str(exc_info[1]))
+
             msg = ('<pre><code>%s</code></pre>' %
                    tornado.escape.xhtml_escape(get_exc_plus()))
 

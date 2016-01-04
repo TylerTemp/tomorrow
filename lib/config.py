@@ -42,6 +42,8 @@ class Config(object):
             ins.jolla_post_limit = cfg.get('jolla_post_limit', 9)
             ins.main_host = cfg.get('main_host', '127.0.0.1')
             ins.jolla_host = cfg.get('jolla_host', '127.0.0.1/jolla/blog')
+            # App config
+            ins.jolla_app = cfg.get('jolla', {'key': None, 'secret': None})
             # wait time (for reload.py)
             ins.sleep = cfg.get('wait_bootup', 3)
             # ports (for reload.py)

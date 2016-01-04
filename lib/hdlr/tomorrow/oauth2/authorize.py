@@ -17,28 +17,34 @@ logger = logging.getLogger('tomorrow.oauth.authorize')
 class AuthorizeHandler(BaseHandler):
 
     def get(self):
-        self.client_id = self.get_argument('client_id')
-        callback = self.get_argument('redirect_uri')
-        self.auth = Auth(self.client_id)
+        self.key = self.get_argument('key')
+        callback = self.get_argument('callback')
+        self.auth = Auth(self.key)
+        if not self.auth:
+            raise tornado.web.HTTPError(500, 'Unknown app %s' % self.key)
         if self.auth.callback != callback:
+            logger.debug('source: %s != db: %s', callback, self.auth.callback)
             raise tornado.web.HTTPError(500, 'Callback unmatch %r' % callback)
 
-        if not self.check_user():
+        code = self.set_code()
+        if not self.check_user(code):
             return
 
-        code = self.set_code()
         self.redirect_to_callback(callback, code)
         self.clear_code(code)
 
-    def check_user(self):
+    def check_user(self, code):
         user = self.current_user
-        confirm_url = '/oauth2/confirm/%s/' % quote(self.client_id, '')
+        confirm_url = ('/oauth2/confirm/%s/%s/' %
+                       (quote(self.key, ''),
+                        quote(code, '')))
+
         if user is None:
             self.to_login(confirm_url)
             return False
 
         u = User(user)
-        authed = u.authed_app(self.client_id)
+        authed = u.authed_app(self.key)
         if not authed:
             self.redirect(confirm_url)
             return False
@@ -55,7 +61,7 @@ class AuthorizeHandler(BaseHandler):
     def set_code(self):
         code = generate()
         auth = self.auth
-        auth.set_code(code)
+        auth.set_code(code, self.current_user['user'])
         auth.save()
         return code
 
@@ -64,7 +70,10 @@ class AuthorizeHandler(BaseHandler):
 
     def clear_code(self, code):
         auth = self.auth
-        expire_at = auth.get_expire(code)
+        code_info = auth.get_code(code)
+        if code_info is None:
+            return
+        expire_at = code_info['expire_at']
         logger.debug('clear at %s', expire_at)
         tornado.ioloop.IOLoop.instance().add_timeout(
             expire_at,

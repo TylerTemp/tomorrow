@@ -23,7 +23,7 @@ from lib.tool import md
 from lib.config import Config
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.jolla.article')
+logger = logging.getLogger('jolla.article')
 
 class ArticleHandler(BaseHandler):
     HOST = Config().main_host

@@ -19,7 +19,7 @@ from lib.config import Config
 from lib.tool.md import md2html
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.jolla.home')
+logger = logging.getLogger('jolla.home')
 
 
 class HomeHandler(BaseHandler):

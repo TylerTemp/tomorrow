@@ -14,13 +14,20 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
+from lib.config import Config
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.jolla.base')
+logger = logging.getLogger('jolla')
 
 
 class BaseHandler(BaseHandler):
     p_re = re.compile(r'^<p>(.*?)</p>$')
+
+    _config = Config()
+    _app = _config.jolla_app
+    tomorrow_key = _app['key']
+    tomorrow_secret = _app['secret']
+    del _config, _app
 
     def make_tag(self, tags):
         for tag1, tag2 in zip_longest(tags[::2], tags[1::2]):
@@ -81,6 +88,9 @@ class BaseHandler(BaseHandler):
 
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)
+        if self.is_ajax():
+            return self.write({'error': -1, 'code': -1, 'message': msg})
+
         return self.render(
             'jolla/error.html',
             code=status_code,

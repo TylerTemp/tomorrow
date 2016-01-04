@@ -748,29 +748,99 @@ class Wordz(object):
 class Auth(object):
     _auth = db.auth
     CODE_TIMEOUT = 60 * 10
+    TOKEN_TIMEOUT = 60 * 60 * 24
+    _allowed_attrs = ('_id', 'name', 'key', 'secret', 'callback', 'image',
+                       'codes', 'tokens')
 
-    def __init__(self, client_id):
-        self.callback = 'jolla.comes.today/tomorrow/callback'
-        self.name = 'test'
+    # name: app name
+    # key: app key
+    # secret: app secret
+    # callback: app callback
+    # image: // not support so far
+    # codes: [{'code': '', 'expire_at': time.time, 'user': '...'}, ...]
+    # tokens: [{'token': '', 'expire_at': '...', 'user': '...'}]
 
-    def set_code(self, code):
+    def __init__(self, key):
+        result = self._auth.find_one({'key': key})
+        if result:
+            self.__dict__['__info__'] = result
+        else:
+            self.__dict__['__info__'] = {'key': key}
+
+    def __getattr__(self, item):
+        if item == '_auth':
+            return self.__class__._auth
+
+        attrs = self.__dict__['__info__']
+        if item not in attrs:
+            if item in ('codes', 'tokens'):
+                return attrs.setdefault(item, [])
+
+            if item in self.__class__._allowed_attrs:
+                return None
+
+            raise AttributeError("'%s' object has no attribute '%s'" %
+                                 (self.__class__.__name__, item))
+
+        return attrs[item]
+
+    def __setattr__(self, key, value):
+        if key not in self.__class__._allowed_attrs:
+            raise AttributeError('Unacceptable attribute %s' % key)
+        attrs = self.__dict__['__info__']
+        attrs[key] = value
+
+    def set_code(self, code, user):
         timeout = self.CODE_TIMEOUT
         now = time.time()
         expire_at = now + timeout
         logger.debug('set code %s expire at %s', code, expire_at)
+        self.codes.append({'code': code, 'expire_at': expire_at, 'user': user})
+        return expire_at
 
     def save(self):
-        pass
+        attrs = self.__dict__['__info__']
+        for not_save_empty in ('image', 'codes', 'tokens'):
+            if not_save_empty in attrs and not attrs[not_save_empty]:
+                attrs.pop(not_save_empty)
 
-    def get_expire(self, code):
-        return time.time() + 10
+        if self._id is None:
+            logger.debug('new app %s', self.name)
+            result_id = self._auth.insert_one(attrs).insert_id
+            attrs['_id'] = result_id
+        else:
+            logger.debug('update app %s', self.name)
+            self._auth.find_one_and_replace({'_id': self._id}, attrs)
+
+    def get_code(self, code):
+        attrs = self.__dict__['__info__']
+        for each in attrs['codes']:
+            if each['code'] == code:
+                return each
+
+        logger.warning('code %s of %s not found', code, self.name)
+        return None
 
     def clear_code(self, code):
-        logger.debug('clear code')
+        logger.debug('clear code %s', code)
+        attrs = self.__dict__['__info__']
+        for index, each in enumerate(attrs['codes']):
+            if each['code'] == code:
+                attrs.pop(index)
+                return True
+        else:
+            logger.warning('code %s of %s not found', code, self.name)
+            return False
+
+    def set_token(self, token, user):
+        tokens = self.tokens
+        expire_at = time.time() + self.TOKEN_TIMEOUT
+        tokens.append({'token': token, 'expire_at': expire_at, 'user': user})
+        return expire_at
 
     def __bool__(self):
         """App exists"""
-        return True
+        return self.__dict__['__info__'].get('_id', False)
 
     __nonzero__ = __bool__
 
