@@ -92,7 +92,6 @@ class WoopseHandler(tornado.web.RequestHandler):
         surface_context.set_source_rgba(0, 0, 0, 1)
         currect_x = 0
         for each_surface in surfaces:
-            logger.debug(currect_x)
             surface_context.set_source_surface(each_surface, currect_x)
             surface_context.paint()
             currect_x += (each_surface.get_width() + gap)

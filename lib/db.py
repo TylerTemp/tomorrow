@@ -840,7 +840,7 @@ class Auth(object):
 
     def __bool__(self):
         """App exists"""
-        return self.__dict__['__info__'].get('_id', False)
+        return self.__dict__['__info__'].get('_id', None) is not None
 
     __nonzero__ = __bool__
 
