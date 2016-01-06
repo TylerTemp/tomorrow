@@ -188,6 +188,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
         if self.is_ajax():
             self.clear()
+            self.set_status(status_code)
             self.write(
                 json.dumps({'code': -1, 'message': 'Unknown Error',
                             'error': -1}))

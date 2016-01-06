@@ -1,6 +1,8 @@
 import logging
+import tornado.ioloop
 from lib.hdlr.base import BaseHandler
 from lib.config import Config
+from lib.db import User
 try:
     from urllib.parse import urlencode, urlsplit, parse_qs, urlunsplit
 except:
@@ -22,3 +24,16 @@ class BaseHandler(BaseHandler):
         new_callback = urlunsplit(url_elements)
         logger.debug('call %s', new_callback)
         return new_callback
+
+    def get_uid(self, user):
+        u = User(user)
+        assert not u.new, 'User %s not found' % user
+        info = u.get()
+        return info['_id']
+
+    def clear_at(self, callback, expire_at):
+        logger.debug('clean up at %s' % expire_at)
+        tornado.ioloop.IOLoop.instance().add_timeout(
+            expire_at,
+            callback
+        )

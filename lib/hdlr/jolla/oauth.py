@@ -36,11 +36,19 @@ class OAuthHandler(BaseHandler):
         response = yield tornado.gen.Task(client.fetch,
                                           token_url,
                                           method='POST',
-                                          body=json.dumps(urlencode(args)),
-                                          validate_cert=False)
+                                          body=urlencode(args),
+                                          validate_cert=False,
+                                          headers={'X-Requested-With':
+                                                       'XMLHttpRequest'})
+        assert response.code < 500, ('Unexpected result %s(%s)' %
+                                     (response.code, response.body))
         body = response.body
         if py3:
             body = body.decode('utf-8')
         result = json.loads(body)
         logger.debug(result)
-
+        result['user'] = result.pop('name')
+        result['source'] = 'tomorrow'
+        self.login(**result)
+        self.redirect('//' + self.config.jolla_host)
+        self.finish()

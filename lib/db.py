@@ -790,12 +790,12 @@ class Auth(object):
         attrs = self.__dict__['__info__']
         attrs[key] = value
 
-    def set_code(self, code, user):
+    def set_code(self, code, uid):
         timeout = self.CODE_TIMEOUT
         now = time.time()
         expire_at = now + timeout
         logger.debug('set code %s expire at %s', code, expire_at)
-        self.codes.append({'code': code, 'expire_at': expire_at, 'user': user})
+        self.codes.append({'code': code, 'expire_at': expire_at, 'uid': uid})
         return expire_at
 
     def save(self):
@@ -826,17 +826,28 @@ class Auth(object):
         attrs = self.__dict__['__info__']
         for index, each in enumerate(attrs['codes']):
             if each['code'] == code:
-                attrs.pop(index)
+                attrs['codes'].pop(index)
                 return True
         else:
             logger.warning('code %s of %s not found', code, self.name)
             return False
 
-    def set_token(self, token, user):
+    def set_token(self, token, uid):
         tokens = self.tokens
         expire_at = time.time() + self.TOKEN_TIMEOUT
-        tokens.append({'token': token, 'expire_at': expire_at, 'user': user})
+        tokens.append({'token': token, 'expire_at': expire_at, 'uid': uid})
         return expire_at
+
+    def clear_token(self, token):
+        logger.debug('clear token %s', token)
+        attrs = self.__dict__['__info__']
+        for index, each in enumerate(attrs['tokens']):
+            if each['token'] == token:
+                attrs['tokens'].pop(index)
+                return True
+        else:
+            logger.warning('token %s of %s not found', token, self.name)
+            return False
 
     def __bool__(self):
         """App exists"""

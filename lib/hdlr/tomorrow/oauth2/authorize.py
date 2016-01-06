@@ -31,7 +31,6 @@ class AuthorizeHandler(BaseHandler):
             return
 
         self.redirect_to_callback(callback, code)
-        self.clear_code(code)
 
     def check_user(self, code):
         user = self.current_user
@@ -61,22 +60,11 @@ class AuthorizeHandler(BaseHandler):
     def set_code(self):
         code = generate()
         auth = self.auth
-        auth.set_code(code, self.current_user['user'])
+        user = self.current_user['user']
+        expire_at = auth.set_code(code, self.get_uid(user))
         auth.save()
+        self.clear_at(lambda: auth.clear_code(code), expire_at)
         return code
 
     def redirect_to_callback(self, callback, code):
         self.redirect(self.parse_callback(callback, code))
-
-    def clear_code(self, code):
-        auth = self.auth
-        code_info = auth.get_code(code)
-        if code_info is None:
-            return
-        expire_at = code_info['expire_at']
-        logger.debug('clear at %s', expire_at)
-        tornado.ioloop.IOLoop.instance().add_timeout(
-            expire_at,
-            self.auth.clear_code,
-            code
-        )

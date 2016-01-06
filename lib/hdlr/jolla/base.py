@@ -1,12 +1,14 @@
 import re
 import logging
-import tornado.escape
+import time
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
 except ImportError:
     from itertools import izip_longest as zip_longest
     from urlparse import urlsplit
+
+from lib.tool.minsix import py3
 
 import sys
 import os
@@ -85,6 +87,27 @@ class BaseHandler(BaseHandler):
         if search:
             return search.group(1)
         return result
+
+    def login(self, source, uid, token, expire_at, user=None):
+        self.set_secure_cookie('source', source)
+        self.set_secure_cookie('uid', uid)
+        self.set_secure_cookie('token', token)
+        self.set_secure_cookie('expire_at', str(expire_at))
+        if user is not None:
+            self.set_secure_cookie('user', user)
+
+    def get_current_user(self):
+        source = self.get_secure_cookie('source', None)
+        if source is None:
+            return None
+        uid = self.get_secure_cookie('uid').decode('utf-8')
+        user = self.get_secure_cookie('user').decode('utf-8')
+        expire = float(self.get_secure_cookie('expire_at'))
+        if expire < time.time():
+            logger.debug('user %s expired', user)
+            return None
+
+        return {'uid': uid,  'user': user, 'expire': expire}
 
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)

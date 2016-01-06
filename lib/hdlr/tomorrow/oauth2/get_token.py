@@ -1,6 +1,7 @@
 import time
 import logging
 import tornado.web
+import tornado.ioloop
 from .base import BaseHandler
 from lib.db import Auth, User
 from lib.tool.generate import generate
@@ -29,11 +30,25 @@ class GetTokenHandler(BaseHandler):
             raise tornado.web.HTTPError(500, 'Code expired')
 
         token = generate()
-        expire_at = auth.set_token(token, code_info['user'])
+        expire_at = auth.set_token(token, code_info['uid'])
+        self.clear_token(auth, token, expire_at)
+
+        u = User.init_by_id(code_info['uid'])
+        user_info = u.get()
+        name = user_info['user']
+        uid = user_info['_id']
 
         result = {'token': token, 'expire_at': expire_at,
-                  'user': code_info['user']}
+                  'uid': str(uid), 'name': name}
 
         logger.debug(result)
 
         return self.write(result)
+
+    def clear_token(self, auth, token, expire_at):
+        logger.debug('clear at %s', expire_at)
+        tornado.ioloop.IOLoop.instance().add_timeout(
+            expire_at,
+            auth.clear_token,
+            token
+        )

@@ -16,7 +16,6 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db import Article
 from lib.config import Config
-from lib.tool.md import md2html
 sys.path.pop(0)
 
 logger = logging.getLogger('jolla.home')

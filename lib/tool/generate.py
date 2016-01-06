@@ -11,4 +11,4 @@ def generate():
     result = base64.b64encode(uuid.uuid4().bytes + uuid.uuid4().bytes)
     if py3:
         result = result.decode('utf-8')
-    return re.sub(r'[/#=?%]', '-', result)
+    return re.sub(r'[/#=?%\+]', '-', result)
