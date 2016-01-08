@@ -19,7 +19,7 @@ import os
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
-from lib.db import User
+from lib.db.tomorrow import User
 from lib.config import Config
 sys.path.pop(0)
 
@@ -250,14 +250,14 @@ class StaticFileHandler(tornado.web.StaticFileHandler):
 
 class EnsureUser(object):
     level2name = {
-        User.normal: 'registered user',
-        User.admin: 'administrator',
-        User.root: 'super user'
+        User.NORMAL: 'registered user',
+        User.ADMIN: 'administrator',
+        User.ROOT: 'super user'
     }
 
-    NORMAL = User.normal
-    ADMIN = User.admin
-    ROOT = User.root
+    NORMAL = User.NORMAL
+    ADMIN = User.ADMIN
+    ROOT = User.ROOT
 
     def __init__(self, level=ROOT, active=True):
         self._level = level

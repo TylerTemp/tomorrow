@@ -9,7 +9,7 @@ except ImportError:
     from urllib import quote
 
 from lib.hdlr.base import BaseHandler
-from lib.db import User, Message
+from lib.db.tomorrow import User, Message
 
 logger = logging.getLogger('tomorrow.dash.base')
 

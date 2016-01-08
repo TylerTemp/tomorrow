@@ -6,7 +6,7 @@ try:
 except ImportError:
     from urllib import unquote
 
-from lib.db import Message, User
+from lib.db.tomorrow import Message, User
 from lib.tool.md import escape
 from .base import BaseHandler, ItsNotMyself
 

@@ -11,7 +11,7 @@ except ImportError:
     from urllib import unquote, quote
     from urlparse import urljoin
 
-from lib.db import User
+from lib.db.tomorrow import User
 from lib.config import Config
 from lib.tool.minsix import open, py3
 from lib.tool.unitsatisfy import unit_satisfy

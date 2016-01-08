@@ -21,7 +21,7 @@ from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
 from lib.hdlr.base import EnsureUser
-from lib.db import Jolla, Article, User
+from lib.db.jolla import Article, User
 sys.path.pop(0)
 
 cfg = Config()
@@ -30,7 +30,7 @@ logger = logging.getLogger('tomorrow.jolla.task')
 
 class TaskHandler(BaseHandler):
 
-    @EnsureUser(level=User.admin, active=True)
+    # @EnsureUser(level=User.admin, active=True)
     def get(self, urlslug=None):
         self.xsrf_token
         user_info = self.get_current_user()
@@ -94,7 +94,7 @@ class TaskHandler(BaseHandler):
             use_md=use_md
         )
 
-    @EnsureUser(level=User.admin, active=True)
+    # @EnsureUser(level=User.admin, active=True)
     def post(self, urlslug=None):
         logger.debug('post...')
         self.check_xsrf_cookie()

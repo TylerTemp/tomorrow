@@ -18,7 +18,9 @@
 {% end %}
 
 {% block body %}
-
+  {% block nav_active %}
+    {% set nav_active = None %}
+  {% end %}
   <header class="am-topbar">
     <div class="am-container">
       <h1 class="am-topbar-brand">

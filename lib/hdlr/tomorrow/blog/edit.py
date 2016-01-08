@@ -14,7 +14,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import Article, User
+from lib.db.tomorrow import Article, User
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blog.edit')
@@ -22,7 +22,7 @@ logger = logging.getLogger('tomorrow.blog.edit')
 
 class EditHandler(BaseHandler):
 
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     def get(self, urlslug=None):
 
         if self.get_argument('test', False):
@@ -85,7 +85,7 @@ class EditHandler(BaseHandler):
             **result
         )
 
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     def post(self, urlslug=None):
         title = self.get_argument('title')
         slug = self.get_argument('slug')

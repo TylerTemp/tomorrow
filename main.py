@@ -35,7 +35,8 @@ from lib.hdlr import BlackListHandler, RedirectHandler,\
 from lib.hdlr import brey, jolla, tomorrow, api, utility
 from lib.hdlr.project import docpie, wordz
 
-from lib.ui import WysBarModule, MdBarModule, ErrorImageModule
+from lib.ui import WysBarModule, MdBarModule, ErrorImageModule, \
+                   TimeModule, TagModule
 sys.path.pop(0)
 
 
@@ -86,10 +87,6 @@ class Application(tornado.web.Application):
              tomorrow.dash.FileHandler),
             (r'/am/(?P<user>[^/]+)/article/', tomorrow.dash.ArticleHandler),
             (r'/am/(?P<user>[^/]+)/message/', tomorrow.dash.MessageHandler),
-            (r'/am/(?P<user>[^/]+)/manage/jolla/post/',
-             tomorrow.dash.manage.jolla.PostHandler),
-            (r'/am/(?P<user>[^/]+)/manage/jolla/author/',
-             tomorrow.dash.manage.jolla.AuthorHandler),
             (r'/am/(?P<user>[^/]+)/manage/user/',
              tomorrow.dash.manage.UserHandler),
             (r'/am/(?P<user>[^/]+)/manage/message/',
@@ -138,7 +135,6 @@ class Application(tornado.web.Application):
             (r'/project/wordz/quiz/', wordz.QuizHandler),
             (r'/project/wordz/modify/', wordz.ModifyHandler),
 
-            (r'/api/load/', jolla.LoadHandler),
             (r'/api/(?P<source>html|md)/(?P<target>html|md)/',
              api.MdAndHtmlHandler),
 
@@ -169,6 +165,8 @@ class Application(tornado.web.Application):
                 'WysBar': WysBarModule,
                 'MdBar': MdBarModule,
                 'ErrorImage': ErrorImageModule,
+                'Time': TimeModule,
+                'Tag': TagModule,
             },
         }
 

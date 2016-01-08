@@ -2,7 +2,7 @@ import logging
 import tornado.web
 import tornado.ioloop
 from .base import BaseHandler
-from lib.db import Auth, User
+from lib.db.tomorrow import Auth, User
 from lib.tool.generate import generate
 import time
 

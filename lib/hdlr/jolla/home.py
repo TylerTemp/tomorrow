@@ -14,7 +14,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import Article
+from lib.db.jolla import Article
 from lib.config import Config
 sys.path.pop(0)
 

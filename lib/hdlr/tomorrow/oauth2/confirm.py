@@ -1,6 +1,6 @@
 import tornado.web
 from .base import BaseHandler
-from lib.db import Auth, User
+from lib.db.tomorrow import Auth, User
 import logging
 
 logger = logging.getLogger('tomorrow.oauth2.confirm')

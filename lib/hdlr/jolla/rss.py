@@ -12,7 +12,7 @@ import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 # from lib.hdlr.base import BaseHandler
-from lib.db import Article
+from lib.db.jolla import Article
 from lib.config import Config
 from lib.tool import md2html
 sys.path.pop(0)

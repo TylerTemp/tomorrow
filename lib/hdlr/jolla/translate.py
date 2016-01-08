@@ -20,9 +20,7 @@ from lib.tool.md import html2md
 from lib.tool.md import escape
 from lib.hdlr.base import EnsureUser
 from lib.tool.minsix import py3
-from lib.db import Jolla
-from lib.db import Article
-from lib.db import User
+from lib.db.jolla import Article, User
 from lib.config import Config
 sys.path.pop(0)
 
@@ -32,7 +30,7 @@ logger = logging.getLogger('tomorrow.jolla.translate')
 
 class TranslateHandler(BaseHandler):
 
-    @EnsureUser(level=User.normal, active=True)
+    # @EnsureUser(level=User.normal, active=True)
     def get(self, slug):
         slug = unquote(slug)
         to_translate = Jolla.find_slug(slug)
@@ -90,7 +88,7 @@ class TranslateHandler(BaseHandler):
 
     # @tornado.web.asynchronous
     # @tornado.gen.coroutine
-    @EnsureUser(level=User.normal, active=True)
+    # @EnsureUser(level=User.normal, active=True)
     def post(self, slug):
         self.check_xsrf_cookie()
 

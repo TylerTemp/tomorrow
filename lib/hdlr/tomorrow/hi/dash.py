@@ -5,7 +5,7 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from lib.db import User, Article
+from lib.db.tomorrow import User, Article
 from lib.tool.md import md2html
 from .base import BaseHandler, ItsNotMyself
 

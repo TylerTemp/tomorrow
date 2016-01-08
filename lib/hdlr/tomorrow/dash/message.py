@@ -10,7 +10,7 @@ try:
 except ImportError:
     from urllib import quote
 
-from lib.db import Message, User
+from lib.db.tomorrow import Message, User
 from lib.tool.md import escape, md2html
 from .base import ItsMyself, BaseHandler
 

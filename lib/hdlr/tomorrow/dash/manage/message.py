@@ -11,7 +11,7 @@ except ImportError:
     from urllib import quote
 
 from lib.hdlr.base import EnsureUser
-from lib.db import User, Message
+from lib.db.tomorrow import User, Message
 from lib.tool.minsix import py2
 from lib.tool.mail import Email
 from lib.tool.md import md2html
@@ -31,7 +31,7 @@ class MessageHandler(BaseHandler):
     ERROR_TIME_FORMAT = 64
     ERROR_DATE_FORMAT = 128
 
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     def get(self, user=None):
         self.xsrf_token
         name = self.get_argument('name', None)
@@ -45,7 +45,7 @@ class MessageHandler(BaseHandler):
             quote=quote
         )
 
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     def post(self, user=None):
         self.check_xsrf_cookie()
 

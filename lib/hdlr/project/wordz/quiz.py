@@ -6,7 +6,7 @@ import os
 sys.path.insert(0, os.path.normpath(
                     os.path.join(__file__, '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler, EnsureUser
-from lib.db import Wordz
+from lib.db.wordz import Glossary
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.project.wordz.home')

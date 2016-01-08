@@ -1,49 +1,9 @@
 {% extends "base.html" %}
 
-{% block main_title %}{{ title }}{% end %}
+{% block main_title %}{{ article.title }} | {% end %}
 
 {% block neck %}
-<style>
-#title-img {
-  width: 100%;
-  height: auto;
-}
-
-#white-bg-box {
-  background-color: rgba(255, 255, 255, 0.85);
-}
-
-article h1 {
-  text-align: center;
-}
-
-article p img {
-  max-width: 100%;
-  height: auto;
-  display: inline !important;
-}
-
-#page-box {
-  padding-top: 50px;
-  max-width: 750px;
-}
-
-video {
-  width: 100%;
-  height: auto;
-}
-
-ruby {
-  background-color: rgba(213, 241, 211, 0.4);
-  margin: 4px;
-  padding: 0px 2px;
-}
-
-ruby > rt {
-  font-style: italic;
-  color: #4DB651;
-}
-</style>
+<link rel="stylesheet" href="/static/css/tomorrow/article.css" />
 {% end %}
 
 
@@ -82,36 +42,36 @@ ruby > rt {
       <!--</div>-->
     <!--</div>-->
 
-    {% if headimg %}
-      <img src="{{ headimg }}" id="title-img">
+    {% if article.banner %}
+      <img src="{{ article.banner }}" id="title-img">
     {% end %}
     <div class="am-g am-margin-bottom-xl" id="white-bg-box">
       <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
         <article class="am-article">
           <div class="am-article-hd">
-            <h1 class="am-article-title">{{ title }}</h1>
+            <h1 class="am-article-title">{{ article.title }}</h1>
             <p class="am-article-meta">
             </p>
           </div>
 
           <hr class="am-article-divider">
           <div class="am-article-bd am-margin-xl">
-            {% raw content %}
+            {% raw md2html(article.content) %}
           </div>
         </article>
 
-        {% if donate %}
+        {# if donate #}
           <hr data-am-widget="divider" style="" class="am-divider am-divider-dashed" />
           <div class="am-container">
-            {% raw donate or '' %}
+            {# raw donate or '' #}
           </div>
-        {% end %}
+        {# end #}
 
         <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tyler" id="comment">
           <div class="ds-thread"
-               data-thread-key="{{ id }}"
-               data-title="{{ title }}"
-               {% if headimg %}data-image="{{ headimg }}"{% end %}
+               data-thread-key="{{ article._id }}"
+               data-title="{{ article.title }}"
+               {% if article.banner %}data-image="{{ article.banner }}"{% end %}
                data-form-position="top">
           </div>
         </div>

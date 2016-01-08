@@ -18,8 +18,6 @@ import os
 sys.path.insert(0, os.path.normpath(
                     os.path.join(__file__, '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
-from lib.tool.tracemore import get_exc_plus
-from lib.db import Article
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.project.docpie.try')
@@ -55,13 +53,15 @@ class StdoutRedirect(StringIO):
 
 class TryHandler(BaseHandler):
 
-    _article_result = Article('docpie-example').get()
-    _content = _article_result['en']['content']
-    edit_time = _article_result['edittime']
-    example = json.loads(_content)
+    # _article_result = Article('docpie-example').get()
+    # _content = _article_result['en']['content']
+    # edit_time = _article_result['edittime']
+    # example = json.loads(_content)
+    edit_time = time.time()
+    example = {}
 
-    del _article_result
-    del _content
+    # del _article_result
+    # del _content
 
     default = {'doc': None, 'argv': None, 'help': True, 'version': None,
                'stdopt': True, 'attachopt': True, 'attachvalue': True,

@@ -6,7 +6,7 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from lib.db import User, Article, Message
+from lib.db.tomorrow import User, Article, Message
 from .base import ItsMyself, BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.dash')

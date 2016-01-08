@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
-from lib.db import Article
+from lib.db.tomorrow import Article
 sys.path.pop(0)
 
 class BreyHandler(BaseHandler):

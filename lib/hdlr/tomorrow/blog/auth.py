@@ -15,7 +15,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import User, Message
+from lib.db.tomorrow import User, Message
 from lib.tool.mail import Email
 from lib.hdlr.base import EnsureSsl
 sys.path.pop(0)

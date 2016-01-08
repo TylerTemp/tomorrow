@@ -1,0 +1,39 @@
+#title-img {
+  width: 100%;
+  height: auto;
+}
+
+#white-bg-box {
+  background-color: rgba(255, 255, 255, 0.85);
+}
+
+article h1 {
+  text-align: center;
+}
+
+article p img {
+  max-width: 100%;
+  height: auto;
+  display: inline !important;
+}
+
+#page-box {
+  padding-top: 50px;
+  max-width: 750px;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
+ruby {
+  background-color: rgba(213, 241, 211, 0.4);
+  margin: 4px;
+  padding: 0 2px;
+}
+
+ruby > rt {
+  font-style: italic;
+  color: #4DB651;
+}

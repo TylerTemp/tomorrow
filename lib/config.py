@@ -15,7 +15,7 @@ from lib.tool.minsix import FileExistsError
 from lib.tool.filelock import FileLock
 from lib.tool.bashlog import parse_level
 from lib.tool.generate import generate
-from lib.db import User
+from lib.db.tomorrow import User
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.config')
@@ -117,9 +117,9 @@ class Config(object):
             ins.zh_mail_list = cfg.get("zh_mail", [])
 
             ins.img_allow = ('jpg', 'jpeg', 'png', 'gif')
-            ins.size_limit = {User.normal: 0,
-                              User.admin: 5 * 1024 * 1024,
-                              User.root: float('inf')}
+            ins.size_limit = {User.NORMAL: 0,
+                              User.ADMIN: 5 * 1024 * 1024,
+                              User.ROOT: float('inf')}
             cls._ins = ins
 
         return cls._ins

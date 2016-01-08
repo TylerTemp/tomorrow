@@ -2,14 +2,12 @@ import sys
 import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__,
                                                  '..', '..', '..', '..')))
-from lib.hdlr.base import BaseHandler, EnsureUser
+from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html, html2md, escape
-from lib.db import User
 sys.path.pop(0)
 
 class MdAndHtmlHandler(BaseHandler):
 
-    # @EnsureUser(User.normal, True)
     def get(self, source, target):
         content = self.get_argument('content')
 
@@ -22,7 +20,6 @@ class MdAndHtmlHandler(BaseHandler):
             content = md2html(content)
         return self.write(content)
 
-    # @EnsureUser(User.normal, True)
     def post(self, *a, **k):
         return self.get(*a, **k)
 

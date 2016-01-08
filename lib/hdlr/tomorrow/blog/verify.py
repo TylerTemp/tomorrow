@@ -15,7 +15,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db import User, Article, Message
+from lib.db.tomorrow import User, Article, Message
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
 sys.path.pop(0)

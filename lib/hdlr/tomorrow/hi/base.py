@@ -7,7 +7,7 @@ except ImportError:
     from urllib import unquote, quote
 
 from lib.hdlr.base import BaseHandler
-from lib.db import User
+from lib.db.tomorrow import User
 
 logger = logging.getLogger('tomorrow.hi.base')
 

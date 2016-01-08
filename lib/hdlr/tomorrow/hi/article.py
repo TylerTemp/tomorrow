@@ -7,7 +7,7 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from lib.db import Article
+from lib.db.tomorrow import Article
 from lib.config import Config
 from .base import BaseHandler, ItsNotMyself
 

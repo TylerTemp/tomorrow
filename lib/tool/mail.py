@@ -14,7 +14,6 @@ sys.path.insert(0, rootdir)
 from lib.config import Config
 from lib.tool import bashlog
 from lib.tool.md import md2html
-from lib.db import Article
 sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.email')

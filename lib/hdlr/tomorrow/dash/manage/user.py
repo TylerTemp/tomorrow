@@ -10,7 +10,7 @@ except ImportError:
     from urllib import quote
 
 from lib.hdlr.base import EnsureUser, EnsureSsl
-from lib.db import User, Message, Article, Jolla
+from lib.db.tomorrow import User, Message, Article
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
 from ..base import BaseHandler, ItsMyself
@@ -28,7 +28,7 @@ class UserHandler(BaseHandler):
         r'|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]{3,100}$')
 
     @ItsMyself('manage/user/')
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
     def get(self, user=None):
         return self.render(
@@ -39,7 +39,7 @@ class UserHandler(BaseHandler):
         )
 
     @ItsMyself('manage/user/')
-    @EnsureUser(level=User.root, active=True)
+    # @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
     def post(self, user=None):
         self.check_xsrf_cookie()

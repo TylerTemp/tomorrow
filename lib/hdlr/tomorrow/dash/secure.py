@@ -8,7 +8,7 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from lib.db import User, Message
+from lib.db.tomorrow import User, Message
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
 from .base import ItsMyself, BaseHandler

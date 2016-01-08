@@ -2,7 +2,7 @@ import logging
 import tornado.ioloop
 from lib.hdlr.base import BaseHandler
 from lib.config import Config
-from lib.db import User
+from lib.db.tomorrow import User
 try:
     from urllib.parse import urlencode, urlsplit, parse_qs, urlunsplit
 except:
