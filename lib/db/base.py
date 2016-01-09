@@ -43,7 +43,15 @@ class Base(object):
             raise ValueError('Unexpected field(s) %s' %
                              set(attrs).difference(default))
 
+    def _before_save(self):
+        attrs = self.__dict__['__info__']
+        default = self._default
+        for common in set(attrs).intersection(default):
+            if attrs[common] == default[common]:
+                del attrs[common]
+
     def save(self):
+        self._before_save()
         self._validate_attrs()
         attrs = self.__dict__['__info__']
         collection = self.collection
@@ -53,6 +61,6 @@ class Base(object):
             collection.replace_one({'_id': _id}, attrs)
             return
 
-        insert_result = collection.insert_one(self.article_info)
+        insert_result = collection.insert_one(attrs)
         _id = insert_result.inserted_id
-        attrs['_id'] = _id
+        self._id = _id

@@ -102,14 +102,6 @@ class User(Base):
 
         return super(User, self)._validate_attrs()
 
-    def save(self):
-        attrs = self.__dict__['__info__']
-        default = self._default
-        for common in set(attrs).intersection(default):
-            if attrs[common] == default[common]:
-                del attrs[common]
-        return super(User, self).save()
-
     def verify(self, pwd):
         encoded_pwd = self.user_info['pwd']
         return sha256_crypt.verify(pwd, encoded_pwd)
@@ -211,8 +203,15 @@ class Article(Base):
                 self.update(result)
 
     def __getattr__(self, item):
+        if item == 'lang':
+            return self.__dict__.get('lang', 'zh')
+
         default = self._default
         attrs = self.__dict__['__info__']
+
+        if item in ('title', 'content', 'description'):
+            lang = self.lang
+            return attrs.get(lang, {}).get(item, None)
 
         if item not in attrs and item in default:
             default_val = default[item]
@@ -224,43 +223,28 @@ class Article(Base):
 
         return super(Article, self).__getattr__(item)
 
-    @property
-    def lang(self):
-        return self.__dict__.get('lang', 'zh')
+    def __setattr__(self, key, value):
+        if key == 'lang':
+            self.__dict__[key] = value
+            return
 
-    @lang.setter
-    def lang(self, value):
-        self.__dict__['lang'] = value
+        attrs = self.__dict__['__info__']
+        if key in ('title', 'content', 'description'):
+            lang = self.lang
+            target = attrs.setdefault(lang, {})
+            target[key] = value
+            return
 
-    @property
-    def title(self):
-        return self._get_for(self.lang, 'title')
-
-    @property
-    def content(self):
-        return self._get_for(self.lang, 'content')
-
-    @property
-    def description(self):
-        return self._get_for(self.lang, 'description')
-
-    def _get_for(self, lang, field):
-        result = getattr(self, lang)
-        if result:
-            return result[field]
-
-        another = 'en' if lang == 'zh' else 'zh'
-        return getattr(self, another)[field]
+        return super(Article, self).__setattr__(key, value)
 
     def lang_fitted(self):
-        ask_for = self.lang
-        return getattr(self, ask_for)
+        return self.lang in self.__dict__['__info__']
 
     @classmethod
     def all(cls, offset=0, limit=None):
         result = cls.collection.find({}).sort(
             (
-             ('createtime', pymongo.DESCENDING),
+             ('create_time', pymongo.DESCENDING),
             )
         )
         if limit is None:
