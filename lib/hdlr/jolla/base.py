@@ -31,20 +31,6 @@ class BaseHandler(BaseHandler):
     tomorrow_secret = _app['secret']
     del _config, _app
 
-    def make_tag(self, tags):
-        for tag1, tag2 in zip_longest(tags[::2], tags[1::2]):
-            first = ('<span class="am-badge am-badge-success am-radius">'
-                     '%s'
-                     '</span>') % self.locale.translate(tag1)
-            yield first
-            if tag2 is None:
-                second = ''
-            else:
-                second = ('<span class="am-badge am-badge-primary am-radius">'
-                          '%s'
-                          '</span>') % self.locale.translate(tag2)
-            yield second
-
     def get_source_name(self, link):
         sp = urlsplit(link)
         netloc = sp.netloc
@@ -66,7 +52,13 @@ class BaseHandler(BaseHandler):
 
             return name
 
-    def make_source(self, name):
+    def make_source(self, link):
+        if link is None:
+            return ('<span class="am-badge am-badge-warning">%s</span>' %
+                    self.locale.translate('original'))
+
+        name = self.get_source_name(link)
+
         if name == 'jolla':
             return '<span class="iconfont icon-jolla"> </span>'
         elif name == 'reviewjolla':
@@ -75,9 +67,6 @@ class BaseHandler(BaseHandler):
         elif name == 'jollausers':
             return ('<img src="https://dn-jolla.qbox.me/jollausers.ico" '
                     'style="display: inline">')
-        elif name is None:
-            return ('<span class="am-badge am-badge-warning">%s</span>' %
-                    self.locale.translate('original'))
         else:
             return '<span class="am-badge am-badge-secondary">%s</span>' % name
 

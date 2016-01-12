@@ -4,6 +4,7 @@ import logging
 
 import markdown
 import markdown_newtab
+import nlcontinuous
 # from ..markdown_gridtables import mdx_grid_tables
 
 logger = logging.getLogger('MARKDOWN')
@@ -12,16 +13,17 @@ logger.setLevel(logging.CRITICAL)
 __all__ = ['md2html', 'html2md', 'escape']
 
 extend = (
+    nlcontinuous.makeExtension(),
     # define attributes, {: #someid .someclass somekey='some value' }
     # 'markdown.extensions.attr_list',
     # use fenced code block by 3 back quotes
     'markdown.extensions.fenced_code',
-    # footnotes, text[^name]\n\n[^name] explain
+    # footnotes, text[^name]\n\n[^name]: explain
     'markdown.extensions.footnotes',
     'markdown.extensions.tables',
     # new line to <br />
     # 'markdown.extensions.nl2br',
-    # code highlight, and <pre></pre> added
+    # code highlight, and <pre><code></code></pre> added
     'markdown.extensions.codehilite',
     # ++text++ for <ins>text</ins> and ~~text~~ for <del>text</del>
     'del_ins',

@@ -30,35 +30,19 @@ class ArticleHandler(BaseHandler):
 
     def get(self, slug):
         slug = unquote(slug)
-        article = Article(slug)
-        if article.new:
+        lang = self.locale.code[:2].lower()
+        article = Article(slug, lang)
+        if not article:
             raise tornado.web.HTTPError(404, "article %s not found" % slug)
 
-        result = self.formal(article.get())
-        if result.get('original', None):
-            result['original']['author'] = self.original_author(
-                    result['original']['author'])
-
-        result['author'] = self.this_author(result['author'])
-        result['author']['email'] = result.pop('email')
-
-        if self.get_argument('format', None) == 'json':
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(result))
-            return
+        logger.info(article.author)
 
         return self.render(
             'jolla/article.html',
-            article=result,
-            img=result.pop('img'),
-            createtime=result.pop('createtime'),
-            original=result.pop('original'),
-            author=result.pop('author'),
-            await=result.pop('await'),
-            reject=result.pop('reject'),
-            quote=quote,
-            make_tag=self.make_tag,
-            make_source=self.make_source
+            article=article,
+            md2html=md.md2html,
+            escape=tornado.escape.xhtml_escape,
+            make_source=self.make_source,
         )
 
     def formal(self, info):

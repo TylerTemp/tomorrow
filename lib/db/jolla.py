@@ -23,6 +23,9 @@ class User(Base):
         'email': None,
         'home': None,
         'name': None,
+        'photo': None,
+        'zh': {},  # intro, donate
+        'en': {}
     }
 
     def __init__(self, _id=None):
@@ -30,6 +33,9 @@ class User(Base):
         if _id is not None:
             result = self.collection.find_one({'_id': _id})
             self.update(result)
+
+    def __str__(self):
+        return str(self.name)
 
     @classmethod
     def by_source_id(cls, source, uid):
@@ -66,11 +72,10 @@ class Article(Base):
 
     def __init__(self, slug=None, lang='zh'):
         super(Article, self).__init__()
-        attrs = self.__dict__['__info__']
         if slug:
             result = self.collection.find_one({'slug': slug})
             if result is None:
-                attrs['slug'] = slug
+                self.slug = slug
             else:
                 self.update(result)
         self.lang = lang
@@ -82,9 +87,10 @@ class Article(Base):
         default = self._default
         attrs = self.__dict__['__info__']
 
-        if item in ('title', 'content', 'description'):
-            lang = self.lang
-            return attrs.get(lang, {}).get(item, None)
+        if item in ('title', 'content', 'description') and self.lang == 'en':
+            en = self.en
+            if en:
+                return en[item]
 
         if item not in attrs and item in default:
             default_val = default[item]
@@ -116,6 +122,25 @@ class Article(Base):
 
         return lang == 'zh'
 
+    def update(self, *a, **k):
+        super(Article, self).update(*a, **k)
+        user_id = self.author
+        if user_id is not None:
+            self.author = User(user_id)
+        if self.source:
+            author = self.source['author']
+            self.source['author'] = Author(author)
+
+    def _before_save(self):
+        if isinstance(self.author, User):
+            self.author = self.author._id
+
+        if self.source:
+            if isinstance(self.source['author'], Author):
+                self.source['author'] = self.source['author'].name
+
+        return super(Article, self)._before_save()
+
     @classmethod
     def all(cls, offset=0, limit=None):
         result = cls.collection.find({}).sort(
@@ -127,6 +152,36 @@ class Article(Base):
             return result[offset:]
         return result[offset:offset + limit]
 
+    @classmethod
+    def all_shown(cls, offset=0, limit=None):
+        result = cls.collection.find({'status': cls.ACCEPTED}).sort(
+            (
+             ('create_time', pymongo.DESCENDING),
+            )
+        )
+        if limit is None:
+            return result[offset:]
+        return result[offset:offset + limit]
+
 
 class Author(Base):
-    pass
+    collection = db.author
+
+    _default = {
+        '_id': None,
+        'name': None,
+        'photo': None,
+        'introduce': None,
+    }
+
+    def __init__(self, name=None):
+        super(Author, self).__init__()
+        if name is not None:
+            result = self.collection.find_one({'name': name})
+            if result is None:
+                self.name = name
+            else:
+                self.update(result)
+
+    def __str__(self):
+        return str(self.name)

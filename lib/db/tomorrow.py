@@ -41,7 +41,7 @@ class User(Base):
         'active': False,
         'intro': {},  # zh, en, show_in_home, show_in_article
         'donate': {},  # zh, en, show_in_home, show_in_article
-        'img': None,
+        'photo': None,
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
         'verify': {},  # {'for': int, 'code': str, 'expire': float}
@@ -98,11 +98,11 @@ class User(Base):
         ):
             if not allowed.issuperset(field):
                 raise ValueError('%s contains unexpected field(s) %s' %
-                                 list(field.keys()))
+                                 (list(field.keys()), allowed))
 
         return super(User, self)._validate_attrs()
 
-    def verify(self, pwd):
+    def check_pwd(self, pwd):
         encoded_pwd = self.user_info['pwd']
         return sha256_crypt.verify(pwd, encoded_pwd)
 
@@ -156,14 +156,10 @@ class User(Base):
         return cls.collection.find({}).sort('user', pymongo.DESCENDING)
 
     def __str__(self):
-        if self.new:
-            return 'new User(%s)' % self.user
-        return str(self.user_info)
+        return str(self.name)
 
     def __repr__(self):
-        if self.new:
-            return 'User(%s)' % self.user
-        return repr(self.user_info)
+        return str(self.__dict__['__info__'])
 
 
 class Article(Base):

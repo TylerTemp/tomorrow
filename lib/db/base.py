@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger('db')
+
 class Base(object):
     _default = {'_id': None}
     collection = None
@@ -54,6 +58,10 @@ class Base(object):
         self._before_save()
         self._validate_attrs()
         attrs = self.__dict__['__info__']
+        if not attrs:
+            logger.warning('empty save, abort')
+            return
+
         collection = self.collection
         _id = self._id
 

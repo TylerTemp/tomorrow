@@ -17,7 +17,7 @@
     {% for idx, each in enumerate(posts) %}
     <article class="blog-main">
       <h3 class="am-article-title blog-title">
-        <a href="/blog/{{ quote(each.slug) }}">{{ each.title }}</a>
+        <a href="/blog/{{ quote(each.slug) }}/">{{ each.title }}</a>
       </h3>
       <h4 class="am-article-meta blog-meta">
         <a href="/hi/{{ quote(each.author) }}/" class="am-icon-user"> {{ each.author }}</a>

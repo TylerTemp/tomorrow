@@ -44,26 +44,30 @@
   <!-- horizontal blog box -->
   <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
     <div class="am-margin-horizontal-xs am-margin-vertical-sm">
-      <div class="white am-u-sm-12 am-u-md-{{ 6 if first['img'] else 12 }}">
+      <div class="white am-u-sm-12 am-u-md-{{ 6 if first.cover else 12 }}">
         <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
           <div class="am-article-hd">
-            <a href="/{{ first['slug'] }}/"><h2 class="am-article-title am-text-xl">{{ first['title'] }}</h2></a>
+            <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-text-xl">{{ first.title }}</h2></a>
           </div>
           <div>
-            {% raw make_source(first['source']) %}
-            {% raw ('| ' + ' '.join(make_tag(first['tag']))) if first['tag'] else '' %}
+            {% raw make_source(first.source['link'] if first.source else None) %}
+
+            {% if first.tag %}
+              |
+              {% module Tag(first.tag) %}
+            {% end %}
           </div>
           <div class="am-article-bd">
-            {% raw first['descripition'] or (first['preview'] + '...') %}
+            {% raw md2html(first.description) if first.description else escape(first.content[:100]) %}
           </div>
         </article>
         <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
-          <a class="am-btn am-btn-success am-fr" href="{{ first['slug'] }}">{{ _("Continue reading") }}</a>
+          <a class="am-btn am-btn-success am-fr" href="{{ quote(first.slug) }}">{{ _("Continue reading") }}</a>
         </div>
       </div>
-      {% if first['img'] %}
+      {% if first.cover %}
       <div class="am-u-sm-12 am-u-md-6">
-        <a href="/{{ first['slug'] }}/"><img class="cover-img" src="{{ first['img'] }}"></a>
+        <a href="/{{ quote(first.slug) }}/"><img class="cover-img" src="{{ first.cover }}"></a>
       </div>
       {% end %}
     </div>
@@ -75,24 +79,28 @@
 
     <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
-        {% if each['img'] %}
-        <a href="/{{ each['slug'] }}/"><img class="cover-img" src="{{ each['img'] }}"></a>
+        {% if each.cover %}
+        <a href="/{{ quote(first.slug)  }}/"><img class="cover-img" src="{{ each.cover }}"></a>
         {% end %}
         <div class="title-box">
           <article class="am-article  am-margin-horizontal-lg">
             <div class="am-article-hd">
-              <a href="/{{ each['slug'] }}/"><h2 class="am-article-title am-margin-top">{{ each['title'] }}</h2></a>
+              <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.title }}</h2></a>
             </div>
             <div>
-              {% raw make_source(each['source']) %}
-              {% raw ('| ' + ' '.join(make_tag(each['tag']))) if each['tag'] else '' %}
+            {% raw make_source(first.source['link'] if first.source else None) %}
+
+            {% if first.tag %}
+              |
+              {% module Tag(first.tag) %}
+            {% end %}
             </div>
             <div class="am-article-bd">
-              {% raw each['descripition'] or (each['preview'] + '...') %}
+              {% raw md2html(first.description) if first.description else escape(first.content[:100]) %}
             </div>
           </article>
           <div class="am-cf">
-            <a class="am-btn am-btn-success am-fr am-margin-bottom am-margin-right-lg" href="{{ each['slug'] }}">{{ _("Continue reading") }}</a>
+            <a class="am-btn am-btn-success am-fr am-margin-bottom am-margin-right-lg" href="{{ quote(each.slug) }}">{{ _("Continue reading") }}</a>
           </div>
         </div>
       </div>

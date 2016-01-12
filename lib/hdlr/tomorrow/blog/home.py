@@ -31,7 +31,7 @@ class HomeHandler(BaseHandler):
     CHARS = _cfg.home_description_limit
     JOLLA = _cfg.jolla_host
     _u = User('TylerTemp')
-    OWNER_IMG = _u.img
+    OWNER_IMG = _u.photo
     # HOST = _cfg.main_host
 
     def get(self, page=1):

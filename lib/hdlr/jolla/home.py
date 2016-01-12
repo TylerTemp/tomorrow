@@ -16,6 +16,7 @@ import os
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.jolla import Article
 from lib.config import Config
+from lib.tool.md import md2html
 sys.path.pop(0)
 
 logger = logging.getLogger('jolla.home')
@@ -34,39 +35,35 @@ class HomeHandler(BaseHandler):
             limit = self.get_argument('limit', None)
             if limit is not None:
                 limit = int(limit)
-            ahead_num = skip
+            # ahead_num = skip
         else:
             page = int(page)
             skip = (page - 1) * self.LIMIT
             limit = self.LIMIT
-            ahead_num = page * limit
+            # ahead_num = page * limit
 
-        result = Article.display_jolla(skip, limit)
+        result = Article.all_shown(skip, limit)
         total = result.count()
-        current_rest_articles = (total - ahead_num)
-        articles=self.formal(result)
-
-        if render_json:
-            articles = list(articles)
-            rest_articles = current_rest_articles - len(articles)
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps({
-                'articles': articles,
-                'rest': rest_articles,
-                'total': len(articles)
-            }))
-            return
+        # current_rest_articles = (total - ahead_num)
 
         has_next_page = (page * limit < total)
 
         return self.render(
             'jolla/home.html',
-            articles=articles,
+            articles=self.get_articles(result),
             this_page=page,
             has_next_page=has_next_page,
             make_source=self.make_source,
-            make_tag=self.make_tag,
+            quote=quote,
+            md2html=md2html,
+            escape=tornado.escape.xhtml_escape,
         )
+
+    def get_articles(self, result):
+        for each in result:
+            a = Article()
+            a.update(each)
+            yield a
 
     def formal(self, collected):
         is_empty = True
