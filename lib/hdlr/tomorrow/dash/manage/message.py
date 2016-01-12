@@ -10,7 +10,7 @@ try:
 except ImportError:
     from urllib import quote
 
-from lib.hdlr.base import EnsureUser
+# from lib.hdlr.base import EnsureUser
 from lib.db.tomorrow import User, Message
 from lib.tool.minsix import py2
 from lib.tool.mail import Email

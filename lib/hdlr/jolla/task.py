@@ -20,7 +20,7 @@ from lib.config import Config
 from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
-from lib.hdlr.base import EnsureUser
+# from lib.hdlr.base import EnsureUser
 from lib.db.jolla import Article, User
 sys.path.pop(0)
 

@@ -48,19 +48,6 @@ class BaseHandler(tornado.web.RequestHandler):
         raise tornado.web.HTTPError(405, 'Method Not Allowed')
 
     def render(self, template_name, **kwargs):
-        kwargs['ssl'] = self.is_ssl()
-        kwargs.setdefault('nav_active', None)
-
-        if self.current_user is None:
-            kwargs.setdefault('user_name', None)
-            kwargs.setdefault('user_link', None)
-
-        if 'user_name' not in kwargs:
-            kwargs['user_name'] = self.current_user['user']
-
-        if 'user_link' not in kwargs:
-            kwargs['user_link'] = '/am/%s/' % quote(kwargs['user_name'])
-
         kwargs.setdefault('JOLLA_HOST', self.cfg.jolla_host)
         kwargs.setdefault('MAIN_HOST', self.cfg.main_host)
 
@@ -108,35 +95,11 @@ class BaseHandler(tornado.web.RequestHandler):
         if lang is not None:
             self.set_cookie('lang', lang)
 
-    def get_ssl(self, uri=None):
-        uri = uri or self.request.uri
-        splited = urlsplit(uri)
-        to_list = list(splited)
-        if not splited.netloc:
-            to_list[1] = self.request.host
-        to_list[0] = 'https'
-        return urlunsplit(to_list)
-
-    def get_non_ssl(self, uri=None):
-        uri = uri or self.request.uri
-        splited = urlsplit(uri)
-        to_list = list(splited)
-        if not splited.netloc:
-            to_list[1] = self.request.host
-        to_list[0] = 'http'
-        return urlunsplit(to_list)
-
     def get_user_path(self, user):
         return os.path.join(rootdir, 'static', 'upload', user)
 
     def get_user_url(self, user):
         return '/static/upload/%s/' % quote(user)
-
-    def logout(self):
-        self.clear_cookie('user')
-        self.clear_cookie('type')
-        self.clear_cookie('email')
-        self.clear_cookie('service')
 
     def is_ajax(self):
         return (self.request.headers.get('X-Requested-With', None) ==
@@ -156,24 +119,6 @@ class BaseHandler(tornado.web.RequestHandler):
         if arg == 'false':
             return False
         return bool(arg)
-
-    def get_imgs_and_files(self, user, type):
-        allow_update = (type >= User.admin)
-        if not allow_update:
-            return None, None
-        path = self.get_user_path(user)
-        link = self.get_user_url(user)
-        imgs = self._list_path(os.path.join(path, 'img'))
-        files = self._list_path(os.path.join(path, 'file'))
-        img_name_and_link = {
-            name: urljoin(link, 'img/%s' % quote(name))
-            for name in imgs}
-
-        file_name_and_link = {
-            name: urljoin(link, 'file/%s' % quote(name))
-            for name in files}
-
-        return img_name_and_link, file_name_and_link
 
     def _list_path(self, path):
         if not os.path.exists(path):
@@ -246,35 +191,3 @@ class StaticFileHandler(tornado.web.StaticFileHandler):
         path, file = os.path.split(self.root)
         self.root = path
         return super(StaticFileHandler, self).get(path=file)
-
-
-class EnsureUser(object):
-    level2name = {
-        User.NORMAL: 'registered user',
-        User.ADMIN: 'administrator',
-        User.ROOT: 'super user'
-    }
-
-    NORMAL = User.NORMAL
-    ADMIN = User.ADMIN
-    ROOT = User.ROOT
-
-    def __init__(self, level=ROOT, active=True):
-        self._level = level
-        self._active = active
-
-    def __call__(self, func):
-        @functools.wraps(func)
-        def wrapper(ins, *a, **k):
-            user_info = ins.current_user
-            error = []
-            if user_info['type'] < self._level:
-                error.append('%s only' %  self.level2name[self._level])
-            if self._active and not user_info['active']:
-                error.append('actived user only')
-            if error:
-                msg = 'Permission denied: %s' % '; '.join(error)
-                raise tornado.web.HTTPError(403, msg)
-            return func(ins, *a, **k)
-
-        return tornado.web.authenticated(wrapper)

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block main_title %}{{ _("Tyler's Blog") }}{% end %}
+{% block main_title %}{{ _("Tyler's Blog") }} | {% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="/static/css/tomorrow/home.css" />
@@ -13,40 +13,45 @@
 
 <div class="am-g am-g-fixed blog-g-fixed">
   <div class="am-u-md-8">
-    {% set idx = -1 %}
-    {% for idx, each in enumerate(posts) %}
+    {% for article, author in article_and_author %}
+
     <article class="blog-main">
       <h3 class="am-article-title blog-title">
-        <a href="/blog/{{ quote(each.slug) }}/">{{ each.title }}</a>
+        <a href="/blog/{{ quote(article.slug) }}/">{{ article.get('title') }}
+        </a>
       </h3>
-      <h4 class="am-article-meta blog-meta">
-        <a href="/hi/{{ quote(each.author) }}/" class="am-icon-user"> {{ each.author }}</a>
-        |
-        {% module Time(each.create_time) %}
-
-        {% if each.tag %}
+        {% if article.current_lang or article.alternative_lang %}
+        [{% if article.current_lang %}
+         {{ article.current_lang }}
+         {% end %}{% if article.current_lang and article.alternative_lang %}
           |
-          {% module Tag(each.tag) %}
+          {% end %}{% if article.alternative_lang %}
+            <a href="/blog/{{ quote(article.slug) }}/?lang={{article.alternative_lang }}" class="am-icon-link">{{ article.alternative_lang }}</a>
+          {% end %}]
+        {% end %}
+      <h4 class="am-article-meta blog-meta">
+        <a href="/hi/{{ quote(author.name) }}/" class="am-icon-user"> {{ author }}</a>
+        |
+        {% module Time(article.create_time) %}
+
+        {% if article.tag %}
+          |
+          {% module Tag(article.tag) %}
         {% end %}
       </h4>
       <div class="am-g blog-content">
-        <div class="am-u-lg-{{7 if each.cover else 12}}">
-          {% raw md2html(each.description) if each.description else escape(each.content[:100]) %}
+        <div class="am-u-lg-{{7 if article.cover else 12}}">
+          {% raw md2html(article.get('description')) if article.get('description') else escape(article.get('content')[:100]) %}
         </div>
-        {% if each.cover %}
+        {% if article.cover %}
         <div class="am-u-lg-5">
-          <p><img class="am-img-responsive am-img-thumbnail cover-img" src="{{ each.cover }}"></p>
+          <p><img class="am-img-responsive am-img-thumbnail cover-img" src="{{ article.cover }}"></p>
         </div>
         {% end %}
       </div>
     </article>
 
     <hr class="am-article-divider blog-hr">
-    {% else %}
-      {% if idx == -1 %}
-        <p>{{ _('Oops... Nothing here.') }}</p>
-        <hr class="am-article-divider blog-hr">
-      {% end %}
     {% end %}
 
     <ul class="am-pagination blog-pagination">
@@ -65,7 +70,7 @@
       <section class="am-panel am-panel-default">
         <div class="am-panel-bd">
           <div class="am-cf">
-            <img src="{{ owner_img }}" class="am-img-responsive am-round am-img-thumbnail am-fl am-margin-sm" style="max-width: 100px; max-height: 100px;">
+            <img src="https://dn-tyler.qbox.me/avatar.png" class="am-img-responsive am-round am-img-thumbnail am-fl am-margin-sm" style="max-width: 100px; max-height: 100px;">
             <p>{{ _("I'm TylerTemp, python programmer. Welcome to my blog") }} :)</p>
           </div>
           <hr />

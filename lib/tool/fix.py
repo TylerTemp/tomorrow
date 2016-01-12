@@ -1,6 +1,7 @@
 # coding: utf-8
 # this file is to adjust the data in database
 
+import logging
 import sys
 import os
 
@@ -10,12 +11,17 @@ from lib.db.jolla import Article as JArticle, User as JUser, Author
 sys.path.pop(0)
 
 article = Article.collection
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger()
 
 def fix_myself():
     print('fix myself')
-    tyler = User('TylerTemp')
+    old_tyler = User.collection.find_one({'user': 'TylerTemp'})
+    tyler = User()
+    tyler.photo = old_tyler.pop('img')
+    tyler.name = old_tyler.pop('user')
+    tyler.update(old_tyler)
     assert tyler
-    tyler.photo = tyler.__dict__['__info__'].pop('img')
     old_intro = tyler.intro
     old_intro['zh'] = old_intro.pop('content')
     old_donate = tyler.donate
@@ -31,9 +37,15 @@ def fix_myself():
     j_tyler.home = 'https://tomorrow.comes.today/hi/TylerTemp/'
     j_tyler.name = 'TylerTemp'
     j_tyler.photo = tyler.photo
-    print(j_tyler._id)
+    j_tyler.intro = tyler.intro['zh']
+    j_tyler.donate = tyler.donate['zh']
+    logger.debug(j_tyler._id)
     j_tyler.save()
-    print(j_tyler._id)
+    j_tyler = JUser(j_tyler._id)
+    logger.debug(j_tyler.intro)
+    logger.debug(j_tyler.donate)
+    logger.debug(j_tyler._id)
+    logger.debug(tyler._id)
 
 
 def fix_jolla_author():
@@ -52,10 +64,12 @@ def fix_blog_article(art):
     art.pop('transinfo', None)
     art.pop('status', None)
     art.pop('index', None)
-    art['create_time'] = art['createtime']
-    art['edit_time'] = art['edittime']
+    art.pop('verify', None)
+    art['create_time'] = art.pop('createtime')
+    art['edit_time'] = art.pop('edittime')
     if 'headimg' in art:
         art['banner'] = art.pop('headimg')
+    article.replace_one({'_id': art['_id']}, art)
 
 
 def fix_jolla_article(art, translator_id):
@@ -83,6 +97,7 @@ def fix_jolla_article(art, translator_id):
 def get_my_id():
     tmr_u = User('TylerTemp')
     tmr_id = tmr_u._id
+    logger.debug('tmr id %s', tmr_id)
     j_u = JUser.by_source_id(JUser.TOMORROW, tmr_id)
     return j_u._id
 
@@ -101,7 +116,7 @@ if __name__ == '__main__':
         if each['board'] == 'blog':
             # continue
             fix_blog_article(each)
-            article.replace_one({'_id': each['_id']}, each)
+            
         elif each['board'] == 'jolla':
             # continue
             fix_jolla_article(each, my_id)

@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.insert(0, os.path.normpath(
                     os.path.join(__file__, '..', '..', '..', '..')))
-from lib.hdlr.base import BaseHandler, EnsureUser
+from lib.hdlr.base import BaseHandler
 from lib.db.wordz import Glossary
 sys.path.pop(0)
 
@@ -13,7 +13,7 @@ logger = logging.getLogger('tomorrow.project.wordz.home')
 
 class QuizHandler(BaseHandler):
 
-    @EnsureUser(active=True)
+    # @EnsureUser(active=True)
     def get(self):
         tag = self.get_argument('tag', None)
         if tag:

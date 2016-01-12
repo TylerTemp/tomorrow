@@ -1,7 +1,7 @@
 {% extends "../../amaze_jquery_base.html" %}
 
 {% block title %}
-  {% block main_title %}{% end %} | {{ _("Tomorrow Comes Today") }}
+  {% block main_title %}{% end %}{{ _("Tomorrow Comes Today") }}
 {% end %}
 
 {% block head_end %}
@@ -87,15 +87,15 @@
           </div>
         </div>
 
-        {% if user_name is None %}
+        {% if user is None %}
         <div class="am-topbar-left am-topbar-right am-topbar-btn">
           <div class="am-dropdown" data-am-dropdown>
-            <button class="am-btn am-btn-default am-dropdown-toggle am-btn-sm"><span class="am-icon-user"></span></button>
+            <button class="am-btn am-dropdown-toggle am-btn-sm {{ 'am-btn-primary' if nav_active in ('login', 'signin') else 'am-btn-default' }}"><span class="am-icon-user"></span></button>
             <ul class="am-dropdown-content">
-              <li>
+              <li class="{{ 'am-active' if nav_active == 'login' else '' }}">
                 <a href="/login/"><span class="am-icon-sign-in am-icon-fw"> {{ _('Login') }}</span></a>
               </li>
-              <li>
+              <li class="{{ 'am-active' if nav_active == 'signin' else '' }}">
                 <a href="/signin/"><span class="am-icon-user-plus am-icon-fw"> {{ _('Signin') }}</span></a>
               </li>
             </ul>
@@ -104,21 +104,15 @@
         {% else %}
         <div class="am-topbar-left am-topbar-right am-topbar-btn">
           <div class="am-dropdown" data-am-dropdown>
-            <button class="am-btn am-btn-primary am-dropdown-toggle am-btn-sm"><span class="am-icon-user"> {{ user_name }}</span> <span class="am-icon-caret-down"></span></button>
+            <button class="am-btn am-btn-primary am-dropdown-toggle am-btn-sm"><span class="am-icon-user"> {{ user.name }}</span> <span class="am-icon-caret-down"></span></button>
 
             <ul class="am-dropdown-content">
               <li>
-                <a href="{{ user_link }}"><span class="am-icon-dashboard am-icon-fw"> {{ _('Dashboard') }}</span></a>
+                <a href="/am/{{ user.name }}/"><span class="am-icon-dashboard am-icon-fw"> {{ _('Dashboard') }}</span></a>
               </li>
               <li class="am-divider"></li>
               <li class="{{ 'am-active' if nav_active == 'new_post' else '' }}">
                 <a href="/edit/"><span class="am-icon-plus am-icon-fw"> {{ _('New Post') }}</span></a>
-              </li>
-              <li class="{{ 'am-active' if nav_active == 'jolla_task' else '' }}">
-                <a href="/jolla/task/"><span class="iconfont icon-jolla"> {{ _('New Jolla Translation') }}</span></a>
-              </li>
-              <li class="{{ 'am-active' if nav_active == 'jolla_tr' else '' }}">
-                <a href="/jolla/tr/"><span class="am-icon-language am-icon-fw"> {{ _('Translate a Jolla Post') }}</span></a>
               </li>
               <li class="am-divider"></li>
               <li>

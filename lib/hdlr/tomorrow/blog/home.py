@@ -13,14 +13,9 @@ except ImportError:
     from urllib import quote
 
 from .base import BaseHandler
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User
 from lib.config import Config
 from lib.tool.md import md2html
-sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blog.home')
 
@@ -30,9 +25,6 @@ class HomeHandler(BaseHandler):
     LIMIT = _cfg.home_post_limit
     CHARS = _cfg.home_description_limit
     JOLLA = _cfg.jolla_host
-    _u = User('TylerTemp')
-    OWNER_IMG = _u.photo
-    # HOST = _cfg.main_host
 
     def get(self, page=1):
         this_page = int(page)
@@ -42,17 +34,20 @@ class HomeHandler(BaseHandler):
         collected = Article.all(offset, limit)
 
         total = collected.count()
+        if total <= offset:
+            raise tornado.web.HTTPError(404, 'Empty page %s' % page)
         has_next_page = (this_page * limit < total)
 
-        return self.render(
+        article_and_author = self.parse_posts(collected)
+
+        return super(HomeHandler, self).render(
             'tomorrow/blog/home.html',
-            posts=self.parse_posts(collected),
+            article_and_author=article_and_author,
             this_page=this_page,
             has_next_page=has_next_page,
             quote=quote,
             md2html=md2html,
-            escape=tornado.escape.xhtml_escape,
-            owner_img=self.OWNER_IMG
+            escape=tornado.escape.xhtml_escape
         )
 
     def parse_posts(self, collected):
@@ -60,4 +55,19 @@ class HomeHandler(BaseHandler):
             lang = self.locale.code[:2]
             article = Article(lang=lang)
             article.update(each)
-            yield article
+
+
+            if article.support_lang() == lang:
+                current_lang = None
+            else:
+                current_lang = article.support_lang()
+
+            alternative_lang = article.other_lang()
+            if alternative_lang != current_lang:
+                article.alternative_lang = alternative_lang
+            else: 
+                article.alternative_lang = None
+                
+            article.current_lang = current_lang
+
+            yield article, User(article.author, lang)

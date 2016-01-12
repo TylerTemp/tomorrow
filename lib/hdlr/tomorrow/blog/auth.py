@@ -2,7 +2,6 @@ import tornado.web
 import tornado.gen
 import logging
 import re
-import json
 try:
     from urllib.parse import quote
     from urllib.parse import urlencode
@@ -11,14 +10,8 @@ except ImportError:
     from urllib import urlencode
 
 from .base import BaseHandler
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db.tomorrow import User, Message
-from lib.tool.mail import Email
+from lib.db.tomorrow import User
 from lib.hdlr.base import EnsureSsl
-sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blog.auth')
 
@@ -47,6 +40,13 @@ class _Handler(BaseHandler):
     SEND_EMAIL_FAILED = int('100000000', 2)  # signin
     PWD_MIN_LENGTH = 8
 
+    def login(self, user, temp=False):
+        if temp:
+            kwd = {'expires_days': None}
+        else:
+            kwd = {}
+        self.set_secure_cookie('user', str(user._id), **kwd)
+
 
 class LoginHandler(_Handler):
 
@@ -66,7 +66,7 @@ class LoginHandler(_Handler):
 
         return super(LoginHandler, self).render(
             'tomorrow/blog/login.html',
-            signin=self.get_ssl(signin),
+            signin=signin,
         )
 
     @EnsureSsl(permanent=True)
@@ -84,23 +84,16 @@ class LoginHandler(_Handler):
 
         if flag == 0:
             user = User(user_or_email)
-            if user.new:
+            if not user:
                 flag |= (self.EMAIL_NOT_EXISTS
                          if '@' in user_or_email
                          else self.USER_NOT_EXISTS)
 
-            elif not user.verify(pwd):
+            elif not user.check_pwd(pwd):
                 flag |= self.PWD_WRONG
 
             else:
-                user_info = user.get()
-                user = user_info['user']
-                email = user_info['email']
-                type = user_info['type']
-                temp = (not self.get_argument('remember', False))
-                self.set_user(user, email, type, user_info['active'],
-                              user_info.get('service', None),
-                              user_info.get('lang', None), temp=temp)
+                self.login(user)
 
         result = {'error': flag}
 
@@ -114,10 +107,9 @@ class LoginHandler(_Handler):
             return self.redirect(redirect)
 
         redirect = redirect or '/'
-        if flag == 0:
-            redirect = self.get_non_ssl(redirect)
         result['redirect'] = redirect
-        return self.write(json.dumps(result))
+        logger.debug(result)
+        return self.write(result)
 
 
 class SigninHandler(_Handler):
@@ -133,7 +125,7 @@ class SigninHandler(_Handler):
 
         return super(SigninHandler, self).render(
             'tomorrow/blog/signin.html',
-            login=self.get_ssl(login),
+            login=login,
         )
 
     @EnsureSsl(permanent=True)
@@ -142,17 +134,17 @@ class SigninHandler(_Handler):
     def post(self):
         self.check_xsrf_cookie()
 
-        user = self.get_argument('user')
+        name = self.get_argument('user')
         email = self.get_argument('email')
         pwd = self.get_argument('pwd')
-        redirect = '/am/%s/' % quote(user)
+        redirect = '/am/%s/' % quote(name)
         flag = 0
 
-        if len(user) < 2:
+        if len(name) < 2:
             flag |= self.USER_TOO_SHORT
-        elif len(user) > USER_MAX_LEN:
+        elif len(name) > self.USER_MAX_LEN:
             flag |= self.USER_TOO_LONG
-        elif self.USER_RE.match(user) is None:
+        elif self.USER_RE.match(name) is None:
             flag |= self.USER_FORMAT
         if not email:
             flag |= self.EMAIL_EMPTY
@@ -163,36 +155,30 @@ class SigninHandler(_Handler):
 
         if flag == 0:
 
-            user = User(user)
-            if not user.new:
+            user = User(name)
+            if user:
                 flag |= self.USER_EXISTS
 
-            email_or_none = User.find_user(email)
-            if email_or_none is not None:
+            user = User(email)
+            if user:
                 flag |= self.EMAIL_EXISTS
 
             if flag == 0:
 
-                user.add(email=email, pwd=pwd)
+                user.name = name
+                user.email = email
+                user.pwd = pwd
                 code = user.generate()
                 user.set_code(for_=user.NEWUSER, code=code)
                 user.save()
 
-                user_info = user.get()
-                user_name = user_info['user']
-                self.set_user(user=user_name,
-                              email=email,
-                              type=user_info['type'],
-                              active=user_info['active'],
-                              service=user_info.get('service', None),
-                              lang=user_info.get('lang', 'zh_CN'),
-                              temp=True)
+                self.login(user, temp=True)
 
         result = {'error': flag}
 
         if self.is_ajax():
             result['redirect'] = redirect
-            self.write(json.dumps(result))
+            self.write(result)
             self.finish()
         else:
             # ok
@@ -203,42 +189,6 @@ class SigninHandler(_Handler):
                 redirect = '%s?%s' % (self.request.uri, urlencode(result))
                 self.redirect(redirect)
                 self.finish()
-
-        if flag == 0:
-            mailman = Email(email, self.locale.code)
-            Message().send(
-                None,
-                user_name,
-                self.locale.translate('<h6>Welcome, {user}</h6>'
-                '<p>We are sending you a verify email to {email}. '
-                'Please check your email to active your account.</p>'
-                '<p>You can also refresh this page to see if it has been '
-                'sent successfully.</p>').format(user=user, email=email))
-            try:
-                mailman.send(name='new_user',
-                             user=user_name,
-                             code=code,
-                             escaped_code=quote(secret))
-            except BaseException as e:
-                logger.error('failed to send active verify to %s',
-                             user_info['user'])
-                flag |= self.SEND_EMAIL_FAILED
-                Message().send(
-                    None,
-                    user_name,
-                    self.locale.translate(
-                        'Oops, failed to send the active email. '
-                        'Please visit the secure panel to send it again.'
-                    ))
-            else:
-                Message().send(
-                    None,
-                    user_name,
-                    self.locale.translate(
-                        'Send email successfully. Please check your email '
-                        'account {}'
-                    ).format(email)
-                )
 
 
 class LogoutHandler(_Handler):

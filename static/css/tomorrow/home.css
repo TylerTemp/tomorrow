@@ -16,6 +16,7 @@
 
   .blog-title {
     margin: 10px 0 20px 0;
+    display: inline;
   }
 
   .blog-meta {

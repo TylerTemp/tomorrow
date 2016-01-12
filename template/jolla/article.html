@@ -72,21 +72,21 @@
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article.title }}</h1>
           <p class="am-article-meta">
-            {% raw make_source(article.source['link'] if article.source else None) %}
+            {% raw make_source(source['link'] if source else None) %}
 
             {% if article.tag %}
               |
               {% module Tag(article.tag) %}
             {% end %}
             <br />
-            {% if article.author.home %}
-            <a href="{{ article.author.home }}" target="_blank" class="am-icon-home"> {{ article.author }}</a>
+            {% if author.home %}
+            <a href="{{ author.home }}" target="_blank" class="am-icon-home"> {{ author }}</a>
             {% else %}
-            <span class="am-icon-user"> {{ article.author }}</span>
+            <span class="am-icon-user"> {{ author }}</span>
             {% end %}
 
-            {% if article.author.email %}
-            <a href="mailto:{{ article.author.email }}" class="am-icon-envelop"> </a>
+            {% if author.email %}
+            <a href="mailto:{{ author.email }}" class="am-icon-envelop"> </a>
             {% end %}
           </p>
         </div>
@@ -98,23 +98,23 @@
           {% end %}
           {% raw md2html(article.content) %}
           <!-- Jolla blog author translation -->
-          {% if article.source %}
+          {% if source %}
             <hr class="am-article-divider">
             <div class="am-g am-u-sm-centered" id="original-author">
-            {% if article.source['author'].photo %}
+            {% if source['author'].photo %}
             <div class="am-u-sm-12 am-u-md-4">
-              <img class="am-circle am-thumbnail am-center" src="{{ article.source['author'].photo }}">
+              <img class="am-circle am-thumbnail am-center" src="{{ source['author'].photo }}">
             </div>
             <div class="am-u-sm-12 am-u-md-8">
-              <h6>{{ article.source['author'] }}</h6>
-              {% if article.source['author'].introduce %}
-                {% raw md2html(article.source['author'].introduce)%}
+              <h6>{{ source['author'] }}</h6>
+              {% if source['author'].introduce %}
+                {% raw md2html(source['author'].introduce)%}
               {% end %}
             </div>
-            {% elif article.source['author'].introduce %}
+            {% elif source['author'].introduce %}
             <div class="am-u-sm-12">
               <h6>{{ original['author'] }}</h6>
-              {% raw md2html(article.source['author'].introduce)%}
+              {% raw md2html(source['author'].introduce)%}
             </div>
             {% end %}
           </div>
@@ -122,29 +122,30 @@
 
         </div>
 
-        {% if article.source %}
+        {% if source %}
         <footer>
-          <p>原文由 {{ article.source['author'] }} 发布于
-            <a href="{{ article.source['link'] }}">{{ article.source['title'] }}</a>
+          <p>原文由 {{ source['author'] }} 发布于
+            <a href="{{ source['link'] }}">{{ source['title'] }}</a>
           </p>
         </footer>
         {% end %}
         <!-- Translator -->
         <hr class="am-article-divider">
-        {% if article.source %}
+        {% if source %}
           <p>{{ _('Translated by') }}</p>
         {% end %}
       </article>
       <div class="am-padding-top">
 
         <div class="am-g am-u-sm-centered">
-          {% if article.author.photo %}
+          
+          {% if author.photo %}
           <div class="am-u-sm-3">
-              {% if article.author.home %}
-              <a href="{{ article.author.home }}" target="_blank">
+              {% if author.home %}
+              <a href="{{ author.home }}" target="_blank">
               {% end %}
-              <img class="am-circle am-thumbnail am-center" src="{{ article.author.photo }}">
-              {% if article.author.home %}
+              <img class="am-circle am-thumbnail am-center" src="{{ author.photo }}">
+              {% if author.home %}
               </a>
               {% end %}
           </div>
@@ -152,12 +153,15 @@
           {% else %}
           <div class="am-u-sm-12">
           {% end %}
+
             <div class="am-margin-horizontal">
-              {% if article.author.home %}
-              <a href="{{ article.author.home }}" target="_blank"><h6 class="am-icon-home"> {{ article.author }}</h6></a>
+              {% if author.home %}
+              <a href="{{ author.home }}" target="_blank"><h6 class="am-icon-home"> {{ author }}</h6></a>
               {% else %}
-              <h6>{{ article.author }}</h6>
+              <h6>{{ author }}</h6>
               {% end %}
+              {% raw md2html(author.intro) if author.intro else '' %}
+              {% raw md2html(author.donate) if author.donate else '' %}
             </div>
           </div>
         </div>

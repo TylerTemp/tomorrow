@@ -235,10 +235,11 @@ $(function(evt)
       }
     }).done(function(data, textStatus, jqXHR)
     {
+      console.log(data);
       window.location.href = $.parseJSON(data).redirect;
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
-      alert(jqXHR.status + errorThrown)
+      alert(jqXHR.status + ': ' + errorThrown);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
       $fieldset.prop('disabled', false);
@@ -247,4 +248,7 @@ $(function(evt)
 
   });
 
+  console.log('edit.js actived');
 });
+
+console.log('edit.js loaded');

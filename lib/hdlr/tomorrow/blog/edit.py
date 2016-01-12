@@ -1,79 +1,43 @@
 import tornado.web
 import logging
 import json
-import time
 try:
     from urllib.parse import unquote
     from urllib.parse import quote
 except ImportError:
     from urllib import unquote
     from urllib import quote
-from .base import BaseHandler, EnsureUser
+from .base import BaseHandler
+from ..base import EnsureUser
 
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User
-sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blog.edit')
 
 
 class EditHandler(BaseHandler):
 
-    # @EnsureUser(level=User.root, active=True)
+    @EnsureUser(level=User.ROOT, active=True)
     def get(self, urlslug=None):
-
         if self.get_argument('test', False):
-            test_slug = self.get_argument('slug').strip()
-            if test_slug == 'en':
-                result = '0'
-            elif test_slug == urlslug:
-                result = '-1'
-            else:
-                result = str(int(Article(test_slug).new))
-            return self.write(result)
+            return self.check_slug(self.get_argument('slug'), urlslug)
 
-        user_info = self.current_user
-        user_name = user_info['user']
+        user = self.current_user
+        user_name = user.name
         user_slug = quote(user_name)
-        imgs, files = self.get_imgs_and_files(user_name, user_info['type'])
+        if user.type >= user.ADMIN:
+            imgs, files = self.get_imgs_and_files(user_name)
+        else:
+            imgs, files = None, None
+
         source = self.get_argument('source', 'zh')
 
-        result = {'title': '',
-                  'slug': urlslug,
-                  'lang': source,
-                  'content': '',
-                  'board': 'blog',
-                  'tag': [],
-                  'headimg': '',
-                  'cover': '',
-                  'description': '',
-                  'author': user_name,
-                  'email': user_info['email'],
-                  'show_email': True}
-
         if urlslug is not None:
-            article = Article(urlslug)
-            if article.new:
+            article = Article(urlslug, source)
+            if not article:
                 raise tornado.web.HTTPError(404, '%s not found' % urlslug)
-            info = article.get()
-            zh = info.pop('zh', None)
-            en = info.pop('en', None)
-            result['slug'] = info.pop('slug')
-            result.update(info)
-            result['title'] = ''
-            result['content'] = ''
-            result['description'] = ''
-            if source == 'zh' and zh:
-                result['title'] = zh['title']
-                result['content'] = zh['content'] or ''
-                result['description'] = zh['description'] or ''
-            elif source == 'en' and en:
-                result['title'] = en['title']
-                result['content'] = en['content'] or ''
-                result['description'] = en['description'] or ''
+        else:
+            article = Article(urlslug, source)
 
         return self.render(
             'tomorrow/blog/edit.html',
@@ -82,74 +46,54 @@ class EditHandler(BaseHandler):
             files=files,
             img_upload_url='/am/%s/img/' % user_slug,
             file_upload_url='/am/%s/file/' % user_slug,
-            **result
+            article=article,
+            user=user
         )
 
-    # @EnsureUser(level=User.root, active=True)
+    def check_slug(self, slug, this_slug):
+        if slug == this_slug:
+            result = -1
+        else:
+            result = int(not bool(Article(slug)))
+        return self.write(str(result))
+
+    @EnsureUser(level=User.ROOT, active=True)
     def post(self, urlslug=None):
         title = self.get_argument('title')
         slug = self.get_argument('slug')
         content = self.get_argument('content')
 
-        tag = set()
+        tag = []
         for each_tag in self.get_argument('tag', '').split(','):
             each = each_tag.strip()
-            if each:
-                tag.add(each)
-        tag = list(tag)
+            if each and each not in tag:
+                tag.append(each)
 
-        headimg = self.get_argument('headimg', None)
-        cover = self.get_argument('cover', None)
         description = self.get_argument('description', None)
-        board = self.get_argument('board', 'blog')
         lang = self.get_argument('language', 'zh')
         assert lang in ('zh', 'en')
 
         if description is not None:
-            description = description.strip()
+            description = description.strip() or None
 
-        new = True
         if urlslug:
-            article = Article(unquote(urlslug))
-            new = article.new
-        if new:
-            article = Article(slug)
+            article = Article(unquote(urlslug), lang=lang)
+            if not article:
+                raise tornado.web.HTTPError(404, '%s not found' % urlslug)
+        else:
+            article = Article(lang=lang)
 
-        logger.info('%s new: %s', slug, article.new)
-        result = {
-            'slug': slug,
-            'board': board or 'blog',
-            lang: {
-                'title': title,
-                'content': content,
-                'description': description or None,
-            },
-            'author': self.get_argument('author', None) or None,
-            'email': self.get_argument('email', None) or None,
-            'show_email': self.get_bool('show_email', False),
-            'tag': tag,
-            'headimg': headimg or None,
-            'cover': cover or None,
-            'index': None
-        }
-
-        if article.new:
-            result.update({
-                'createtime': time.time(),
-                'edittime': time.time()
-            })
-
-        elif not self.get_argument('mirror', False):
-            result['edittime'] = time.time()
-
-        article.get().update(result)
+        article.slug = slug
+        article.title = title
+        article.content = content
+        article.description = description
+        article.author = self.current_user.name
+        article.show_email = self.get_argument('show_email', False) or False
+        article.tag = tag
+        article.banner = self.get_argument('banner', None)
+        article.cover = self.get_argument('cover', None)
 
         article.save()
 
-        if board == 'jolla':
-            re_slug = '/jolla/blog/%s/'
-        else:
-            re_slug = '/blog/%s/'
-
-        return self.write(json.dumps({'error': 0,
-                                      'redirect': re_slug % quote(slug)}))
+        return self.write(json.dumps(
+            {'error': 0, 'redirect': '/blog/%s/' % quote(slug)}))

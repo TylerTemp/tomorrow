@@ -39,6 +39,7 @@
 
     </div>
   </div>
+
   <!-- first article -->
   {% set first = next(articles) %}
   <!-- horizontal blog box -->
@@ -88,15 +89,15 @@
               <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.title }}</h2></a>
             </div>
             <div>
-            {% raw make_source(first.source['link'] if first.source else None) %}
+            {% raw make_source(each.source['link'] if each.source else None) %}
 
-            {% if first.tag %}
+            {% if each.tag %}
               |
-              {% module Tag(first.tag) %}
+              {% module Tag(each.tag) %}
             {% end %}
             </div>
             <div class="am-article-bd">
-              {% raw md2html(first.description) if first.description else escape(first.content[:100]) %}
+              {% raw md2html(each.description) if each.description else escape(each.content[:100]) %}
             </div>
           </article>
           <div class="am-cf">
@@ -107,9 +108,7 @@
     </li>
   {% end %}
 
-</ul>
-
-
+  </ul>
 <div class="am-cf am-margin-horizontal-xs">
   {% if this_page != 1 %}
   <a href="/page/{{ this_page - 1}}/" class="am-fl am-btn-link" style="color: #fff">&laquo; {{ _('Prev Page') }}</a>
@@ -118,13 +117,4 @@
   <a href="/page/{{ this_page + 1 }}/" class="am-fr am-btn-link" style="color: #fff">{{ _('Next Page') }} &raquo;</a>
   {% end %}
 </div>
-
-<!-- Page -->
-<!-- <ul class="am-margin-horizontal-xs">
-  <li class="am-pagination-prev"><a href="">&laquo; {{ _('Prev Page') }}</a></li>
-  <li class="am-pagination-next"><a href="">{{ _('Next Page') }} &raquo;</a></li>
-</ul> -->
-
-
-
 {% end %}

@@ -1,9 +1,10 @@
 import pymongo
 import logging
+import time
 # import sys
 # import os
 # sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-# from base import Base
+# from lib.db.base import Base
 from .base import Base
 
 logger = logging.getLogger('db.jolla')
@@ -28,14 +29,39 @@ class User(Base):
         'en': {}
     }
 
-    def __init__(self, _id=None):
+    def __init__(self, _id=None, lang='zh'):
         super(User, self).__init__()
+        self.__dict__['lang'] = lang
         if _id is not None:
             result = self.collection.find_one({'_id': _id})
             self.update(result)
 
     def __str__(self):
         return str(self.name)
+
+    def __getattr__(self, item):
+        if item == 'lang':
+            return self.__dict__['lang']
+
+        attrs = self.__dict__['__info__']
+        if item in ('intro', 'donate'):
+            target = attrs.get(self.lang, {})
+            return target.get(item, None)
+
+        return super(User, self).__getattr__(item)
+
+    def __setattr__(self, item, value):
+        if item == 'lang':
+            self.__dict__['lang'] = value
+            return
+
+        attrs = self.__dict__['__info__']
+        if item in ('intro', 'donate'):
+            target = attrs.setdefault(self.lang, {})
+            target[item] = value
+            return
+
+        return super(User, self).__setattr__(item, value)
 
     @classmethod
     def by_source_id(cls, source, uid):
@@ -115,31 +141,21 @@ class Article(Base):
 
         return super(Article, self).__setattr__(key, value)
 
-    def lang_fitted(self):
+    def lang_fit(self):
         lang = self.lang
         if lang == 'en':
             return lang in self.__dict__['__info__']
 
         return lang == 'zh'
 
-    def update(self, *a, **k):
-        super(Article, self).update(*a, **k)
-        user_id = self.author
-        if user_id is not None:
-            self.author = User(user_id)
-        if self.source:
-            author = self.source['author']
-            self.source['author'] = Author(author)
-
     def _before_save(self):
-        if isinstance(self.author, User):
-            self.author = self.author._id
 
-        if self.source:
-            if isinstance(self.source['author'], Author):
-                self.source['author'] = self.source['author'].name
+        if self.create_time is None:
+            self.create_time = time.time()
+        self.edit_time = time.time()
 
         return super(Article, self)._before_save()
+
 
     @classmethod
     def all(cls, offset=0, limit=None):
@@ -185,3 +201,14 @@ class Author(Base):
 
     def __str__(self):
         return str(self.name)
+
+
+if __name__ == '__main__':
+    from bson import ObjectId
+
+    logging.basicConfig(level=logging.DEBUG)
+    _id = ObjectId('5695323ca27a133230936385')
+    u = User(_id)
+    print(u.intro)
+    u.intro = 'test'
+    print(u.intro)

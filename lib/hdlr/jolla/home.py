@@ -9,7 +9,7 @@ except ImportError:
     from urlparse import urlsplit
 
 from .base import BaseHandler
-
+  
 import sys
 import os
 
@@ -44,6 +44,8 @@ class HomeHandler(BaseHandler):
 
         result = Article.all_shown(skip, limit)
         total = result.count()
+        if total <= skip:
+            raise tornado.web.HTTPError(404, 'Empty page')
         # current_rest_articles = (total - ahead_num)
 
         has_next_page = (page * limit < total)
@@ -64,34 +66,3 @@ class HomeHandler(BaseHandler):
             a = Article()
             a.update(each)
             yield a
-
-    def formal(self, collected):
-        is_empty = True
-        for each in collected:
-            is_empty = False
-            if 'transinfo' in each:
-                source_name = self.get_source_name(each['transinfo']['link'])
-            else:
-                source_name = None
-
-            preview = tornado.escape.xhtml_escape(each['zh']['content'][:80])
-            markdown_des = each['zh']['description']
-            if markdown_des is None:
-                des = None
-            else:
-                des = self.md_description_to_html(markdown_des)
-            result = {
-                'title': each['zh']['title'],
-                'slug': quote(each['slug']),
-                'link': '//%s/%s/' % (self.HOST, quote(each['slug'])),
-                'img': each['cover'] or each['headimg'],
-                'markdown_descripition': markdown_des,
-                'descripition': des,
-                'preview': preview,
-                'source': source_name,
-                'tag': each['tag']
-            }
-            yield result
-
-        if is_empty:
-            raise tornado.web.HTTPError(404, 'No posts on this page')

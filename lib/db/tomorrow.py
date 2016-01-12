@@ -33,7 +33,7 @@ class User(Base):
     ERROR_OUT_OF_TIME = 3
 
     _default = {
-        'user': None,
+        'name': None,
         'email': None,
         'pwd': None,
         'show_email': False,
@@ -45,6 +45,7 @@ class User(Base):
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
         'verify': {},  # {'for': int, 'code': str, 'expire': float}
+        'lang': None,
         '_id': None
     }
 
@@ -53,11 +54,12 @@ class User(Base):
     # pwd
     # nickname
     # type
-    def __init__(self, user_or_email=None):
+    def __init__(self, user_or_email=None, language='zh'):
         super(User, self).__init__()
         attrs = self.__dict__['__info__']
+        self.language = language
         if user_or_email is not None:
-            key = 'email' if '@' in user_or_email else 'user'
+            key = 'email' if '@' in user_or_email else 'name'
             result = self.collection.find_one({key: user_or_email})
             if result is None:
                 attrs[key] = user_or_email
@@ -65,6 +67,8 @@ class User(Base):
                 self.update(result)
 
     def __getattr__(self, item):
+        if item == 'language':
+            return self.__dict__['language']
         default = self._default
         attrs = self.__dict__['__info__']
 
@@ -77,6 +81,13 @@ class User(Base):
             return default_val
 
         return super(User, self).__getattr__(item)
+
+    def __setattr__(self, item, value):
+        if item == 'language':
+            self.__dict__['language'] = value
+            return  
+
+        return super(User, self).__setattr__(item, value)
 
     @property
     def pwd(self):
@@ -103,8 +114,7 @@ class User(Base):
         return super(User, self)._validate_attrs()
 
     def check_pwd(self, pwd):
-        encoded_pwd = self.user_info['pwd']
-        return sha256_crypt.verify(pwd, encoded_pwd)
+        return sha256_crypt.verify(pwd, self.pwd)
 
     def remove(self):
         logger.info('remove user %s', self._id)
@@ -117,7 +127,7 @@ class User(Base):
 
     @classmethod
     def generate(cls):
-        collect = cls._user
+        collect = cls.collection
         while True:
             code = generate()
             if collect.find_one({'verify.code': code}) is None:
@@ -153,7 +163,7 @@ class User(Base):
 
     @classmethod
     def all(cls):
-        return cls.collection.find({}).sort('user', pymongo.DESCENDING)
+        return cls.collection.find({}).sort('create_time', pymongo.DESCENDING)
 
     def __str__(self):
         return str(self.name)
@@ -233,8 +243,34 @@ class Article(Base):
 
         return super(Article, self).__setattr__(key, value)
 
-    def lang_fitted(self):
-        return self.lang in self.__dict__['__info__']
+    def get(self, item):
+        assert item in ('title', 'content', 'description')
+        target = getattr(self, self.lang, None)
+        if not target:
+            check_lang = 'en' if self.lang == 'zh' else 'zh'
+            target = getattr(self, check_lang)
+
+        return target[item]
+
+    def other_lang(self):
+        lang = self.lang
+        attrs = self.__dict__['__info__']
+        other = 'en' if self.lang == 'zh' else 'zh'
+        if attrs.get(other, False):
+            return other
+        return None
+
+    def support_lang(self):
+        lang = self.lang
+        if self.__dict__['__info__'].get(lang, False):
+            return lang
+
+        return 'zh' if lang == 'en' else 'en'
+
+    def lang_fit(self):
+        lang = self.lang
+        attrs = self.__dict__['__info__']
+        return attrs.get(lang, False)
 
     @classmethod
     def all(cls, offset=0, limit=None):
@@ -247,19 +283,10 @@ class Article(Base):
             return result[offset:]
         return result[offset:offset + limit]
 
+
 class Message(Base):
     pass
 
 
 class Auth(Base):
     pass
-
-
-if __name__ == '__main__':
-    import logging
-    logging.basicConfig(level=logging.DEBUG)
-    u = User('TylerTemp')
-    print(u._id)
-    u._id = 3
-    u.x = 4
-    u.save()

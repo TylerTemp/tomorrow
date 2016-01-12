@@ -9,7 +9,7 @@ try:
 except ImportError:
     from urllib import quote
 
-from lib.hdlr.base import EnsureUser, EnsureSsl
+from lib.hdlr.base import EnsureSsl
 from lib.db.tomorrow import User, Message, Article
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus

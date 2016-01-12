@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block title %}{{ _("Login") }}{% end %}
+{% block main_title %}{{ _("Login") }} | {% end %}
 
-{% block body %}
+{% block nav_active %}
+  {% set nav_active = 'login' %}
+{% end %}
+
+{% block shoulder %}
 <div class="header">
   <div class="am-g">
     <a href="/"><h1>{{ _('Tomorrow Comes Today') }}</h1></a>

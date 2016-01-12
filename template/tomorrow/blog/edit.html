@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ _('Edit') if title else _('New Post') }}{% end %}
+{% block main_title %}{{ _('Edit') if article else _('New Post') }} | {% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
@@ -30,11 +30,16 @@ i.am-icon-unchecked {
 </style>
 {% end %}
 
-{% block shoulder %}
 
+{% block nav_active %}
+  {% set nav_active == 'new_post' %}
+{% end %}
+
+
+{% block shoulder %}
 <form class="am-form am-form-horizontal am-center" method="post" action="{{ request.uri }}">
   <fieldset>
-    <legend>{{ _('Edit') if title else _('New Post') }}</legend>
+    <legend>{{ _('Edit') if article else _('New Post') }}</legend>
 
     {% raw xsrf_form_html() %}
 
@@ -42,15 +47,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="title" class="am-u-sm-2 am-form-label">{{ _('Title') }}:</label>
       <div class="am-u-sm-10">
-        <input type="text" id="title" name="title" value="{{ title }}" placeholder="&#xf1dc;*" required="required">
-      </div>
-    </div>
-
-    <!-- board -->
-    <div class="am-form-group">
-      <label for="board" class="am-u-sm-2 am-form-label">{{ _('Board') }}:</label>
-      <div class="am-u-sm-10">
-        <input type="text" id="board" name="board" value="{{ board }}" placeholder="&#xf01c;*" required="required">
+        <input type="text" id="title" name="title" value="{{ article.title or '' }}" placeholder="&#xf1dc;*" required="required">
       </div>
     </div>
 
@@ -58,10 +55,10 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="slug" class="am-u-sm-2 am-form-label">{{ _("SLUG") }}:</label>
       <div class="am-u-sm-9">
-        <input type="text" id="slug" name="slug" value="{{ slug or '' }}" placeholder="&#xf0c1;*" required="required"/>
+        <input type="text" id="slug" name="slug" value="{{ article.slug or '' }}" placeholder="&#xf0c1;*" required="required"/>
       </div>
       <div class="am-u-sm-1" style="padding:0px 15px 0px 0px">
-        <button class="am-btn am-btn-block" id="slug-test" {{ '' if slug else 'disabled' }}><span class="am-icon-question"> {{ _('Test') }}</span></button>
+        <button class="am-btn am-btn-block" id="slug-test" {{ '' if article.slug else 'disabled' }}><span class="am-icon-question"> {{ _('Test') }}</span></button>
       </div>
     </div>
 
@@ -69,7 +66,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="tag" class="am-u-sm-2 am-form-label">{{ _('Tag') }}:</label>
       <div class="am-u-sm-10">
-        <input type="text" id="tag" name="tag" value="{{ ','.join(tag) }}" placeholder="&#xf02c;">
+        <input type="text" id="tag" name="tag" value="{{ ','.join(article.tag) }}" placeholder="&#xf02c;">
       </div>
     </div>
 
@@ -78,30 +75,14 @@ i.am-icon-unchecked {
       <label class="am-u-sm-2 am-form-label">{{ _('Language') }}:</label>
       <div class="am-u-sm-10">
         <label class="am-radio-inline">
-          <input type="radio" name="language" value="zh" data-am-ucheck {{ 'checked' if lang != 'en' else '' }}>
+          <input type="radio" name="language" value="zh" data-am-ucheck {{ 'checked' if article.lang != 'en' else '' }}>
           {{ _('Chinese') }}
         </label>
         <label class="am-radio-inline">
-          <input type="radio" name="language" value="en" data-am-ucheck {{ 'checked' if lang == 'en' else '' }}>
+          <input type="radio" name="language" value="en" data-am-ucheck {{ 'checked' if article.lang == 'en' else '' }}>
           {{ _('English') }}
         </label>
-        <sub>| <a href="./?source={{ 'zh' if lang == 'en' else 'en' }}">{{ _('Load %s content') % _('Chinese' if lang == 'en' else 'English') }}</a></sub>
-      </div>
-    </div>
-
-    <!-- Author -->
-    <div class="am-form-group">
-      <label class="am-u-sm-2 am-form-label" for="author">{{ _('Author') }}:</label>
-      <div class="am-u-sm-10">
-        <input type="text" id="author" name="author" value="{{ author or '' }}" placeholder="None">
-      </div>
-    </div>
-
-    <!-- Email -->
-    <div class="am-form-group">
-      <label class="am-u-sm-2 am-form-label" for="email">{{ _('Email') }}:</label>
-      <div class="am-u-sm-10">
-        <input type="email" id="email" name="email" value="{{ email or '' }}" placeholder="None">
+        <sub>| <a href="./?source={{ 'zh' if article.lang == 'en' else 'en' }}">{{ _('Load %s content') % _('Chinese' if article.lang == 'en' else 'English') }}</a></sub>
       </div>
     </div>
 
@@ -110,25 +91,16 @@ i.am-icon-unchecked {
       <label class="am-u-sm-2 am-form-label" for="show_email">{{ _('Show email') }}:</label>
       <div class="am-u-sm-10">
         <label class="am-checkbox">
-          <input type="checkbox" id="show_email" name="show_email" data-am-ucheck {{ 'checked' if show_email else '' }}>
-        </label>
-      </div>
-    </div>
-
-    <div class="am-form-group">
-      <label class="am-u-sm-2 am-form-label" for="mirror">{{ _('Mirror Modify') }}:</label>
-      <div class="am-u-sm-10">
-        <label class="am-checkbox">
-          <input type="checkbox" id="mirror" name="mirror" data-am-ucheck>
+          <input type="checkbox" id="show_email" name="show_email" data-am-ucheck {{ 'checked' if user.show_email else '' }}>
         </label>
       </div>
     </div>
 
     <!-- article top image -->
     <div class="am-form-group">
-      <label for="headimg" class="am-u-sm-2 am-form-label">{{ _("Heading Image") }}:</label>
+      <label for="banner" class="am-u-sm-2 am-form-label">{{ _("Banner") }}:</label>
       <div class="am-u-sm-10">
-        <input type="text" id="headimg" name="headimg" value="{{ headimg or '' }}" placeholder="&#xf03e; (&#xe600;*)" />
+        <input type="text" id="banner" name="banner" value="{{ article.banner or '' }}" placeholder="&#xf03e; (&#xe600;*)" />
       </div>
     </div>
 
@@ -136,7 +108,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="cover" class="am-u-sm-2 am-form-label">{{ _("Cover Image") }}:</label>
       <div class="am-u-sm-10">
-        <input type="text" id="cover" name="cover" value="{{ cover or '' }}" placeholder="&#xf214;" />
+        <input type="text" id="cover" name="cover" value="{{ article.cover or '' }}" placeholder="&#xf214;" />
       </div>
     </div>
 
@@ -144,7 +116,7 @@ i.am-icon-unchecked {
     <div class="am-form-group">
       <label for="description" class="am-u-sm-2 am-form-label">{{ _("Introduction") }}:</label>
       <div class="am-u-sm-10">
-        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe601;)" />{{ description or '' }}</textarea>
+        <textarea type="text" id="description" name="description" placeholder="&#xf0f6; (&#xe601;)" />{{ article.description or '' }}</textarea>
       </div>
     </div>
 
@@ -179,7 +151,7 @@ i.am-icon-unchecked {
     <!-- Edit/Local Preview -->
     <div class="am-g">
       <div class="am-u-sm-12 am-u-md-6">
-        <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}" required="required">{{ content if content else '' }}</textarea>
+        <textarea class="am-form-field am-margin-horizontal" id="mdEditor" name="content" tabindex="0" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}" required="required">{{ article.content or '' }}</textarea>
       </div>
       <div class="am-u-sm-12 am-u-md-6">
         <div class="am-scrollable-vertical" id="preview"  data-lock="false">

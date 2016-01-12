@@ -1,15 +1,16 @@
-import sys
-import os
 import logging
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler, EnsureUser, EnsureSsl
-from lib.tool.tracemore import get_exc_plus
-sys.path.pop(0)
+from lib.hdlr.tomorrow.base import BaseHandler
 
 logger = logging.getLogger('tomorrow.blog')
 
+
 class BaseHandler(BaseHandler):
+
+    def render(self, template_name, **kwargs):
+        if 'user' not in kwargs:
+            kwargs['user'] = self.current_user
+
+        return super(BaseHandler, self).render(template_name, **kwargs)
 
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)

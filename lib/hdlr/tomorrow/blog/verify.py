@@ -9,7 +9,8 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from .base import EnsureSsl, BaseHandler
+from lib.hdlr.base import EnsureSsl
+from .base import BaseHandler
 
 import sys
 import os
