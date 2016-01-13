@@ -24,5 +24,6 @@ class ArticleHandler(BaseHandler):
         return self.render(
             'tomorrow/blog/article.html',
             article=article,
+            author=User(article.author),
             md2html=md2html
         )

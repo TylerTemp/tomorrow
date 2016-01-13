@@ -31,6 +31,10 @@ class BaseHandler(BaseHandler):
     tomorrow_secret = _app['secret']
     del _config, _app
 
+    def render(self, template, **kwargs):
+        kwargs.setdefault('user', self.current_user)
+        return super(BaseHandler, self).render(template, **kwargs)
+
     def get_source_name(self, link):
         sp = urlsplit(link)
         netloc = sp.netloc

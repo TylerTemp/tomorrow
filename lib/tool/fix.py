@@ -6,13 +6,18 @@ import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db.tomorrow import Article, User, db
+from lib.db.tomorrow import Article, User, db, Auth
 from lib.db.jolla import Article as JArticle, User as JUser, Author
+from lib.config import Config
 sys.path.pop(0)
 
 article = Article.collection
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
+
+config = Config()
+jolla_app = config.jolla_app
+assert jolla_app['key']
 
 def fix_myself():
     print('fix myself')
@@ -101,8 +106,17 @@ def get_my_id():
     j_u = JUser.by_source_id(JUser.TOMORROW, tmr_id)
     return j_u._id
 
+def fix_jolla_app():
+    auth = Auth()
+    auth.key = jolla_app['key']
+    auth.name = 'jolla中文博客'
+    auth.secret = jolla_app['secret']
+    auth.callback = jolla_app['callback']
+    auth.save()
+
 
 if __name__ == '__main__':
+    fix_jolla_app()
     JUser.collection.drop()
     JArticle.collection.drop()
     fix_jolla_author()
@@ -123,4 +137,3 @@ if __name__ == '__main__':
         else:
             # continue
             article.delete_one({'_id': each['_id']})
-            continue

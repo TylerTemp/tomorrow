@@ -12,7 +12,7 @@ except ImportError:
 
 from lib.db.tomorrow import Message, User
 from lib.tool.md import escape, md2html
-from .base import ItsMyself, BaseHandler
+from .base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.message')
 
@@ -22,7 +22,6 @@ class MessageHandler(BaseHandler):
     ERROR_SEND_TO_WHO = 2
 
     @tornado.web.authenticated
-    @ItsMyself('message/')
     def get(self, user):
 
         self.xsrf_token
@@ -61,7 +60,6 @@ class MessageHandler(BaseHandler):
         return time.strftime('%m月%d日，%H:%M', time.localtime(t))
 
     @tornado.web.authenticated
-    @ItsMyself('message/')
     def post(self, user):
 
         self.check_xsrf_cookie()

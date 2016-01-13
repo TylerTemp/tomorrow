@@ -38,12 +38,11 @@ class AuthorizeHandler(BaseHandler):
                        (quote(self.key, ''),
                         quote(code, '')))
 
-        if user is None:
+        if not user:
             self.to_login(confirm_url)
             return False
 
-        u = User(user)
-        authed = u.authed_app(self.key)
+        authed = user.authed_app(self.key)
         if not authed:
             self.redirect(confirm_url)
             return False
@@ -58,12 +57,12 @@ class AuthorizeHandler(BaseHandler):
         self.redirect('%s?%s' % (login_url, urlencode(param)))
 
     def set_code(self):
-        code = generate()
         auth = self.auth
-        user = self.current_user['user']
-        expire_at = auth.set_code(code, self.get_uid(user))
+        user = self.current_user
+        code = auth.generate_code()
+        expire_at = auth.set_code(code, user._id)
         auth.save()
-        self.clear_at(lambda: auth.clear_code(code), expire_at)
+        self.clear_at(lambda: auth.clear_code(code, True), expire_at)
         return code
 
     def redirect_to_callback(self, callback, code):

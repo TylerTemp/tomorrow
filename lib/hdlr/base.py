@@ -62,39 +62,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def static_path(self, url):
         return '//%s/static/%s' % (self.cfg.main_host, quote(url))
 
-    def get_current_user(self):
-        user = self.get_secure_cookie("user")
-
-        if user is None:
-            return None
-
-        user = user.decode('utf-8')
-        email = self.get_secure_cookie('email').decode('utf-8')
-        level = self.get_secure_cookie('type')
-        active = (True
-                  if self.get_secure_cookie('active').decode('utf-8') == 'true'
-                  else False)
-        service = self.get_secure_cookie('service')
-        return {'user': user, 'email': email, 'type': int(level),
-                'active': active,
-                'service':
-                    service.decode('utf-8').split('|') if service else ()}
-
-    def set_user(self, user, email, type, active, service=None,
-                 lang=None, temp=False):
-        if temp:
-            kwd = {'expires_days': None}
-        else:
-            kwd = {}
-        self.set_secure_cookie('user', user, **kwd)
-        self.set_secure_cookie('email', email, **kwd)
-        self.set_secure_cookie('type', str(type), **kwd)
-        self.set_secure_cookie('active', 'true' if active else 'false', **kwd)
-        if service:
-            self.set_secure_cookie('service', '|'.join(service))
-        if lang is not None:
-            self.set_cookie('lang', lang)
-
     def get_user_path(self, user):
         return os.path.join(rootdir, 'static', 'upload', user)
 
@@ -107,18 +74,6 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def is_ssl(self):
         return (self.request.protocol == 'https')
-
-    def get_user_locale(self):
-        code = self.get_argument('lang', self.get_cookie('lang', None))
-        if code is None:
-            return None
-        return tornado.locale.get(code)
-
-    def get_bool(self, name, default=False):
-        arg = self.get_argument(name, default)
-        if arg == 'false':
-            return False
-        return bool(arg)
 
     def _list_path(self, path):
         if not os.path.exists(path):

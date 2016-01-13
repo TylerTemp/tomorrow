@@ -4,7 +4,7 @@
 }
 
 #white-bg-box {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(242, 229, 255, 0.35);
 }
 
 article h1 {
@@ -19,7 +19,6 @@ article p img {
 
 #page-box {
   padding-top: 50px;
-  max-width: 750px;
 }
 
 video {
@@ -36,4 +35,17 @@ ruby {
 ruby > rt {
   font-style: italic;
   color: #4DB651;
+}
+
+.author-avatar {
+  max-width: 100px;
+  margin: 10px;
+}
+
+.author-container {
+  margin: 5px 20px 10px 20px;
+}
+
+.author-name {
+  margin: 0;
 }

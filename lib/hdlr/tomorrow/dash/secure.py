@@ -11,7 +11,7 @@ except ImportError:
 from lib.db.tomorrow import User, Message
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
-from .base import ItsMyself, BaseHandler
+from .base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.secure')
 
@@ -22,7 +22,6 @@ class SecureHandler(BaseHandler):
     ERROR_NOTHING_TO_SEND = 2
 
     @tornado.web.authenticated
-    @ItsMyself('secure/')
     def get(self, user):
 
         self.xsrf_token
@@ -40,7 +39,6 @@ class SecureHandler(BaseHandler):
         )
 
     @tornado.web.authenticated
-    @ItsMyself('secure/')
     # @tornado.web.asynchronous
     # @tornado.gen.engine
     def post(self, user):

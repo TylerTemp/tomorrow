@@ -8,31 +8,32 @@ logger = logging.getLogger('tomorrow.oauth2.confirm')
 class ConfirmHandler(BaseHandler):
 
     @tornado.web.authenticated
-    def get(self, app_key):
-        user_name = self.current_user['user']
-        logger.debug('get app %s for %s', app_key, user_name)
+    def get(self, app_key, temp_code=None):
+        user = self.current_user
+        logger.debug('get app %s for %s', app_key, user)
         auth = self.get_auth(app_key)
         app_name = auth.name
 
         return self.render(
             'tomorrow/oauth/confirm.html',
-            user_name=user_name,
+            user=user,
             app_name=app_name
         )
 
     @tornado.web.authenticated
-    def post(self, app_key):
-        user_name = self.current_user['user']
-        logger.debug('get app %s for %s', app_key, user_name)
+    def post(self, app_key, temp_code=None):
+        user = self.current_user
+        logger.debug('get app %s for %s', app_key, user)
         auth = self.get_auth(app_key)
-        user = User(user_name)
-        user.get().setdefault('app', []).append({'key': app_key})
+        user.app.append({'key': app_key})
         user.save()
 
-        if self.is_ajax():
-            self.write({'error': 0, 'redirect': auth.callback})
+        redirect = self.parse_callback(auth.callback, temp_code)
 
-        return self.redirect(auth.callback)
+        if self.is_ajax():
+            self.write({'error': 0, 'redirect': redirect})
+
+        self.redirect(redirect)
 
     def get_auth(self, app_key):
         auth = Auth(app_key)

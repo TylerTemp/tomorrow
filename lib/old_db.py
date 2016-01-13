@@ -821,17 +821,6 @@ class Auth(object):
         logger.warning('code %s of %s not found', code, self.name)
         return None
 
-    def clear_code(self, code):
-        logger.debug('clear code %s', code)
-        attrs = self.__dict__['__info__']
-        for index, each in enumerate(attrs['codes']):
-            if each['code'] == code:
-                attrs['codes'].pop(index)
-                return True
-        else:
-            logger.warning('code %s of %s not found', code, self.name)
-            return False
-
     def set_token(self, token, uid):
         tokens = self.tokens
         expire_at = time.time() + self.TOKEN_TIMEOUT

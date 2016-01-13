@@ -3,6 +3,7 @@ import functools
 import tornado.web
 from lib.db.tomorrow import User
 from lib.hdlr.base import BaseHandler
+import tornado.locale
 try:
     from urllib.parse import quote, urljoin
 except ImportError:
@@ -34,6 +35,17 @@ class BaseHandler(BaseHandler):
 
         return img_name_and_link, file_name_and_link
 
+    def get_user_locale(self):
+        arg = self.get_argument('lang', None)
+        if arg is not None:
+            return tornado.locale.get(arg)
+        current_user = self.current_user
+        if current_user is None:
+            return None
+        code = current_user.lang
+        if code is None:
+            return None
+        return tornado.locale.get(code)
 
 class EnsureUser(object):
     level2name = {

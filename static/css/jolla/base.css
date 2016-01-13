@@ -1,0 +1,40 @@
+body {
+    background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
+                      url("https://dn-jolla.qbox.me/blog_bg_base.jpg");
+    background-repeat: no-repeat, repeat;
+    background-size: 100% auto, auto auto;
+    background-position: right top;
+    background-color: #5BA2A1;
+}
+
+.am-offcanvas-bar .am-nav>li>a {
+  color:#ccc;
+  border-radius: 0;
+  border-top: 1px solid rgba(0,0,0,.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05)
+}
+
+.am-offcanvas-bar .am-nav>li>a:hover {
+  background: #404040;
+  color: #fff
+}
+
+.am-offcanvas-bar .am-nav>li.am-nav-header {
+  color: #777;
+  background: #404040;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  border-top: 1px solid rgba(0,0,0,.3);
+  font-weight: 400;
+  font-size: 75%
+}
+
+.am-offcanvas-bar .am-nav>li.am-active>a {
+  background: #1a1a1a;
+  color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,.3)
+}
+
+.am-offcanvas-bar .am-nav>li+li {
+  margin-top: 0;
+}

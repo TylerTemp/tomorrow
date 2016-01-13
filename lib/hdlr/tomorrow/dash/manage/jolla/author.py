@@ -10,13 +10,12 @@ except ImportError:
 
 from lib.hdlr.base import EnsureUser
 from lib.db import JollaAuthor, User, Jolla
-from ...base import BaseHandler, ItsMyself
+from ...base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.manage.jolla.post')
 
 class AuthorHandler(BaseHandler):
 
-    @ItsMyself('manage/jolla/author/')
     @EnsureUser(level=User.admin, active=True)
     def get(self, _=None):
         name = self.get_argument('name', None)

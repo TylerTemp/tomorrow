@@ -29,17 +29,14 @@ class GetTokenHandler(BaseHandler):
         if code_info['expire_at'] < time.time():
             raise tornado.web.HTTPError(500, 'Code expired')
 
-        token = generate()
+        token = auth.generate_token()
         expire_at = auth.set_token(token, code_info['uid'])
         self.clear_token(auth, token, expire_at)
 
-        u = User.init_by_id(code_info['uid'])
-        user_info = u.get()
-        name = user_info['user']
-        uid = user_info['_id']
+        user = User.by_id(code_info['uid'])
 
         result = {'token': token, 'expire_at': expire_at,
-                  'uid': str(uid), 'name': name}
+                  'uid': str(user._id), 'name': str(user)}
 
         logger.debug(result)
 

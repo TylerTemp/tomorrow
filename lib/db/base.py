@@ -17,7 +17,10 @@ class Base(object):
             return attrs[item]
 
         if item in default:
-            return default[item]
+            default_val = default[item]
+            if isinstance(default_val, (dict, list)):
+                attrs[item] = default_val = default_val.copy()  # re-bind
+            return default_val
 
         raise AttributeError('%r object has no attribute %r' %
                              (self.__class__.__name__, item))

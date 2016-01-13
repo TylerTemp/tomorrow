@@ -7,29 +7,20 @@ except ImportError:
     from urllib import unquote, quote
 
 from lib.db.tomorrow import User, Article, Message
-from .base import ItsMyself, BaseHandler
+from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.dash.dash')
+
+logger = logging.getLogger('tomorrow.dash.home')
 
 
 class DashboardHandler(BaseHandler):
 
-    @ItsMyself('')
     @tornado.web.authenticated
-    def get(self, user):
+    def get(self):
 
-        url_user = unquote(user)
+        user = self.current_user
 
-        user_info = self.current_user
-
-        user = User(user_info['user'])
-        user_info = user.get()
-        user_name = user_info['user']
-
-        verify_mail = ('verify' in user_info and
-                       user_info['verify']['for'] == user.NEWUSER)
-
-        folder_path = self.get_user_path(user_name)
+        folder_path = self.get_user_path(user.name)
         file_path = os.path.join(folder_path, 'file')
         if os.path.exists(file_path):
             file_num = len(os.listdir(file_path))
@@ -43,15 +34,9 @@ class DashboardHandler(BaseHandler):
 
         return self.render(
             'tomorrow/admin/dash/home.html',
-            user_email=user_info['email'],
-            showe_mail=user_info['show_email'],
-            active=user_info['active'],
-            verify_mail=verify_mail,
-            user_type=user_info['type'],
-            user_img=user_info.get('img', None),
-
-            article_num=Article.num_by(user_name),
+            user=user,
+            article_num=Article.by(user.name).count(),
             file_num=file_num,
             img_num=img_num,
-            msg_num=Message.num_to(user_name)
+            msg_num=0
         )

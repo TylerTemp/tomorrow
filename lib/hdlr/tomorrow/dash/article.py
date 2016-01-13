@@ -13,7 +13,7 @@ except ImportError:
 from lib.db.tomorrow import Article
 from lib.tool.md import md2html
 from lib.config import Config
-from .base import BaseHandler, ItsMyself
+from .base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.secure')
 
@@ -22,7 +22,6 @@ class ArticleHandler(BaseHandler):
     JOLLA_HOST = Config().jolla_host
 
     @tornado.web.authenticated
-    @ItsMyself('article/')
     def get(self, user):
 
         return self.render(
@@ -33,7 +32,6 @@ class ArticleHandler(BaseHandler):
         )
 
     @tornado.web.authenticated
-    @ItsMyself('article/')
     def post(self, user):
         self.check_xsrf_cookie()
 

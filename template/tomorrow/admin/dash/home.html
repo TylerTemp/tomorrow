@@ -7,15 +7,15 @@
 {% end %}
 
 {% block content %}
-{% if user_type == ADMIN %}
+{% if user.type == user.ADMIN %}
   {% set type_name = _("Administor") %}
-{% elif user_type == ROOT %}
+{% elif user.type == user.ROOT %}
   {% set type_name = _("Super User") %}
 {% else %}
   {% set type_name = _("friend") %}
 {% end %}
 
-{% if not active %}
+{% if not user.active %}
 <div class="am-g">
   <div class="am-u-sm-12 am-alert am-alert-warning" data-am-alert>
     <button type="button" class="am-close">&times;</button>
@@ -24,7 +24,7 @@
 </div>
 {% end %}
 
-{% if verify_mail %}
+{% if user.verify['for'] & user.NEWUSER %}
 <div class="am-g">
   <div class="am-u-sm-12 am-alert am-alert-success" data-am-alert>
     <button type="button" class="am-close">&times;</button>
@@ -38,28 +38,28 @@
 <div class="am-g am-padding admin-content-list">
   <div class="am-u-sm-12 am-u-md-3">
     <p>
-      <img class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+      <img class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user.photo if user.photo else '/static/img/user.jpg'}}" alt="Avatar of {{ user }}">
     </p>
   </div>
   <div class="am-u-sm-12 am-u-md-9">
-    <h2>{{ _("Hi %(user)s, my %(type)s, welcome back") % {'user': user_name, 'type': type_name} }} :)</h2>
+    <h2>{{ _("Hi {user}, my {type}, welcome back").format(user=user, type=type_name) }} :)</h2>
     <table class="am-table am-table-striped am-table-hover am-table-compact">
       <tbody>
         <tr>
           <td class="am-primary" style="width:30%"><span class="am-icon-user"> {{ _("Name") }}</span></td>
-          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/secure/">{{ user_name }}</a></td>
+          <td style="width:70%"><a class="am-link-muted" href="/dashboard/secure/">{{ user }}</a></td>
         </tr>
         <tr>
           <td class="am-primary" style="width:30%"><span class="am-icon-envelope"> {{ _("Email") }}</span></td>
-          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/secure/">{{ user_email }}</a></td>
+          <td style="width:70%"><a class="am-link-muted" href="/dashboard/secure/">{{ user.email or '' }}</a></td>
         </tr>
         <tr>
           <td class="am-primary" style="width:30%"><span class="am-icon-eye"> {{ _("Show My Email") }}</span></td>
-          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/info/"><span class="{{ 'am-icon-check' if showe_mail else 'am-icon-times' }}"></span></a></td>
+          <td style="width:70%"><a class="am-link-muted" href="/dashboard/info/"><span class="{{ 'am-icon-check' if user.show_email else 'am-icon-times' }}"></span></a></td>
         </tr>
         <tr>
           <td class="am-primary" style="width:30%"><span class="am-icon-instagram"> {{ _("Avatar") }}</span></td>
-          <td style="width:70%"><a class="am-link-muted" href="{{ main_url }}/info/">{% raw '<span class="am-icon-check"></span>' if user_img else '<span class="am-icon-times"> (%s)</span>' % _('Not Set') %}</a></td>
+          <td style="width:70%"><a class="am-link-muted" href="/dashboard/info/">{% raw '<span class="am-icon-check"></span>' if user.photo else '<span class="am-icon-times"> (%s)</span>' % _('Not Set') %}</a></td>
         </tr>
       </tbody>
     </table>
@@ -68,9 +68,9 @@
 
 <!-- collection -->
 <ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
-  <li><a href="{{ main_url }}/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
-  <li><a href="{{ main_url }}/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>{{ msg_num }}</a></li>
-  <li><a href="{{ main_url }}/img/" class="am-text-danger"><span class="am-icon-btn am-icon-image"></span><br/>{{ _("Images") }}<br/>{{ img_num }}</a></li>
-  <li><a href="{{ main_url }}/file/" class="am-text-secondary"><span class="am-icon-btn am-icon-folder-o"></span><br/>{{ _("Files") }}<br/>{{ file_num }}</a></li>
+  <li><a href="/dashboard/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
+  <li><a href="/dashboard/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>{{ msg_num }}</a></li>
+  <li><a href="/dashboard/img/" class="am-text-danger"><span class="am-icon-btn am-icon-image"></span><br/>{{ _("Images") }}<br/>{{ img_num }}</a></li>
+  <li><a href="/dashboard/file/" class="am-text-secondary"><span class="am-icon-btn am-icon-folder-o"></span><br/>{{ _("Files") }}<br/>{{ file_num }}</a></li>
 </ul>
 {% end %}

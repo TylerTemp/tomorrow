@@ -18,7 +18,7 @@
 <div class="am-g am-padding">
   <div class="am-u-sm-12 am-u-md-3">
     <p>
-      <img id="avatar" class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user_img if user_img else '/static/img/user.jpg'}}" alt="Avatar of {{ user_name }}">
+      <img id="avatar" class="am-circle am-img-thumbnail am-img-responsive" id="userimg" src="{{ user.photo if user.photo else '/static/img/user.jpg'}}" alt="Avatar of {{ user }}">
     </p>
   </div>
   <form class="am-form am-u-sm-12 am-u-md-9" action="{{ request.uri }}"  method="POST">
@@ -31,17 +31,17 @@
 
     <!--Name-->
     <div class="am-form-group">
-      <label><span class="am-icon-user"> {{ _("Name") }}</span></label>: {{ user_name }} &nbsp; &nbsp; &nbsp;<a class="am-btn  am-btn-default" href="{{ main_url }}/secure/">{{ _("Change") }}</a>
+      <label><span class="am-icon-user"> {{ _("Name") }}</span></label>: {{ user }} &nbsp; &nbsp; &nbsp;<a class="am-btn  am-btn-default" href="/dashboard/secure/">{{ _("Change") }}</a>
     </div>
 
     <!--User Group-->
     <div class="am-form-group">
       <label><span class="am-icon-users"> {{ _("User Group") }}</span></label>:
-      {% if user_type == NORMAL %}
+      {% if user.type == user.NORMAL %}
         {{ _("User") }}
-      {% elif user_type == ADMIN %}
+      {% elif user.type == user.ADMIN %}
         {{ _("Administor") }}
-      {% elif user_type == ROOT %}
+      {% elif user.type == user.ROOT %}
         {{ _("Root") }}
       {% else %}
         ???
@@ -53,7 +53,7 @@
       <label class="am-icon-child">
         {{ _("Active") }}:
       </label>
-      <span class="{{ 'am-text-success am-icon-check' if active else 'am-text-danger am-icon-times' }}"></span>
+      <span class="{{ 'am-text-success am-icon-check' if user.active else 'am-text-danger am-icon-times' }}"></span>
     </div>
 
     <!--Email-->
@@ -63,19 +63,19 @@
           {{ _("Email") }}
         </span>
       </label>:
-      {{ user_email }} &nbsp; &nbsp; &nbsp;
-      <a class="am-btn am-btn-default" href="{{ main_url }}/secure/">{{ _("Change") }}</a>
+      {{ user.email }} &nbsp; &nbsp; &nbsp;
+      <a class="am-btn am-btn-default" href="/dashboard/secure/">{{ _("Change") }}</a>
     </div>
 
     <!--Show Email-->
     <div class="am-form-group">
       <label for="show_email">
-        <span class="{{ 'am-icon-eye' if show_email else 'am-icon-eye-slash' }}">
+        <span class="{{ 'am-icon-eye' if user.show_email else 'am-icon-eye-slash' }}">
           {{ _("Show Email") }}
         </span>
       </label>:
       <label class="am-checkbox-inline">
-        <input id="show_email" name="show_email" type="checkbox" value="show_email" data-am-ucheck {{ 'checked' if show_email else ''}}>
+        <input id="show_email" name="show_email" type="checkbox" value="show_email" data-am-ucheck {{ 'checked' if user.show_email else ''}}>
         {{ _("Show my email when someone visits my homepage") }}
       </label>
     </div>
@@ -88,11 +88,11 @@
         </span>
       </label>:
       <label class="am-checkbox-inline">
-        <input name="intro_in_home" type="checkbox" data-am-ucheck {{ 'checked' if intro['show_in_home'] else '' }}>
+        <input name="intro_in_home" type="checkbox" data-am-ucheck {{ 'checked' if user.intro['zh'] else '' }}>
         <span class="am-icon-home"> {{ _('My Home Page') }}</span>
       </label>
       <label class="am-checkbox-inline">
-        <input name="intro_in_article" type="checkbox" data-am-ucheck {{ 'checked' if intro['show_in_article'] else '' }}>
+        <input name="intro_in_article" type="checkbox" data-am-ucheck {{ 'checked' if user.intro['show_in_article'] else '' }}>
         <span class="am-icon-list-alt"> {{ _('My Articles') }}</span>
       </label>
     </div>
@@ -105,27 +105,27 @@
         </span>
       </label>:
       <label class="am-checkbox-inline">
-        <input name="donate_in_home" type="checkbox" data-am-ucheck {{ 'checked' if donate['show_in_home'] else '' }}>
+        <input name="donate_in_home" type="checkbox" data-am-ucheck {{ 'checked' if user.donate['show_in_home'] else '' }}>
         <span class="am-icon-home"> {{ _('My Home Page') }}</span>
       </label>
       <label class="am-checkbox-inline">
-        <input name="donate_in_article" type="checkbox" data-am-ucheck {{ 'checked' if donate['show_in_article'] else '' }}>
+        <input name="donate_in_article" type="checkbox" data-am-ucheck {{ 'checked' if user.donate['show_in_article'] else '' }}>
         <span class="am-icon-list-alt"> {{ _('My Articles') }}</span>
       </label>
     </div>
 
     <!-- Avatar -->
     <div class="am-form-group">
-      <label for="url-avatar"><span class="am-icon-instagram"> {{ _(("Change" if user_img else "Set") + " Avatar (URL)") }}:</span></label>
-      <input type="text" id="url-avatar" name="img_url" placeholder="{{ _("Enter the url of your avatar image") }}" value="{{ user_img if user_img else ''}}">
+      <label for="url-avatar"><span class="am-icon-instagram"> {{ _(("Change" if user.photo else "Set") + " Avatar (URL)") }}:</span></label>
+      <input type="text" id="url-avatar" name="img_url" placeholder="{{ _("Enter the url of your avatar image") }}" value="{{ user.photo or ''}}">
       <button class="am-btn am-btn-default am-btn-xs" id="preview-avatar">{{ _("Preview") }}</button>
       <small>
-        {{ _("You havn't set avatar yet") if not user_img else "" }}
-        {% if user_type == NORMAL %}
+        {{ _("You havn't set avatar yet") if not user.photo else "" }}
+        {% if user.type == user.NORMAL %}
           {{ _("Enter the url of your avatar image") }}
         {% else %}
           {% raw _('Need upload? Visit "{a}Gallery{a_end}" panel').format(
-                   a='<a href="%s">' % main_url, a_end='</a>') %}
+                   a='<a href="/dashboard/img/">', a_end='</a>') %}
         {% end %}
       </small>
     </div>
@@ -134,7 +134,7 @@
     <div class="am-form-group">
       <label for="intro" class="am-icon-info"> {{ _('My Introduction') }}:</label>
       <textarea id="intro" name="intro" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
-        {{ intro['content'] or '' }}</textarea>
+        {{ user.intro['zh'] or '' }}</textarea>
       <small>You can write in <span class="iconfont icon-md-solid">Markdown</span> combining some HTML tags</small>
     </div>
 
@@ -142,15 +142,8 @@
     <div class="am-form-group">
       <label for="donate" class="am-icon-credit-card"> {{ _('My Donating information') }}:</label>
       <textarea id="donate" name="donate" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
-        {{ donate['new'] or '' }}</textarea>
-      <small>You can write in <span class="iconfont icon-md-solid">Markdown</span>, HTML &amp; Javascript but it requires administer's verification each time you modify it</small><br />
-      <small>Your donate information status:
-        {% if donate['info'] %}
-          {% raw donate['info'] %}
-        {% else %}
-          <span class="am-icon-check am-text-success"></span>
-        {% end %}
-      </small>
+        {{ user.donate['zh'] or '' }}</textarea>
+      <small>You can write in <span class="iconfont icon-md-solid">Markdown</span>, HTML &amp; Javascript but it requires administer's verification each time you modify it</small>
     </div>
     <div id="error-panel">
     </div>

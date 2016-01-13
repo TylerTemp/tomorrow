@@ -67,7 +67,7 @@ var enterSubmit = function(evt)
 };
 
 
-$(document).ready(function(){
+$(function(){
   var user = $("#user-or-email");
   var pwd = $("#pwd");
   var remember = $("#remember-me");

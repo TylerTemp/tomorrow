@@ -13,7 +13,7 @@ from lib.hdlr.base import EnsureSsl
 from lib.db.tomorrow import User, Message, Article
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
-from ..base import BaseHandler, ItsMyself
+from ..base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.manage.jolla.post')
 
@@ -27,7 +27,6 @@ class UserHandler(BaseHandler):
         r'|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-][a-zA-Z0-9\u4e00-\u9fa5_\ \-]'
         r'|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]{3,100}$')
 
-    @ItsMyself('manage/user/')
     # @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
     def get(self, user=None):
@@ -38,7 +37,6 @@ class UserHandler(BaseHandler):
             ROOT=User.root,
         )
 
-    @ItsMyself('manage/user/')
     # @EnsureUser(level=User.root, active=True)
     @EnsureSsl(permanent=True)
     def post(self, user=None):

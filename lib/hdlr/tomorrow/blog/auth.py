@@ -2,6 +2,7 @@ import tornado.web
 import tornado.gen
 import logging
 import re
+import json
 try:
     from urllib.parse import quote
     from urllib.parse import urlencode
@@ -109,7 +110,7 @@ class LoginHandler(_Handler):
         redirect = redirect or '/'
         result['redirect'] = redirect
         logger.debug(result)
-        return self.write(result)
+        return self.write(json.dumps(result))
 
 
 class SigninHandler(_Handler):
@@ -178,7 +179,7 @@ class SigninHandler(_Handler):
 
         if self.is_ajax():
             result['redirect'] = redirect
-            self.write(result)
+            self.write(json.dumps(result))
             self.finish()
         else:
             # ok

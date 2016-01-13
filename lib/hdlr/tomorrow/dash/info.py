@@ -9,7 +9,7 @@ except ImportError:
 from lib.db.tomorrow import User
 from lib.config import Config
 from lib.tool.unitsatisfy import unit_satisfy
-from .base import ItsMyself, BaseHandler
+from .base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.info')
 
@@ -18,29 +18,23 @@ class InfoHandler(BaseHandler):
     config = Config()
 
     @tornado.web.authenticated
-    @ItsMyself('info/')
-    def get(self, user):
+    def get(self):
 
-        user = User(self.current_user['user'])
-        user_info = user.get()
-        size_limit = self.config.size_limit[user_info['type']]
+        user = self.current_user
+
+        size_limit = self.config.size_limit[user.type]
+
         if size_limit != float('inf'):
             size_limit = '%.2f %s' % unit_satisfy(size_limit)
 
         return self.render(
             'tomorrow/admin/dash/info.html',
-            user_img=user_info.get('img', None),
-            user_email=user_info['email'],
-            show_email=user_info['show_email'],
-            intro=user_info['intro'],
-            donate=user_info['donate'],
+            user=user,
             size_limit=size_limit,
-            active=user_info['active'],
         )
 
     @tornado.web.authenticated
-    @ItsMyself('info/')
-    def post(self, user):
+    def post(self):
 
         self.check_xsrf_cookie()
 

@@ -1,6 +1,6 @@
 import logging
 import tornado.ioloop
-from lib.hdlr.base import BaseHandler
+from lib.hdlr.tomorrow.base import BaseHandler
 from lib.config import Config
 from lib.db.tomorrow import User
 try:

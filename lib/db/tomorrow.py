@@ -1,5 +1,6 @@
 import pymongo
 import logging
+import time
 from passlib.hash import sha256_crypt
 from bson import ObjectId
 # import sys
@@ -44,7 +45,7 @@ class User(Base):
         'photo': None,
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
-        'verify': {},  # {'for': int, 'code': str, 'expire': float}
+        'verify': {'for': 0, 'code': None, 'expire': None},
         'lang': None,
         '_id': None
     }
@@ -69,16 +70,6 @@ class User(Base):
     def __getattr__(self, item):
         if item == 'language':
             return self.__dict__['language']
-        default = self._default
-        attrs = self.__dict__['__info__']
-
-        if item not in attrs and item in default:
-            default_val = default[item]
-            if default_val == {}:
-                attrs[item] = default_val = {}  # re-bind to a new dict
-            elif default_val == []:
-                attrs[item] = default_val = []
-            return default_val
 
         return super(User, self).__getattr__(item)
 
@@ -113,6 +104,12 @@ class User(Base):
 
         return super(User, self)._validate_attrs()
 
+    def _before_save(self):
+        attrs = self.__dict__['__info__']
+        if not attrs.get('verify', None):
+            attrs.pop('verify', None)
+        return super(User, self)._before_save()
+
     def check_pwd(self, pwd):
         return sha256_crypt.verify(pwd, self.pwd)
 
@@ -140,6 +137,12 @@ class User(Base):
         }
         if expire is not None:
             self.verify['expire'] = expire
+
+    def get(self, item):
+        lang = self.lang
+        target = getattr(self, item)
+        other = 'en' if lang == 'zh' else 'zh'
+        return target.get(lang, None) or target.get(other, None)
 
     @classmethod
     def by_code(cls, code):
@@ -273,6 +276,10 @@ class Article(Base):
         return attrs.get(lang, False)
 
     @classmethod
+    def by(self, author):
+        return self.collection.find({'author': author})
+
+    @classmethod
     def all(cls, offset=0, limit=None):
         result = cls.collection.find({}).sort(
             (
@@ -289,4 +296,76 @@ class Message(Base):
 
 
 class Auth(Base):
-    pass
+    collection = db.auth
+    CODE_TIMEOUT = 60 * 10
+    TOKEN_TIMEOUT = 60 * 60 * 24
+
+    _default = {
+        '_id': None,
+        'key': None,
+        'secret': None,
+        'name': None,
+        'callback': None,
+        'image': None,
+        'codes': [],  # [{'code': '', 'expire_at': time.time, 'uid': '...'}, ...]
+        'tokens': [],  # [{'token': '', 'expire_at': '...', 'uid': '...'}]
+    }
+
+    def __init__(self, key=None):
+        super(Auth, self).__init__()
+        if key:
+            result = self.collection.find_one({'key': key})
+            self.update(result)
+
+    def generate_code(self):
+        collection = self.collection
+        while True:
+            code = generate()
+            if not collection.find_one({'codes.code': code}):
+                return code
+
+    def set_code(self, code, uid):
+        expire_at = time.time() + self.CODE_TIMEOUT
+        self.codes.append({'code': code, 'expire_at': expire_at, 'uid': uid})
+        return expire_at
+
+    def get_code(self, code):
+        for each in self.codes:
+            if each['code'] == code:
+                return each
+
+        logger.warning('code %s of %s not found', code, self.name)
+        return None
+
+    def clear_code(self, code, save=False):
+        logger.debug('clear code %s', code)
+        to_delete = []
+        for index, each in enumerate(self.codes):
+            if each['code'] == code:
+                to_delete.append(index)
+
+        if not to_delete:
+            logger.warning('code %s of %s not found', code, self.name)
+            return False
+
+        for each in to_delete[::-1]:
+            self.codes.pop(each)
+
+        if save:
+            self.save()
+
+        return True
+
+    def generate_token(self):
+        collection = self.collection
+        while True:
+            token = generate()
+            if not collection.find_one({'tokens.token': token}):
+                return token
+
+    def set_token(self, token, uid):
+        tokens = self.tokens
+        expire_at = time.time() + self.TOKEN_TIMEOUT
+        tokens.append({'token': token, 'expire_at': expire_at, 'uid': uid})
+        return expire_at
+

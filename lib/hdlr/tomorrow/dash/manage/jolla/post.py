@@ -7,7 +7,7 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from ...base import BaseHandler, ItsMyself
+from ...base import BaseHandler
 from lib.hdlr.base import EnsureUser
 from lib.db import Article, Jolla, User
 
@@ -16,8 +16,7 @@ logger = logging.getLogger('tomorrow.dash.manage.jolla.post')
 
 class PostHandler(BaseHandler):
 
-    @ItsMyself('manage/jolla/post/')
-    @EnsureUser(level=User.admin, active=True)
+    @EnsureUser(level=User.ADMIN, active=True)
     def get(self, user):
         self.xsrf_token
         id = self.get_argument('id', None)
@@ -95,8 +94,7 @@ class PostHandler(BaseHandler):
             trans['index'] = result['priority']
             article.save()
 
-    @ItsMyself('manage/jolla/')
-    @EnsureUser(level=User.admin, active=True)
+    @EnsureUser(level=User.ADMIN, active=True)
     def post(self, user):
         self.check_xsrf_cookie()
 

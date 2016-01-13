@@ -9,37 +9,6 @@
 {% end %}
 
 {% block stomach %}
-<div class="am-g-fixed am-g-fixed am-g-collapse am-u-sm-centered">
-  <div class="am-u-sm-12 am-margin-left" style="color: #fff">
-    <a class="am-text-sm am-btn-link" style="color: #fff" href="//{{ MAIN_HOST }}/">&laquo; tomorrow</a>
-  </div>
-</div>
-
-<header>
-  <div class="am-margin am-text-center">
-    <a href="/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
-  </div>
-</header>
-
-<div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
-  <div class="am-g am-margin-horizontal-xs" id="bread-crumbs">
-    <div class="am-cf">
-
-      <div class="am-dropdown am-fr" data-am-dropdown  data-role="switch-lang-dropper">
-        <button class="am-btn am-btn-link am-dropdown-toggle am-btn-sm" style="color: #fff"><span class="am-icon-globe"> 语言/Language</span> <span class="am-icon-caret-down"></span></button>
-        <ul class="am-dropdown-content">
-          <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}">
-            <a href="./?lang=zh" data-role="switch-lang" data-lang="zh" style="color: #000"><span class="am-badge am-badge-success">zh-CN</span> 中文/Chinese</a>
-          </li>
-          <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}">
-            <a href="./?lang=en" data-role="switch-lang" data-lang="en" style="color: #000"><span class="am-badge am-badge-success">en-US</span> 英文/English</a>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-
   <!-- first article -->
   {% set first = next(articles) %}
   <!-- horizontal blog box -->
@@ -111,10 +80,13 @@
   </ul>
 <div class="am-cf am-margin-horizontal-xs">
   {% if this_page != 1 %}
-  <a href="/page/{{ this_page - 1}}/" class="am-fl am-btn-link" style="color: #fff">&laquo; {{ _('Prev Page') }}</a>
+  <a href="/page/{{ this_page - 1}}/" class="am-fl am-btn-link white-text">&laquo; {{ _('Prev Page') }}</a>
   {% end %}
   {% if has_next_page %}
-  <a href="/page/{{ this_page + 1 }}/" class="am-fr am-btn-link" style="color: #fff">{{ _('Next Page') }} &raquo;</a>
+  <a href="/page/{{ this_page + 1 }}/" class="am-fr am-btn-link white-text">{{ _('Next Page') }} &raquo;</a>
   {% end %}
 </div>
+{% end %}
+
+{% block leg %}
 {% end %}

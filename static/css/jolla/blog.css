@@ -13,6 +13,10 @@ img.cover-img {
   background-color: #fff !important;
 }
 
+.white-text {
+  color: #fff;
+}
+
 #bread-crumbs {
   color: #fff;
 }
