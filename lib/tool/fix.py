@@ -2,12 +2,13 @@
 # this file is to adjust the data in database
 
 import logging
+import pymongo
 import sys
 import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User, db, Auth
-from lib.db.jolla import Article as JArticle, User as JUser, Author
+from lib.db.jolla import Article as JArticle, User as JUser, Author, Source
 from lib.config import Config
 sys.path.pop(0)
 
@@ -114,8 +115,28 @@ def fix_jolla_app():
     auth.callback = jolla_app['callback']
     auth.save()
 
+def fix_jolla_source():
+    old_source = db.jolla.find({}).sort(
+            (('index', pymongo.ASCENDING),
+             ('createtime', pymongo.DESCENDING)
+            ))
+    for old in old_source:
+        print(old['title'])
+        print(old['trusted_translation'])
+        s = Source(old['link'])
+        s.title = old['title']
+        s.author = old['author']
+        s.banner = old['headimg']
+        s.cover = old['cover']
+        s.create_time = old['createtime']
+        s.tag = old['tag']
+        s.translated = old['trusted_translation']
+        s.save()
+        db.jolla.delete_one({'_id': old['_id']})
+
 
 if __name__ == '__main__':
+    fix_jolla_source()
     fix_jolla_app()
     JUser.collection.drop()
     JArticle.collection.drop()
@@ -130,7 +151,7 @@ if __name__ == '__main__':
         if each['board'] == 'blog':
             # continue
             fix_blog_article(each)
-            
+
         elif each['board'] == 'jolla':
             # continue
             fix_jolla_article(each, my_id)

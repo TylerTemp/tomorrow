@@ -31,7 +31,7 @@ class GetTokenHandler(BaseHandler):
 
         token = auth.generate_token()
         expire_at = auth.set_token(token, code_info['uid'])
-        self.clear_token(auth, token, expire_at)
+        self.do_at(lambda: auth.clear_token(token), expire_at)
 
         user = User.by_id(code_info['uid'])
 
@@ -41,11 +41,3 @@ class GetTokenHandler(BaseHandler):
         logger.debug(result)
 
         return self.write(result)
-
-    def clear_token(self, auth, token, expire_at):
-        logger.debug('clear at %s', expire_at)
-        tornado.ioloop.IOLoop.instance().add_timeout(
-            expire_at,
-            auth.clear_token,
-            token
-        )

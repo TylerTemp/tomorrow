@@ -89,9 +89,17 @@ class BaseHandler(BaseHandler):
         if user is not None:
             self.set_secure_cookie('user', user)
 
+    def logout(self):
+        self.clear_cookie('source')
+        self.clear_cookie('uid')
+        self.clear_cookie('token')
+        self.clear_cookie('expire_at')
+        self.clear_cookie('user')
+
     def get_current_user(self):
         source = self.get_secure_cookie('source', None)
         if source is None:
+            logger.debug('no source')
             return None
         uid = self.get_secure_cookie('uid').decode('utf-8')
         user = self.get_secure_cookie('user').decode('utf-8')

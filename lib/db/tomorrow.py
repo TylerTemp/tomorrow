@@ -369,3 +369,22 @@ class Auth(Base):
         tokens.append({'token': token, 'expire_at': expire_at, 'uid': uid})
         return expire_at
 
+    def clear_token(self, token, save=False):
+        logger.debug('clear token %s', code)
+        to_delete = []
+        for index, each in enumerate(self.codes):
+            if each['code'] == code:
+                to_delete.append(index)
+
+        if not to_delete:
+            logger.warning('code %s of %s not found', code, self.name)
+            return False
+
+        for each in to_delete[::-1]:
+            self.codes.pop(each)
+
+        if save:
+            self.save()
+
+        return True
+

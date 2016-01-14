@@ -3,26 +3,16 @@ import logging
 import json
 import time
 try:
-    from urllib.parse import quote
-    from urllib.parse import unquote
-    from urllib.parse import urljoin
-    from urllib.parse import urlsplit
+    from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 except ImportError:
     from urllib import quote
-    from urlparse import unquote, urljoin, urlsplit
+    from urlparse import unquote, urljoin, urlsplit, urlunsplit
 
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
+from .base import BaseHandler
 from lib.config import Config
-from lib.tool.md import md2html
 from lib.tool.md import html2md
 from lib.tool.md import escape
-# from lib.hdlr.base import EnsureUser
-from lib.db.jolla import Article, User
-sys.path.pop(0)
+from lib.db.jolla import Source, User
 
 cfg = Config()
 logger = logging.getLogger('tomorrow.jolla.task')
@@ -30,131 +20,68 @@ logger = logging.getLogger('tomorrow.jolla.task')
 
 class TaskHandler(BaseHandler):
 
-    # @EnsureUser(level=User.admin, active=True)
-    def get(self, urlslug=None):
+    @tornado.web.authenticated
+    def get(self):
         self.xsrf_token
-        user_info = self.get_current_user()
-        username = user_info['user']
-        usertype = user_info['type']
 
-        imgs, files = self.get_imgs_and_files(
-            username, usertype)
-
-        if urlslug is not None:
-            article = Jolla.find_slug(unquote(urlslug))
-            if article is None:
+        link = self.get_argument('source', None)
+        if link is not None:
+            source = Source(link)
+            if not source:
                 raise tornado.web.HTTPError(
-                    404, "article %s not found" % urlslug)
+                    404, "source %r not found" % link)
         else:
-            article = None
+            source = Source()
 
-        if article is not None:
-            title = article['title']
-            author = article['author']
-            md = article['content']
-            html = md2html(md)
-            headimg = article['headimg']
-            link = article['link']
-            cover = article.get('cover', '')
-            slug = article['slug'] or ''
-            tag = article['tag']
-            # description = article.get('description', '')
-        elif urlslug is not None:
-            raise tornado.web.HTTPError(404, "task %s not found" % urlslug)
-        else:
-            title = author = md = html = headimg = link = cover = slug = ''
-            tag = []
-            # description = slug = ''
-
-        use_md = self.get_argument('md', False)
-        content = md if use_md else html
-
-        return self.render(
+        return super(TaskHandler, self).render(
             'jolla/task.html',
-            imgs=imgs,
-            files=files,
-
-            title=title,
-            author=author,
-            headimg=headimg,
-            cover=cover,
-            # html=html,
-            # md=md,
-            # description=description,
-            content=content,
-            link=link,
-            slug=slug,
-            tag=tag,
-
-            img_upload_url='/am/%s/img/' % quote(username),
-            file_upload_url='/am/%s/file/' % quote(username),
-            size_limit=cfg.size_limit[usertype],
-
-            nav_active='jolla_task',
-            use_md=use_md
+            source=source
         )
 
-    # @EnsureUser(level=User.admin, active=True)
+    @tornado.web.authenticated
     def post(self, urlslug=None):
-        logger.debug('post...')
         self.check_xsrf_cookie()
-        link = self.get_argument('link')
-        title = self.get_argument('title')
-        author = self.get_argument('author')
-        content = self.get_argument('content')
-        format = self.get_argument('format')
-        headimg = self.get_argument('headimg', None) or None
-        cover = self.get_argument('cover', None) or None
-        slug = self.get_argument('slug', None) or None
-        tag = [x.strip() for x in self.get_argument('tag', '').split(',')]
+        url_link = self.get_argument('source', None)
 
-        sp = urlsplit(link)
-        if not sp.netloc:
-            link = 'http://' + link
+        link = self.formal_link(self.get_argument('link'))
+        title = self.get_argument('title', '').strip() or None
+        author = self.get_argument('author', '').strip() or None
+        banner = self.get_argument('banner', '').strip() or None
+        cover = self.get_argument('cover', '').strip() or None
+        slug = self.get_argument('slug', '').strip() or None
+        tags = []
+        for tag in self.get_argument('tag', '').split(','):
+            this_tag = tag.strip()
+            if this_tag and this_tag not in tags:
+                tags.append(this_tag)
 
-        if format == 'md':
-            if self.current_user['type'] < User.root:
-                logger.debug('escape for md')
-                content = escape(content)
-        # 'html'
-        elif self.current_user['type'] < User.root:
-            logger.debug('html -> md')
-            content = html2md(content)
-
-        if urlslug is None:
-            article = Jolla()
-            article.set(article.find_link(link))
+        if url_link is not None:
+            source = Source(url_link)
+            if not source:
+                raise tornado.web.HTTPError(
+                    404, 'source %r not found' % url_link)
         else:
-            article = Jolla(unquote(urlslug))
+            source = Source(link)
+            if source:
+                raise tornado.web.HTTPError(
+                    409, 'source %r exists' % link)
 
-        new_task = article.new
-        if new_task:
-            article.add(link, title, author, content,
-                        slug=slug, headimg=headimg, cover=cover, index=None,
-                        tag=tag)
-        else:
-            article.get().update({
-                'link': link,
-                'title': title,
-                'author': author,
-                'content': content,
-                'slug': slug,
-                'headimg': headimg,
-                'cover': cover,
-                'edittime': time.time(),
-                'tag': tag
-            })
-        article.save()
+        source.title = title
+        source.author = author
+        source.banner = banner
+        source.cover = cover
+        source.slug = slug
+        source.tag = tags
+        source.save()
+        return self.write(json.dumps(
+                {'error': 0, 'redirect': '/tr/?%s' % quote(source.link, '')}))
 
-        red_url = article.get()['slug']
-        redirect = '/jolla/tr/%s/' % quote(red_url)
-        logger.debug("new jolla translate task: %s", title)
-        self.write(json.dumps({'error': 0, 'redirect': redirect}))
-        self.finish()
+    def formal_link(self, link):
+        splited = list(urlsplit(link))
+        if not splited[0] or not splited[1]:
+            raise tornado.web.HTTPError(
+                400, 'scheme or netloc missed in %r' % link)
 
-        # refresh cache
-        coll = Article.get_collect()
-        result = coll.update_many(
-            {'board': 'jolla', 'transinfo.slug': red_url},
-            {'$set': {'headimg': headimg, 'cover': cover, 'tag': tag}})
-        logger.debug('updated %s translation', result.modified_count)
+        splited[4] = ''
+        return urlunsplit(splited)
+

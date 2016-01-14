@@ -81,6 +81,21 @@ class BaseHandler(tornado.web.RequestHandler):
         for dirpath, dirnames, filenames in os.walk(path):
             return list(filenames)
 
+    def get_imgs_and_files(self, user):
+        path = self.get_user_path(user)
+        link = self.get_user_url(user)
+        imgs = self._list_path(os.path.join(path, 'img'))
+        files = self._list_path(os.path.join(path, 'file'))
+        img_name_and_link = {
+            name: urljoin(link, 'img/%s' % quote(name))
+            for name in imgs}
+
+        file_name_and_link = {
+            name: urljoin(link, 'file/%s' % quote(name))
+            for name in files}
+
+        return img_name_and_link, file_name_and_link
+
     def write_error(self, status_code, **kwargs):
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))

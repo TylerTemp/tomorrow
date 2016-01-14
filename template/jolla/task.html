@@ -1,153 +1,72 @@
 {% extends "base.html" %}
 
-{% block title %}
-
-    {{  _("Edit Translation Original Post") if title else _("New Translation Original Post") }}
-
+{% block main_title %}
+    {{  _("Edit Translation Task") if source else _("New Translation Task") }}
 {% end %}
 
 {% block neck %}
-<link rel="stylesheet" href="/static/css/editor.css">
 <link rel="stylesheet" href="/static/css/amazeui.tagsinput.css">
 <style>
-  #load {
-    float: left;
+  .am-tagsinput {
+    padding: 8px 8px 8px 28px;
   }
-  #wysiwygEditor, #mdEditor {
-    min-height: 450px;
-  }
-
-  #preview_popup p img {
-    max-width: 100%;
-    height: auto;
-    margin: 0 0 0 -2em;
-  }
-
-  #preview_popup p {
-    text-indent: 2em;
-  }
-
-  #preview_popup .footnote p {
-    text-indent: 0;
-  }
-
 </style>
 {% end %}
 
-{% block body %}
+{% block stomach %}
 
-<div class="header">
-  <div class="am-g">
-  {% if title %}
-    <h1>{{ _("Edit Translation Post") }}</h1>
-    <p>{{ _("Edit the content and the format of this original article") }}</p>
-  {% else %}
-    <h1>{{ _("New Translation Post") }}</h1>
-    <p>{{ _("Post a new translation original article") }}<br>
-       {{ _('Note you can paste the url and click "Load" to let server load the content') }}
-    </p>
-  {% end %}
+<h1 style="text-align: center;">
+    {{  _("Edit Translation Task") if source else _("New Translation Task") }}
+</h1>
 
-  </div>
-  <hr />
-</div>
-
-<form class="am-form am-form-horizontal">
-  <fieldset id="fieldset">
+<form class="am-form" method="POST">
+  <fieldset>
     <legend>{{ _("Article Information") }}</legend>
 
+    {% raw xsrf_form_html() %}
+
     <!-- link -->
-    <div class="am-form-group">
-      <label for="url" class="am-u-sm-3 am-form-label">{{ _("Source Link")}}</label>
-      <div class="am-u-sm-8">
-        <input type="text" id="url" name="url" value="{{ link }}" placeholder="{{ _('Enter the link of the original content') }}" />
-        <div id="load-error-panel">
-        </div>
-      </div>
-      <div class="am-u-sm-1">
-        <button type="button" id="load"
-            class="am-btn am-btn-primary am-btn-sm am-fr"
-            data-am-loading="{spinner: 'spinner', loadingText: ''}">
-          {{ _('Load') }}
-        </button>
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-external-link"><span style="color: red">*</span></i>
+      <input type="text" class="am-form-field" name="link" value="{{ source.link or '' }}" placeholder=" {{ _('Link') }}" required="required"/>
     </div>
 
     <!-- title -->
-    <div class="am-form-group">
-      <label for="title" class="am-u-sm-3 am-form-label">{{ _("Title")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="title" name="title" value="{{ title }}" placeholder="{{ _('Enter the title of the original content') }}" />
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-header"></i>
+      <input type="text" class="am-form-field" name="title" value="{{ source.title or '' }}" placeholder="{{ _('Title') }}"/>
     </div>
 
     <!-- author -->
-    <div class="am-form-group">
-      <label for="author" class="am-u-sm-3 am-form-label">{{ _("Author")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="author" name="author" value="{{ author }}" placeholder="{{ _('Enter the author of the original content') }}" />
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-edit"></i>
+      <input type="text" class="am-form-field" name="author" value="{{ source.author or '' }}" placeholder=" {{ _('Author') }}"/>
     </div>
 
-    <!-- title image -->
-    <div class="am-form-group">
-      <label for="headimg" class="am-u-sm-3 am-form-label">{{ _("Heading Image")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="headimg" name="headimg" value="{{ headimg }}" placeholder="{{ _('[Optional] Enter the URL of heading image of the original content') }}" />
-      </div>
+    <!-- banner image -->
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-map-signs"></i>
+      <input type="text" class="am-form-field" name="banner" value="{{ source.banner or '' }}" placeholder="{{ _('Banner Image') }}" />
     </div>
 
     <!-- conver image -->
-    <div class="am-form-group">
-      <label for="cover" class="am-u-sm-3 am-form-label">{{ _("Cover Image")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="cover" name="cover" value="{{ cover }}" placeholder="{{ _('[Optional] Enter the URL of cover image of the original content') }}" />
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-shirtsinbulk"></i>
+      <input type="text" class="am-form-field" name="cover" value="{{ source.cover or '' }}" placeholder="{{ _('Cover Image') }}" />
     </div>
 
     <!-- url slug -->
-    <div class="am-form-group">
-      <label for="slug" class="am-u-sm-3 am-form-label">{{ _("SLUG")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="slug" name="slug" value="{{ slug or '' }}" placeholder="{{ _('[Optional] Leave it empty if you don\'t know what this means') }}" />
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-link"></i>
+      <input type="text" class="am-form-field" name="slug" value="{{ source.slug or source.translated or '' }}" placeholder="{{ _('SLUG') }}" />
     </div>
 
     <!-- tag -->
-    <div class="am-form-group">
-      <label for="tag" class="am-u-sm-3 am-form-label">{{ _("Tag")}}</label>
-      <div class="am-u-sm-9">
-        <input type="text" id="tag" name="tag" value="{{ ','.join(tag) }}" placeholder="{{ _('[Optional] tags') }}" />
-      </div>
+    <div class="am-form-group am-form-icon">
+      <i class="am-icon-tags"></i>
+      <input type="text" class="am-form-field" name="tag" value="{{ ','.join(source.tag) }}" placeholder="{{ _('Tag') }}" data-am-tagsinput/>
     </div>
 
-    <div id="wysiwyg-area" style="{{ 'display:none' if use_md else '' }}">
-      <div class="am-btn-toolbar" id="wysiwygEditorToolbar">
-        {% module WysBar(upload_img=imgs, upload_file=files) %}
-        <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><span class="iconfont icon-mdsolid"></span></button>
-        <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
-      </div>
-      <div class="am-form-field needsclick" id="wysiwygEditor" tabindex="0" contentEditable="true">
-        {% raw content if not use_md else '' %}
-      </div>
-    </div>
-
-    <div id="md-area" style="{{ 'display:none' if not use_md else '' }}">
-      <div id="mdEditorToolbar">
-        {% module MdBar(upload_img=imgs, upload_file=files) %}
-        <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><span class="am-icon-edit"></span></button>
-        <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
-      </div>
-      <textarea class="am-form-field" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}">
-        {% raw content if use_md else '' %}
-      </textarea>
-      <div class="am-u-sm-12">
-        <p>{% raw _("What is %(MarkDown)s") % {'MarkDown': '<a href="/about/markdown/" target="_blank">MarkDown</a>'} %}?</p>
-      </div>
-    </div>
-
-    <div class="am-u-sm-12" id="submit-error-panel">
-    </div>
     <div class="am-u-sm-12">
       <div class="am-cf">
         <button
@@ -162,35 +81,9 @@
 
   </fieldset>
 </form>
-
-<div class="am-popup" id="preview_popup">
-  <div class="am-popup-inner">
-    <div class="am-popup-hd">
-      <h2 class="am-popup-title"></h2>
-      <span data-am-modal-close
-            class="am-close">
-        &times;
-      </span>
-    </div>
-    <div class="am-popup-bd">
-    </div>
-  </div>
-</div>
 {% end %}
 
 {% block leg %}
-<script>
-  var IMGUPLOADURL = "{{ img_upload_url }}";
-  var FILEUPLOADURL = "{{ file_upload_url }}";
-  var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
-  var _editor_status = "{{ 'md' if use_md else 'wysiwyg' }}";
-</script>
-<script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
-<script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
-<!-- <script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script> -->
-<script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
 <script src="/static/js/amazeui.tagsinput.min.js"></script>
-<script src="/static/js/md/editor-wysiwyg.js"></script>
-<script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/jolla/task.js"></script>
 {% end %}

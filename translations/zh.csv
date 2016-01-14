@@ -63,20 +63,11 @@ Continue reading,阅读全文
 
 Edit Translation Original Post,编辑翻译原文
 New Translation Original Post,新翻译原文
-Edit Translation Post,编辑翻译文章
-New Translation Post,新翻译文章
-Edit the content and the format of this original article,编辑原文内容和格式
-Post a new translation original article,新增需要翻译的原文
-"Note you can paste the url and click ""Load"" to let server load the content","试试输入原文网址后点击“载入”按钮吧"
+Edit Translation Task,编辑翻译文章任务
+New Translation Task,新翻译文章任务
 Article Information,文章信息
 Source Link,原文链接
-Enter the link of the original content,输入原文链接
-Load,载入
-Enter the title of the original content,输入原文标题
 Author,作者
-Enter the author of the original content,输入原文作者
-Heading Image,文顶图片
-[Optional] Enter the URL of heading image of the original content,[可选]输入原文顶部图片地址
 What is %(MarkDown)s,%(MarkDown)s是个啥
 MarkDown Syntax Supported,支持MarkDown语法
 
@@ -348,3 +339,4 @@ License,许可协议
 Why docpie?,为何选择docpie？
 "I'm TylerTemp, python programmer. Welcome to my blog","我是 TylerTemp ， python 程序员。 欢迎来到我的博客"
 这篇文章有{tag} 中文版{tag_end},This post has an {tag} English version{tag_end}
+New Translation,新翻译

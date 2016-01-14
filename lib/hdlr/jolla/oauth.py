@@ -51,4 +51,3 @@ class OAuthHandler(BaseHandler):
         result['source'] = 'tomorrow'
         self.login(**result)
         self.redirect('//' + self.config.jolla_host)
-        self.finish()

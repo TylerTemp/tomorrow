@@ -156,7 +156,6 @@ class Article(Base):
 
         return super(Article, self)._before_save()
 
-
     @classmethod
     def all(cls, offset=0, limit=None):
         result = cls.collection.find({}).sort(
@@ -202,6 +201,41 @@ class Author(Base):
     def __str__(self):
         return str(self.name)
 
+
+class Source(Base):
+    collection = db.source
+
+    _default = {
+        '_id': None,
+        'link': None,  # required. Other attrs are only for suggestion
+        'title': None,
+        'author': None,
+        'banner': None,
+        'cover': None,
+        'tag': [],
+        'create_time': None,
+        'slug': None,
+        'translated': None,  # article slug
+    }
+
+    def __init__(self, link=None):
+        super(Source, self).__init__()
+        if link is not None:
+            result = self.collection.find_one({'link': link})
+            if result is None:
+                self.link = link
+            else:
+                self.update(result)
+
+    def _validate_attrs(self):
+        if self.link is None:
+            raise ValueError('link is missing')
+        return super(Source, self)._validate_attrs()
+
+    def _before_save(self):
+        if self.create_time is None:
+            self.create_time = time.time()
+        return super(Source, self)._before_save()
 
 if __name__ == '__main__':
     from bson import ObjectId

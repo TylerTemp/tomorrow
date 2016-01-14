@@ -1,5 +1,6 @@
 from .base import BaseHandler
 from lib.config import Config
+import json
 try:
     from urllib.parse import urlencode
 except ImportError:
@@ -17,3 +18,14 @@ class LoginHandler(BaseHandler):
             'jolla/login.html',
             tomorrow_url=self.url,
         )
+
+
+class LogoutHandler(BaseHandler):
+
+    def get(self):
+        self.logout()
+        return self.redirect('/')
+
+    def post(self):
+        self.logout()
+        return self.write(json.dumps({'error': 0}))

@@ -62,7 +62,7 @@ class AuthorizeHandler(BaseHandler):
         code = auth.generate_code()
         expire_at = auth.set_code(code, user._id)
         auth.save()
-        self.clear_at(lambda: auth.clear_code(code, True), expire_at)
+        self.do_at(lambda: auth.clear_code(code, True), expire_at)
         return code
 
     def redirect_to_callback(self, callback, code):

@@ -20,21 +20,6 @@ class BaseHandler(BaseHandler):
     def logout(self):
         self.clear_cookie('user')
 
-    def get_imgs_and_files(self, user):
-        path = self.get_user_path(user)
-        link = self.get_user_url(user)
-        imgs = self._list_path(os.path.join(path, 'img'))
-        files = self._list_path(os.path.join(path, 'file'))
-        img_name_and_link = {
-            name: urljoin(link, 'img/%s' % quote(name))
-            for name in imgs}
-
-        file_name_and_link = {
-            name: urljoin(link, 'file/%s' % quote(name))
-            for name in files}
-
-        return img_name_and_link, file_name_and_link
-
     def get_user_locale(self):
         arg = self.get_argument('lang', None)
         if arg is not None:

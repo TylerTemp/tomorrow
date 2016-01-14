@@ -31,8 +31,8 @@ class BaseHandler(BaseHandler):
         info = u.get()
         return info['_id']
 
-    def clear_at(self, callback, expire_at):
-        logger.debug('clean up at %s' % expire_at)
+    def do_at(self, callback, expire_at):
+        logger.debug('call %s at %s', callback, expire_at)
         tornado.ioloop.IOLoop.instance().add_timeout(
             expire_at,
             callback

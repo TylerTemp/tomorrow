@@ -38,3 +38,15 @@ body {
 .am-offcanvas-bar .am-nav>li+li {
   margin-top: 0;
 }
+
+.am-footer-default {
+  background-color: transparent;
+  color: #fff;
+}
+.am-footer-default p {
+  color: #fff;
+}
+
+.am-footer-default a {
+  color: #fff;
+}
