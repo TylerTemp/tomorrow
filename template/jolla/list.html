@@ -6,96 +6,113 @@
 
 {% block neck %}
 <style>
+  .cover {
+    text-align: center;
+  }
 
-  header img {
+  .cover .am-icon-image {
+    font-size: 8rem;
+    margin-top: -100px !important;
+  }
+
+  .cover .am-icon-times {
+    font-size: 11rem;
+    margin-left: -85px;
+    color: rgba(235, 229, 255, 0.5);
+  }
+
+  .page {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+
+  .pagination {
+    color: white;
+  }
+
+  a.pagination:hover {
+    color: white;
+  }
+
+  hr {
+    margin: 0;
+  }
+
+  .item {
+    position: relative;
+    z-index: 1;
+  }
+
+  .bg {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
-    height: auto;
-    max-width: 400px;
-  }
-
-  h1 {
-    color: #fff;
-  }
-  #bread-crumbs {
-    color: #fff;
-  }
-
-  #bread-crumbs a:link {
-    color: #fff;
-  }
-  #bread-crumbs a:visited {
-    color: #fff;
-  }
-  #bread-crumbs a:hover {
-    color: #fff;
-    text-decoration:underline;
-  }
-
-  .am-footer-default {
-    background-color: transparent;
-    color: #fff;
-  }
-  .am-footer-default p {
-    color: #fff;
-  }
-
-  .am-footer-default a {
-    color: #fff;
+    height: 100%;
+    opacity:0.2;
   }
 </style>
 {% end %}
 
-{% block body %}
-<header>
-    <div class="am-margin am-text-center">
-      <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
-    </div>
-</header>
+{% block stomach %}
 
-<div class="am-g" id="bread-crumbs">
-  <div class="am-u-sm-12" style="text-align: left">
-    <span class="am-icon-angle-right"><a href="/">{{ _('Home')}}</a></span> &nbsp;
-    <span class="am-icon-caret-right">{{ _('Translate')}}</span>
-  </div>
-</div>
-<div data-am-widget="list_news" class="am-list-news am-list-news-default">
-
-  <div class="am-list-news-bd">
-    <ul class="am-list">
-
-      {% for article in articles %}
-
-      {% if article['cover'] %}
-      <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
-        <div class="am-u-sm-4 am-list-thumb">
-          <a href="./{{ article['slug'] }}" rel="nofollow">
-            <img src="{{ article['cover'] }}" alt="{{ article['title'] }}" />
-          </a>
-        </div>
-        <div class=" am-u-sm-8 am-list-main">
-          <h3 class="am-list-item-hd">
-            {% if article['trusted_translation'] %}
-              [<a href="/jolla/blog/{{ article['trusted_translation'] }}">{{ _("Finished") }}</a>]
+<div class="page am-margin">
+  <hr />
+  {% for source in sources %}
+  <div class="item">
+    {% if source.banner %}
+    <div class="bg" style="background-image: url({{ source.banner }});"></div>
+    {% end %}
+    <div class="am-g am-padding">
+      <div class="cover am-u-sm-12 am-u-md-3">
+        {% if source.cover %}
+        <img src="{{ source.cover }}" class="am-img-responsive am-img-thumbnail" />
+        {% else %}
+        <span class="am-icon-image"></span><span class="am-icon-times"></span>
+        {% end %}
+      </div>
+      <div class="am-u-sm-12 am-u-md-9">
+        <div class="am-margin">
+          <p>
+            <b>{{ _('Source') }}</b>:
+            <a href="{{ source.link }}" target="_blank">
+              {{ source.title }}
+              <span class="am-icon-external-link"></span>
+            </a>
+          </p>
+          {% if source.author %}
+          <p>
+            <b>{{ _('Author') }}</b>:
+            {{ source.author }}
+          </p>
+          {% end %}
+          <p>
+            <b>{{ _('Translation') }}</b>:
+            {% if source.translated %}
+            <a class="am-icon-check" href="/{{ source.translated }}/"> {{ _('Done') }}</a>
+            |
             {% end %}
-            <a href="./{{ article['slug'] }}" rel="nofollow">{{ article['title'] }}</a>
-          </h3>
-          <div class="am-list-item-text">{{ article['preview'] }}</div>
+            <a class="am-icon-edit" href="/tr/?source={{ quote(source.link) }}"> {{ _('Edit') }}</a>
+          </p>
         </div>
-      </li>
-      {% else %}
-      <li class="am-g am-list-item-desced">
-        <div class=" am-list-main">
-          <h3 class="am-list-item-hd">
-            <a href="./{{ article['slug'] }}">{{ article['title'] }}</a>
-          </h3>
-          <div class="am-list-item-text">{{ article['preview'] }}</div>
-        </div>
-      </li>
-      {% end %}
-
-      {% end %}
-
-    </ul>
+      </div>
+    </div>
   </div>
+  <hr />
+  {% end %}
 </div>
+
+  <div class="am-g am-padding">
+    {% if prev_page %}
+    <a href="/list/{{ 'page/%s/' % prev_page if prev_page != 1 else '' }}" class="am-fl am-btn-link pagination">&laquo; {{ _('Prev Page') }}</a>
+    {% end %}
+
+    {% if next_page %}
+    <a href="/list/page/{{ next_page }}/" class="am-fr am-btn-link pagination">{{ _('Next Page') }} &raquo;</a>
+    {% end %}
+  </div>
+
+
 {% end %}

@@ -2,6 +2,7 @@ from .base import BaseHandler
 from .list import ListHandler
 from .task import TaskHandler
 from .translate import TranslateHandler
+from .edit import EditHandler
 from .home import HomeHandler
 from .article import ArticleHandler
 from .home import HomeHandler
@@ -11,4 +12,4 @@ from .oauth import OAuthHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
-           'LoginHandler', 'OAuthHandler']
+           'LoginHandler', 'OAuthHandler', 'EditHandler']

@@ -3,9 +3,11 @@ import json
 import tornado.web
 import tornado.httpclient
 import tornado.gen
+from bson import ObjectId
 from .base import BaseHandler
 from lib.config import Config
 from lib.tool.minsix import py3
+from lib.db.jolla import User
 
 try:
     from urllib.parse import urlencode
@@ -47,7 +49,16 @@ class OAuthHandler(BaseHandler):
             body = body.decode('utf-8')
         result = json.loads(body)
         logger.debug(result)
-        result['user'] = result.pop('name')
-        result['source'] = 'tomorrow'
-        self.login(**result)
+        uname = result.pop('name', None)
+        source = User.TOMORROW
+        uid = result['uid']
+
+        user = User.by_source_id(source, ObjectId(uid))
+        if user and user.name:
+            pass
+        else:
+            user.name = uname
+            user.save()
+
+        self.login(str(user._id), result['token'], result['expire_at'])
         self.redirect('//' + self.config.jolla_host)

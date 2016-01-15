@@ -1,6 +1,7 @@
 import re
 import logging
 import time
+from bson import ObjectId
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -8,16 +9,10 @@ except ImportError:
     from itertools import izip_longest as zip_longest
     from urlparse import urlsplit
 
-from lib.tool.minsix import py3
-
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
 from lib.config import Config
-sys.path.pop(0)
+from lib.db.jolla import User
 
 logger = logging.getLogger('jolla')
 
@@ -81,34 +76,27 @@ class BaseHandler(BaseHandler):
             return search.group(1)
         return result
 
-    def login(self, source, uid, token, expire_at, user=None):
-        self.set_secure_cookie('source', source)
+    def login(self, uid, token, expire_at):
         self.set_secure_cookie('uid', uid)
         self.set_secure_cookie('token', token)
         self.set_secure_cookie('expire_at', str(expire_at))
-        if user is not None:
-            self.set_secure_cookie('user', user)
 
     def logout(self):
-        self.clear_cookie('source')
         self.clear_cookie('uid')
         self.clear_cookie('token')
         self.clear_cookie('expire_at')
-        self.clear_cookie('user')
 
     def get_current_user(self):
-        source = self.get_secure_cookie('source', None)
-        if source is None:
-            logger.debug('no source')
+        uid = self.get_secure_cookie('uid')
+        if not uid:
             return None
-        uid = self.get_secure_cookie('uid').decode('utf-8')
-        user = self.get_secure_cookie('user').decode('utf-8')
         expire = float(self.get_secure_cookie('expire_at'))
         if expire < time.time():
-            logger.debug('user %s expired', user)
+            logger.debug('user %s expired', uid)
+            self.logout()
             return None
 
-        return {'uid': uid,  'user': user, 'expire': expire}
+        return User(ObjectId(uid.decode('utf-8')))
 
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)

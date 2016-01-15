@@ -2,94 +2,48 @@ import tornado.web
 import tornado.gen
 import logging
 import json
-import re
 try:
-    from urllib.parse import quote
-    from urllib.parse import unquote
+    from urllib.parse import quote, unquote
 except ImportError:
     from urllib import quote
     from urlparse import unquote
 
-import sys
-import os
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.hdlr.base import BaseHandler
-from lib.tool.md import md2html
+from .base import BaseHandler
 from lib.tool.md import html2md
 from lib.tool.md import escape
-# from lib.hdlr.base import EnsureUser
-# from lib.tool.minsix import py3
-from lib.db.jolla import Article, User
-from lib.config import Config
-sys.path.pop(0)
+from lib.db.jolla import Article, User, Source
 
-cfg = Config()
 logger = logging.getLogger('tomorrow.jolla.translate')
 
 
 class TranslateHandler(BaseHandler):
 
-    # @EnsureUser(level=User.normal, active=True)
-    def get(self, slug):
-        slug = unquote(slug)
-        to_translate = Jolla.find_slug(slug)
-        if to_translate is None:
-            raise tornado.web.HTTPError(404,
-                                        "the article to translate not found")
+    @tornado.web.authenticated
+    def get(self):
+        link = self.get_argument('source')
+        source = Source(link)
+        if not source:
+            raise tornado.web.HTTPError(404, 'link %r not found' % link)
+
+        user = self.current_user
+        article = Article.by_user_link(user._id, link)
 
         self.xsrf_token
 
-        translate = {
-            'title': to_translate['title'],
-            'md': to_translate['content'],
-            'html': md2html(to_translate['content']),
-        }
-
-        userinfo = self.get_current_user()
-
-        username = userinfo['user']
-        usertype = userinfo['type']
-        translated = Article.find_ref_of_user(slug, username)
-        imgs, files = self.get_imgs_and_files(username, usertype)
-        if usertype >= User.admin:
-            edit_task_url = '/jolla/task/' + quote(slug)
-        else:
-            edit_task_url = None
-
-        if translated is None:
-            translated = {k: '' for k in translate.keys()}
-            translated['description'] = ''
-        else:
-            d = translated['zh']
-            translated = {
-                'title': d['title'],
-                'description': d['description'] or '',
-                'md': d['content'],
-                'html':md2html(d['content'])
-            }
-
         return self.render(
             'jolla/translate.html',
-            translate=translate,
-            translated=translated,
-            user=username,
-            imgs=imgs,
-            files=files,
-            edit_task_url=edit_task_url,
-            img_upload_url=('/am/%s/img/' % quote(username)
-                            if username else None),
-            file_upload_url=('/am/%s/file/' % quote(username)
-                             if username else None),
-            size_limit=cfg.size_limit.get(usertype, 0),
-            md=self.get_argument('md', False),
-            nav_active='jolla_tr'
+            link=(source.link or
+                  (article.source and article.source['link']) or
+                  None),
+            source=source,
+            article=article,
+            imgs=None,
+            files=None,
+            size_limit=0,
         )
 
-    # @tornado.web.asynchronous
-    # @tornado.gen.coroutine
-    # @EnsureUser(level=User.normal, active=True)
-    def post(self, slug):
+    @tornado.web.authenticated
+    def post(self):
         self.check_xsrf_cookie()
 
         title = self.get_argument('title')
@@ -182,7 +136,7 @@ class TranslateHandler(BaseHandler):
 
         result = {
             'error': 0,
-            'redirect': 'http://%s/%s/' % (cfg.jolla_host, this_slug),
+            'redirect': 'http://%s/%s/' % (self.config.jolla_host, this_slug),
         }
 
         return self.write(json.dumps(result))

@@ -50,3 +50,9 @@ body {
 .am-footer-default a {
   color: #fff;
 }
+
+#wechat-qr-img img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

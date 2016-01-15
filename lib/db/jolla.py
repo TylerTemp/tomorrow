@@ -11,7 +11,7 @@ logger = logging.getLogger('db.jolla')
 client = pymongo.MongoClient()
 db = client['jolla']
 
-
+# TODO: support more site (maybe)
 class User(Base):
     collection = db.user
 
@@ -63,12 +63,22 @@ class User(Base):
 
         return super(User, self).__setattr__(item, value)
 
+    def _before_save(self):
+        attrs = self.__dict__['__info__']
+        attrs.pop('token', None)
+        attrs.pop('expire_at', None)
+        return super(User, self)._before_save()
+
     @classmethod
     def by_source_id(cls, source, uid):
         result = cls.collection.find_one(
                 {'source': source, 'uid': uid})
         self = cls()
-        self.update(result)
+        if result:
+            self.update(result)
+        else:
+            self.source = source
+            self.uid = uid
         return self
 
 
@@ -157,6 +167,18 @@ class Article(Base):
         return super(Article, self)._before_save()
 
     @classmethod
+    def by_user_link(cls, uid, link):
+        result = cls.collection.find_one({'author': uid, 'source.link': link})
+        ins = cls()
+        if result:
+            ins.update(result)
+        else:
+            ins.author = uid
+            ins.source['link'] = link
+
+        return ins
+
+    @classmethod
     def all(cls, offset=0, limit=None):
         result = cls.collection.find({}).sort(
             (
@@ -236,6 +258,18 @@ class Source(Base):
         if self.create_time is None:
             self.create_time = time.time()
         return super(Source, self)._before_save()
+
+    @classmethod
+    def all(cls, offset=0, limit=None):
+        result = cls.collection.find({}).sort(
+            (
+             ('create_time', pymongo.DESCENDING),
+            )
+        )
+        if limit is None:
+            return result[offset:]
+        return result[offset:offset + limit]
+
 
 if __name__ == '__main__':
     from bson import ObjectId

@@ -1,103 +1,33 @@
-$(document).ready(function(evt)
+$(function(event)
 {
   var converter = new showdown.Converter();
-  var toMarkdown = md;
-  var toHtml = converter.makeHtml;
-  var wysiwygEditor = $("#wysiwygEditor").wysiwygEditor({
-    toHtml: toHtml,
-    toMarkdown: toMarkdown,
-    uploadImageUrl: IMGUPLOADURL,
-    uploadFileUrl: FILEUPLOADURL,
-    sizeLimit: SIZELIMIT,
-    imageTypes: IMG_ALLOW
-  });
+  var to_html = converter.makeHtml;
   var mdEditor = $("#mdEditor").markdownEditor({
-    toHtml: toHtml,
-    toMarkdown: toMarkdown,
-    uploadImageUrl: IMGUPLOADURL,
-    uploadFileUrl: FILEUPLOADURL,
-    sizeLimit: SIZELIMIT,
-    imageTypes: IMG_ALLOW
+    toHtml: to_html
   });
 
-  $("#article-switch").click(function(evt)
+  var get_form = function($form)
   {
-    evt.preventDefault();
-    var self = $(this);
-    if (self.data('role') == 'md')
+    var values = {};
+    $.each($form.serializeArray(), function(_, field)
     {
-      $("#article-wys").show();
-      $("#article-md").hide();
-      self.data('role', 'wys');
-      self.text(_("Switch to") + " " + _("MarkDown"));
-    }
-    else
-    {
-      $("#article-wys").hide();
-      $("#article-md").show();
-      self.data('role', 'md');
-      self.text(_("Switch to") + " " + _("normal view"));
-    }
-  });
-
-
-  $("#switch-to-md").click(function(evt)
-  {
-    evt.preventDefault();
-    _editor_status = "md";
-    mdEditor.val(wysiwygEditor.getMarkdown());
-    $("#wysiwygEditor").fadeOut(400, function(evt)
-    {
-      $("#mdEditor").fadeIn(400);
+        values[field.name] = field.value;
     });
-    $("#wysiwygEditorToolbar").fadeOut(400, function(){
-      $("#mdEditorToolbar").fadeIn(400);
-    });
-  });
+    return values;
+  };
 
-  $("#switch-to-wysiwyg").click(function(evt)
-  {
-    evt.preventDefault();
-    _editor_status = "wysiwyg";
-    $("#wysiwygEditor").html(mdEditor.getHtml());
-    $("#mdEditor").fadeOut(400, function(evt)
-    {
-      $("#wysiwygEditor").fadeIn(400);
-    });
-    $("#mdEditorToolbar").fadeOut(400, function()
-    {
-      $("#wysiwygEditorToolbar").fadeIn(400);
-    });
-  });
-
-  $("#source-hide").click(function(evt)
-  {
-    evt.preventDefault();
-    $("#right").hide(400, function(){
-      $("#source-show").show(400);
-      $("#left").removeClass("am-u-md-6");
-    });
-  });
-
-  $("#source-show").click(function(evt)
-  {
-    evt.preventDefault();
-    $("#left").addClass("am-u-md-6");
-    $("#source-show").hide(400);
-    $("#right").show(400);
-  });
-
-  $('[data-role="preview"]').click(function(evt)
+  $('[data-role="preview"]').click(function()
   {
     console.log('preview_btn clicked');
-    var content = (_editor_status == 'md')? mdEditor.val(): wysiwygEditor.html();
-    var format = (_editor_status == 'md')? 'md': 'html';
-    var url = '/api/' + format + '/html/';
+    var values = get_form($('form'));
+    var content = values['content'];
+    var url = 'https://tomorrow.comes.today/api/md/html/';
     var method = content.length > 700? 'post': 'get';
     var $popup = $('#preview_popup');
-    var $content = $popup.find('.am-popup-bd');
+    var $body = $popup.find('.am-popup-bd');
+    var $article_body = $popup.find('.am-article-bd');
     $popup.find('.am-popup-title').html($('#title').val());
-    $content.html('<div class="am-text-xxxl" style="text-align:center"><i class="am-icon-spinner am-icon-pulse"></i> {0}</div>'.format(_('loading')));
+    $body.html('<div class="am-text-xxxl" style="text-align:center"><i class="am-icon-spinner am-icon-pulse"></i> {0}</div>'.format(_('loading')));
     console.log('use method ' + method);
     console.log(content.length);
     $.ajax(
@@ -197,4 +127,4 @@ $(document).ready(function(evt)
       btn.button("reset");
     });
   });
-})
+});

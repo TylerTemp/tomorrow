@@ -19,7 +19,6 @@ import os
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
-from lib.db.tomorrow import User
 from lib.config import Config
 sys.path.pop(0)
 
@@ -27,7 +26,7 @@ logger = logging.getLogger("tomorrow.base")
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    cfg = Config()
+    config = Config()
 
     def get(self, *a, **k):
         splited = urlsplit(self.request.uri)
@@ -48,8 +47,8 @@ class BaseHandler(tornado.web.RequestHandler):
         raise tornado.web.HTTPError(405, 'Method Not Allowed')
 
     def render(self, template_name, **kwargs):
-        kwargs.setdefault('JOLLA_HOST', self.cfg.jolla_host)
-        kwargs.setdefault('MAIN_HOST', self.cfg.main_host)
+        kwargs.setdefault('JOLLA_HOST', self.config.jolla_host)
+        kwargs.setdefault('MAIN_HOST', self.config.main_host)
 
         assert 'static_path' not in kwargs
         kwargs['static_path'] = self.static_path
@@ -60,7 +59,7 @@ class BaseHandler(tornado.web.RequestHandler):
         )
 
     def static_path(self, url):
-        return '//%s/static/%s' % (self.cfg.main_host, quote(url))
+        return '//%s/static/%s' % (self.config.main_host, quote(url))
 
     def get_user_path(self, user):
         return os.path.join(rootdir, 'static', 'upload', user)

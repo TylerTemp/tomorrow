@@ -29,7 +29,8 @@ $(function(event)
       }
     ).done(function(data, textStatus, jqXHR)
     {
-      alert(data);
+      var result = $.parseJSON(data);
+      window.location.href = result.redirect;
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
       console.log(jqXHR);
@@ -51,7 +52,7 @@ $(function(event)
         $error = $('<div class="am-u-sm-12">' +
           '<div class="am-alert am-alert-danger" data-am-alert>' +
           '<button type="button" class="am-close">&times;</button>' +
-          '<p>没什么可给你，但求凭这阙歌。谢谢你风雨里，都不退愿陪着我。</p>' +
+          '<p></p>' +
           '</div></div>');
         $fieldset.append($error);
       }

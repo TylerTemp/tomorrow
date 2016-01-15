@@ -1,60 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}
-  {{ _("Translate") }}: {{ translate['title'] }}
+{% block main_title %}
+  {{ _("Translate") }}: {{ source.title or (article.source and article.source['title']) or '[EMPTY]' }}
 {% end %}
 
 {% block neck %}
 <link rel="stylesheet" href="/static/css/editor.css">
 
 <style>
-
-header {
-  text-align: center;
-}
-
-header img {
-  width: 100%;
-  height: auto;
-  max-width: 400px;
-}
-
-/*#article-area,*/
-#article-wys,
-#article-md,
-#mdEditor,
-#wysiwygEditor {
-  height: 600px;
-}
-
-
-#title {
-  margin-bottom: 5px;
-}
-
-#white-box {
-  background-color: #fff;
-}
-
-#bread-crumbs {
-  color: #fff;
-}
-
-#bread-crumbs a:link {
-  color: #fff;
-}
-#bread-crumbs a:visited {
-  color: #fff;
-}
-#bread-crumbs a:hover {
-  color: #fff;
-  text-decoration:underline;
+.am-g-fixed {
+  max-width: none;
 }
 
 #preview_popup p img {
   max-width: 100%;
   height: auto;
-  margin: 0em 0em 0em -2em;
+  margin: 0 0 0 -2em;
 }
 
 #preview_popup p {
@@ -62,7 +23,7 @@ header img {
 }
 
 #preview_popup .footnote p {
-  text-indent: 0em;
+  text-indent: 0;
 }
 
 video {
@@ -70,154 +31,102 @@ video {
   height: auto;
 }
 
+a.white {
+  color: white;
+}
+
+a.white:hover {
+  color: #e4e4e4;
+}
+
 </style>
 {% end %}
-{% block body %}
-<header>
-  <div class="am-g am-center">
-    <div class="am-u-sm-12" style="text-align:center">
-      <a href="/jolla/blog/"><img alt="{{ _("Jolla Unofficical Chinese Blog") }}" src="/static/img/blog_header.png"></a>
-    </div>
-  </div>
-</header>
+{% block stomach %}
 
-<div class="am-g" id="bread-crumbs">
-  <div class="am-u-sm-12" style="text-align: left">
-    <span class="am-icon-angle-right"><a href="/jolla/">{{ _('Home')}}</a></span> &nbsp;
-    <span class="am-icon-angle-right"><a href="/jolla/translate/">{{ _('Translate')}}</a></span> &nbsp;
-    <span class="am-icon-caret-right">{{ translate['title'] }}</span>
-  </div>
-</div>
-
-<div>
-  <div class="am-margin" id="white-box">
-    <div class="header">
-      <div class="am-g">
-        <h1>{{ _("Translate") }}: {{ translate['title'] }}</h1>
-      </div>
-      <hr />
-    </div>
-
-    <!-- title -->
+<div class="am-margin">
+  <div class="header">
     <div class="am-g">
-      <div class="am-u-sm-12">
-        <label for="title">{{ _("Title") }}: {{ translate['title'] }}</label>
-        <input type="text" class="am-form-field" id="title" value="{{ translated['title'] }}" placeholder="{{ _('Enter the translation of the title') }}">
-      </div>
+      <h1>{{ _("Translate") }}: {{ source.title or article.source.get('title', '') }}</h1>
     </div>
-    <!-- description -->
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <label for="description">{{ _("Description") }}:</label>
-        <textarea type="text" class="am-form-field" id="description" placeholder="{{ _('Enter the description of this post') }}">{{ translated['description'] }}</textarea>
-      </div>
-    </div>
-
     <hr />
+  </div>
 
-    <!-- toolbar -->
-    <div class="am-g">
-      <div class="am-u-sm-12 am-btn-toolbar" id="wysiwygEditorToolbar" style="{{ 'display:none' if md else '' }}">
-        {% module WysBar(upload_img=imgs, upload_file=files) %}
-        <div class="am-btn-group">
-          <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-md" data-am-popover="{content: '{{ _('Switch to MarkDown Editor') }}', trigger: 'hover focus'}"><span class="iconfont icon-mdsolid"></span></button>
-          <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
-        </div>
+  <form>
+    <fieldset>
+      {% raw xsrf_form_html() %}
+      <!-- title -->
+      <div class="am-form-group">
+        <label for="title">{{ _("Title") }}</label>
+        <input type="text" class="am-form-field" id="title" value="{{ article.title }}" placeholder="{{ source.title or '' }}">
       </div>
-    </div>
-    <div class="am-g">
-      <div class="am-u-sm-12 am-btn-toolbar" id="mdEditorToolbar" style="{{ '' if md else 'display:none' }}">
-        {% module MdBar(upload_img=imgs, upload_file=files) %}
-        <div class="am-btn-group">
-          <button type="button" class="am-btn am-btn-success am-radius" id="switch-to-wysiwyg" data-am-popover="{content: '{{ _('Switch to WYSIWYG Editor') }}', trigger: 'hover focus'}"><span class="am-icon-edit"></span></button>
-          <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
-        </div>
+      <!-- description -->
+      <div class="am-form-group">
+        <label for="description">{{ _("Description") }}</label>
+        <textarea class="am-form-field" id="description" placeholder="{{ _('Enter the description of this post') }}">{{ article.description or '' }}</textarea>
       </div>
-    </div>
 
-    <div class="am-g">
-      <!-- translated area -->
-      <div class="am-u-sm-12 am-u-md-6" id="left">
-        <label>{{ _("Translate Here") }}: </label>
-        <div class="am-form-field needsclick" id="wysiwygEditor" style="{{ 'display:none' if md else '' }}" tabindex="0" contentEditable="true">
-          {% raw translated['html'] or '' %}
+      <!-- More -->
+      <a data-am-collapse href="#more" class="white">{{ _('More') }} <span class="am-icon-angle-double-right"></span></a>
+      <div id="more" class="am-collapse">
+        <div class="am-form-group">
+          <label for="source-link">{{ _('Source Link') }}: </label>
+          <a class="white" id="source-link" href="{{ source.link }}" target="_blank">{{ source.link }} <span class="am-icon-external-link"></span> </a>
         </div>
-        <textarea class="am-form-field" id="mdEditor" style="{{ '' if md else 'display:none' }}" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}">
-          {{ translated['md'] or '' }}
-        </textarea>
-        <div class="am-cf">
-          <button class="am-btn am-btn-secondary am-fr" id="source-show" style="display:none"><span class="am-icon-eye"> {{ _("Show Source") }}</span></button>
+        <div class="am-form-group">
+          <label for="original-author">{{ 'Original Author' }}</label>
+          <input type="text" class="am-form-field" id="original-author" name="original-author" value="{{ source.author or '' }}" />
+        </div>
+        <div class="am-form-group">
+          <label for="cover">{{ 'Cover' }}</label>
+          <input type="text" class="am-form-field" id="cover" name="cover" value="{{ article.cover or source.cover or '' }}" />
+        </div>
+        <div class="am-form-group">
+          <label for="banner">{{ 'Banner' }}</label>
+          <input type="text" class="am-form-field" id="banner" name="banner" value="{{ article.banner or source.banner or '' }}" />
         </div>
       </div>
-      <!-- original content -->
-      <div class="am-u-sm-12 am-u-md-6" id="right">
-        <div id="article-area">
-          <label>{{ _("Original Content") }}: </label>
-          <div class="am-scrollable-vertical" id="article-wys" style="{{ 'display:none' if md else '' }}">
-            {% raw translate['html'] %}
+
+      <hr />
+
+      <div class="am-form-group">
+        <div class="am-btn-toolbar" id="mdEditorToolbar">
+          {% module MdBar(upload_img=imgs, upload_file=files) %}
+          <div class="am-btn-group">
+            <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview_popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
           </div>
-          <textarea class="am-form-field" id="article-md" style="{{ '' if md else 'display:none' }}">
-            {% raw translate['md'] %}
-          </textarea>
         </div>
-        <div class="am-cf">
-          <button class="am-btn am-btn-secondary am-fr" id="source-hide"><span class="am-icon-eye-slash"></span> {{ _("Hide Source") }}</button>
-          <button class="am-btn am-btn-success am-fr" id="article-switch" data-role="{{'md' if md else 'wys'}}">{{ _("Switch to") }} {{ _("normal view" if md else "MarkDown")}}</button>
-          {% if edit_task_url %}
-          <a class="am-btn am-btn-default am-fr" id="source-edit" href="{{ edit_task_url }}" target="_blank">{{ _("Edit Source") }}</a>
-          {% end %}
-        </div>
+        <!-- translated area -->
+        <textarea class="am-form-field" name="content" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}">
+          {{ article.content or '' }}
+        </textarea>
       </div>
 
-    </div>
-
-    <hr class="am-divider am-divider-default">
-
-    <div id="submit-error-panel">
-    </div>
-
-    <!-- show/hide email -->
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <label>
-          <input type="checkbox" class="am-checkbox-inline" id="hide-email" checked>
-          {{ _("Hide my email") }}
-        </label>
-      </div>
-    </div>
-
-    <!-- license -->
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <p>{% raw _("Don't forget to announce a license at the end of your work. {mark}Creative Commons{mark_end} is strongly suggested.").format(mark='<a href="https://creativecommons.org/choose/?lang=zh_CN&jurisdiction=cn" target="_blank"><span class="am-icon-cc"> ', mark_end='</span></a>') %}
-        </p>
-      </div>
-    </div>
-
-    <div class="am-g">
-      <div class="am-u-sm-12">
-        <button type="button"
-                class="am-btn am-btn-success"
-                id="submit"
-                data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">
+      <div class="am-form-group">
+        <button type="submit"
+                class="am-btn am-btn-success am-fr"
+                data-am-loading="{spinner: 'ge', loadingText: ''}">
           <span class="am-icon-arrow-up"> {{ _("Submit") }}</span>
         </button>
       </div>
-    </div>
-
-    <br>
-
-  </div>
+    </fieldset>
+  </form>
 </div>
 
 <div class="am-popup" id="preview_popup">
   <div class="am-popup-inner">
+    <div class="preview am-g">
+      <div class="am-u-sm-12 am-u-md-6 description"></div>
+      <div class="am-u-sm-12 am-u-md-6 banner"></div>
+    </div>
     <div class="am-popup-hd">
-      <h2 class="am-popup-title"></h2>
-      <span data-am-modal-close
-            class="am-close">
-        &times;
-      </span>
+      <article class="am-article">
+        <div class="am-article-hd">
+          <h2 class="am-article-title"></h2>
+        </div>
+        <div class="am-article-bd">
+          <!--<p class="am-article-lead"></p>-->
+        </div>
+      </article>
     </div>
     <div class="am-popup-bd">
     </div>
@@ -226,17 +135,8 @@ video {
 {% end %}
 
 {% block leg %}
-<script>
-  var IMGUPLOADURL = "{{ img_upload_url }}";
-  var FILEUPLOADURL = "{{ file_upload_url }}";
-  var SIZELIMIT = {{ "undefined" if size_limit == float("inf") else size_limit }};
-  var _editor_status = "{{ 'md' if md else 'wysiwyg' }}";
-</script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
-<script src="https://dn-tomorrow.qbox.me/html2md.min.js"></script>
-<!-- <script src="https://dn-tomorrow.qbox.me/md2html.min.js"></script> -->
 <script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
-<script src="/static/js/md/editor-wysiwyg.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
 <script src="/static/js/jolla/translate.js"></script>
 {% end %}
