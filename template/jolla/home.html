@@ -50,12 +50,12 @@
     <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
         {% if each.cover %}
-        <a href="/{{ quote(first.slug)  }}/"><img class="cover-img" src="{{ each.cover }}"></a>
+        <a href="/{{ quote(each.slug)  }}/"><img class="cover-img" src="{{ each.cover }}"></a>
         {% end %}
         <div class="title-box">
           <article class="am-article  am-margin-horizontal-lg">
             <div class="am-article-hd">
-              <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.title }}</h2></a>
+              <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.title }}</h2></a>
             </div>
             <div>
             {% raw make_source(each.source['link'] if each.source else None) %}

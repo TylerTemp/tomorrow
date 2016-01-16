@@ -45,6 +45,7 @@ def fix_myself():
     j_tyler.photo = tyler.photo
     j_tyler.intro = tyler.intro['zh']
     j_tyler.donate = tyler.donate['zh']
+    j_tyler.type = j_tyler.ROOT
     logger.debug(j_tyler._id)
     j_tyler.save()
     j_tyler = JUser(j_tyler._id)
@@ -59,7 +60,7 @@ def fix_jolla_author():
     for each in jollas.find({}):
         j = Author(each['name'])
         j.photo = each['photo']
-        j.introduce = each['translation']
+        j.intro = each['translation']
         j.save()
     jollas.drop()
 
@@ -136,10 +137,11 @@ def fix_jolla_source():
 
 
 if __name__ == '__main__':
-    fix_jolla_source()
-    fix_jolla_app()
     JUser.collection.drop()
     JArticle.collection.drop()
+    Author.collection.drop()
+    fix_jolla_source()
+    fix_jolla_app()
     fix_jolla_author()
     fix_myself()
     my_id = get_my_id()

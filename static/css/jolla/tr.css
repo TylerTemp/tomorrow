@@ -1,0 +1,34 @@
+.am-g-fixed {
+  max-width: none;
+}
+
+#preview_popup p img {
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 0 -2em;
+}
+
+#preview_popup p {
+  text-indent: 2em;
+}
+
+#preview_popup .footnote p {
+  text-indent: 0;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
+a.white {
+  color: white;
+}
+
+a.white:hover {
+  color: #e4e4e4;
+}
+
+.am-article-hd h1 {
+  text-align: center;
+}

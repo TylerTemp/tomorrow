@@ -119,6 +119,7 @@ class Application(tornado.web.Application):
               'permanently': True}),
             (r'/jolla/list/page/(?P<page>\d+)/', jolla.ListHandler),
             (r'/jolla/tr/', jolla.TranslateHandler),
+            (r'/jolla/tr/(?P<slug>[^/]+)/', jolla.TranslateHandler),
             (r'/jolla/edit/', jolla.EditHandler),
             (r'/jolla/edit/(?P<slug>[^/]+)/', jolla.EditHandler),
             (r'/jolla/task/', jolla.TaskHandler),

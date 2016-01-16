@@ -65,4 +65,5 @@ class HomeHandler(BaseHandler):
         for each in result:
             a = Article()
             a.update(each)
+            logger.debug(a.slug)
             yield a

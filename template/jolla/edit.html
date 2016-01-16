@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_title %}
-  {{ _("Translate") }}: {{ source.title or (article.source and article.source['title']) or '[EMPTY]' }}
+  {{ '%s: %s' % (_("Edit"), article.title) if article.title else _('New') }}
 {% end %}
 
 {% block neck %}
@@ -14,7 +14,7 @@
 <div class="am-margin">
   <div class="header">
     <div class="am-g">
-      <h1>{{ _("Translate") }}: {{ source.title or article.source.get('title', '') }}</h1>
+      <h1>{{ '%s: %s' % (_("Edit"), article.title) if article.title else _('New') }}</h1>
     </div>
     <hr />
   </div>
@@ -25,41 +25,33 @@
       <!-- title -->
       <div class="am-form-group">
         <label for="title">{{ _("Title") }}</label>
-        <input type="text" name="title" class="am-form-field" id="title" value="{{ article.title }}" placeholder="{{ source.title or '' }}" required="required">
+        <input type="text" name="title" class="am-form-field" id="title" value="{{ article.title or '' }}" required="required">
       </div>
       <!-- description -->
       <div class="am-form-group">
         <label for="description">{{ _("Description") }}</label>
         <textarea class="am-form-field" name="description" id="description" placeholder="{{ _('Enter the description of this post') }}">{{ article.description or '' }}</textarea>
       </div>
-      <!-- Original Author -->
+
       <div class="am-form-group">
-        <label for="original-author">{{ 'Original Author' }}</label>
-        <input type="text" class="am-form-field" id="original-author" name="original-author" value="{{ source.author or '' }}" required="required"/>
+        <label for="slug">{{ 'Slug' }}</label>
+        <input type="text" class="am-form-field" id="slug" name="slug" value="{{ article.slug or '' }}" />
       </div>
 
       <!-- More -->
       <a data-am-collapse href="#more" class="white">{{ _('More') }} <span class="am-icon-angle-double-right"></span></a>
       <div id="more" class="am-collapse">
         <div class="am-form-group">
-          <label for="source-link">{{ _('Source Link') }}: </label>
-          <a class="white" id="source-link" href="{{ source.link }}" target="_blank">{{ source.link }} <span class="am-icon-external-link"></span> </a>
-        </div>
-        <div class="am-form-group">
           <label for="cover">{{ 'Cover' }}</label>
-          <input type="text" class="am-form-field" id="cover" name="cover" value="{{ article.cover or source.cover or '' }}" />
+          <input type="text" class="am-form-field" id="cover" name="cover" value="{{ article.cover or '' }}" />
         </div>
         <div class="am-form-group">
           <label for="banner">{{ 'Banner' }}</label>
-          <input type="text" class="am-form-field" id="banner" name="banner" value="{{ article.banner or source.banner or '' }}" />
+          <input type="text" class="am-form-field" id="banner" name="banner" value="{{ article.banner or '' }}" />
         </div>
         <div class="am-form-group">
           <label for="tag">{{ 'Tag' }}</label>
-          <input type="text" class="am-form-field" id="tag" name="tag" value="{{ ','.join(article.tag) if article.tag else ','.join(source.tag) }}" data-am-tagsinput/>
-        </div>
-        <div class="am-form-group">
-          <label for="slug">{{ 'Slug' }}</label>
-          <input type="text" class="am-form-field" id="slug" name="slug" value="{{ article.slug or source.slug or '' }}" />
+          <input type="text" class="am-form-field" id="tag" name="tag" value="{{ ','.join(article.tag) or '' }}" data-am-tagsinput/>
         </div>
       </div>
 
@@ -67,15 +59,13 @@
 
       <div class="am-form-group">
         <div class="am-btn-toolbar" id="mdEditorToolbar">
-          {% module MdBar(upload_img=imgs, upload_file=files) %}
+          {% module MdBar() %}
           <div class="am-btn-group">
             <button type="button" class="am-btn am-btn-danger am-radius" data-role="preview" data-am-modal="{target: '#preview-popup'}" data-am-popover="{content: '{{ _('Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye"></span></button>
           </div>
         </div>
         <!-- translated area -->
-        <textarea class="am-form-field" name="content" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}" required="required">
-          {{ article.content or '' }}
-        </textarea>
+        <textarea class="am-form-field" name="content" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}" required="required">{{ article.content or '' }}</textarea>
       </div>
 
       <div class="am-form-group">
@@ -103,7 +93,6 @@
         <div class="am-article-hd">
         </div>
         <div class="am-article-bd">
-          <!--<p class="am-article-lead"></p>-->
         </div>
       </article>
     </div>
@@ -116,5 +105,5 @@
 <script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
 <script src="/static/js/amazeui.tagsinput.min.js"></script>
 <script src="/static/js/md/editor-md.js"></script>
-<script src="/static/js/jolla/translate.js"></script>
+<script src="/static/js/jolla/edit.js"></script>
 {% end %}

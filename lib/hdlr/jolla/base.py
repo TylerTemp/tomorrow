@@ -2,6 +2,7 @@ import re
 import logging
 import time
 from bson import ObjectId
+import tornado.locale
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -96,7 +97,13 @@ class BaseHandler(BaseHandler):
             self.logout()
             return None
 
-        return User(ObjectId(uid.decode('utf-8')))
+        return User(ObjectId(uid.decode('utf-8')), self.locale.code[:2])
+
+    def get_user_locale(self):
+        arg = self.get_argument('lang', None)
+        if arg is not None:
+            return tornado.locale.get(arg)
+        return None
 
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)

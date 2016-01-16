@@ -17,6 +17,10 @@ class User(Base):
 
     TOMORROW = 'https://tomorrow.comes.today'
 
+    DEACTIVE = 0
+    NORMAL = 1
+    ROOT = 2
+
     _default = {
         '_id': None,
         'source': None,  # source site
@@ -25,6 +29,7 @@ class User(Base):
         'home': None,
         'name': None,
         'photo': None,
+        'type': NORMAL,
         'zh': {},  # intro, donate
         'en': {}
     }
@@ -128,6 +133,17 @@ class Article(Base):
             if en:
                 return en[item]
 
+        if item == 'slug' and attrs.get('slug', None) is None:
+            link = self.source.get('link', None)
+            if link is None:
+                return None
+            slug = link.split('/')[-1]
+            if (slug.endswith('.html') or
+                    slug.endswith('.htm') or
+                    slug.endswith('.asp')):
+                slug = ''.join(slug.split('.')[:-1])
+            return slug
+
         if item not in attrs and item in default:
             default_val = default[item]
             if default_val == {}:
@@ -200,6 +216,13 @@ class Article(Base):
             return result[offset:]
         return result[offset:offset + limit]
 
+    @classmethod
+    def eject_except(cls, _id):
+        collect = cls.collection
+        return collect.update_many(
+            {'_id': {'$ne': _id}},
+            {'$set': {'status': cls.EJECTED}}
+        )
 
 class Author(Base):
     collection = db.author
@@ -208,7 +231,7 @@ class Author(Base):
         '_id': None,
         'name': None,
         'photo': None,
-        'introduce': None,
+        'intro': None,
     }
 
     def __init__(self, name=None):

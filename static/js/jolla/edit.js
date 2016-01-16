@@ -76,29 +76,11 @@ $(function(event)
       $preview.css('width', $popup.width() - 50);
       $preview.find('img').css('width', $popup.width() / 2 - 20);
 
-      // article header
-      $article_header.append('<p class="am-article-meta">' + result['author']['name'] + '</p>');
-
       //  article body
-      console.log(values['description']);
-      console.log(result['description']);
       $article_body.html('');
       if (values['description'])
         $article_body.html('<div class="am-article-lead">' + result['description'] + '</div>');
       $article_body.append(result['content']);
-      $article_body.append('<hr class="am-article-divider" />');
-
-      // original author
-      var $original_author = $('<div class="original-author am-u-sm-centered am-g"></div>');
-      var original_author = result['original_author'];
-      console.log(original_author);
-      if (original_author['photo'])
-        $original_author.append('<img class="am-thumbnail am-center am-circle am-fl am-margin" src="' + original_author['photo'] + '" />');
-      $original_author.append(
-            '<h6>' + original_author['name'] + '</h6>' +
-            (original_author['intro']?('<p>' + original_author['intro'] + '</p>'): '')
-      );
-      $article_body.append($original_author);
 
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
