@@ -39,7 +39,8 @@ class User(Base):
         self.__dict__['lang'] = lang
         if _id is not None:
             result = self.collection.find_one({'_id': _id})
-            self.update(result)
+            if result is not None:
+                self.update(result)
 
     def __str__(self):
         return str(self.name)
@@ -133,16 +134,16 @@ class Article(Base):
             if en:
                 return en[item]
 
-        if item == 'slug' and attrs.get('slug', None) is None:
-            link = self.source.get('link', None)
-            if link is None:
-                return None
-            slug = link.split('/')[-1]
-            if (slug.endswith('.html') or
-                    slug.endswith('.htm') or
-                    slug.endswith('.asp')):
-                slug = ''.join(slug.split('.')[:-1])
-            return slug
+        # if item == 'slug' and attrs.get('slug', None) is None:
+        #     link = self.source.get('link', None)
+        #     if link is None:
+        #         return None
+        #     slug = link.split('/')[-1]
+        #     if (slug.endswith('.html') or
+        #             slug.endswith('.htm') or
+        #             slug.endswith('.asp')):
+        #         slug = ''.join(slug.split('.')[:-1])
+        #     return slug
 
         if item not in attrs and item in default:
             default_val = default[item]
@@ -217,10 +218,10 @@ class Article(Base):
         return result[offset:offset + limit]
 
     @classmethod
-    def eject_except(cls, _id):
+    def eject_except(cls, link, not_id):
         collect = cls.collection
         return collect.update_many(
-            {'_id': {'$ne': _id}},
+            {'_id': {'$ne': not_id}, 'source.link': link},
             {'$set': {'status': cls.EJECTED}}
         )
 

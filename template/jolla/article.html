@@ -73,10 +73,10 @@
                 {% raw md2html(source['author'].intro)%}
               {% end %}
             </div>
-            {% elif source['author'].introduce %}
+            {% elif source['author'].intro %}
             <div class="am-u-sm-12">
               <h6>{{ original['author'] }}</h6>
-              {% raw md2html(source['author'].introduce)%}
+              {% raw md2html(source['author'].intro)%}
             </div>
             {% end %}
           </div>
@@ -87,7 +87,7 @@
         {% if source %}
         <footer>
           <p>原文由 {{ source['author'] }} 发布于
-            <a href="{{ source['link'] }}">{{ source['title'] }}</a>
+            <a href="{{ source['link'] }}">{{ source['title'] or source['link'] }}</a>
           </p>
         </footer>
         {% end %}

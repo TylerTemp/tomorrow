@@ -25,6 +25,8 @@ class TranslateHandler(BaseHandler):
             article = Article(slug)
             link = article.source['link']
             return self.redirect('/tr/?source=%s' % quote(link, ''))
+        if self.get_argument('action', None) == 'preview':
+            return self.preview()
         link = self.get_argument('source')
         source = Source(link)
         if not source:
@@ -37,9 +39,6 @@ class TranslateHandler(BaseHandler):
 
         return self.render(
             'jolla/translate.html',
-            link=(source.link or
-                  (article.source and article.source['link']) or
-                  None),
             source=source,
             article=article,
             imgs=None,
@@ -76,10 +75,9 @@ class TranslateHandler(BaseHandler):
             raise tornado.web.HTTPError(
                     500, 'Source %r not found' % source_link)
 
-        if slug is None:
-            slug = source.slug
-
         article = Article.by_user_link(user._id, source.link)
+        article.slug = self.get_slug(slug, article, source)
+
         article.title = title
         article.description = self.safe(desc)
         article.content = self.safe(content)
@@ -88,7 +86,7 @@ class TranslateHandler(BaseHandler):
         article.tag = tag
         article.source = {'link': source.link, 'title': source.title,
                           'author': ori_author or source.author}
-        article.slug = slug
+
         if not article.author:
             article.author = self.current_user._id
         if user.type < user.ROOT:
@@ -145,19 +143,49 @@ class TranslateHandler(BaseHandler):
 
         return escape(content)
 
-    def save_for_normal(self, article, source):
-        if not article:
-            # New article
-            if article.slug == source.slug:
-                slug = '%s-by-%s' % (article.slug, self.current_user.name)
-                index = 0
-                while Article(slug):  # exists
-                    index += 1
-                    slug = '%s-by-%s-%s' % (article.slug,
-                                            self.current_user.name,
-                                            index)
-                article.slug = slug
+    def get_slug(self, slug, article, source):
+        if slug is None:  # auto-set slug
+            if article.slug is not None:
+                return article.slug
 
+            return self._make_slug(article, source)
+
+        if article.slug == slug:
+            return slug
+
+        exists = Article(slug)
+        if exists and exists._id != article._id:
+            raise tornado.web.HTTPError(500, 'slug %r exists', slug)
+
+        return slug
+
+    def _make_slug(self, article, source):
+        source_slug = source.slug
+        if source_slug is None:
+            link = source.link
+            source_slug = link.split('/')[-1]
+            if (source_slug.endswith('.html') or
+                    source_slug.endswith('.htm') or
+                    source_slug.endswith('.asp')):
+                source_slug = ''.join(slug.split('.')[:-1])
+
+        if not Article(source_slug):
+            return source_slug
+
+        user_based_slug = '%s-%s' % (source_slug, self.current_user.name)
+        if not Article(user_based_slug):
+            return user_based_slug
+
+        indexed_slug = user_based_slug + '-%s'
+        index = 0
+        while True:
+            index += 1
+            slug = indexed_slug % index
+            if not Article(slug):
+                return slug
+
+    def save_for_normal(self, article, source):
+        article.status = article.AWAIT
         article.save()
 
     def save_for_su(self, article, source):
@@ -165,4 +193,4 @@ class TranslateHandler(BaseHandler):
         article.status = article.ACCEPTED
         article.save()
         source.save()
-        Article.eject_except(article._id)
+        Article.eject_except(article.source['link'], article._id)

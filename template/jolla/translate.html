@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_title %}
-  {{ _("Translate") }}: {{ source.title or (article.source and article.source['title']) or '[EMPTY]' }}
+  {{ _("Translate") }}: {{ source.title or article.source.get('title', None) or '[EMPTY]' }}
 {% end %}
 
 {% block neck %}
@@ -25,7 +25,7 @@
       <!-- title -->
       <div class="am-form-group">
         <label for="title">{{ _("Title") }}</label>
-        <input type="text" name="title" class="am-form-field" id="title" value="{{ article.title }}" placeholder="{{ source.title or '' }}" required="required">
+        <input type="text" name="title" class="am-form-field" id="title" value="{{ article.title or '' }}" placeholder="{{ source.title or '' }}" required="required">
       </div>
       <!-- description -->
       <div class="am-form-group">
@@ -38,13 +38,13 @@
         <input type="text" class="am-form-field" id="original-author" name="original-author" value="{{ source.author or '' }}" required="required"/>
       </div>
 
+      <div class="am-form-group">
+        <label for="source-link">{{ _('Source Link') }}: </label>
+        <a class="white" id="source-link" href="{{ source.link }}" target="_blank">{{ source.link }} <span class="am-icon-external-link"></span> </a>
+      </div>
       <!-- More -->
       <a data-am-collapse href="#more" class="white">{{ _('More') }} <span class="am-icon-angle-double-right"></span></a>
       <div id="more" class="am-collapse">
-        <div class="am-form-group">
-          <label for="source-link">{{ _('Source Link') }}: </label>
-          <a class="white" id="source-link" href="{{ source.link }}" target="_blank">{{ source.link }} <span class="am-icon-external-link"></span> </a>
-        </div>
         <div class="am-form-group">
           <label for="cover">{{ 'Cover' }}</label>
           <input type="text" class="am-form-field" id="cover" name="cover" value="{{ article.cover or source.cover or '' }}" />
@@ -59,7 +59,7 @@
         </div>
         <div class="am-form-group">
           <label for="slug">{{ 'Slug' }}</label>
-          <input type="text" class="am-form-field" id="slug" name="slug" value="{{ article.slug or source.slug or '' }}" />
+          <input type="text" class="am-form-field" id="slug" name="slug" value="{{ article.slug or '' }}" />
         </div>
       </div>
 
@@ -73,8 +73,7 @@
           </div>
         </div>
         <!-- translated area -->
-        <textarea class="am-form-field" name="content" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}" required="required">
-          {{ article.content or '' }}
+        <textarea class="am-form-field" name="content" id="mdEditor" tabindex="0" placeholder="&#xe601; {{ _('Markdown syntax supported') }}" required="required">{{ article.content or '' }}
         </textarea>
       </div>
 

@@ -97,7 +97,11 @@ class BaseHandler(BaseHandler):
             self.logout()
             return None
 
-        return User(ObjectId(uid.decode('utf-8')), self.locale.code[:2])
+        u = User(ObjectId(uid.decode('utf-8')), self.locale.code[:2])
+        if not u:
+            self.logout()
+            return None
+        return u
 
     def get_user_locale(self):
         arg = self.get_argument('lang', None)

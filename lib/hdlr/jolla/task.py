@@ -74,7 +74,7 @@ class TaskHandler(BaseHandler):
         source.tag = tags
         source.save()
         return self.write(json.dumps(
-                {'error': 0, 'redirect': '/tr/?%s' % quote(source.link, '')}))
+                {'error': 0, 'redirect': '/tr/?source=%s' % quote(source.link, '')}))
 
     def formal_link(self, link):
         splited = list(urlsplit(link))
