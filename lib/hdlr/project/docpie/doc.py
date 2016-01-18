@@ -5,15 +5,10 @@ except ImportError:
     from urlparse import urlsplit, urlunsplit, urljoin
     from urllib import unquote
 
-import sys
-import os
-sys.path.insert(0, os.path.normpath(
-                    os.path.join(__file__, '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
-sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.project.docpie.doc')
+logger = logging.getLogger('_docpie.doc')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
 

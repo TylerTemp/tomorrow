@@ -5,39 +5,21 @@ try:
 except ImportError:
     from urlparse import unquote
 
-import os
-import sys
-
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
-from lib.db.tomorrow import Article
-sys.path.pop(0)
+from lib.db.base import Meta
 
 class BreyHandler(BaseHandler):
 
-    def get(self, slug=None):
-        if slug is None:
-            page_title = 'Hi Brey!'
-            article_slug = 'brey-home'
-        else:
-            slug = unquote(slug)
-            page_title = None
-            article_slug = 'brey-' + slug
+    def get(self, slug='home'):
 
-        article_result = Article(article_slug)
-        if article_result.new:
-            raise tornado.web.HTTPError(404, 'page "%s" not found' % slug)
-        article = article_result.get()['en']
-        if page_title is None:
-            page_title = article['title']
+        article = self.get_article(slug)
 
         return self.render(
             'brey/brey.html',
-            slug=slug,
-            page_title=page_title,
-            title=article['title'],
-            content=md2html(article['content'])
+            page_title=article.title,
+            title=article.title,
+            content=md2html(article.content)
         )
 
     def get_user_locale(self):
@@ -51,3 +33,9 @@ class BreyHandler(BaseHandler):
             code=status_code,
             msg=msg,
         )
+
+    def get_article(self, slug):
+        m = Meta.find_one({'slug': slug, '_group': 'brey'})
+        if not m:
+            raise tornado.web.HTTPError(404, 'page %r not found' % slug)
+        return m

@@ -5,6 +5,7 @@ import time
 import json
 import shlex
 import docpie
+import sys
 try:
     from io import StringIO
 except ImportError:
@@ -13,14 +14,10 @@ except ImportError:
     except ImportError:
         from StringIO import StringIO
 
-import sys
-import os
-sys.path.insert(0, os.path.normpath(
-                    os.path.join(__file__, '..', '..', '..', '..')))
 from lib.hdlr.base import BaseHandler
-sys.path.pop(0)
+from lib.db.base import Meta
 
-logger = logging.getLogger('tomorrow.project.docpie.try')
+logger = logging.getLogger('_docpie.try')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
 try:
@@ -52,16 +49,6 @@ class StdoutRedirect(StringIO):
 
 
 class TryHandler(BaseHandler):
-
-    # _article_result = Article('docpie-example').get()
-    # _content = _article_result['en']['content']
-    # edit_time = _article_result['edittime']
-    # example = json.loads(_content)
-    edit_time = time.time()
-    example = {}
-
-    # del _article_result
-    # del _content
 
     default = {'doc': None, 'argv': None, 'help': True, 'version': None,
                'stdopt': True, 'attachopt': True, 'attachvalue': True,
@@ -154,17 +141,12 @@ class TryHandler(BaseHandler):
         return result
 
     def get_example(self, example):
-        article = Article('docpie-example').get()
-        edit_time = article['edittime']
-        if edit_time > self.edit_time:    # refresh
-            logger.debug('refresh docpie examples')
-            # always save in class
-            self.__class__.edit_time = edit_time
-            self.__class__.example = json.loads(article['en']['content'])
+        examples = Meta('examples', 'docpie')
+        examp = getattr(examples, example, None)
 
-        if example not in self.example:
+        if examp is None:
             raise tornado.web.HTTPError(
-                    404, '%s example not found' % example)
+                    404, '%r example not found' % example)
 
-        return self.example[example]
+        return examp
 

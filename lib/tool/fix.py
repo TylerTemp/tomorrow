@@ -5,10 +5,12 @@ import logging
 import pymongo
 import sys
 import os
+import json
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User, db, Auth
 from lib.db.jolla import Article as JArticle, User as JUser, Author, Source
+from lib.db.base import Meta
 from lib.config import Config
 sys.path.pop(0)
 
@@ -136,10 +138,48 @@ def fix_jolla_source():
         db.jolla.delete_one({'_id': old['_id']})
 
 
+def fix_for_brey(art):
+    # print('-' * 35)
+    # for k, v in art.items():
+    #     print(k, v if k != 'en' else '--')
+    # print('-' * 35)
+    meta = Meta(art['slug'][5:], 'brey')
+    _article = art['en']
+    meta.title = _article['title']
+    meta.content = _article['content']
+    meta.slug = art['slug'][5:]
+    logger.debug('%s - %s', meta.slug, meta.title)
+    meta.save()
+    Article.collection.delete_one({'_id': art['_id']})
+
+def fix_docpie_example(art):
+    edit_time = art['edittime']
+    examples = json.loads(art['en']['content'])
+    examples['edit_time'] = edit_time
+    examples['myscript_py'] = examples.pop('myscript.py')
+    examples['mycopy_py'] = examples.pop('mycopy.py')
+    meta = Meta('examples', 'docpie')
+    meta.__dict__['__info__'].update(examples)
+    meta.save()
+    Article.collection.delete_one({'_id': art['_id']})
+
+
+def fix_docpie_home(art):
+    for k, v in art.items():
+        print(k, ': ', v)
+    meta = Meta('home', 'docpie')
+    art['en'].pop('description', None)
+    art['zh'].pop('description', None)
+    meta.en = art['en']
+    meta.zh = art['zh']
+    meta.save()
+    Article.collection.delete_one({'_id': art['_id']})
+
 if __name__ == '__main__':
     JUser.collection.drop()
     JArticle.collection.drop()
     Author.collection.drop()
+    Meta.collection.drop()
     fix_jolla_source()
     fix_jolla_app()
     fix_jolla_author()
@@ -147,8 +187,6 @@ if __name__ == '__main__':
     my_id = get_my_id()
     print(my_id)
     for each in article.find({}):
-        if 'board' not in each:
-            continue
 
         if each['board'] == 'blog':
             # continue
@@ -157,6 +195,12 @@ if __name__ == '__main__':
         elif each['board'] == 'jolla':
             # continue
             fix_jolla_article(each, my_id)
-        else:
+        elif each['slug'].startswith('brey'):
             # continue
+            fix_for_brey(each)
+        elif each['slug'] == 'docpie-example':
+            fix_docpie_example(each)
+        elif each['slug'] == 'docpie_home':
+            fix_docpie_home(each)
+        else:
             article.delete_one({'_id': each['_id']})

@@ -1,6 +1,8 @@
 import logging
+import pymongo
 
 logger = logging.getLogger('db')
+
 
 class Base(object):
     _default = {'_id': None}
@@ -75,3 +77,44 @@ class Base(object):
         insert_result = collection.insert_one(attrs)
         _id = insert_result.inserted_id
         self._id = _id
+
+    @classmethod
+    def find_one(cls, *a, **k):
+        result = cls.collection.find_one(*a, **k)
+        ins = cls()
+        if result is not None:
+            ins.update(result)
+        return ins
+
+client = pymongo.MongoClient()
+db = client['meta']
+
+
+class Meta(Base):
+    collection = db.meta
+    _default = {
+        '_id': None,
+        '_group': None,
+        '_title': None,
+    }
+
+    def __init__(self, _title=None, _group=None):
+        super(Meta, self).__init__()
+        if _title is not None and _group is not None:
+            result = self.collection.find_one(
+                {'_title': _title, '_group': _group})
+            if result is None:
+                self._title = _title
+                self._group = _group
+            else:
+                self.update(result)
+
+    def _validate_attrs(self):
+        if not (self._group and self._title):
+            raise ValueError('%s can not be empty' % (
+                'title' if self._title is None else 'group'))
+
+        return True
+
+    def _before_save(self):
+        return True
