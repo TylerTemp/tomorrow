@@ -95,6 +95,15 @@ class BaseHandler(tornado.web.RequestHandler):
 
         return img_name_and_link, file_name_and_link
 
+    def get_user_locale(self):
+        arg = self.get_argument('lang', None)
+        if arg is not None:
+            return tornado.locale.get(arg)
+        cookie_lang = self.get_cookie('lang')
+        if cookie_lang:
+            return tornado.locale.get(cookie_lang)
+        return None
+
     def write_error(self, status_code, **kwargs):
         r = self.request
         logger.debug('%s - %s' % (r.remote_ip, r.host))

@@ -18,7 +18,7 @@
 <div id="info-panel">
   <div class="am-alert" data-am-alert  style="{{ '' if verify_mail else 'display:none'}}">
     <button type="button" class="am-close">&times;</button>
-    <p>{{ _('Please check your email "%s" to active your account') % user_email }}</p>
+    <p>{{ _('Please check your email "%s" to active your account') % user.email }}</p>
   </div>
 </div>
 
@@ -43,12 +43,12 @@
     <label><span class="am-icon-envelope"> {{ _("Email") }}:</span></label>
   </div>
   <div class="am-u-sm-8 am-u-md-10">
-    <form action="{{ request.uri }}" method="post">
+    <form method="post">
       <fieldset>
         {% raw xsrf_form_html() %}
         <input class="am-hide" name="action" value="verify_email">
-        <input class="am-form-field am-inline am-input-sm" id="email-input" name="email" value="{{ user_email }}" style="width:65%">
-        <button type="submit" class="am-btn am-btn-success am-btn-xs" id="email-btn" data-am-loading="{spinner: 'circle-o-notch', loadingText: '', resetText: '{{ _("Send Confirm Mail") }}'}">{{ _("Send Confirm Mail") }}</button>
+        <input class="am-form-field am-inline am-input-sm" id="email-input" name="email" value="{{ user.email }}" style="width:65%">
+        <button type="submit" class="am-btn am-btn-success am-btn-xs" id="email-btn" data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">{{ _("Send Confirm Mail") }}</button>
       </fieldset>
     </form>
   </div>
@@ -72,7 +72,7 @@
 {% else %}
 
 <div class="am-padding">
-  <form class="am-form" method="POST" action="{{ request.uri }}">
+  <form class="am-form" method="POST">
     <fieldset>
       <table class="am-table am-table-bordered box-shadow am-table-striped am-table-hover">
         <thead>
@@ -93,7 +93,7 @@
                 </label>
               </td>
               <td class="am-text-middle">
-                <span class="am-icon-user"> {{ user_name }}</span>
+                <span class="am-icon-user"> {{ user }}</span>
               </td>
             </tr>
             <tr>
@@ -102,17 +102,19 @@
                   <input type="checkbox" name="email" data-am-ucheck> {{ _("Email") }}
                 </label>
               </td>
-              <td class="am-text-middle"><span class="am-icon-envelope"> {{ user_email }}</span></td>
+              <td class="am-text-middle"><span class="am-icon-envelope"> {{ user.email }}</span></td>
             </tr>
+            <tr>
               <td>
                 <label class="am-checkbox">
                   <input type="checkbox" name="pwd" data-am-ucheck> {{ _("Password") }}
                 </label>
               </td>
               <td class="am-text-middle"><span class="am-icon-key"> ********</span></td>
-            <tr {% if not active %} class="am-danger" {% end %}>
+            </tr>
+            <tr {% if not user.active %} class="am-danger" {% end %}>
               <td><span class="am-icon-child">&nbsp;&nbsp;</span>{{ _("Active") }}</td>
-              <td><span class="{{ 'am-text-success am-icon-check' if active else 'am-text-danger am-icon-times' }}"></span></td>
+              <td><span class="{{ 'am-text-success am-icon-check' if user.active else 'am-text-danger am-icon-times' }}"></span></td>
             </tr>
         </tbody>
       </table>
@@ -120,7 +122,7 @@
           type="submit"
           class="am-btn am-btn-primary"
           id="submit_change"
-          data-am-loading="{spinner: 'refresh', loadingText: '', resetText: '{{ _('Submit') }}'}"
+          data-am-loading="{spinner: 'refresh', loadingText: ''}"
           disabled>
         {{ _('Submit') }}
       </button>

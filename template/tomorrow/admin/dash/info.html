@@ -132,25 +132,37 @@
 
     <!-- Intro -->
     <div class="am-form-group">
-      <label for="intro" class="am-icon-info"> {{ _('My Introduction') }}:</label>
-      <textarea id="intro" name="intro" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
-        {{ user.intro['zh'] or '' }}</textarea>
-      <small>You can write in <span class="iconfont icon-md-solid">Markdown</span> combining some HTML tags</small>
+      <label for="intro-zh" class="am-icon-info"> {{ _('My Introduction') }}[ZH]:</label>
+      <textarea id="intro-zh" name="intro-zh" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
+        {{ user.intro.get('zh', '') or '' }}</textarea>
+    </div>
+    <!-- Intro -->
+    <div class="am-form-group">
+      <label for="intro-en" class="am-icon-info"> {{ _('My Introduction') }}[EN]:</label>
+      <textarea id="intro-en" name="intro-en" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
+        {{ user.intro.get('en', '') or '' }}</textarea>
     </div>
 
     <!-- Donate -->
     <div class="am-form-group">
-      <label for="donate" class="am-icon-credit-card"> {{ _('My Donating information') }}:</label>
-      <textarea id="donate" name="donate" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
-        {{ user.donate['zh'] or '' }}</textarea>
-      <small>You can write in <span class="iconfont icon-md-solid">Markdown</span>, HTML &amp; Javascript but it requires administer's verification each time you modify it</small>
+      <label for="donate-zh" class="am-icon-credit-card"> {{ _('My Donating information') }}[ZH]:</label>
+      <textarea id="donate-zh" name="donate-zh" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
+        {{ user.donate.get('zh', '') or '' }}</textarea>
     </div>
-    <div id="error-panel">
+    <!-- Donate -->
+    <div class="am-form-group">
+      <label for="donate-en" class="am-icon-credit-card"> {{ _('My Donating information') }}[EN]:</label>
+      <textarea id="donate-en" name="donate-en" placeholder="&#xe601; {{ _('MarkDown Syntax Supported') }}">
+        {{ user.donate.get('en', '') or '' }}</textarea>
     </div>
+
     <div class="am-form-group am-cf">
       <button class="am-btn am-btn-success am-fr" type="submit" data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">
         <span class="am-icon-save"></span>
       </button>
+    </div>
+
+    <div id="error-panel">
     </div>
   </form>
 </div>

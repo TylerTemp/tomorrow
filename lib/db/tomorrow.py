@@ -46,7 +46,6 @@ class User(Base):
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
         'verify': {'for': 0, 'code': None, 'expire': None},
-        'lang': None,
         '_id': None
     }
 
@@ -258,7 +257,7 @@ class Article(Base):
     def other_lang(self):
         lang = self.lang
         attrs = self.__dict__['__info__']
-        other = 'en' if self.lang == 'zh' else 'zh'
+        other = 'en' if lang == 'zh' else 'zh'
         if attrs.get(other, False):
             return other
         return None

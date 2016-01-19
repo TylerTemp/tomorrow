@@ -38,53 +38,41 @@ class InfoHandler(BaseHandler):
 
         self.check_xsrf_cookie()
 
-        user_info = self.current_user
-        url_user = unquote(user)
-        if user_info is None or user_info['user'] != url_user:
-            raise tornado.web.HTTPError(500, 'user %s try to modify user %s',
-                                        user_info['user'], url_user)
-
-        show_email = self.get_bool('show_email')
-        show_intro_in_home = self.get_bool('intro_in_home')
-        show_intro_in_article = self.get_bool('intro_in_article')
-        show_donate_in_home = self.get_bool('donate_in_home')
-        show_donate_in_article = self.get_bool('donate_in_article')
-        intro_content = self.get_argument('intro', None) or None
-        donate_content = self.get_argument('donate', None) or None
+        show_email = bool(self.get_argument('show_email', False))
+        show_intro_in_home = bool(self.get_argument('intro_in_home', False))
+        show_intro_in_article = bool(
+            self.get_argument('intro_in_article', False))
+        show_donate_in_home = bool(self.get_argument('donate_in_home', False))
+        show_donate_in_article = bool(
+            self.get_argument('donate_in_article', False))
+        intro_zh = self.get_argument('intro-zh', '').strip() or None
+        intro_en = self.get_argument('intro-en', '').strip() or None
+        donate_zh = self.get_argument('donate-zh', '').strip() or None
+        donate_en = self.get_argument('donate-en', '').strip() or None
         # set to None if it's empty string
-        user_img = self.get_argument('img_url', None) or None
+        user_img = self.get_argument('img_url', '').strip() or None
 
-        intro = {'content': intro_content,
-                 'show_in_home': show_intro_in_home,
-                 'show_in_article': show_intro_in_article}
-        donate_switch = {'show_in_home': show_donate_in_home,
-                  'show_in_article': show_donate_in_article}
+        user = self.current_user
 
-        user = User(user_info['user'])
-        user_info = user.get()
-        user_info.update({'img': user_img, 'show_email': show_email})
-        user_info['intro'].update(intro)
-        donate = user_info['donate']
-        donate.update(donate_switch)
+        intro = user.intro
+        if intro_zh:
+            intro['zh'] = intro_zh
+        if intro_en:
+            intro['en'] = intro_en
+        u = {'show_in_home': show_intro_in_home,
+             'show_in_article': show_intro_in_article}
+        intro.update(u)
 
-        if donate_content != donate['new']:
-            if donate['info'] is None:
-                donate['new'], donate['old'] = donate_content, donate['new']
-            else:
-                donate['new'] = donate_content
-            if donate_content:
-                donate['info'] = 'pending'
-            else:
-                donate['info'] = None
+        donate = user.donate
+        if donate_zh:
+            donate['zh'] = donate_zh
+        if donate_en:
+            donate['en'] = donate_en
+        u = {'show_in_home': show_donate_in_home,
+             'show_in_article': show_donate_in_article}
+        donate.update(u)
 
-        logger.debug('user: %s; show_email: %r; user_img: %r',
-                     user_info['user'], show_email, user_img)
+        user.photo = user_img
         user.save()
 
         return self.write(json.dumps({'error': 0}))
-
-    def get_bool(self, name, default=False):
-        arg = self.get_argument(name, default)
-        if arg == 'false':
-            arg = False
-        return bool(arg)

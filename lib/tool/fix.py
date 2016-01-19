@@ -23,7 +23,6 @@ jolla_app = config.jolla_app
 assert jolla_app['key']
 
 def fix_myself():
-    print('fix myself')
     old_tyler = User.collection.find_one({'user': 'TylerTemp'})
     tyler = User()
     tyler.photo = old_tyler.pop('img')
@@ -124,8 +123,6 @@ def fix_jolla_source():
              ('createtime', pymongo.DESCENDING)
             ))
     for old in old_source:
-        print(old['title'])
-        print(old['trusted_translation'])
         s = Source(old['link'])
         s.title = old['title']
         s.author = old['author']
@@ -165,13 +162,21 @@ def fix_docpie_example(art):
 
 
 def fix_docpie_home(art):
-    for k, v in art.items():
-        print(k, ': ', v)
     meta = Meta('home', 'docpie')
     art['en'].pop('description', None)
     art['zh'].pop('description', None)
     meta.en = art['en']
     meta.zh = art['zh']
+    meta.save()
+    Article.collection.delete_one({'_id': art['_id']})
+
+
+def fix_docpie_doc(art):
+    meta = Meta(art['slug'], 'docpie')
+    zh = art['zh']
+    meta.zh = {'content': zh['content'].replace('?example=myscript.py', '?example=myscript_py').replace('?example=mycopy.py', '?example=mycopy_py'), 'title': zh['title']}
+    en = art['en']
+    meta.en = {'content': en['content'].replace('?example=myscript.py', '?example=myscript_py').replace('?example=mycopy.py', '?example=mycopy_py'), 'title': en['title']}
     meta.save()
     Article.collection.delete_one({'_id': art['_id']})
 
@@ -202,5 +207,9 @@ if __name__ == '__main__':
             fix_docpie_example(each)
         elif each['slug'] == 'docpie_home':
             fix_docpie_home(each)
+        elif each['slug'] == 'experimental-apis' or 'docpie' in each['tag']:
+            fix_docpie_doc(each)
         else:
+            print(each['slug'], '!!!!!!!!!!!')
+
             article.delete_one({'_id': each['_id']})

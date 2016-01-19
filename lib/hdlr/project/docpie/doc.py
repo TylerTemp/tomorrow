@@ -7,6 +7,7 @@ except ImportError:
 
 from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
+from lib.db.base import Meta
 
 logger = logging.getLogger('_docpie.doc')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
@@ -24,12 +25,12 @@ class DocHandler(BaseHandler):
         else:
             unquote_slug = unquote(slug)
 
-        info = Article(unquote_slug).get()
+        info = Meta(unquote_slug, 'docpie')
 
         if self.locale.code[:2] == 'zh':
-            article = info['zh']
+            article = info.zh
         else:
-            article = info['en']
+            article = info.en
 
         return self.render(
             'project/docpie/doc.html',
