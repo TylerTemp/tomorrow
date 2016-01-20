@@ -1,50 +1,37 @@
-import tornado.web
-import tornado.escape
 import logging
-import time
+import datetime
 try:
     from urllib.parse import quote
 except ImportError:
     from urllib import quote
 
-import sys
-import os
+try:
+    from email.utils import formatdate
+except ImportError:
+    from email.Utils import formatdate
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-# from lib.hdlr.base import BaseHandler
-from lib.db.jolla import Article
-from lib.config import Config
+from lib.db.jolla import Article, User
 from lib.tool import md2html
-sys.path.pop(0)
+from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.jolla.rss')
+logger = logging.getLogger('jolla.rss')
 
 
-class RssHandler(tornado.web.RequestHandler):
-    HOST = Config().jolla_host
+class RssHandler(BaseHandler):
 
     def get(self):
         return self.render(
             'jolla/rss.xml',
-            articles=self.get_tred_jolla()
+            host=self.config.jolla_host,
+            time_str=formatdate,
+            md2html=md2html,
+            articles=self.get_articles(Article.all_shown(limit=5))
         )
 
-    @classmethod
-    def get_tred_jolla(cls):
-        for each in Article.display_jolla(limit=3):
-            content = md2html(each['zh']['content'])
-            img = each['cover'] or each['headimg']
-            if img:
-                content = '<img src="%s">%s' % (img, content)
-            des = each['zh']['description']
-            if des:
-                des = md2html(des)
-            result = {
-                'title': each['zh']['title'],
-                'link': '//%s/%s/' % (cls.HOST, quote(each['slug'])),
-                'author': each['author'],
-                'descripition': des,
-                'content': content,
-                'time': time.ctime(each['createtime'])
-            }
-            yield result
+    def get_articles(self, result):
+        for each in result:
+            a = Article()
+            a.update(each)
+            a.author = User(each['author'])
+            logger.debug(a.slug)
+            yield a

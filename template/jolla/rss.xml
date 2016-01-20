@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0">
 <channel>
   <title>Jolla中文博客</title>
   <description>最新最及时最权威Jolla中文资讯</description>
-  <link>http://jolla.comes.today</link>
+  <link>https://{{ host }}</link>
   <language>zh-CN</language>
   <copyright>2015 TylerTemp. All rights reserved.</copyright>
-  <webMaster>tylertempdev@gmail.com</webMaster>
+  <webMaster>tylertempdev@gmail.com (TylerTemp)</webMaster>
   <image>
-    <url>http://tomorrow.comes.today/static/i/favicon.png</url>
-    <link>http://jolla.comes.today</link>
+    <url>https://tomorrow.comes.today/static/i/favicon.png</url>
+    <link>https://{{ host }}</link>
+    <title>Jolla中文博客</title>
   </image>
   {% for each in articles %}
   <item>
-    <title>{{ each['title'] }}</title>
-    <link>{{ each['link' ] }}</link>
-    <comments>{{ each['link'] }}#comment</comments>
-    <author>{{ each['author'] }}</author>
-    <pubDate>{{ each['time'] }}</pubDate>
-    <description>{{ each['descripition'] }}</description>
-    <content:encoded>
-      {% if each['descripition'] %}
-        <div style="border-style: dotted; border-width: 1px; padding: 2px; margin: 5px">
-          {% raw each['descripition'] %}
-        </div>
+    <title>{{ each.title }}</title>
+    <link>https://{{ host }}/{{ each.slug }}/</link>
+    <comments>https://{{ host }}/{{ each.slug }}/#comment</comments>
+    {% if each.author.email %}
+      <author>{{ each.author.email }} ({{ each.author }})</author>
+    {% end %}
+    <pubDate>{{ time_str(each.create_time) }}</pubDate>
+    <description>
+      {% if each.description %}
+        &lt;div style="border-style: dotted; border-width: 1px; padding: 2px; margin: 5px"&gt;
+          {{ md2html(each.description) }}
+        &lt;/div&gt;
       {% end %}
-      {{ each['content'] }}
-    </content:encoded>
+      {{ md2html(each.content) }}
+    </description>
   </item>
   {% end %}
 </channel>
