@@ -314,7 +314,10 @@ class Auth(Base):
         super(Auth, self).__init__()
         if key:
             result = self.collection.find_one({'key': key})
-            self.update(result)
+            if result is not None:
+                self.update(result)
+            else:
+                self.key = key
 
     def generate_code(self):
         collection = self.collection

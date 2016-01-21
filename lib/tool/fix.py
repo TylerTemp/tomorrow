@@ -11,16 +11,23 @@ sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User, db, Auth
 from lib.db.jolla import Article as JArticle, User as JUser, Author, Source
 from lib.db.base import Meta
-from lib.config import Config
+from lib.config.jolla import Config as JConfig
 sys.path.pop(0)
 
 article = Article.collection
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 
-config = Config()
-jolla_app = config.jolla_app
-assert jolla_app['key']
+
+def fix_jolla_app():
+    config = JConfig()
+    jolla_app = config.tomorrow
+    auth = Auth(jolla_app['key'])
+    auth.secret = jolla_app['secret']
+    auth.name = 'Jolla中文博客'
+    auth.callback = jolla_app['callback']
+    auth.save()
+
 
 def fix_myself():
     old_tyler = User.collection.find_one({'user': 'TylerTemp'})
@@ -49,11 +56,6 @@ def fix_myself():
     j_tyler.type = j_tyler.ROOT
     logger.debug(j_tyler._id)
     j_tyler.save()
-    j_tyler = JUser(j_tyler._id)
-    logger.debug(j_tyler.intro)
-    logger.debug(j_tyler.donate)
-    logger.debug(j_tyler._id)
-    logger.debug(tyler._id)
 
 
 def fix_jolla_author():
@@ -109,13 +111,6 @@ def get_my_id():
     j_u = JUser.by_source_id(JUser.TOMORROW, tmr_id)
     return j_u._id
 
-def fix_jolla_app():
-    auth = Auth()
-    auth.key = jolla_app['key']
-    auth.name = 'jolla中文博客'
-    auth.secret = jolla_app['secret']
-    auth.callback = jolla_app['callback']
-    auth.save()
 
 def fix_jolla_source():
     old_source = db.jolla.find({}).sort(
@@ -190,7 +185,7 @@ if __name__ == '__main__':
     fix_jolla_author()
     fix_myself()
     my_id = get_my_id()
-    print(my_id)
+    logger.debug(my_id)
     for each in article.find({}):
 
         if each['board'] == 'blog':
@@ -210,6 +205,6 @@ if __name__ == '__main__':
         elif each['slug'] == 'experimental-apis' or 'docpie' in each['tag']:
             fix_docpie_doc(each)
         else:
-            print(each['slug'], '!!!!!!!!!!!')
+            logger.warning(each['slug'] + '!!!!!!!!!!!')
 
             article.delete_one({'_id': each['_id']})

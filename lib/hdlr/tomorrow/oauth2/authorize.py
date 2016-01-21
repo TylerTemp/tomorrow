@@ -3,8 +3,6 @@ import tornado.web
 import tornado.ioloop
 from .base import BaseHandler
 from lib.db.tomorrow import Auth, User
-from lib.tool.generate import generate
-import time
 
 try:
     from urllib.parse import urlencode, quote, urlsplit, parse_qs, urlunsplit

@@ -11,7 +11,7 @@ except ImportError:
 from .base import BaseHandler
 from lib.tool.md import md2html
 from lib.tool.md import escape
-from lib.db.jolla import Article, User, Source
+from lib.db.jolla import Article, User, Source, Redirect
 
 logger = logging.getLogger('jolla.translate')
 
@@ -40,7 +40,7 @@ class EditHandler(BaseHandler):
         article = self.get_article(slug)
         new_slug = self.get_argument('slug')
         if slug != new_slug:
-            if Article(new_slug):
+            if Article(new_slug) or Redirect(new_slug):
                 raise tornado.web.HTTPError(500, 'slug %r exists' % new_slug)
         self.fill_article(article)
         self.assert_article(article)
@@ -95,7 +95,8 @@ class EditHandler(BaseHandler):
         tag = []
         for each in self.get_argument('tag', '').split(','):
             t = each.strip()
-            tag.append(t)
+            if t:
+                tag.append(t)
         article.tag = tag
 
     def assert_article(self, article):
