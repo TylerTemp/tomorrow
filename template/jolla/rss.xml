@@ -23,6 +23,11 @@
     {% end %}
     <pubDate>{{ time_str(each.create_time) }}</pubDate>
     <description>
+      {% if each.banner %}
+        {{ '<img src="%s" />' % each.banner }}
+      {% elif each.cover %}
+        {{ '<img src="%s" />' % each.cover }}
+      {% end %}
       {% if each.description %}
         &lt;div style="border-style: dotted; border-width: 1px; padding: 2px; margin: 5px"&gt;
           {{ md2html(each.description) }}
