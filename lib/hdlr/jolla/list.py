@@ -20,7 +20,7 @@ class ListHandler(BaseHandler):
             page = 1
         else:
             page = int(page)
-        skip = page * self.LIMIT
+        skip = (page - 1) * self.LIMIT
         all_raw_source = Source.all(skip, self.LIMIT)
         all_num = all_raw_source.count()
 

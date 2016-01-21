@@ -75,18 +75,13 @@ class User(Base):
     def __setattr__(self, item, value):
         if item == 'lang':
             self.__dict__['lang'] = value
-            return  
+            return
+
+        if item == 'pwd':
+            self.__dict__['__info__']['pwd'] = sha256_crypt.encrypt(value)
+            return
 
         return super(User, self).__setattr__(item, value)
-
-    @property
-    def pwd(self):
-        return self.__dict__['__info__'].get('pwd', None)
-
-    @pwd.setter
-    def pwd(self, value):
-        v = sha256_crypt(value)
-        self.__dict__['__info__']['pwd'] = v
 
     def verity(self, pwd):
         sha256_crypt.verify(pwd, self.pwd)

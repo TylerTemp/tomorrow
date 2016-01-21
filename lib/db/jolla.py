@@ -294,6 +294,17 @@ class Source(Base):
         if limit is None:
             return result[offset:]
         return result[offset:offset + limit]
+    #
+    # @classmethod
+    # def all_untranslated(cls, offset=0, limit=None):
+    #     result = cls.collection.find({}).sort(
+    #         (
+    #          ('create_time', pymongo.DESCENDING)
+    #         )
+    #     )
+    #     if limit is None:
+    #         return result[offset:]
+    #     return result[offset:offset + limit]
 
 
 class Redirect(Base):
