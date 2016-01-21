@@ -5,7 +5,6 @@ import tornado.httpclient
 import tornado.gen
 from bson import ObjectId
 from .base import BaseHandler
-from lib.config import Config
 from lib.tool.minsix import py3
 from lib.db.jolla import User
 
@@ -16,21 +15,20 @@ except ImportError:
 
 logger = logging.getLogger('jolla.oauth')
 
+
 class OAuthHandler(BaseHandler):
-    config = Config()
 
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
         code = self.get_argument('code')
         logger.debug(code)
-        key = self.tomorrow_key
-        secret = self.tomorrow_secret
+        app = self.config.tomorrow
+        key = app['key']
+        secret = app['secret']
 
         client = tornado.httpclient.AsyncHTTPClient()
 
-        config = self.config
-        app = config.jolla_app
         token_url = app['token_url']
         args = {'key': key, 'secret': secret, 'code': code}
 

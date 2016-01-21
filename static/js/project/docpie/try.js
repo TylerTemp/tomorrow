@@ -186,10 +186,11 @@ $(function(evt)
   });
   // </form>
   // <bug report>
-  $('#bug-report-guide').click(function(event)
+  $('#bug-report-guide').click(function(event){ event.preventDefault(); return; });
+  $('#bug-report-container').on('open.collapse.amui', function(event)
   {
-    event.preventDefault();
-    $('#bug-report-container').fadeIn(200);
+    //event.preventDefault();
+    //$('#bug-report-container').fadeIn(200);
     var $form = $('form');
     var values = {};
     $.each($form.serializeArray(), function(i, field)
@@ -218,14 +219,11 @@ $(function(evt)
         "WTF? What the hell was going on?\n\n" +
         "`docpie` version: " + version_and_time + "\n\n" +
         "Here is the [online demo](" + url.toString() + ")";
-
     $display.val(msg);
-    adjust_height($display[0]);
-  });
-  $('#bug-report-cancel').click(function(event)
+    //adjust_height($display[0]);
+  }).on('opened.collapse.amui', function(event)
   {
-    event.preventDefault();
-    $('#bug-report-container').fadeOut(100);
+    adjust_height($('#bug-report-info')[0])
   });
   // </bug report>
 });

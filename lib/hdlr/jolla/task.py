@@ -9,12 +9,8 @@ except ImportError:
     from urlparse import unquote, urljoin, urlsplit, urlunsplit
 
 from .base import BaseHandler
-from lib.config import Config
-from lib.tool.md import html2md
-from lib.tool.md import escape
 from lib.db.jolla import Source, User
 
-cfg = Config()
 logger = logging.getLogger('tomorrow.jolla.task')
 
 

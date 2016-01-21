@@ -295,6 +295,30 @@ class Source(Base):
         return result[offset:offset + limit]
 
 
+class Redirect(Base):
+    collection = db.redirect
+
+    _default = {
+        '_id': None,
+        'source': None,
+        'target': None,
+    }
+
+    def __init__(self, source=None):
+        super(Redirect, self).__init__()
+        if source is not None:
+            result = self.collection.find_one({'source': source})
+            if result:
+                self.update(result)
+            else:
+                self.source = source
+
+    def _validate_attrs(self):
+        if not (self.source and self.target):
+            raise ValueError('Miss ' + ('source' if self.target else 'target'))
+        return super(Redirect, self)._validate_attrs()
+
+
 if __name__ == '__main__':
     from bson import ObjectId
 

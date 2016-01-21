@@ -12,11 +12,11 @@ rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
 from lib.tool.minsix import open
 from lib.tool import bashlog
-from lib import config
+from lib.config.base import Config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-cfg = config.Config()
+cfg = Config()
 cfg.auto_clean = False
 
 

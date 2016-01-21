@@ -8,8 +8,18 @@ try:
     from urllib.parse import quote, urljoin
 except ImportError:
     from urlparse import quote, urljoin
+from lib.config.tomorrow import Config
 
 class BaseHandler(BaseHandler):
+    config = Config()
+
+    def render(self, template_name, **kwargs):
+        kwargs.setdefault('HOST', self.config.host)
+
+        return super(BaseHandler, self).render(
+            template_name,
+            **kwargs
+        )
 
     def get_current_user(self):
         user = self.get_secure_cookie('user')

@@ -13,13 +13,13 @@ sys.path.insert(0, rootdir)
 from lib.tool.filelock import FileLock
 from lib.tool.minsix import open
 from lib.tool import bashlog
-from lib import config
+from lib.config.base import Config
 sys.path.pop(0)
 
 logger = bashlog.stdoutlogger(None, bashlog.DEBUG, True)
-cfg = config.Config()
+cfg = Config()
 cfg.auto_clean = False
-mainfile = os.path.join(rootdir, 'main.py')
+mainfile = os.path.join(cfg.root, 'main.py')
 
 
 def run(argv):    # won't wait
@@ -56,7 +56,7 @@ def main():
 
         running_pid_2_port = json.loads(val)
 
-    all_ports = cfg.ports
+    all_ports = set(cfg.ports)
     reboot_pid_2_ports = {}
     kill_pid_2_ports = {}
     new_ports = all_ports.difference(running_pid_2_port.values())
@@ -77,8 +77,8 @@ def main():
                          kill_pid, port)
         else:
             new_pid = run(['-p', str(port)] + sys.argv[1:])
-            logger.debug('sleep %s', cfg.sleep)
-            time.sleep(cfg.sleep)
+            logger.debug('sleep %s', cfg.wait_bootup)
+            time.sleep(cfg.wait_bootup)
             now_pid_2_port[new_pid] = port
 
     for kill_pid, old_port in kill_pid_2_ports.items():

@@ -17,6 +17,7 @@
     background-color: #3E4349;
     color:#fff;
     padding: 24px;
+    font-weight: bold;
   }
 
   .comment {
@@ -64,4 +65,23 @@
     border-style: dashed;
     border-width: 1px;
     padding: 1rem;
+  }
+
+  .exec-prefix {
+    width: 150px;
+    float: left;
+    padding: 4px 0 0 0;
+  }
+
+  .dollar {
+    color: #F3F781;
+  }
+
+  .output {
+    background-color: #610B4B;
+    color: #fff;
+    font-weight: bold;
+    padding: 0;
+    margin: 10px;
+    border:0
   }

@@ -1,5 +1,5 @@
 from .base import BaseHandler
-from lib.config import Config
+from lib.config.jolla import Config
 import json
 try:
     from urllib.parse import urlencode
@@ -7,17 +7,18 @@ except ImportError:
     from urlparse import urlencode
 
 class LoginHandler(BaseHandler):
-    _config = Config()
-    _info = _config.jolla_app
-    url = '%s?%s' % (
-        _info['auth_url'],
-        urlencode({'callback': _info['callback'], 'key': _info['key']}))
 
     def get(self):
         return self.render(
             'jolla/login.html',
-            tomorrow_url=self.url,
+            tomorrow_url=self.get_tomorrow_url(),
         )
+
+    def get_tomorrow_url(self):
+        app = self.config.tomorrow
+        main = app['auth_url']
+        return '%s?%s' % (
+            main, urlencode({'key': app['key'], 'callback': app['callback']}))
 
 
 class LogoutHandler(BaseHandler):

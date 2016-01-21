@@ -12,14 +12,14 @@
 {% block stomach %}
 
 <div class="am-container">
-  <h1 class="try-title am-monospace";"><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
+  <h1 class="try-title am-monospace"><span class="am-text-success am-serif">Try</span> <span style="font-family: 'Ubuntu Mono', monospace;">[docpie]</span></h1>
 
   <form class="am-form am-form-horizontal">
     <fieldset>
       <legend class="am-monospace">docpie ({{ _('Version') }} {{ version }} / {{ time }})</legend>
 
       <!-- Editor -->
-      <div class="am-form-group" style="font-weight: blod;">
+      <div class="am-form-group">
         <div class="editor am-monospace">
           <span class="comment"># <span data-role="file-name">{{ file_name }}</span></span><br/>
           <span class="string">"""</span>
@@ -36,8 +36,8 @@
       <div class="terminal am-monospace">
         <div class="am-form-group">
           <div style="width: 100%">
-            <label for="argv" style="width: 150px; float: left; padding: 4px 0px 0px 0px">
-              <span style="color: #F3F781;">$</span> python <span data-role="file-name">{{ file_name }}</span>
+            <label class="exec-prefix" for="argv">
+              <span class="dollar">$</span> python <span data-role="file-name">{{ file_name }}</span>
             </label>
             <div style="overflow: hidden;">
               <input class="terminal-input" type="text" id="argv" name="argv"
@@ -51,16 +51,16 @@
           <button type="submit"
                   class="am-btn am-btn-success am-fr"
                   data-am-loading="{spinner: 'cog', loadingText: ''}">Enter &#9166;</button>
-          <pre class="nohighlight" style="background-color: #610B4B; color: #fff; font-weight: bold; padding: 0; margin: 10px; border:0"><code class="am-monospace">{{ output or '' }}</code></pre>
-          <span data-role="end_dollar" style="color: #F3F781; {{ '' if output else 'display:none;' }}">$</span>
+          <pre class="nohighlight output"><code class="am-monospace">{{ output or '' }}</code></pre>
+          <span data-role="end_dollar" class="dollar" style="{{ '' if output else 'display:none;' }}">$</span>
 
         </div>
 
       </div>
 
-      <p>{% raw _('Find a bug? {mark}Tell me here!{mark_end}').format(mark='<a href="https://github.com/TylerTemp/docpie/issues" target="_blank" id="bug-report-guide"><span class="am-icon-bug">', mark_end='</span></a>') %}</p>
+      <p>{% raw _('Find a bug? {mark}Tell me here!{mark_end}').format(mark='<a href="https://github.com/TylerTemp/docpie/issues" target="_blank" id="bug-report-guide" data-am-collapse="{target: \'#bug-report-container\'}" ><span class="am-icon-bug">', mark_end='</span></a>') %}</p>
 
-      <div id="bug-report-container" style="display: none;">
+      <div id="bug-report-container" class="am-collapse">
         <p>1. Open
           <a href="https://github.com/TylerTemp/docpie/issues/new" target="_blank">
             this page
@@ -69,16 +69,13 @@
         <p>2. Copy the following content to the new page</p>
         <hr />
         <textarea class="am-form-filed" id="bug-report-info"></textarea>
-        <div class="am-g am-cf am-padding-top">
-          <button class="am-btn am-fr" id="bug-report-cancel">{{ _('Cancel') }}</button>
-        </div>
       </div>
 
       <hr class="am-divider am-divider-dashed" />
 
       <p class="am-icon-wrench"> {{ _('Config') }}:</p>
 
-      <input name="exec" value="on" style="display: none"/>
+      <input name="run" value="true" style="display: none"/>
 
       <!-- help -->
       <div class="am-form-group">

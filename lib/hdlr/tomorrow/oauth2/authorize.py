@@ -59,6 +59,13 @@ class AuthorizeHandler(BaseHandler):
     def set_code(self):
         auth = self.auth
         user = self.current_user
+        if user is None:
+            return self.to_login(
+                '/oauth2/authorize/?%s' %
+                urlencode({
+                    'key': self.key,
+                    'callback': self.get_argument('callback')}))
+
         code = auth.generate_code()
         expire_at = auth.set_code(code, user._id)
         auth.save()

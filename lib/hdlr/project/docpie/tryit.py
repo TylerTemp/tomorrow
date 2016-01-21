@@ -68,9 +68,9 @@ class TryHandler(BaseHandler):
         else:
             doc = self.get_argument('doc', None)
             result['doc'] = doc or None
-            if doc:
-                argv = self.get_argument('argv')
-                result['argv'] = argv
+            argv = self.get_argument('argv', None)
+            result['argv'] = argv
+            if self.get_argument('run', False):
                 name = self.get_argument('name', None) or None
                 config = {
                     'help': self.get_bool('help'),
@@ -149,4 +149,16 @@ class TryHandler(BaseHandler):
                     404, '%r example not found' % example)
 
         return examp
+
+    def get_bool(self, name):
+        result = self.get_argument(name, None)
+        if result is not None:
+            if result.lower() == 'false':
+                return False
+            if result.lower() == 'true':
+                return True
+
+            return bool(result)
+
+        return False
 

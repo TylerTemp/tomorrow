@@ -12,14 +12,12 @@ except ImportError:
 
 from lib.db.tomorrow import Article
 from lib.tool.md import md2html
-from lib.config import Config
 from .base import BaseHandler
 
 logger = logging.getLogger('tomorrow.dash.secure')
 
 
 class ArticleHandler(BaseHandler):
-    JOLLA_HOST = Config().jolla_host
 
     @tornado.web.authenticated
     def get(self, user):

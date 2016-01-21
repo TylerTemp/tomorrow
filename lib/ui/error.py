@@ -1,12 +1,7 @@
 import tornado.web
 import logging
-import sys
-import os
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.config import Config
-sys.path.pop(0)
-
+from lib.config.tomorrow import Config
 
 logger = logging.getLogger('tomorrow.ui.editor')
 config = Config()
@@ -14,7 +9,7 @@ config = Config()
 class ErrorImageModule(tornado.web.UIModule):
 
     def render(self, code):
-        host = config.main_host
+        host = config.tomorrow_host
         return (
             '<div class="am-cf">'
             '<img src="//{host}/utility/woopse/{code}/" '

@@ -14,22 +14,20 @@ except ImportError:
     from itertools import izip_longest as zip_longest
 
 from .base import BaseHandler
-# import sys
-# import os
 
-# sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-from lib.db.jolla import Article, Author, User
+from lib.db.jolla import Article, Author, User, Redirect
 from lib.tool import md
-from lib.config import Config
-# sys.path.pop(0)
 
 logger = logging.getLogger('jolla.article')
 
 class ArticleHandler(BaseHandler):
-    HOST = Config().main_host
 
     def get(self, slug):
         slug = unquote(slug)
+        red = Redirect(slug)
+        if red:
+            return self.redirect('/%s/' % red.target)
+
         lang = self.locale.code[:2].lower()
         article = Article(slug, lang)
         if not article:
@@ -59,4 +57,3 @@ class ArticleHandler(BaseHandler):
             source['author'] = Author(author)
 
         return source
-

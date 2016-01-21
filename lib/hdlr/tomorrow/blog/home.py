@@ -14,17 +14,13 @@ except ImportError:
 
 from .base import BaseHandler
 from lib.db.tomorrow import Article, User
-from lib.config import Config
 from lib.tool.md import md2html
 
 logger = logging.getLogger('tomorrow.blog.home')
 
 
 class HomeHandler(BaseHandler):
-    _cfg = Config()
-    LIMIT = _cfg.home_post_limit
-    CHARS = _cfg.home_description_limit
-    JOLLA = _cfg.jolla_host
+    LIMIT = 10
 
     def get(self, page=1):
         this_page = int(page)

@@ -54,10 +54,10 @@ class User(Base):
     # pwd
     # nickname
     # type
-    def __init__(self, user_or_email=None, language='zh'):
+    def __init__(self, user_or_email=None, lang='zh'):
         super(User, self).__init__()
         attrs = self.__dict__['__info__']
-        self.language = language
+        self.lang = lang
         if user_or_email is not None:
             key = 'email' if '@' in user_or_email else 'name'
             result = self.collection.find_one({key: user_or_email})
@@ -67,14 +67,14 @@ class User(Base):
                 self.update(result)
 
     def __getattr__(self, item):
-        if item == 'language':
-            return self.__dict__['language']
+        if item == 'lang':
+            return self.__dict__['lang']
 
         return super(User, self).__getattr__(item)
 
     def __setattr__(self, item, value):
-        if item == 'language':
-            self.__dict__['language'] = value
+        if item == 'lang':
+            self.__dict__['lang'] = value
             return  
 
         return super(User, self).__setattr__(item, value)

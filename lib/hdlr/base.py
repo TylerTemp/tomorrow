@@ -7,20 +7,16 @@ import tornado.escape
 import logging
 import functools
 import json
+import os
 try:
     from urllib.parse import quote, urlsplit, urlunsplit, urljoin
 except ImportError:
     from urllib import quote
     from urlparse import urlsplit, urlunsplit, urljoin
 
-import sys
-import os
 
-rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
-sys.path.insert(0, rootdir)
 from lib.tool.tracemore import get_exc_plus
-from lib.config import Config
-sys.path.pop(0)
+from lib.config.base import Config
 
 logger = logging.getLogger("tomorrow.base")
 
@@ -48,9 +44,9 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def render(self, template_name, **kwargs):
         kwargs.setdefault('JOLLA_HOST', self.config.jolla_host)
-        kwargs.setdefault('MAIN_HOST', self.config.main_host)
+        kwargs.setdefault('TOMORROW_HOST', self.config.tomorrow_host)
 
-        assert 'static_path' not in kwargs
+        # assert 'static_path' not in kwargs, kwargs['static_path']
         kwargs['static_path'] = self.static_path
 
         return super(BaseHandler, self).render(
@@ -59,10 +55,10 @@ class BaseHandler(tornado.web.RequestHandler):
         )
 
     def static_path(self, url):
-        return '//%s/static/%s' % (self.config.main_host, quote(url))
+        return '//%s/static/%s' % (self.config.tomorrow_host, quote(url))
 
     def get_user_path(self, user):
-        return os.path.join(rootdir, 'static', 'upload', user)
+        return os.path.join(self.config.root, 'static', 'upload', user)
 
     def get_user_url(self, user):
         return '/static/upload/%s/' % quote(user)

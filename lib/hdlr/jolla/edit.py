@@ -22,6 +22,8 @@ class EditHandler(BaseHandler):
     def get(self, slug=None):
         if self.get_argument('action', None) == 'preview':
             return self.preview()
+        if slug is not None:
+            slug = unquote(slug)
         article = self.get_article(slug)
 
         return self.render(
@@ -33,8 +35,8 @@ class EditHandler(BaseHandler):
     def post(self, slug=None):
         if self.get_argument('action', None) == 'preview':
             return self.preview()
-        slug = unquote(slug)
-        user = self.current_user
+        if slug is not None:
+            slug = unquote(slug)
         article = self.get_article(slug)
         new_slug = self.get_argument('slug')
         if slug != new_slug:
@@ -42,6 +44,7 @@ class EditHandler(BaseHandler):
                 raise tornado.web.HTTPError(500, 'slug %r exists' % new_slug)
         self.fill_article(article)
         self.assert_article(article)
+        user = self.current_user
         if not article.author:
             article.author = user._id
         if user.type >= user.ROOT:

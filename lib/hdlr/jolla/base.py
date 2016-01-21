@@ -12,7 +12,7 @@ except ImportError:
 
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
-from lib.config import Config
+from lib.config.jolla import Config
 from lib.db.jolla import User
 
 logger = logging.getLogger('jolla')
@@ -21,15 +21,17 @@ logger = logging.getLogger('jolla')
 class BaseHandler(BaseHandler):
     p_re = re.compile(r'^<p>(.*?)</p>$')
 
-    _config = Config()
-    _app = _config.jolla_app
-    tomorrow_key = _app['key']
-    tomorrow_secret = _app['secret']
-    del _config, _app
+    config = Config()
 
-    def render(self, template, **kwargs):
+    def render(self, template_name, **kwargs):
         kwargs.setdefault('user', self.current_user)
-        return super(BaseHandler, self).render(template, **kwargs)
+        kwargs.setdefault('HOST', self.config.host)
+        kwargs.setdefault('TOMORROW_HOST', self.config.tomorrow_host)
+
+        assert 'static_path' not in kwargs
+        kwargs['static_path'] = self.static_path
+
+        return super(BaseHandler, self).render(template_name, **kwargs)
 
     def get_source_name(self, link):
         sp = urlsplit(link)

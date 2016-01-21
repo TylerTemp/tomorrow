@@ -31,7 +31,6 @@ Hi, {{ user }}{% block subtitle %}{% end %}
   {% end %}
 
 <li><a class="{{ 'highlight' if 'home' in highlight else '' }}" data-act="home" href="/dashboard/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
-<li><a class="{{ 'highlight' if 'info' in highlight else '' }}" href="/dashboard/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
 <li><a class="{{ 'highlight' if 'secure' in highlight else '' }}" href="/dashboard/secure/"><span class="am-icon-lock am-icon-fw"></span> {{ _("Security")}} </a></li>
 <li><a class="{{ 'highlight' if 'article' in highlight else '' }}" href="/dashboard/article/"><span class="am-icon-list-alt am-icon-fw"></span> {{ _("Article")}} </a></li>
 <li><a class="{{ 'highlight' if 'message' in highlight else '' }}" href="/dashboard/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _("Message")}} {% if MESSAGENUM %}<span class="am-badge am-badge-secondary am-margin-right am-fr">{{ MESSAGENUM }}</span>{% end %}</a></li>
@@ -65,6 +64,7 @@ Hi, {{ user }}{% block subtitle %}{% end %}
   <a class="am-cf {{ 'highlight' if 'manage' in highlight else '' }}" data-am-collapse="{target: '#manage'}"><span class="am-icon-wrench"></span> {{ _('Manage') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
   <ul class="am-list am-collapse admin-sidebar-sub am-in" id="manage">
     <!-- manage-jolla | start -->
+    <li><a class="{{ 'highlight' if 'info' in highlight else '' }}" href="/dashboard/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
     <li>
       <a class="am-cf {{ 'highlight' if 'manage-jolla' in highlight else '' }}" data-am-collapse="{target: '#jolla'}"><span class="iconfont icon-jolla"></span> {{ _('Jolla') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
       <ul class="am-list am-collapse admin-sidebar-sub am-in" id="jolla">

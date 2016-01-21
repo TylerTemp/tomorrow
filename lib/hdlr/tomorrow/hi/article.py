@@ -8,16 +8,12 @@ except ImportError:
     from urllib import unquote, quote
 
 from lib.db.tomorrow import Article
-from lib.config import Config
 from .base import BaseHandler, ItsNotMyself
 
 logger = logging.getLogger('tomorrow.hi.article')
 
 
 class ArticleHandler(BaseHandler):
-    _cfg = Config()
-    JOLLA_HOST = _cfg.jolla_host
-    del _cfg
 
     @ItsNotMyself('article/')
     def get(self, user):

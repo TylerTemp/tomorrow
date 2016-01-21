@@ -12,7 +12,6 @@ except ImportError:
     from urlparse import urljoin
 
 from lib.db.tomorrow import User
-from lib.config import Config
 from lib.tool.minsix import open, py3
 from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
@@ -21,7 +20,6 @@ logger = logging.getLogger('tomorrow.dash.file')
 
 
 class FileHandler(BaseHandler):
-    config = Config()
 
     NO_PERMISSION = 1
     SIZE_TOO_BIG = 2

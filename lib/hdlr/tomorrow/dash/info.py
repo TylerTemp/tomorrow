@@ -7,7 +7,6 @@ except ImportError:
     from urllib import unquote, quote
 
 from lib.db.tomorrow import User
-from lib.config import Config
 from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
 
@@ -15,22 +14,16 @@ logger = logging.getLogger('tomorrow.dash.info')
 
 
 class InfoHandler(BaseHandler):
-    config = Config()
 
     @tornado.web.authenticated
     def get(self):
 
         user = self.current_user
 
-        size_limit = self.config.size_limit[user.type]
-
-        if size_limit != float('inf'):
-            size_limit = '%.2f %s' % unit_satisfy(size_limit)
-
         return self.render(
             'tomorrow/admin/dash/info.html',
             user=user,
-            size_limit=size_limit,
+            size_limit=0,
         )
 
     @tornado.web.authenticated

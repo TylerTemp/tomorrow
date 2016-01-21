@@ -8,14 +8,15 @@ Options:
                           `INOF`, `WARNING`, `ERROR`, `CRITICAL`,
                           or number from 0 to 50
 --tnd-level=<level>       request/response logging level.
+--jolla-level=<level>
 --tmr-file=<file>         site logic code file logger.
 --tnd-file=<file>         request/response file logger.
+--jolla-file=<file>
 -h, -?, --help            print this message
 """
 
 import logging
 import os
-import sys
 import tornado
 import tornado.web
 import tornado.httpserver
@@ -24,11 +25,7 @@ import tornado.locale
 import tornado.autoreload
 import tornado.ioloop
 
-rootdir = os.path.dirname(__file__)
-sys.path.insert(0, rootdir)
-
-from lib.tool.bashlog import stdoutlogger, parse_level
-from lib.config import Config
+from lib.config.base import Config
 
 from lib.hdlr import BlackListHandler, RedirectHandler,\
                      StaticFileHandler, BaseHandler
@@ -37,20 +34,14 @@ from lib.hdlr.project import docpie, wordz
 
 from lib.ui import WysBarModule, MdBarModule, ErrorImageModule, \
                    TimeModule, TagModule
-sys.path.pop(0)
 
-
-tornadologger = logging.getLogger('tornado')
-for _hdlr in tornadologger.handlers:
-    tornadologger.removeHandler(_hdlr)
-for _filter in tornadologger.filters:
-    tornadologger.removeFilter(_filter)
+from lib.tool.generate import generate
+from lib.tool.minsix import open
+from lib.tool.filelock import FileLock
 
 # tornado.options.options.logging = None
 
-logger = logging.getLogger('tomorrow')
-
-Config().auto_clean = True
+logger = logging.getLogger()
 
 
 class Application(tornado.web.Application):
@@ -60,7 +51,7 @@ class Application(tornado.web.Application):
         handlers = (
             # static
             (r'/static/(.*)', tornado.web.StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static')}),
+             {'path': os.path.join(self.config.root, 'static')}),
             # display
             (r'/', tomorrow.blog.HomeHandler),
             (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
@@ -100,13 +91,14 @@ class Application(tornado.web.Application):
             (r'/hi/(?P<user>[^/]+)/message/', tomorrow.hi.MessageHandler),
             (r'/hi/.*', tomorrow.hi.BaseHandler),
             (r'/robots.txt', StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static', 'robots', 'blog.txt')}),
+             {'path': os.path.join(self.config.root,
+                                   'static', 'robots', 'blog.txt')}),
             (r'/(favicon\.ico)', tornado.web.StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static')}),
+             {'path': os.path.join(self.config.root, 'static')}),
             # jolla
 
             (r'/jolla/(favicon\.ico)', tornado.web.StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static')}),
+             {'path': os.path.join(self.config.root, 'static')}),
             (r'/jolla/', jolla.HomeHandler),
             (r'/jolla/page/1/',
              RedirectHandler,
@@ -127,7 +119,8 @@ class Application(tornado.web.Application):
             (r'/jolla/logout/', jolla.LogoutHandler),
             (r'/jolla/oauth2/tomorrow/', jolla.OAuthHandler),
             (r'/jolla/robots.txt', StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static', 'robots', 'jolla.txt')}),
+             {'path': os.path.join(self.config.root,
+                                   'static', 'robots', 'jolla.txt')}),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/.*', jolla.BaseHandler),
             # project
@@ -136,9 +129,10 @@ class Application(tornado.web.Application):
             (r'/project/docpie/document/(?P<slug>[^/]+)/', docpie.DocHandler),
             (r'/project/docpie/try/', docpie.TryHandler),
             (r'/project/docpie/robots.txt', StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static', 'robots', 'docpie.txt')}),
+             {'path': os.path.join(self.config.root,
+                                   'static', 'robots', 'docpie.txt')}),
             (r'/project/docpie/(favicon\.ico)', tornado.web.StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static')}),
+             {'path': os.path.join(self.config.root, 'static')}),
 
             (r'/project/wordz/', wordz.HomeHandler),
             (r'/project/wordz/quiz/', wordz.QuizHandler),
@@ -155,9 +149,10 @@ class Application(tornado.web.Application):
 
             (r'/brey/', brey.BreyHandler),
             (r'/brey/robots\.txt', StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static', 'robots', 'brey.txt')}),
+             {'path': os.path.join(self.config.root,
+                                   'static', 'robots', 'brey.txt')}),
             (r'/brey/(favicon\.ico)', tornado.web.StaticFileHandler,
-             {'path': os.path.join(rootdir, 'static')}),
+             {'path': os.path.join(self.config.root, 'static')}),
             (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),
 
             (r'/utility/pts/', utility.TakeOutCalculateHandler),
@@ -167,7 +162,7 @@ class Application(tornado.web.Application):
         )
 
         settings = {
-            'template_path': os.path.join(rootdir, 'template'),
+            'template_path': os.path.join(self.config.root, 'template'),
             'debug': self.config.debug,
             'login_url': '/login/',
             'ui_modules': {
@@ -180,9 +175,25 @@ class Application(tornado.web.Application):
         }
 
         if self.config.set_secret:
-            secret = self.config.secret
-            assert secret is not None
-            logger.debug('set secret')
+            sec_file = self.config.secret_file
+            if sec_file is None:
+                logger.warning("Can't share cookie secret without secret_file, "
+                               "multi processes will not work as expected")
+                secret = generate()
+            else:
+                with FileLock(sec_file), \
+                        open(sec_file, 'r+', encoding='utf-8') as f:
+                    secret = f.read().strip()
+                    if not secret:
+                        secret = generate()
+                        logger.info('save secret to %s', sec_file)
+                        f.seek(0)
+                        f.truncate()
+                        f.write(secret)
+                    else:
+                        logger.info('load secret from %s', sec_file)
+
+            logger.info('set secret')
             settings['cookie_secret'] = secret
 
         if self.config.debug:
@@ -192,14 +203,15 @@ class Application(tornado.web.Application):
 
 
 def main(port):
+    root = Config().root
     tornado.locale.load_translations(
-        os.path.join(rootdir, 'translations'))
+        os.path.join(root, 'translations'))
     # set this tornado will ignore the borwser `Accept-Language` head, why?
     # tornado.locale.set_default_locale('zh')
     tornado.autoreload.watch(
-        os.path.join(rootdir, 'translations', 'zh.csv'))
+        os.path.join(root, 'translations', 'zh.csv'))
     tornado.autoreload.watch(
-        os.path.join(rootdir, 'config.conf'))
+        os.path.join(root, 'config'))
     http_server = tornado.httpserver.HTTPServer(Application(), xheaders=True)
     http_server.listen(port)
     logger.info('[port: %s]Sever started.', port)
@@ -208,34 +220,51 @@ def main(port):
 
 if __name__ == "__main__":
     from docpie import docpie as pie
+    from lib.tool.bashlog import stdoutlogger, parse_level, filelogger
+    from lib.config.tomorrow import Config as TomorrowConfig
+    from lib.config.jolla import Config as JollaConfig
 
     args = dict(pie(__doc__))
 
-    config = Config()
-
     rootlogger = logging.getLogger()
+    for _hdlr in rootlogger.handlers:
+        rootlogger.removeHandler(_hdlr)
+    for _filter in rootlogger.filters:
+        rootlogger.removeFilter(_filter)
+
     stdoutlogger(rootlogger, logging.DEBUG, True)
 
-    tmr_level = parse_level(args['--tmr-level'] or config.tmr_level)
-    tnd_level = parse_level(args['--tnd-level'] or config.tnd_level)
-    tmr_file = args['--tmr-file'] or config.tmr_file
-    tnd_file = args['--tnd-file'] or config.tnd_file
+    config = Config()
+    tmr_cfg = TomorrowConfig()
+    jolla_cfg = JollaConfig()
 
+    tmr_level = parse_level(args['--tmr-level'] or tmr_cfg.log_level)
+    jolla_level = parse_level(args['--jolla-level'] or jolla_cfg.log_level)
+    tnd_level = parse_level(args['--tnd-level'] or config.tornado_log_level)
+    tmr_file = args['--tmr-file'] or tmr_cfg.log_file
+    jolla_file = args['--jolla-file'] or jolla_cfg.log_file
+    tnd_file = args['--tnd-file'] or config.tornado_log_file
+
+    tmr_logger = logging.getLogger('tomorrow')
+    tmr_logger.setLevel(tmr_level)
     if tmr_file is None:
         rootlogger.warning("tomorrow file logger disabled")
     else:
-        logger.setLevel(tmr_level)
-        handler = logging.FileHandler(tmr_file)
-        logger.addHandler(handler)
-        # filelogger(tmr_file, logger, tmr_level)
+        filelogger(tmr_file, tmr_logger, tmr_level)
 
+    jolla_logger = logging.getLogger('jolla')
+    jolla_logger.setLevel(jolla_level)
+    if jolla_file is None:
+        rootlogger.warning("jolla file logger disabled")
+    else:
+        filelogger(jolla_file, jolla_logger, tmr_level)
+
+    tnd_logger = logging.getLogger('tornado')
+    tnd_logger.setLevel(tnd_level)
     if tnd_file is None:
         rootlogger.warning("tornado file logger disabled")
     else:
-        tornadologger.setLevel(tnd_level)
-        handler = logging.FileHandler(tnd_file)
-        tornadologger.addHandler(handler)
-        # filelogger(tnd_file, tornadologger, tnd_level)
+        filelogger(tnd_file, tnd_logger, tnd_level)
 
     port = args['--port']
     if port is None:

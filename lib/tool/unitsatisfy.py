@@ -1,6 +1,5 @@
 def unit_satisfy(b):
     appropriate_size = b
-    appropriate_unit = 'B'
     units = ('B', 'KB', 'MB', 'GB', 'TB')
     index = 0
 

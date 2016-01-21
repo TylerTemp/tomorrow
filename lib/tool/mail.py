@@ -11,12 +11,12 @@ import sys
 
 rootdir = os.path.normpath(os.path.join(__file__, '..', '..', '..'))
 sys.path.insert(0, rootdir)
-from lib.config import Config
+from lib.config.base import Config
 from lib.tool import bashlog
 from lib.tool.md import md2html
 sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.email')
+logger = logging.getLogger('email')
 
 
 class Email(object):

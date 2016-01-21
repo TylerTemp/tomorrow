@@ -1,7 +1,6 @@
 import logging
 import tornado.ioloop
 from lib.hdlr.tomorrow.base import BaseHandler
-from lib.config import Config
 from lib.db.tomorrow import User
 try:
     from urllib.parse import urlencode, urlsplit, parse_qs, urlunsplit
@@ -12,7 +11,6 @@ logger = logging.getLogger('tomorrow.oauth')
 
 
 class BaseHandler(BaseHandler):
-    config = Config()
 
     def parse_callback(self, callback, code):
         url_components = urlsplit(callback)
@@ -26,10 +24,9 @@ class BaseHandler(BaseHandler):
         return new_callback
 
     def get_uid(self, user):
-        u = User(user)
-        assert not u.new, 'User %s not found' % user
-        info = u.get()
-        return info['_id']
+        user = User(user)
+        assert user, 'User %s not found' % user
+        return user._id
 
     def do_at(self, callback, expire_at):
         logger.debug('call %s at %s', callback, expire_at)

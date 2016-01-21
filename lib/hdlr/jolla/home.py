@@ -15,7 +15,6 @@ import os
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.jolla import Article
-from lib.config import Config
 from lib.tool.md import md2html
 sys.path.pop(0)
 
@@ -23,9 +22,7 @@ logger = logging.getLogger('jolla.home')
 
 
 class HomeHandler(BaseHandler):
-    _cfg = Config()
-    LIMIT = _cfg.jolla_post_limit
-    HOST = _cfg.jolla_host
+    LIMIT = 9
 
     def get(self, page=1):
         render_json = (self.get_argument('format', None) == 'json')

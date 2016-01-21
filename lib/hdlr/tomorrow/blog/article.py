@@ -2,13 +2,9 @@ import tornado.web
 import logging
 
 from .base import BaseHandler
-import sys
-import os
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import Article, User
 from lib.tool.md import md2html
-sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blog.post')
 
