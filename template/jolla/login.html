@@ -4,7 +4,63 @@
   {{ _('Login') }} |
 {% end %}
 
+{% block neck %}
+<style>
+  .box {
+    background-color: white;
+  }
+
+  .sites {
+    text-align: center;
+  }
+  .sites a.site:hover {
+    text-shadow: 0 0 5px rgb(62, 255, 230);
+  }
+
+  .sites a.site img {
+    opacity: 0.8;
+
+    /*Transition*/
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+
+    /*Reflection*/
+    -webkit-box-reflect: below 0 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.1)));
+  }
+
+
+  .sites a.site img:hover {
+    opacity: 1;
+
+    /*Reflection*/
+    -webkit-box-reflect: below 0 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(.7, transparent), to(rgba(0,0,0,0.4)));
+
+    /*Glow*/
+    -webkit-box-shadow: 0 0 20px rgba(62, 255, 230, 0.8);
+    -moz-box-shadow: 0 0 20px rgba(62, 255, 230, 0.8);
+    box-shadow: 0 0 20px rgba(62, 255, 230, 0.8);
+  }
+</style>
+{% end %}
+
 {% block stomach %}
-<p>Login by</p>
-<a href="{{ tomorrow_url }}">Tomorrow Comes Today</a>
+<div class="am-g am-g-fixed box">
+  <div class="am-padding-xl">
+    <div class="header">
+      <h1 class="am-text-center am-text-xxxl">{{ _('Login') }}</h1>
+    </div>
+    <hr />
+    <div class="body">
+      <p class="am-text-center">{{ _('Choose a Site to Login') }}</p>
+      <div class="sites">
+        <a href="{{ tomorrow_url }}" class="site am-link-muted">
+          <img src="{{ static_path('i/app-icon72x72@2x.png') }}" class="am-img-thumbnail am-circle" alt="https://tomorrow.comes.today"/>
+          <br />
+          <span>Tomorrow Comes Today</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 {% end %}
