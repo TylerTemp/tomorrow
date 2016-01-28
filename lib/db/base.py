@@ -45,6 +45,10 @@ class Base(object):
     def update(self, *a, **k):
         self.__dict__['__info__'].update(*a, **k)
 
+    def remove(self):
+        result = self.collection.delete_one({'_id': self._id})
+        return result.deleted_count
+
     def _validate_attrs(self):
         attrs = self.__dict__['__info__']
         default = self._default

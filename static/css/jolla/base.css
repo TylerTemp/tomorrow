@@ -7,6 +7,12 @@ body {
     background-color: #5BA2A1;
 }
 
+header img {
+  width: 100%;
+  height: auto;
+  max-width: 400px;
+}
+
 .am-offcanvas-bar .am-nav>li>a {
   color:#ccc;
   border-radius: 0;

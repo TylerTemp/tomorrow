@@ -9,7 +9,8 @@ from .home import HomeHandler
 from .rss import RssHandler
 from .login import LoginHandler, LogoutHandler
 from .oauth import OAuthHandler
+from .posts import PostsHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
-           'LoginHandler', 'OAuthHandler', 'EditHandler']
+           'LoginHandler', 'OAuthHandler', 'EditHandler', 'PostsHandler']

@@ -109,7 +109,7 @@ class Article(Base):
         'banner': None,
         'tag': [],
         'source': {},  # link, title, author
-        'en': {},  # title, description
+        'en': {},  # title, description, content
     }
 
     def __init__(self, slug=None, lang='zh'):
@@ -194,6 +194,14 @@ class Article(Base):
             ins.source['link'] = link
 
         return ins
+
+    @classmethod
+    def by_user(cls, uid):
+        return cls.collection.find({'author': uid}).sort(
+            (
+             ('create_time', pymongo.DESCENDING),
+            )
+        )
 
     @classmethod
     def all(cls, offset=0, limit=None):
