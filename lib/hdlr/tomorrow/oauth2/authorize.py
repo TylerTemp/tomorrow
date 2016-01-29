@@ -25,6 +25,8 @@ class AuthorizeHandler(BaseHandler):
             raise tornado.web.HTTPError(500, 'Callback unmatch %r' % callback)
 
         code = self.set_code()
+        if code is None:
+            return
         if not self.check_user(code):
             return
 
@@ -58,11 +60,12 @@ class AuthorizeHandler(BaseHandler):
         auth = self.auth
         user = self.current_user
         if user is None:
-            return self.to_login(
+            self.to_login(
                 '/oauth2/authorize/?%s' %
                 urlencode({
                     'key': self.key,
                     'callback': self.get_argument('callback')}))
+            return None
 
         code = auth.generate_code()
         expire_at = auth.set_code(code, user._id)

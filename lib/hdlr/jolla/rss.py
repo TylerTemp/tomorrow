@@ -33,5 +33,5 @@ class RssHandler(BaseHandler):
             a = Article()
             a.update(each)
             a.author = User(each['author'])
-            logger.debug(a.slug)
+            # logger.debug(a.slug)
             yield a
