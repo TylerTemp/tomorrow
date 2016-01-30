@@ -59,8 +59,9 @@ class HomeHandler(BaseHandler):
         )
 
     def get_articles(self, result):
+        lang = self.locale.code[:2].lower()
         for each in result:
-            a = Article()
+            a = Article(lang=lang)
             a.update(each)
             # logger.debug(a.slug)
             yield a

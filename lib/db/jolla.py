@@ -133,6 +133,8 @@ class Article(Base):
             en = self.en
             if en:
                 return en[item]
+            else:
+                return None
 
         # if item == 'slug' and attrs.get('slug', None) is None:
         #     link = self.source.get('link', None)
@@ -168,12 +170,31 @@ class Article(Base):
 
         return super(Article, self).__setattr__(key, value)
 
+    def get(self, attr):
+        assert attr in ('title', 'description', 'content')
+        lang = self.lang
+        other_target = self.__info__ if lang == 'en' else self.en
+
+        result = getattr(self, attr, None)
+        if not result:
+            result = other_target.get(attr, None)
+
+        return result
+
     def lang_fit(self):
         lang = self.lang
         if lang == 'en':
             return lang in self.__dict__['__info__']
 
         return lang == 'zh'
+
+    def other_lang(self):
+        lang = self.lang
+        if lang == 'en' and self.__info__.get('title', None):
+            return 'zh'
+        elif lang == 'zh' and self.__info__.get('en', None):
+            return 'en'
+        return None
 
     def _before_save(self):
 

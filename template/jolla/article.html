@@ -33,7 +33,7 @@
       <article class="am-article">
         <div class="am-article-hd">
           <h1 class="am-article-title">{{ article.title }}</h1>
-          <p class="am-article-meta">
+          <div class="am-article-meta">
             {% raw make_source(source['link'] if source else None) %}
 
             {% if article.tag %}
@@ -50,7 +50,17 @@
             {% if author.email %}
             <a href="mailto:{{ author.email }}" class="am-icon-envelop"> </a>
             {% end %}
-          </p>
+
+            {% if article.lang_fit() and article.other_lang() %}
+            <div class="am-fr">
+            {% raw _('这篇文章有{tag} 中文版{tag_end}').format(
+              tag='<a href="./?lang=%s" class="am-icon-link" data-lang="%s">' % (article.other_lang(), article.other_lang()),
+              tag_end='</a>'
+            ) %}
+            </div>
+            {% end %}
+
+          </div>
         </div>
 
         <hr class="am-article-divider">

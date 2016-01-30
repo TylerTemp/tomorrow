@@ -17,7 +17,7 @@
       <div class="white am-u-sm-12 am-u-md-{{ 6 if first.cover else 12 }}">
         <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
           <div class="am-article-hd">
-            <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-text-xl">{{ first.title }}</h2></a>
+            <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-text-xl">{{ first.get('title') }}</h2></a>
           </div>
           <div>
             {% raw make_source(first.source['link'] if first.source else None) %}
@@ -28,7 +28,7 @@
             {% end %}
           </div>
           <div class="am-article-bd">
-            {% raw md2html(first.description) if first.description else escape(first.content[:100]) %}
+            {% raw md2html(first.get('description')) if first.get('description') else escape(first.get('content')[:100]) %}
           </div>
         </article>
         <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
@@ -55,7 +55,7 @@
         <div class="title-box">
           <article class="am-article  am-margin-horizontal-lg">
             <div class="am-article-hd">
-              <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.title }}</h2></a>
+              <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.get('title') }}</h2></a>
             </div>
             <div>
             {% raw make_source(each.source['link'] if each.source else None) %}
@@ -66,7 +66,7 @@
             {% end %}
             </div>
             <div class="am-article-bd">
-              {% raw md2html(each.description) if each.description else escape(each.content[:100]) %}
+              {% raw md2html(each.get('description')) if each.get('description') else escape(each.get('content')[:100]) %}
             </div>
           </article>
           <div class="am-cf">

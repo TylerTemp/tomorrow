@@ -46,16 +46,26 @@
       <a data-am-collapse href="#more" class="white">{{ _('More') }} <span class="am-icon-angle-double-right"></span></a>
       <div id="more" class="am-collapse">
         <div class="am-form-group">
-          <label for="cover">{{ 'Cover' }}</label>
+          <label for="cover">{{ _('Cover') }}</label>
           <input type="text" class="am-form-field" id="cover" name="cover" value="{{ article.cover or '' }}" />
         </div>
         <div class="am-form-group">
-          <label for="banner">{{ 'Banner' }}</label>
+          <label for="banner">{{ _('Banner') }}</label>
           <input type="text" class="am-form-field" id="banner" name="banner" value="{{ article.banner or '' }}" />
         </div>
         <div class="am-form-group">
-          <label for="tag">{{ 'Tag' }}</label>
+          <label for="tag">{{ _('Tag') }}</label>
           <input type="text" class="am-form-field" id="tag" name="tag" value="{{ ','.join(article.tag) or '' }}" data-am-tagsinput/>
+        </div>
+        <div class="am-form-group">
+          <label>{{ _('Language') }}</label>
+          <label class="am-radio-inline">
+            <input type="radio" name="language" value="zh" {{ 'checked' if article.lang == 'zh' else '' }}> {{ _('Chinese') }}
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="language" value="en" {{ 'checked' if article.lang != 'zh' else '' }}> {{ _('English') }}
+          </label>
+          <sub>| <a class="white" href="./?source={{ 'zh' if article.lang == 'en' else 'en' }}">{{ _('Load %s content') % _('Chinese' if article.lang == 'en' else 'English') }}</a></sub>
         </div>
       </div>
 

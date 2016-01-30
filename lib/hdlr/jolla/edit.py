@@ -25,6 +25,7 @@ class EditHandler(BaseHandler):
         if slug is not None:
             slug = unquote(slug)
         article = self.get_article(slug)
+        logger.debug(article.lang)
 
         return self.render(
             'jolla/edit.html',
@@ -56,10 +57,11 @@ class EditHandler(BaseHandler):
                                           self.config.jolla_host, article.slug)}))
 
     def get_article(self, slug):
+        lang = self.get_argument('source', 'zh')
         if slug is None:
-            return Article()
+            return Article(lang=lang)
 
-        article = Article(unquote(slug))
+        article = Article(unquote(slug), lang=lang)
         if not article:
             raise tornado.web.HTTPError(
                 404, 'post %r not found' % unquote(slug))
