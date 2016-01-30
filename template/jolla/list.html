@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}
-  {{ _("Task List") }}
+{% block main_title %}
+  {{ _("Task List") }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'list' %}
 {% end %}
 
 {% block neck %}

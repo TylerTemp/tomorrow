@@ -4,6 +4,10 @@
   {{ _('Login') }} |
 {% end %}
 
+{% block active %}
+  {% set active = 'login' %}
+{% end %}
+
 {% block neck %}
 <link rel="stylesheet" href="{{ static_path('css/jolla/login.css') }}">
 {% end %}

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 
 {% block main_title %}
-  {{ '%s: %s' % (_("Edit"), article.title) if article.title else _('New') }}
+  {{ '%s: %s' % (_("Edit"), article.title) if article.title else _('New') }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'edit' %}
 {% end %}
 
 {% block neck %}

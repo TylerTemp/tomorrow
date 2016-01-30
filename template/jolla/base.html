@@ -58,17 +58,26 @@
       <div class="am-offcanvas-bar">
         <div class="am-offcanvas-content">
           <ul class="am-nav">
-            {% if user %}
-            <li><a href="/task/"><span class="iconfont icon-jolla"></span>
-            {{ _('New Translation') }}</a></li>
-            <li><a href="/list/"><span class="am-icon-language"> {{ _('Translate') }}</span></a></li>
-            <li><a href="/edit/"><span class="am-icon-plus"> {{ _('New Post') }}</span></a></li>
-            <li class="am-nav-header">{{ _('Manage') }}</li>
-            <li><a href="/posts/"><span class="am-icon-edit"> {{ _('My Posts') }}</span></a></li>
-            <li><a href="/logout/"><span class="am-icon-sign-out"> {{ _('Logout') }}</span></a></li>
-            {% else %}
-            <li><a href="/login/">{{ _('Login') }}</a></li>
+            {% block active %}
+              {% set active = None %}
             {% end %}
+            {% if user %}
+            <li class="am-nav-header"><i class="am-icon-sticky-note"></i> {{ _('Post') }}</li>
+            <li class="{{ 'am-active' if active == 'task' else '' }}"><a href="/task/"><span class="iconfont icon-jolla"></span>
+              {{ _('New Translation') }}</a></li>
+            <li class="{{ 'am-active' if active == 'list' else '' }}"><a href="/list/"><i class="am-icon-language am-icon-fw"> </i> {{ _('Translate') }}</a></li>
+            <li class="{{ 'am-active' if active == 'edit' else '' }}"><a href="/edit/"><i class="am-icon-plus am-icon-fw"> </i> {{ _('New Post') }}</a></li>
+            <li class="am-nav-header"><i class="am-icon-cogs"></i> {{ _('Account') }}</li>
+            <li class="{{ 'am-active' if active == 'posts' else '' }}"><a href="/posts/"><i class="am-icon-edit am-icon-fw"> </i> {{ _('My Posts') }}</a></li>
+            <li class="{{ 'am-active' if active == 'profile' else '' }}"><a href="/profile/"><i class="am-icon-child am-icon-fw"> </i> {{ _('My Profile') }}</a></li>
+            <li><a href="/logout/"><i class="am-icon-sign-out am-icon-fw"> </i> {{ _('Logout') }}</a></li>
+            {% else %}
+            <li class="am-nav-header"><i class="am-icon-cogs"></i> {{ _('Account') }}</li>
+            <li class="{{ 'am-active' if active == 'login' else '' }}"><a href="/login/">{{ _('Login') }}</a></li>
+            {% end %}
+            <li class="am-nav-header"><i class="am-icon-globe"></i> {{ _('Language') }}</li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}"><a href="./?lang=zh" data-lang="zh"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'zh' else '' }}">ZH</span> {{ _('Chinese') }}</a></li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}"><a href="./?lang=en" data-lang="en"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'en' else '' }}">EN</span> {{ _('English') }}</a></li>
             <li class="am-nav-header"></li>
             <li><a href="//{{ TOMORROW_HOST }}">« tomorrow</a></li>
           </ul>
@@ -76,9 +85,9 @@
       </div>
     </div>
   </div>
-
   {% block stomach %}
   {% end %}
+</div>
 
 <footer class="am-footer am-footer-default">
   <div>
@@ -105,14 +114,14 @@
       <a href="http://weibo.com/tylertemp" target="_blank"><span class="am-icon-weibo"> {{ _('Weibo') }}</span></a>
 
       <!-- https://dn-tomorrow.qbox.me/wechat-qrcode.jpg -->
-      <a class="am-dropdown-toggle" id="wechat-toggle" data-load="false" href="https://dn-tomorrow.qbox.me/mywechat-service-banner.png" target="_blank"><span class="am-icon-wechat"> {{ _('WeChat') }}</span></a>
+      <a class="am-dropdown-toggle" id="wechat-toggle" data-load="false" href="https://dn-jolla.qbox.me/mywechat-service-banner.png" target="_blank"><span class="am-icon-wechat"> {{ _('WeChat') }}</span></a>
 
       <a href="/feed/" target="_blank"><span class="am-icon-rss"> {{ _('RSS Feed') }}</span></a>
     </p><br/>
     <p>
       {% raw _('All the content in this website without copyright specification is under {a}CC License {img}{a_end}').format(
         a='<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">',
-        img='<img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" style="display: inline"/>',
+        img='<img alt="知识共享许可协议" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" style="display: inline; border-width:0"/>',
         a_end='</a>') %}
     </p>
   </div>
@@ -120,42 +129,6 @@
 {% end %}
 
 {% block body_end %}
-<script>
-$(function()
-{
-  var $wechat = $('footer #wechat-toggle');
-  var $area = $('footer .am-footer-miscs');
-  $wechat.click(function(evt)
-  {
-    evt.preventDefault();
-    var loaded = ($wechat.data('load') == 'true');
-    if (loaded)
-    {
-      $wechat.data('load', 'false');
-      var $div = $area.find('#wechat-qr-img');
-      $div.hide(400, function(evt)
-      {
-        $div.remove();
-      });
-    }
-    else
-    {
-      $wechat.data('load', 'true');
-      $area.append('<div id="wechat-qr-img"><img class="am-animation-scale-down am-img-responsive" src="https://dn-jolla.qbox.me/mywechat-service-banner.png"/></div>');
-      $('html, body').animate({scrollTop: $(document).height()}, 1000);
-    }
-  });
-
-  $('.nav-icon1,.nav-icon2,.nav-icon3,.nav-icon4').click(function(){
-    $(this).toggleClass('open');
-  });
-  $('#nav-menu').on('close.offcanvas.amui', function()
-  {
-    $('.nav-icon1,.nav-icon2,.nav-icon3,.nav-icon4').click();
-  });
-
-});
-</script>
+<script src="{{ static_path('js/jolla/base.js') }}"></script>
   {% block leg %}{% end %}
-
 {% end %}

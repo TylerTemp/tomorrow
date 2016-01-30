@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block main_title %}
+  {{ _('My Profile') }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'profile' %}
+{% end %}
+
+{% block neck %}
+<style>
+  .box {
+    background-color: white;
+    padding: 20px;
+  }
+
+  .avatar {
+    max-width: 150px;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+<div class="box am-cf">
+  <h1 class="am-text-center">{{ _('My Profile') }}</h1>
+  <hr />
+  <div class="am-fl">
+    <img src="{{ user.photo or '/static/img/user.jpg' }}" class="am-img-responsive am-img-thumbnail am-circle avatar" />
+  </div>
+  <form class="am-form" method="post" enctype="multipart/form-data">
+    <fieldset>
+      {% raw xsrf_form_html() %}
+
+      <div class="am-form-group">
+        <label for="name">{{ _('Name') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-user"></i>
+          <input type="text" class="am-form-field" id="name" name="name" value="{{ user.name }}" required="required"/>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="email">{{ _('Email') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-at"></i>
+          <input type="email" class="am-form-field" id="email" name="email" value="{{ user.email or '' }}"/>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="avatar">{{ _('Avatar') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-camera"></i>
+          <input type="file" class="am-form-field" id="avatar" name="avatar" value="{{ user.photo or '' }}"/>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="home">{{ _('Home') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-link"></i>
+          <input type="text" class="am-form-field" id="home" name="home" value="{{ user.home or '' }}"/>
+        </div>
+      </div>
+
+      <div class="am-tabs" data-am-tabs>
+        <ul class="am-tabs-nav am-nav am-nav-tabs am-nav-justify">
+          <li class="am-active"><a href="#chinese">{{ _('Chinese') }}</a></li>
+          <li><a href="#english">{{ _('English') }}</a></li>
+        </ul>
+
+        <div class="am-tabs-bd">
+          <div class="am-tab-panel am-active" id="chinese">
+
+            <div class="am-form-group">
+              <label for="zh-intro">{{ _('Introduction') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-child"></i>
+                <textarea class="am-form-field" id="zh-intro" name="zh-intro">{{ user.zh.get('intro', '') or '' }}</textarea>
+              </div>
+            </div>
+
+            <div class="am-form-group">
+              <label for="zh-donate">{{ _('Donation') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-money"></i>
+                <textarea class="am-form-field" id="zh-donate" name="zh-donate">{{ user.zh.get('donate', '') or '' }}</textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="am-tab-panel" id="english">
+
+
+            <div class="am-form-group">
+              <label for="en-intro">{{ _('Introduction') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-child"></i>
+                <textarea class="am-form-field" id="en-intro" name="en-intro">{{ user.en.get('intro', '') or '' }}</textarea>
+              </div>
+            </div>
+
+            <div class="am-form-group">
+              <label for="en-donate">{{ _('Donation') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-money"></i>
+                <textarea class="am-form-field" id="en-donate" name="en-donate">{{ user.en.get('donate', '') or '' }}</textarea>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <button class="am-btn am-fr" data-am-loading="{spinner: 'refresh', loadingText: ''}"><i class="am-icon-paper-plane"></i> {{ _('Submit') }}</button>
+      </div>
+
+    </fieldset>
+  </form>
+</div>
+{% end %}
+
+{% block leg %}
+<script src="{{ static_path('js/jolla/profile.js') }}"></script>
+{% end %}

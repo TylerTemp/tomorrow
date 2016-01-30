@@ -79,5 +79,6 @@ cloud.comes.today_sha256_en.zip
 
 # store the uploaded file
 static/upload
+static/avatar/*
 
 .DS_Store

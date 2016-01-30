@@ -113,12 +113,6 @@ class BaseHandler(BaseHandler):
             return None
         return u
 
-    def get_user_locale(self):
-        arg = self.get_argument('lang', None)
-        if arg is not None:
-            return tornado.locale.get(arg)
-        return None
-
     def write_error(self, status_code, **kwargs):
         msg = self.get_error(status_code, **kwargs)
         if self.is_ajax():
