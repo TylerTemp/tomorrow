@@ -11,3 +11,4 @@ cairocffi
 git+git://github.com/aleray/mdx_del_ins.git
 git+git://github.com/TylerTemp/docpie.git
 git+git://github.com/TylerTemp/md-nlcontinuous.git
+git+git://github.com/TylerTemp/amazedown.git

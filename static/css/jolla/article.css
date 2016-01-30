@@ -18,37 +18,29 @@ article p img {
 }
 
 #page-box {
-  padding-top: 50px;
+  padding: 50px 10px 30px 10px;
   max-width: 600px;
+}
 
+.am-article-lead p:last-child {
+  margin: 0;
 }
 
 .am-article-bd p {
   text-indent: 2em;
 }
 
+.am-article-bd *[class*="icon"] {
+  text-indent: 0;
+}
+
 .am-article-bd li p {
-  text-indent: 0em;
+  text-indent: 0;
 }
 
 .footnote p,
 #original-author p {
-  text-indent: 0em;
-}
-
-#bread-crumbs {
-  color: #fff;
-}
-
-#bread-crumbs a:link {
-  color: #fff;
-}
-#bread-crumbs a:visited {
-  color: #fff;
-}
-#bread-crumbs a:hover {
-  color: #fff;
-  text-decoration:underline;
+  text-indent: 0;
 }
 
 .am-footer-default {
@@ -71,7 +63,7 @@ video {
 ruby {
   background-color: rgba(213, 241, 211, 0.4);
   margin: 4px;
-  padding: 0px 2px;
+  padding: 0 2px;
 }
 
 ruby > rt {

@@ -3,7 +3,7 @@ import html2text
 import logging
 
 import markdown
-import markdown_newtab
+# import markdown_newtab
 import nlcontinuous
 # from ..markdown_gridtables import mdx_grid_tables
 
@@ -12,7 +12,7 @@ logger.setLevel(logging.CRITICAL)
 
 __all__ = ['md2html', 'html2md', 'escape']
 
-extend = (
+extend = [
     nlcontinuous.makeExtension(),
     # define attributes, {: #someid .someclass somekey='some value' }
     # 'markdown.extensions.attr_list',
@@ -28,7 +28,7 @@ extend = (
     # ++text++ for <ins>text</ins> and ~~text~~ for <del>text</del>
     'del_ins',
     # add '_blank' for links
-    markdown_newtab.makeExtension(),
+    # markdown_newtab.makeExtension(),
     # table extend
     # mdx_grid_tables.makeExtension(),
     # replace <<, >> , ..., ect to HTML entity equivalents
@@ -44,7 +44,7 @@ extend = (
     # !!! danger
     #     some text
     'markdown.extensions.admonition'
-)
+]
 
 # 'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em',
 # 'i', 'li', 'ol', 'strong', 'ul'
@@ -67,7 +67,13 @@ attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
 #                         output_format='html5', extensions=extend)
 #
 # md2html = _md.convert
-def md2html(md, smart_emphasis=False, safemode=False, extensions=extend):
+def md2html(md, smart_emphasis=False, safemode=False, extensions=None):
+    global extend
+    if extensions is None:
+        extensions = extend
+    else:
+        extensions.extend(extend)
+
     return markdown.markdown(md, output_format='html5',
                              smart_emphasis=smart_emphasis,
                              safemode=safemode,

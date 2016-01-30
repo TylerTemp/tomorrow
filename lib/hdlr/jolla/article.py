@@ -39,7 +39,7 @@ class ArticleHandler(BaseHandler):
             article=article,
             author=author,
             source=source,
-            md2html=md.md2html,
+            md2html=self.md2html,
             escape=tornado.escape.xhtml_escape,
             make_source=self.make_source,
         )

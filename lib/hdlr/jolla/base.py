@@ -3,6 +3,7 @@ import logging
 import time
 from bson import ObjectId
 import tornado.locale
+from amazedown import link_icon_tab, link_image
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -32,6 +33,13 @@ class BaseHandler(BaseHandler):
         kwargs['static_path'] = self.static_path
 
         return super(BaseHandler, self).render(template_name, **kwargs)
+
+    def md2html(self, md):
+        return md2html(
+                md,
+                extensions=[link_image.makeExtension(),
+                            link_icon_tab.makeExtension(host=self.config.host),
+                            ])
 
     def get_source_name(self, link):
         sp = urlsplit(link)
