@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head lang="{{ locale.code }}">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="{% block site_description %}{{ _('Tyler\'s personal blog for sharing works, ideas, experience ect.') }}{% end %}">
+  <meta name="keywords" content="{% block site_kwd %}python,Tech{% end %}">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}{% end %}</title>
+  <meta name="renderer" content="webkit">
+  <!-- No Baidu Siteapp-->
+  <meta http-equiv="Cache-Control" content="no-siteapp"/>
+  {% block site_icon %}
+  <link rel="alternate icon" type="image/png" href="{{ static_path('i/favicon.png') }}">
+  {% end %}
+
+  {% block webapp %}
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Tomorrow"/>
+  <link rel="apple-touch-icon-precomposed" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="{{ static_path('i/app-icon72x72@2x.png') }}">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+
+  {% end %}
+  <link rel="stylesheet" href="https://dn-tomorrow.qbox.me/amazeui.min.css"/>
+  <script src="https://dn-tomorrow.qbox.me/react.0.14.3.min.js"></script>
+  <script src="https://dn-tomorrow.qbox.me/react-dom.0.14.3.min.js"></script>
+  <script src="https://dn-tomorrow.qbox.me/amazeui.react.1.0.0.min.js"></script>
+  <script src="https://dn-tomorrow.qbox.me/babel-core-browser.5.8.23.min.js"></script>
+  {% block head_end %}
+  {% end %}
+</head>
+<body>
+  <script>
+    var locale = "{{ locale.code[:2] }}";
+  </script>
+  {% block body %}
+  {% end %}
+</body>
+</html>

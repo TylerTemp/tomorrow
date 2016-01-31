@@ -11,8 +11,9 @@ from .login import LoginHandler, LogoutHandler
 from .oauth import OAuthHandler
 from .posts import PostsHandler
 from .profile import ProfileHandler
+from .author import AuthorHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
            'LoginHandler', 'OAuthHandler', 'EditHandler', 'PostsHandler',
-           'ProfileHandler']
+           'ProfileHandler', 'AuthorHandler']

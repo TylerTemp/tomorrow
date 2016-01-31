@@ -1,0 +1,30 @@
+{% extends "_react.html" %}
+
+{% block stomach %}
+<div id="_mount"></div>
+{% end %}
+
+{% block body_end %}
+<script type="text/babel">
+
+var boxStyle = {
+  backgroundColor: 'white'
+};
+
+var box = (
+    <div className="box am-padding" style={boxStyle}>
+      <h1 className="am-text-center">Jolla Authors</h1>
+      <hr />
+      {% for author in authors %}
+        <p> {{ author }} </p>
+      {% end %}
+    </div>
+);
+
+ReactDOM.render(
+  box,
+  document.getElementById('_mount')
+);
+
+</script>
+{% end %}

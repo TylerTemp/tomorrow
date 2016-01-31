@@ -1,0 +1,148 @@
+{% extends "../amaze_react_base.html" %}
+
+{% block title %}{% block main_title %}{% end %}Jolla Comes Today{% end %}
+
+{% block webapp %%}
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" sizes="192x192" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="{{ _('Jolla Blog') }}"/>
+  <link rel="apple-touch-icon-precomposed" href="{{ static_path('i/app-icon72x72@2x.png') }}">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="{{ static_path('i/app-icon72x72@2x.png') }}">
+  <meta name="msapplication-TileColor" content="#0e90d2">
+{% end %}
+
+{% block site_description %}{{ _("Unofficial Jolla Chinese blog. Chinese translation of Jolla's posts and other ideas about Jolla") }}{% end %}
+{% block site_kwd %}Jolla,Jolla博客,Jolla中文博客,Jolla翻译,Jolla非官方中文博客{% end %}
+
+{% block head_end %}
+<link rel="stylesheet" href="{{ static_path('css/nav-icon.css') }}">
+<link rel="stylesheet" href="{{ static_path('css/jolla/base.css') }}">
+  {% block neck %}
+  {% end %}
+{% end %}
+
+
+{% block body %}
+
+<header>
+  <div class="am-margin am-text-center">
+    <a href="/"><img src="https://dn-jolla.qbox.me/blog_header.png" alt="{{ _("Jolla Unofficial Chinese Blog") }}"></a>
+  </div>
+</header>
+
+<div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
+
+  <div class="am-cf" data-am-sticky="{top:40}">
+    <div class="am-fr">
+      <div class="am-padding-right">
+        <div class="nav-icon2" data-am-offcanvas="{target: '#nav-menu'}">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="am-u-sm-12">
+    <div id="nav-menu" class="am-offcanvas">
+      <div class="am-offcanvas-bar">
+        <div class="am-offcanvas-content">
+          <ul class="am-nav">
+            {% block active %}
+              {% set active = None %}
+            {% end %}
+            {% if user %}
+            <li class="am-nav-header"><i class="am-icon-sticky-note"></i> {{ _('Post') }}</li>
+            <li class="{{ 'am-active' if active == 'task' else '' }}"><a href="/task/"><span class="iconfont icon-jolla"></span>
+              {{ _('New Translation') }}</a></li>
+            <li class="{{ 'am-active' if active == 'list' else '' }}"><a href="/list/"><i class="am-icon-language am-icon-fw"> </i> {{ _('Translate') }}</a></li>
+            <li class="{{ 'am-active' if active == 'edit' else '' }}"><a href="/edit/"><i class="am-icon-plus am-icon-fw"> </i> {{ _('New Post') }}</a></li>
+            <li class="am-nav-header"><i class="am-icon-cogs"></i> {{ _('Account') }}</li>
+            <li class="{{ 'am-active' if active == 'posts' else '' }}"><a href="/posts/"><i class="am-icon-edit am-icon-fw"> </i> {{ _('My Posts') }}</a></li>
+            <li class="{{ 'am-active' if active == 'profile' else '' }}"><a href="/profile/"><i class="am-icon-child am-icon-fw"> </i> {{ _('My Profile') }}</a></li>
+            <li><a href="/logout/"><i class="am-icon-sign-out am-icon-fw"> </i> {{ _('Logout') }}</a></li>
+            {% else %}
+            <li class="am-nav-header"><i class="am-icon-cogs"></i> {{ _('Account') }}</li>
+            <li class="{{ 'am-active' if active == 'login' else '' }}"><a href="/login/">{{ _('Login') }}</a></li>
+            {% end %}
+            <li class="am-nav-header"><i class="am-icon-globe"></i> {{ _('Language') }}</li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}"><a href="./?lang=zh" data-lang="zh"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'zh' else '' }}">ZH</span> {{ _('Chinese') }}</a></li>
+            <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}"><a href="./?lang=en" data-lang="en"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'en' else '' }}">EN</span> {{ _('English') }}</a></li>
+            <li class="am-nav-header"></li>
+            <li><a href="//{{ TOMORROW_HOST }}">« tomorrow</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% block stomach %}
+  {% end %}
+</div>
+
+<footer class="am-footer am-footer-default">
+  <div>
+    <a href="//jolla.comes.today">jolla.comes.today</a>
+    <span class="am-footer-divider">|</span>
+    <small>&#169; 2015 <a href="mailto:tylertempdev@gmail.com">TylerTemp</a></small>
+  </div>
+
+  <div class="am-footer-miscs">
+    <p>
+    {% if locale.code.startswith('zh') %}
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:16px; height:auto;"> 七牛</a> &amp;
+      <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> 多说</a>
+      强力驱动
+    {% else %}
+    Powered by
+      <a href="http://qiniu.com" target="_blank"><img src="https://dn-tomorrow.qbox.me/qiniu-55x41.png" style="width:30px; height:auto;"> QiNiu</a> &amp;
+      <a href="http://duoshuo.com" target="_blank"><img src="//static.duoshuo.com/favicon.ico" style="width:16px; height:16px;"> DuoSuo</a>
+
+    {% end %}
+      <span class="am-footer-divider">|</span>
+      <a href="https://github.com/TylerTemp/tomorrow" target="_blank"><span class="am-icon-github"> {{ _('Source Code') }}</span></a>
+      <span class="am-footer-divider">|</span>
+      <a href="http://weibo.com/tylertemp" target="_blank"><span class="am-icon-weibo"> {{ _('Weibo') }}</span></a>
+
+      <!-- https://dn-tomorrow.qbox.me/wechat-qrcode.jpg -->
+      <a class="am-dropdown-toggle" id="wechat-toggle" data-load="false" href="https://dn-jolla.qbox.me/mywechat-service-banner.png" target="_blank"><span class="am-icon-wechat"> {{ _('WeChat') }}</span></a>
+
+      <a href="/feed/" target="_blank"><span class="am-icon-rss"> {{ _('RSS Feed') }}</span></a>
+    </p><br/>
+    <p>
+      {% raw _('All the content in this website without copyright specification is under {a}CC License {img}{a_end}').format(
+        a='<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">',
+        img='<img alt="知识共享许可协议" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" style="display: inline; border-width:0"/>',
+        a_end='</a>') %}
+    </p>
+  </div>
+</footer>
+
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="https://dn-tomorrow.qbox.me/jquery2.1.4.min.js"></script>
+<!--<![endif]-->
+<!--[if lte IE 8 ]>
+<script src="https://dn-tomorrow.qbox.me/jquery1.11.3.min.js"></script>
+<![endif]-->
+<script src="https://dn-tomorrow.qbox.me/amazeui.min.js"></script>
+
+<script>
+  window.jQuery || document.write('<script src="{{ static_path('/js/jquery/jquery2.1.4.min.js') }}" type="text/javascript"><\/script>')
+</script>
+
+<script src="/static/js/jolla/base.js"></script>
+  {% block body_end %}
+  {% end %}
+
+{% end %}

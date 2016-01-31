@@ -14,9 +14,9 @@ except ImportError:
 from .base import BaseHandler
 
 from lib.db.jolla import Article, Author, User, Redirect
-from lib.tool import md
 
 logger = logging.getLogger('jolla.article')
+
 
 class ArticleHandler(BaseHandler):
 
@@ -30,6 +30,9 @@ class ArticleHandler(BaseHandler):
         article = Article(slug, lang)
         if not article:
             raise tornado.web.HTTPError(404, "article %s not found" % slug)
+
+        if not article.lang_fit():
+            article.lang = article.other_lang()
 
         author = self.get_author(article)
         source = self.get_source(article)

@@ -61,7 +61,7 @@ white_tags.extend(('span',
                    'video', 'source'))
 
 attributes = {'*': ('href', 'src', 'title', 'name', 'alt', 'height', 'length'
-                    'border', 'text-align', 'type', 'controls')}
+                    'border', 'text-align', 'type', 'controls', 'markdown')}
 
 # _md = markdown.Markdown(smart_emphasis=False, safemode=False,
 #                         output_format='html5', extensions=extend)

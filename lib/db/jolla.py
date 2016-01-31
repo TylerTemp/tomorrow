@@ -276,6 +276,10 @@ class Author(Base):
     def __str__(self):
         return str(self.name)
 
+    @classmethod
+    def all(cls):
+        return cls.collection.find({})
+
 
 class Source(Base):
     collection = db.source

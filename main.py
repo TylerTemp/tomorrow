@@ -120,6 +120,7 @@ class Application(tornado.web.Application):
             (r'/jolla/oauth2/tomorrow/', jolla.OAuthHandler),
             (r'/jolla/posts/', jolla.PostsHandler),
             (r'/jolla/profile/', jolla.ProfileHandler),
+            (r'/jolla/author/', jolla.AuthorHandler),
             (r'/jolla/robots.txt', StaticFileHandler,
              {'path': os.path.join(self.config.root,
                                    'static', 'robots', 'jolla.txt')}),

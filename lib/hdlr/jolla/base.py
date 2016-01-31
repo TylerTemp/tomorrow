@@ -3,7 +3,6 @@ import logging
 import time
 from bson import ObjectId
 import tornado.locale
-from amazedown import link_icon_tab, link_image
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -11,6 +10,7 @@ except ImportError:
     from itertools import izip_longest as zip_longest
     from urlparse import urlsplit
 
+from lib.tool.amazedown_patched import link_icon_tab, link_image, figure
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
 from lib.config.jolla import Config
@@ -39,6 +39,7 @@ class BaseHandler(BaseHandler):
                 md,
                 extensions=[link_image.makeExtension(),
                             link_icon_tab.makeExtension(host=self.config.host),
+                            figure.makeExtension()
                             ])
 
     def get_source_name(self, link):

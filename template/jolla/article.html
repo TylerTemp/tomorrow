@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block main_title %}
-  {{ article.title }} | {{ _('Jolla Blog') }} |
+  {{ article.get('title') }} | {{ _('Jolla Blog') }} |
 {% end %}
 
 {% block neck %}
@@ -32,7 +32,7 @@
     <div class="am-u-sm-12 am-u-sm-centered" id="page-box">
       <article class="am-article">
         <div class="am-article-hd">
-          <h1 class="am-article-title">{{ article.title }}</h1>
+          <h1 class="am-article-title">{{ article.get('title') }}</h1>
           <div class="am-article-meta">
             {% raw make_source(source['link'] if source else None) %}
 
@@ -66,9 +66,9 @@
         <hr class="am-article-divider">
         <div class="am-article-bd">
           {% if article.description %}
-            <div class="am-article-lead">{% raw md2html(article.description) %}</div>
+            <div class="am-article-lead">{% raw md2html(article.get('description')) %}</div>
           {% end %}
-          {% raw md2html(article.content) %}
+          {% raw md2html(article.get('content')) %}
           <!-- Jolla blog author translation -->
           {% if source %}
             <hr class="am-article-divider">
