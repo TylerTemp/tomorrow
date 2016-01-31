@@ -38,8 +38,8 @@ class BaseHandler(BaseHandler):
         return md2html(
                 md,
                 extensions=[link_image.makeExtension(),
+                            figure.makeExtension(),
                             link_icon_tab.makeExtension(host=self.config.host),
-                            figure.makeExtension()
                             ])
 
     def get_source_name(self, link):
