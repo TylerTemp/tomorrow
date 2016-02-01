@@ -46,7 +46,25 @@
   {# for css #}
   {% block iconfont %}
   <!-- add iconfont -->
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_1446363252_7889283.css">
+  <!--<link rel="stylesheet" href="//at.alicdn.com/t/font_1446363252_7889283.css">-->
+  <style>
+    @font-face {font-family: "iconfont";
+      src: url('//at.alicdn.com/t/font_1446363252_5085733.eot'); /* IE9*/
+      src: url('//at.alicdn.com/t/font_1446363252_5085733.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+      url('//at.alicdn.com/t/font_1446363252_5085733.woff') format('woff'), /* chrome,firefox */
+      url('//at.alicdn.com/t/font_1446363252_5085733.ttf') format('truetype'), /* chrome,firefox,opera,Safari, Android, iOS 4.2+*/
+      url('//at.alicdn.com/t/font_1446363252_5085733.svg#iconfont') format('svg'); /* iOS 4.1- */
+    }
+
+    .iconfont {
+      font-family: "iconfont", FontAwesome, "Segoe UI", "Lucida Grande", Helvetica, Arial, "Microsoft YaHei", FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB", "Hiragino Sans GB W3", Arial, sans-serif;
+    }
+    .icon-jolla:before { content: "\e600"; }
+    .icon-mdsolid:before { content: "\e601"; }
+    .icon-mdsimple:before { content: "\e602"; }
+    .icon-python:before { content: "\e604"; }
+    .icon-opensource:before { content: "\e603"; }
+  </style>
   {% end %}
 
   {% block head_end %}{% end %}

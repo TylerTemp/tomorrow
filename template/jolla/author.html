@@ -1,30 +1,61 @@
-{% extends "_react.html" %}
+{% extends "base.html" %}
 
-{% block stomach %}
-<div id="_mount"></div>
+{% block main_title %}{{ _('Author Introduction') }} | {% end %}
+
+{% block neck %}
+<style>
+  .box {
+    background-color: white;
+  }
+
+  .photo-component {
+    position: relative;
+  }
+
+  .photo-component i {
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+
+  .photo-component input {
+    padding-left: 28px !important;
+    display: inline !important;
+    width: 70% !important;
+  }
+
+  .photo-component button {
+    margin-left: 10px;
+    display: inline;
+    width: auto;
+  }
+
+</style>
 {% end %}
 
-{% block body_end %}
-<script type="text/babel">
+{% block stomach %}
+  <div class="box am-padding">
+    <h1 class="am-text-center">{{ _('Author Introduction') }} </h1>
+    <hr />
+    <div class="am-panel-group" id="accordion">
 
-var boxStyle = {
-  backgroundColor: 'white'
-};
+    {% for author in authors %}
+    <div class="am-panel {% if author.photo and author.intro %} am-panel-default {% elif author.photo or author.intro %}  am-panel-warning {% else %} am-panel-danger {% end %}">
+      <div class="am-panel-hd">
+        <h6 class="am-panel-title" data-am-collapse="{target: '#{{ author._id }}'}">{{ author }}</h6>
+      </div>
+      <div id="{{ author._id }}" class="am-panel-collapse am-collapse" data-name="{{ author }}">
+        <div class="am-panel-bd am-g">
 
-var box = (
-    <div className="box am-padding" style={boxStyle}>
-      <h1 className="am-text-center">Jolla Authors</h1>
-      <hr />
-      {% for author in authors %}
-        <p> {{ author }} </p>
-      {% end %}
+        </div>
+      </div>
     </div>
-);
+    {% end %}
 
-ReactDOM.render(
-  box,
-  document.getElementById('_mount')
-);
+    </div>
+  </div>
+{% end %}
 
-</script>
+{% block leg %}
+<script src="/static/js/jolla/author.js"></script>
 {% end %}
