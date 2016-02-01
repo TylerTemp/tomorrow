@@ -6,6 +6,23 @@ $(function(){
               .height(element.scrollHeight - 10);
   };
 
+  var photo_component_switch = function($photo_component)
+  {
+    var $input = $photo_component.find('input');
+    var this_type = $input.prop('type');
+    var switch_to = 'file';
+    var switch_icon = 'am-icon-file-image-o';
+    if (this_type == 'file')
+    {
+      switch_to = 'text';
+      switch_icon = 'am-icon-link';
+    }
+    $input.prop('type', switch_to);
+    $photo_component.find('i')
+        .removeClass('am-icon-file-image-o am-icon-link')
+        .addClass(switch_icon);
+  };
+
   var bind_display = function($display)
   {
     var $intro = $display.find('textarea');
@@ -20,10 +37,7 @@ $(function(){
     $photo_component.find('button').click(function(event)
     {
       event.preventDefault();
-      var $input = $photo_component.find('input');
-      var this_type = $input.prop('type');
-      var switch_to = this_type == 'file'? 'text': 'file';
-      $input.prop('type', switch_to);
+      photo_component_switch($photo_component);
     });
 
     console.log($display.find('form'));
@@ -57,7 +71,18 @@ $(function(){
        }
       ).done(function(data, textStatus, jqXHR)
       {
-        
+        console.log(data);
+        if (data.photo)
+        {
+          $display.find('img').prop('src', data.photo);
+          var $input = $form.find('.photo-component').find('input[type="text"]');
+          if (!$input.length)
+            photo_component_switch($photo_component);
+          $input = $form.find('.photo-component').find('input[type="text"]');
+          $input.val(data.photo);
+        }
+        $form.find('textarea').val(data.intro || '');
+
       }).fail(function(jqXHR, textStatus, errorThrown)
       {
         var msg;
