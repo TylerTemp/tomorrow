@@ -113,8 +113,8 @@
     <a href="/list/{{ 'page/%s/' % prev_page if prev_page != 1 else '' }}" class="am-fl am-btn-link pagination">&laquo; {{ _('Prev Page') }}</a>
     {% end %}
 
-    {% if next_page %}
-    <a href="/list/page/{{ next_page }}/" class="am-fr am-btn-link pagination">{{ _('Next Page') }} &raquo;</a>
+    {% if get_next_page() %}
+    <a href="/list/page/{{ get_next_page() }}/" class="am-fr am-btn-link pagination">{{ _('Next Page') }} &raquo;</a>
     {% end %}
   </div>
 

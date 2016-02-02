@@ -316,28 +316,44 @@ class Source(Base):
             self.create_time = time.time()
         return super(Source, self)._before_save()
 
-    @classmethod
-    def all(cls, offset=0, limit=None):
-        result = cls.collection.find({}).sort(
-            (
-             # ('create_time', pymongo.DESCENDING),
-             ('translated', pymongo.ASCENDING),
-            )
-        )
-        if limit is None:
-            return result[offset:]
-        return result[offset:offset + limit]
-    #
     # @classmethod
-    # def all_untranslated(cls, offset=0, limit=None):
+    # def all(cls, offset=0, limit=None):
     #     result = cls.collection.find({}).sort(
     #         (
-    #          ('create_time', pymongo.DESCENDING)
+    #          # ('create_time', pymongo.DESCENDING),
+    #          ('translated', pymongo.ASCENDING),
     #         )
     #     )
     #     if limit is None:
     #         return result[offset:]
     #     return result[offset:offset + limit]
+
+
+    @classmethod
+    def all_untranslated(cls, offset=0, limit=None):
+        result = cls.collection.find({
+            'translated': {'$exists': False}
+        }).sort(
+            (
+             ('create_time', pymongo.DESCENDING),
+            )
+        )
+        if limit is None:
+            return result[offset:]
+        return result[offset:offset + limit]
+
+    @classmethod
+    def all_translated(cls, offset=0, limit=None):
+        result = cls.collection.find({
+            'translated': {'$exists': True}
+        }).sort(
+            (
+             ('create_time', pymongo.DESCENDING),
+            )
+        )
+        if limit is None:
+            return result[offset:]
+        return result[offset:offset + limit]
 
 
 class Redirect(Base):
