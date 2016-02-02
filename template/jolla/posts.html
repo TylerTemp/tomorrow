@@ -40,7 +40,7 @@
         {% raw xsrf_form_html() %}
         <input style="display: none" value="{{ each.slug }}" name="slug" />
         <div class="am-cf">
-          <span class="am-badge am-radius {{ 'am-icon-language am-badge-warning' if each.source else 'am-icon-pencil am-badge-success' }}"> </span> <a href="/{{ each.slug }}/"><h6>{{ each.title }}</h6></a>
+          <span class="am-badge am-radius {{ 'am-icon-language am-badge-warning' if each.source else 'am-icon-pencil am-badge-success' }}"> </span> <a href="/{{ each.slug }}/"><h6>{{ each.get('title') }}</h6></a>
           <button class="am-btn am-btn-sm am-btn-danger am-fr" type="submit" data-am-loading="{spinner: 'slack', loadingText: ''}"><span class="am-icon-trash"> {{ _('Delete') }}</span></button>
           <a class="am-btn am-btn-sm am-btn-default am-fr am-icon-edit" href="{{ each.edit_link }}">{{ _('Edit') }}</a>
         </div>
