@@ -10,7 +10,8 @@ except ImportError:
     from itertools import izip_longest as zip_longest
     from urlparse import urlsplit
 
-from lib.tool.amazedown_patched import link_icon_tab, link_image, figure
+from lib.tool.amazedown_patched import \
+    link_icon_tab, link_image_block, image_block, list_gallery
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
 from lib.config.jolla import Config
@@ -37,9 +38,10 @@ class BaseHandler(BaseHandler):
     def md2html(self, md):
         return md2html(
                 md,
-                extensions=[link_image.makeExtension(),
-                            figure.makeExtension(),
+                extensions=[image_block.makeExtension(),
+                            link_image_block.makeExtension(),
                             link_icon_tab.makeExtension(host=self.config.host),
+                            list_gallery.makeExtension()
                             ])
 
     def get_source_name(self, link):
