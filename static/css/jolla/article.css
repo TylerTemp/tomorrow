@@ -70,3 +70,7 @@ ruby > rt {
   font-style: italic;
   color: #4DB651;
 }
+
+.am-gallery-item {
+  text-align: center;
+}

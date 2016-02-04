@@ -1,5 +1,23 @@
 $(function(event)
 {
+
+  // <auto-textarea-height>
+  var adjust_height = function(element)
+  {
+    $(element).css({'height':'auto','overflow-y':'hidden'})
+              .height(element.scrollHeight - 10);
+  };
+
+  $('textarea').each(function()
+  {
+    adjust_height(this);
+  });
+  //  .on('input', function()
+  //{
+  //  adjust_height(this);
+  //});
+  // </auto-textarea-height>
+
   var converter = new showdown.Converter();
   var to_html = converter.makeHtml;
   var mdEditor = $("#mdEditor").markdownEditor({

@@ -34,6 +34,7 @@ def fix_jolla():
 def fix_article_new_md():
     tag = re.compile(r'\</?(?P<name>[^\s\\\>]+).*?\>')
     count = 0
+    slugs = set()
     for each in Article.collection.find({}):
 
         content = each['content']
@@ -47,8 +48,10 @@ def fix_article_new_md():
 
         if tags and 'figure' in tags:
             count += 1
+            slugs.add(each['slug'])
             logger.info('%s:\n %s', each['slug'], tags)
 
+    logger.info(slugs)
     logger.info(count)
 
 
