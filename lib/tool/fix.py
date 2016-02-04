@@ -16,21 +16,6 @@ config = Config()
 config.auto_clean = False
 
 
-def mkdir():
-    root = config.root
-    for folder in ('avatar', 'author'):
-        path = os.path.join(root, 'static', folder)
-        if not os.path.isdir(path):
-            os.mkdir(path)
-
-
-def fix_jolla():
-    col = Article.collection
-    for count, each in enumerate(col.find({'source.author': 'jolla'}), 1):
-        each['source']['author'] = 'Jolla'
-        col.replace_one({'_id': each['_id']}, each)
-        logger.info('[%s] fixed, %s', count, each['slug'])
-
 def fix_article_new_md():
     tag = re.compile(r'\</?(?P<name>[^\s\\\>]+).*?\>')
     count = 0
@@ -46,14 +31,10 @@ def fix_article_new_md():
 
             tags.add(this_tag)
 
-        if tags and 'small' in tags:
+        if tags and 'video' in tags:
             count += 1
             slugs.add(each['slug'])
             logger.info('%s:\n %s', each['slug'], tags)
-            if each['slug'] != 'people-who-have-received-tablet':
-                arti = Article(each['slug'], 'zh')
-                arti.content = re.sub('<small>(?P<name>.*?)</small>', '-- \g<name>', content)
-                arti.save()
 
     logger.info(slugs)
     logger.info(count)

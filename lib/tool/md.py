@@ -5,6 +5,7 @@ import logging
 import markdown
 # import markdown_newtab
 import nlcontinuous
+import md_video
 # from ..markdown_gridtables import mdx_grid_tables
 
 logger = logging.getLogger('MARKDOWN')
@@ -14,6 +15,7 @@ __all__ = ['md2html', 'html2md', 'escape']
 
 extend = [
     nlcontinuous.makeExtension(),
+    md_video.makeExtension(),
     # define attributes, {: #someid .someclass somekey='some value' }
     # 'markdown.extensions.attr_list',
     # use fenced code block by 3 back quotes
