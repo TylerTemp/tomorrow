@@ -74,3 +74,18 @@ ruby > rt {
 .am-gallery-item {
   text-align: center;
 }
+
+.admonition {
+  border-style: dotted;
+  margin: 1px;
+  padding: 1px;
+  border-color: #D3D3D3;
+}
+
+.admonition p {
+  text-indent: unset;
+}
+
+.admonition p:last-child {
+  margin-bottom: 0;
+}
