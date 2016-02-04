@@ -33,13 +33,11 @@ extend = [
     # mdx_grid_tables.makeExtension(),
     # replace <<, >> , ..., ect to HTML entity equivalents
     # 'markdown.extensions.smarty',
-    # add menu in table at the head
-    # 'markdown.extensions.toc',
+    # Table of Contents, https://pythonhosted.org/Markdown/extensions/toc.html
+    # add menu in table at the head by [TOC] at the top
+    'markdown.extensions.toc',
     # convert any [[text]] to <a href="/text/" class="wikilink">text</a>
     # 'markdown.extensions.wikilinks',
-    # Table of Contents, https://pythonhosted.org/Markdown/extensions/toc.html
-    # add [TOC] at the top
-    'markdown.extensions.toc',
     # https://pythonhosted.org/Markdown/extensions/admonition.html
     # !!! danger
     #     some text

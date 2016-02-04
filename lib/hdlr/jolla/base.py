@@ -12,7 +12,7 @@ except ImportError:
 
 from lib.tool.amazedown_patched import \
     link_icon_tab, link_image_block, image_block, \
-    list_gallery, list_avg_gallery
+    list_gallery, list_avg_gallery, quote_by
 from lib.hdlr.base import BaseHandler, get_exc_plus
 from lib.tool.md import md2html
 from lib.config.jolla import Config
@@ -39,12 +39,14 @@ class BaseHandler(BaseHandler):
     def md2html(self, md):
         return md2html(
                 md,
-                extensions=[image_block.makeExtension(),
-                            link_image_block.makeExtension(),
-                            link_icon_tab.makeExtension(host=self.config.host),
-                            list_gallery.makeExtension(),
-                            list_avg_gallery.makeExtension(),
-                            ])
+                extensions=[
+                    image_block.makeExtension(),
+                    link_image_block.makeExtension(),
+                    link_icon_tab.makeExtension(host=self.config.host),
+                    list_gallery.makeExtension(),
+                    list_avg_gallery.makeExtension(),
+                    quote_by.makeExtension(),
+                ])
 
     def get_source_name(self, link):
         sp = urlsplit(link)

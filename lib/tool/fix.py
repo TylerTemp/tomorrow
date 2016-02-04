@@ -46,10 +46,14 @@ def fix_article_new_md():
 
             tags.add(this_tag)
 
-        if tags and 'figure' in tags:
+        if tags and 'small' in tags:
             count += 1
             slugs.add(each['slug'])
             logger.info('%s:\n %s', each['slug'], tags)
+            if each['slug'] != 'people-who-have-received-tablet':
+                arti = Article(each['slug'], 'zh')
+                arti.content = re.sub('<small>(?P<name>.*?)</small>', '-- \g<name>', content)
+                arti.save()
 
     logger.info(slugs)
     logger.info(count)
