@@ -1,6 +1,5 @@
 import tornado.web
 import logging
-import functools
 try:
     from urllib.parse import unquote
     from urllib.parse import quote
@@ -9,12 +8,10 @@ except ImportError:
     from urllib import quote
 
 from lib.hdlr.tomorrow.base import BaseHandler
-from lib.db.tomorrow import User, Message
-
-logger = logging.getLogger('tomorrow.dash')
 
 
 class BaseHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash')
 
     def render(self, template_name, **kwargs):
         if 'user' not in kwargs:

@@ -3,14 +3,14 @@ from .base import BaseHandler
 from lib.db.tomorrow import Auth, User
 import logging
 
-logger = logging.getLogger('tomorrow.oauth2.confirm')
 
 class ConfirmHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.oauth2.confirm')
 
     @tornado.web.authenticated
     def get(self, app_key, temp_code=None):
         user = self.current_user
-        logger.debug('get app %s for %s', app_key, user)
+        self.debug('get app %s for %s', app_key, user)
         auth = self.get_auth(app_key)
         app_name = auth.name
 
@@ -23,7 +23,7 @@ class ConfirmHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self, app_key, temp_code=None):
         user = self.current_user
-        logger.debug('get app %s for %s', app_key, user)
+        self.debug('get app %s for %s', app_key, user)
         auth = self.get_auth(app_key)
         user.app.append({'key': app_key})
         user.save()

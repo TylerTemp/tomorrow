@@ -16,10 +16,9 @@ from .base import BaseHandler
 
 from lib.db.jolla import Article, Author
 
-logger = logging.getLogger('jolla.article')
-
 
 class AuthorHandler(BaseHandler):
+    logger = logging.getLogger('jolla.article')
 
     def get(self):
         author = self.get_argument('load', None)

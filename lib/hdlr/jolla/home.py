@@ -18,10 +18,9 @@ from lib.db.jolla import Article
 from lib.tool.md import md2html
 sys.path.pop(0)
 
-logger = logging.getLogger('jolla.home')
-
 
 class HomeHandler(BaseHandler):
+    logger = logging.getLogger('jolla.home')
     LIMIT = 9
 
     def get(self, page=1):
@@ -63,5 +62,4 @@ class HomeHandler(BaseHandler):
         for each in result:
             a = Article(lang=lang)
             a.update(each)
-            # logger.debug(a.slug)
             yield a

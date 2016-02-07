@@ -5,19 +5,14 @@ try:
 except ImportError:
     from urlparse import urlunsplit
 
-import sys
-import os
-sys.path.insert(0, os.path.normpath(os.path.join(__file__,
-                                                 '..', '..', '..', '..')))
-from lib.hdlr.base import BaseHandler, EnsureSsl
+from lib.hdlr.base import BaseHandler
 from lib.tool.tracemore import get_exc_plus
-sys.path.pop(0)
 
-logger = logging.getLogger('tomorrow.utiltiy.sina.base')
 logging.getLogger("requests").setLevel(logging.WARNING)
 
 
 class BaseHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.utiltiy.sina')
 
     def check_xsrf_cookie(self):
         return True

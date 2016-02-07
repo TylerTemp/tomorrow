@@ -9,11 +9,10 @@ from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
 from lib.db.base import Meta
 
-logger = logging.getLogger('_docpie.doc')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
-
 class DocHandler(BaseHandler):
+    logger = logging.getLogger('_docpie.doc')
 
     def get(self, slug=None):
         if slug is None:

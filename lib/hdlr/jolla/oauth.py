@@ -13,16 +13,15 @@ try:
 except ImportError:
     from urlparse import urlencode
 
-logger = logging.getLogger('jolla.oauth')
-
 
 class OAuthHandler(BaseHandler):
+    logger = logging.getLogger('jolla.oauth')
 
     @tornado.web.asynchronous
     @tornado.gen.engine
     def get(self):
         code = self.get_argument('code')
-        logger.debug(code)
+        self.debug(code)
         app = self.config.tomorrow
         key = app['key']
         secret = app['secret']
@@ -32,7 +31,7 @@ class OAuthHandler(BaseHandler):
         token_url = app['token_url']
         args = {'key': key, 'secret': secret, 'code': code}
 
-        logger.info('fetch %s - %s', token_url, args)
+        self.info('fetch %s - %s', token_url, args)
         response = yield tornado.gen.Task(client.fetch,
                                           token_url,
                                           method='POST',
@@ -46,7 +45,7 @@ class OAuthHandler(BaseHandler):
         if py3:
             body = body.decode('utf-8')
         result = json.loads(body)
-        logger.debug(result)
+        self.debug(result)
         uname = result.pop('name', None)
         source = User.TOMORROW
         uid = result['uid']

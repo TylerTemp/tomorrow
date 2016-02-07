@@ -1,4 +1,3 @@
-import tornado.web
 import logging
 import json
 import re
@@ -12,19 +11,15 @@ except ImportError:
 from lib.hdlr.base import EnsureSsl
 from .base import BaseHandler
 
-import sys
 import os
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.db.tomorrow import User, Article, Message
 from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
-sys.path.pop(0)
-
-logger = logging.getLogger('tomorrow.blog.verify')
 
 
 class VerifyHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.blog.verify')
     ERROR_EXPIRED = 1
     ERROR_USER_EXISTS = 2
     ERROR_EMAIL_EXISTS = 4
@@ -41,7 +36,7 @@ class VerifyHandler(BaseHandler):
         user = User.init_by_code(unquote(code))
         kwargs = {'error': ''}
         if user.new:
-            logger.debug('no user has code %s', code)
+            self.debug('no user has code %s', code)
             kwargs['error'] = 'nocode'
             return self.render(
                 'tomorrow/verify.html',
@@ -49,7 +44,7 @@ class VerifyHandler(BaseHandler):
             )
 
         user_info = user.get()
-        logger.debug(user_info)
+        self.debug(user_info)
         kwargs['user_name'] = user_info['user']
         kwargs['user_type'] = user_info['type']
         kwargs['user_pwd'] = user_info['pwd']
@@ -62,7 +57,7 @@ class VerifyHandler(BaseHandler):
         if ('expire' in user_info['verify'] and
                 time.time() > user_info['verify']['expire']):
             kwargs['error'] = 'expire'
-            logger.debug('%s expire' % code)
+            self.debug('%s expire' % code)
             return self.render(
                 'verify.html',
                 **kwargs
@@ -79,7 +74,7 @@ class VerifyHandler(BaseHandler):
         kwargs['email'] = user_info['email']
         kwargs['user'] = user_info['user']
 
-        logger.debug(kwargs)
+        self.debug(kwargs)
 
         return self.render(
             'verify.html',
@@ -116,7 +111,7 @@ class VerifyHandler(BaseHandler):
 
         # this should not raise
         if 'expire' in verify and verify['expire'] < time.time():
-            logger.debug('expired: %s', user)
+            self.debug('expired: %s', user)
             self.write(json.dumps({'error': self.ERROR_EXPIRED}))
             self.finish()
             return
@@ -150,7 +145,7 @@ class VerifyHandler(BaseHandler):
                           user_info.get('lang', None),
                           temp=True)
         else:
-            logger.debug('give up modify, %s', kwargs)
+            self.debug('give up modify, %s', kwargs)
 
         self.write(json.dumps(kwargs))
         self.finish()
@@ -162,7 +157,7 @@ class VerifyHandler(BaseHandler):
                     func()
                 except BaseException as e:
                     error = get_exc_plus()
-                    logger.critical(error)
+                    self.critical(error)
                     Message().send(
                         None,
                         None,
@@ -184,7 +179,7 @@ class VerifyHandler(BaseHandler):
         pwd = sha256_crypt.encrypt(raw_pwd)
         user_info = user.get()
         user_info['pwd'] = pwd
-        logger.info('%s changed the pwd', user_info['user'])
+        self.info('%s changed the pwd', user_info['user'])
 
         def unmask():
             verify['for'] &= (~User.CHANGEPWD)
@@ -240,7 +235,7 @@ class VerifyHandler(BaseHandler):
         if not User(newmail).new:
             return self.ERROR_EMAIL_EXISTS, ()
 
-        logger.debug('user %s change email %s -> %s',
+        self.debug('user %s change email %s -> %s',
                      user_info['user'], user_info['email'], newmail)
         user_info['email'] = newmail
         user_name = user_info['user']
@@ -266,7 +261,7 @@ class VerifyHandler(BaseHandler):
                     code=code,
                     escaped_code=quote(code))
             except BaseException as e:
-                logger.error('failed to send mail to %s(%s)', newmail, e)
+                self.error('failed to send mail to %s(%s)', newmail, e)
                 Message().send(
                     None,
                     user_name,

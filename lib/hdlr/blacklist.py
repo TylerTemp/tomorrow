@@ -4,10 +4,8 @@ import os
 import atexit
 import logging
 
-sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.tool.minsix import open
 from lib.tool.minsix import FileNotFoundError
-sys.path.pop(0)
 
 logger = logging.getLogger('tomorrow.blacklist')
 try:

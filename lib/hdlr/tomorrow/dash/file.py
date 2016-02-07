@@ -16,10 +16,9 @@ from lib.tool.minsix import open, py3
 from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.dash.file')
-
 
 class FileHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.file')
 
     NO_PERMISSION = 1
     SIZE_TOO_BIG = 2
@@ -47,7 +46,7 @@ class FileHandler(BaseHandler):
         current_user = self.current_user
         user_name = current_user['user']
         user_type = current_user['type']
-        logger.debug('user=%s, urluser=%s', user_name, url_user_name)
+        self.debug('user=%s, urluser=%s', user_name, url_user_name)
         return (user_name == url_user_name or user_type < User.root)
 
     def assert_get_myself(func):
@@ -177,11 +176,11 @@ class FileHandler(BaseHandler):
             try:
                 os.remove(path)
             except BaseException as e:
-                logger.error(e)
+                self.error(e)
                 error = self.DELETE_FAILED
         self.write(json.dumps({'error': error, 'name': filename}))
         self.finish()
-        logger.debug('deleted %s', filename)
+        self.debug('deleted %s', filename)
         return
 
     @tornado.gen.coroutine
@@ -210,7 +209,7 @@ class FileHandler(BaseHandler):
         try:
             bindata = yield self.decode(urldata)
         except binascii.Error as e:
-            logger.error(e)
+            self.error(e)
             self.write(json.dumps({'error': self.DECODE_ERROR}))
             self.finish()
             return
@@ -225,7 +224,7 @@ class FileHandler(BaseHandler):
             'url': urljoin(mainurl, quote('%s/%s' % (to, filename)))
         }))
         self.finish()
-        logger.info('saved %s', filename)
+        self.info('saved %s', filename)
         return
 
     @tornado.gen.coroutine

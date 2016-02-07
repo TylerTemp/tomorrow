@@ -4,10 +4,9 @@ from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
 from lib.db.base import Meta
 
-logger = logging.getLogger('_docpie.home')
-
 
 class HomeHandler(BaseHandler):
+    logger = logging.getLogger('_docpie.home')
 
     def get(self):
         info = Meta('home', 'docpie')

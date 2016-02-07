@@ -1,10 +1,9 @@
 import logging
 from lib.hdlr.tomorrow.base import BaseHandler
 
-logger = logging.getLogger('tomorrow.blog')
-
 
 class BaseHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.blog')
 
     def render(self, template_name, **kwargs):
         if 'user' not in kwargs:

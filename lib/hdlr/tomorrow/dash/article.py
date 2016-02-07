@@ -14,10 +14,9 @@ from lib.db.tomorrow import Article
 from lib.tool.md import md2html
 from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.dash.secure')
-
 
 class ArticleHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.secure')
 
     @tornado.web.authenticated
     def get(self, user):
@@ -47,15 +46,15 @@ class ArticleHandler(BaseHandler):
 
         full_delete = False
         if ('transinfo' in arti_info and
-                arti_info['transinfo']['status'] == Article.TRUSTED):
+                    arti_info['transinfo']['status'] == Article.TRUSTED):
             jolla_url = arti_info['transinfo']['slug']
             jolla_post = Jolla(jolla_url)
             assert not jolla_post.new, 'Jolla(%s) not exists' % jolla_url
             jolla_info = jolla_post.get()
-            logger.info('remove jolla trusted translation %s',
+            self.info('remove jolla trusted translation %s',
                         jolla_info['slug'])
             jolla_info['trusted_translation'] = None
-            logger.info('remove article %s', arti_info['slug'])
+            self.info('remove article %s', arti_info['slug'])
             jolla_post.save()
             coll.delete_one({'_id': id_obj})
             full_delete = True
@@ -68,11 +67,11 @@ class ArticleHandler(BaseHandler):
                     json.dumps(
                         {'msg': 'lang %s for %s not exists' % (lang, id_obj)}))
                 return
-            logger.info(
+            self.info(
                 'remove article %s language %s', arti_info['slug'], lang)
             arti_info.pop(lang)
             if 'en' not in arti_info and 'zh' not in arti_info:
-                logger.info('remove article %s', arti_info['slug'])
+                self.info('remove article %s', arti_info['slug'])
                 coll.delete_one({'_id': id_obj})
                 full_delete = True
 

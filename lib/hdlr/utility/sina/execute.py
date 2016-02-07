@@ -14,12 +14,11 @@ except ImportError:
 
 py3 = sys.version_info[0] >= 3
 
-from .base import BaseHandler, get_exc_plus
-
-logger = logging.getLogger('tomorrow.utiltiy.sina.exec')
+from .base import BaseHandler
 
 
 class ExecHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.utiltiy.sina.exec')
 
     def initialize(self):
         self.key, self.secret = self.get_app()

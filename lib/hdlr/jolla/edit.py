@@ -13,10 +13,9 @@ from lib.tool.md import md2html
 from lib.tool.md import escape
 from lib.db.jolla import Article, User, Source, Redirect
 
-logger = logging.getLogger('jolla.translate')
-
 
 class EditHandler(BaseHandler):
+    logger = logging.getLogger('jolla.translate')
 
     @tornado.web.authenticated
     def get(self, slug=None):
@@ -25,7 +24,7 @@ class EditHandler(BaseHandler):
         if slug is not None:
             slug = unquote(slug)
         article = self.get_article(slug)
-        logger.debug(article.lang)
+        self.debug(article.lang)
 
         return self.render(
             'jolla/edit.html',

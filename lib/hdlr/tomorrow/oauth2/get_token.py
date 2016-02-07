@@ -4,11 +4,10 @@ import tornado.web
 import tornado.ioloop
 from .base import BaseHandler
 from lib.db.tomorrow import Auth, User
-from lib.tool.generate import generate
 
-logger = logging.getLogger('tomorrow.oauth2.get_token')
 
 class GetTokenHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.oauth2.get_token')
 
     def post(self):
         key = self.get_argument('key')
@@ -38,6 +37,6 @@ class GetTokenHandler(BaseHandler):
         result = {'token': token, 'expire_at': expire_at,
                   'uid': str(user._id), 'name': str(user)}
 
-        logger.debug(result)
+        self.debug(result)
 
         return self.write(result)

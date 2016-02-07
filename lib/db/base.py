@@ -1,14 +1,13 @@
-import logging
 import pymongo
+from lib import Log
 
-logger = logging.getLogger('db')
 
-
-class Base(object):
+class Base(Log):
     _default = {'_id': None}
     collection = None
 
     def __init__(self):
+        super(Base, self).__init__()
         self.__dict__['__info__'] = {}
 
     def __getattr__(self, item):
@@ -68,7 +67,7 @@ class Base(object):
         self._validate_attrs()
         attrs = self.__dict__['__info__']
         if not attrs:
-            logger.warning('empty save, abort')
+            self.warning('empty save, abort')
             return
 
         collection = self.collection

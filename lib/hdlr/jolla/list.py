@@ -10,10 +10,9 @@ try:
 except ImportError:
     from urllib import quote
 
-logger = logging.getLogger('jolla.list')
-
 
 class ListHandler(BaseHandler):
+    logger = logging.getLogger('jolla.list')
     LIMIT = 10
 
     def get(self, page=None):
@@ -66,7 +65,7 @@ class ListHandler(BaseHandler):
         return None
 
     def get_all_source(self, start, length):
-        logger.debug('start: %s; limit: %s', start, length)
+        self.debug('start: %s; limit: %s', start, length)
 
         untrans = Source.all_untranslated(start, length)
         self.untrans_total = untrans.count()

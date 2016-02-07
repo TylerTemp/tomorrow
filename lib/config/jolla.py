@@ -2,16 +2,15 @@ import os
 from .base import Base, Config as RootConfig
 import logging
 
-logger = logging.getLogger('config.jolla')
-
 
 class Config(Base):
     _parent = RootConfig()
-
+    logger = logging.getLogger('jolla.config')
 
     def __init__(self):
+        super(Config, self).__init__()
         if self.tomorrow == self._get_default()['tomorrow']:
-            logger.warning("oauth2 can't work without setting tomorrow config")
+            self.warning("oauth2 can't work without setting tomorrow config")
 
     def _get_file(self):
         return os.path.join(self.root, 'config', 'jolla.conf')

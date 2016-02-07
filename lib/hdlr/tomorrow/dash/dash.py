@@ -10,10 +10,8 @@ from lib.db.tomorrow import User, Article, Message
 from .base import BaseHandler
 
 
-logger = logging.getLogger('tomorrow.dash.home')
-
-
 class DashboardHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.home')
 
     @tornado.web.authenticated
     def get(self):

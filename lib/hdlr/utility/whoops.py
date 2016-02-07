@@ -11,9 +11,8 @@ except ImportError:
         from StringIO import StringIO as BytesIO
 
 
-logger = logging.getLogger('tomorrow.utiltiy.whoops')
-
 class WoopseHandler(tornado.web.RequestHandler):
+    logger = logging.getLogger('tomorrow.utiltiy.whoops')
 
     base = os.path.normpath(
             os.path.join(__file__, '..', '..', '..', '..',
@@ -22,7 +21,7 @@ class WoopseHandler(tornado.web.RequestHandler):
         puzzle_png = BytesIO(f.read())
 
     def get(self, num):
-        logger.debug('render %s', num)
+        self.debug('render %s', num)
         self.set_header('Content-Type', 'image/png')
 
         self.write(self.mk_img(num))

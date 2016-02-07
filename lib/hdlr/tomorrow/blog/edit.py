@@ -12,10 +12,9 @@ from ..base import EnsureUser
 
 from lib.db.tomorrow import Article, User
 
-logger = logging.getLogger('tomorrow.blog.edit')
-
 
 class EditHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.blog.edit')
 
     @EnsureUser(level=User.ROOT, active=True)
     def get(self, urlslug=None):

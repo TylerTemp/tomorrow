@@ -9,10 +9,9 @@ from .base import BaseHandler
 
 from lib.db.jolla import Article, Source
 
-logger = logging.getLogger('jolla.posts')
-
 
 class PostsHandler(BaseHandler):
+    logger = logging.getLogger('jolla.posts')
 
     @tornado.web.authenticated
     def get(self):

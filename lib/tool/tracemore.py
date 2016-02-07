@@ -1,6 +1,5 @@
 import sys
 import traceback
-import logging
 try:
     from io import StringIO
 except ImportError:

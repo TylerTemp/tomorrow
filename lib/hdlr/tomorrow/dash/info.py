@@ -6,14 +6,11 @@ try:
 except ImportError:
     from urllib import unquote, quote
 
-from lib.db.tomorrow import User
-from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
-
-logger = logging.getLogger('tomorrow.dash.info')
 
 
 class InfoHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.info')
 
     @tornado.web.authenticated
     def get(self):

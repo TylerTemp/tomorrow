@@ -11,9 +11,11 @@ logger = logging.getLogger('db.jolla')
 client = pymongo.MongoClient()
 db = client['jolla']
 
+
 # TODO: support more site (maybe)
 class User(Base):
     collection = db.user
+    logger = logging.getLogger('jolla.db.user')
 
     TOMORROW = 'https://tomorrow.comes.today'
 
@@ -90,6 +92,7 @@ class User(Base):
 
 class Article(Base):
     collection = db.article
+    logger = logging.getLogger('jolla.db.article')
 
     AWAIT = 0
     ACCEPTED = 1
@@ -256,6 +259,7 @@ class Article(Base):
 
 class Author(Base):
     collection = db.author
+    logger = logging.getLogger('jolla.db.author')
 
     _default = {
         '_id': None,
@@ -283,6 +287,7 @@ class Author(Base):
 
 class Source(Base):
     collection = db.source
+    logger = logging.getLogger('jolla.db.source')
 
     _default = {
         '_id': None,
@@ -358,6 +363,7 @@ class Source(Base):
 
 class Redirect(Base):
     collection = db.redirect
+    logger = logging.getLogger('jolla.db.redirect')
 
     _default = {
         '_id': None,

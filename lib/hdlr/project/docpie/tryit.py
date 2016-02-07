@@ -17,7 +17,6 @@ except ImportError:
 from lib.hdlr.base import BaseHandler
 from lib.db.base import Meta
 
-logger = logging.getLogger('_docpie.try')
 logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
 try:
@@ -49,6 +48,7 @@ class StdoutRedirect(StringIO):
 
 
 class TryHandler(BaseHandler):
+    logger = logging.getLogger('_docpie.try')
 
     default = {'doc': None, 'argv': None, 'help': True, 'version': None,
                'stdopt': True, 'attachopt': True, 'attachvalue': True,
@@ -131,7 +131,6 @@ class TryHandler(BaseHandler):
         default.pop('argv')
         result = {}
         for key, default_value in default.items():
-            # logger.debug('%s = %s / %s', key, default_value, source[key])
             source_value = source[key]
             if default_value != source_value:
                 if isinstance(source_value, StrType):

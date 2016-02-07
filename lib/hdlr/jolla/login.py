@@ -1,12 +1,14 @@
 from .base import BaseHandler
-from lib.config.jolla import Config
+import logging
 import json
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urlparse import urlencode
 
+
 class LoginHandler(BaseHandler):
+    logger = logging.getLogger('jolla.login')
 
     def get(self):
         return self.render(

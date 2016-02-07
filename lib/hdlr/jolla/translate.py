@@ -14,10 +14,10 @@ from lib.tool.md import html2md, md2html
 from lib.tool.md import escape
 from lib.db.jolla import Article, User, Source, Author
 
-logger = logging.getLogger('tomorrow.jolla.translate')
 
 
 class TranslateHandler(BaseHandler):
+    logger = logging.getLogger('jolla.translate')
 
     @tornado.web.authenticated
     def get(self, slug=None):

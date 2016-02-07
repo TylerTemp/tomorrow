@@ -16,10 +16,9 @@ from .base import BaseHandler
 from lib.db.tomorrow import Article, User
 from lib.tool.md import md2html
 
-logger = logging.getLogger('tomorrow.blog.home')
-
 
 class HomeHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.blog.home')
     LIMIT = 10
 
     def get(self, page=1):
@@ -36,7 +35,7 @@ class HomeHandler(BaseHandler):
 
         article_and_author = self.parse_posts(collected)
 
-        return super(HomeHandler, self).render(
+        return self.render(
             'tomorrow/blog/home.html',
             article_and_author=article_and_author,
             this_page=this_page,

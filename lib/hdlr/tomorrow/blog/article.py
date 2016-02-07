@@ -6,10 +6,9 @@ from .base import BaseHandler
 from lib.db.tomorrow import Article, User
 from lib.tool.md import md2html
 
-logger = logging.getLogger('tomorrow.blog.post')
-
 
 class ArticleHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.blog.post')
 
     def get(self, slug):
         lang = self.locale.code[:2].lower()

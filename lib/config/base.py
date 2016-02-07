@@ -4,22 +4,19 @@ import atexit
 import json
 import logging
 
-
 from lib.tool.minsix import open
 from lib.tool.filelock import FileLock
+from lib import Log
 
 rootdir = os.path.abspath(
         os.path.normpath(os.path.join(__file__, '..', '..', '..')))
-
-logger = logging.getLogger('config')
 
 try:
     Str = basestring
 except NameError:
     Str = str
 
-
-class Base(object):
+class Base(Log):
     _ins = None
     _parent = None
 
@@ -29,10 +26,10 @@ class Base(object):
             config_file = ins._get_file()
             config = ins._get_default()
             if not os.path.exists(config_file):
-                logger.warning(
+                logging.warning(
                     'config file %r not found, use default', config_file)
             else:
-                logger.info('load config from %s', config_file)
+                logging.info('load config from %s', config_file)
                 with open(config_file, 'r', encoding='utf-8') as f:
                     config.update(json.load(f))
 
@@ -53,7 +50,6 @@ class Base(object):
 
         return getattr(self._parent, item)
 
-
     def _get_file(self):
         raise NotImplementedError('override this and return config file')
 
@@ -70,12 +66,13 @@ class Config(Base):
     auto_clean = True
 
     def __init__(self):
+        super(Config, self).__init__()
 
         if self.mail == self._get_default()['mail']:
-            logger.warning('You must set up email to make email part work')
+            self.warning('You must set up email to make email part work')
 
         if self.jolla_host.startswith(self.tomorrow_host):
-            logger.warning("Same domain. Oauth2 can't work as expected")
+            self.warning("Same domain. Oauth2 can't work as expected")
 
     def _get_file(self):
         return os.path.join(self.root, 'config', 'base.conf')
@@ -123,13 +120,11 @@ class Config(Base):
 def remove():
     cfg = Config()
     if cfg.auto_clean and os.path.exists(cfg.pids_file):
-        import logging
-        try:
-            global logger
-        except BaseException:
-            logger = logging.getLogger()
+
+        logger = cfg.logger
 
         if not logger.handlers:
+            import logging
             import tempfile
 
             logger = logging.getLogger()
@@ -142,6 +137,8 @@ def remove():
             else:
                 stdoutlogger(logger)
                 filelogger(fname, logger, DEBUG)
+
+        logger.setLevel(0)
 
         delete = False  # windows can not remove file when it's locked
         with FileLock(cfg.pids_file),\

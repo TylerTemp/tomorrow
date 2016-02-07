@@ -2,11 +2,10 @@ import os
 from .base import Base, Config as RootConfig
 import logging
 
-logger = logging.getLogger('config.tomorrow')
-
 
 class Config(Base):
     _parent = RootConfig()
+    logger = logging.getLogger('tomorrow.config')
 
     def _get_file(self):
         return os.path.join(self.root, 'config', 'tomorrow.conf')

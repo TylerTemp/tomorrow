@@ -14,10 +14,10 @@ from lib.db.jolla import Article, User
 from lib.tool import md2html
 from .base import BaseHandler
 
-logger = logging.getLogger('jolla.rss')
 
 
 class RssHandler(BaseHandler):
+    logger = logging.getLogger('jolla.rss')
 
     def get(self):
         return self.render(
@@ -33,5 +33,4 @@ class RssHandler(BaseHandler):
             a = Article()
             a.update(each)
             a.author = User(each['author'])
-            # logger.debug(a.slug)
             yield a

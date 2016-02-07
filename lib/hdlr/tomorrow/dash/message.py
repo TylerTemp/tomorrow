@@ -14,10 +14,9 @@ from lib.db.tomorrow import Message, User
 from lib.tool.md import escape, md2html
 from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.dash.message')
-
 
 class MessageHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.message')
     ERROR_SEND_TO_SELF = 1
     ERROR_SEND_TO_WHO = 2
 

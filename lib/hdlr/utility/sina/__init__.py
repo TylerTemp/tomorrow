@@ -1,6 +1,6 @@
+from .base import BaseHandler
 from .home import HomeHandler
 from .callback import CallbackHandler
 from .execute import ExecHandler
-from .notfound import NotFoundHandler
 
-__all__ = ['HomeHandler', 'CallbackHandler', 'ExecHandler', 'NotFoundHandler']
+__all__ = ['BaseHandler', 'HomeHandler', 'CallbackHandler', 'ExecHandler']

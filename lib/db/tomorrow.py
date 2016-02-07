@@ -11,13 +11,15 @@ from lib.tool.generate import generate
 # from base import Base
 from .base import Base
 
-logger = logging.getLogger('db.tomorrow')
+
+
 client = pymongo.MongoClient()
 db = client['tomorrow']
 
 
 class User(Base):
     collection = db.user
+    logger = logging.getLogger('tomorrow.db.user')
 
     NORMAL = 0
     ADMIN = 1
@@ -108,7 +110,7 @@ class User(Base):
         return sha256_crypt.verify(pwd, self.pwd)
 
     def remove(self):
-        logger.info('remove user %s', self._id)
+        self.info('remove user %s', self._id)
         self.collection.delete_one({'_id': self._id})
         # self._user.remove({'user': self.user})
         self.__dict__['__info__'].clear()
@@ -171,6 +173,7 @@ class User(Base):
 
 class Article(Base):
     collection = db.article
+    logger = logging.getLogger('tomorrow.db.article')
     _default = {
         '_id': None,
         'slug': None,
@@ -293,6 +296,7 @@ class Auth(Base):
     collection = db.auth
     CODE_TIMEOUT = 60 * 10
     TOKEN_TIMEOUT = 60 * 60 * 24
+    logger = logging.getLogger('tomorrow.db.auth')
 
     _default = {
         '_id': None,
@@ -331,18 +335,18 @@ class Auth(Base):
             if each['code'] == code:
                 return each
 
-        logger.warning('code %s of %s not found', code, self.name)
+        self.warning('code %s of %s not found', code, self.name)
         return None
 
     def clear_code(self, code, save=False):
-        logger.debug('clear code %s', code)
+        self.debug('clear code %s', code)
         to_delete = []
         for index, each in enumerate(self.codes):
             if each['code'] == code:
                 to_delete.append(index)
 
         if not to_delete:
-            logger.warning('code %s of %s not found', code, self.name)
+            self.warning('code %s of %s not found', code, self.name)
             return False
 
         for each in to_delete[::-1]:
@@ -367,14 +371,14 @@ class Auth(Base):
         return expire_at
 
     def clear_token(self, token, save=False):
-        logger.debug('clear token %s', code)
+        self.debug('clear token %s', token)
         to_delete = []
         for index, each in enumerate(self.codes):
-            if each['code'] == code:
+            if each['code'] == token:
                 to_delete.append(index)
 
         if not to_delete:
-            logger.warning('code %s of %s not found', code, self.name)
+            self.warning('code %s of %s not found', token, self.name)
             return False
 
         for each in to_delete[::-1]:

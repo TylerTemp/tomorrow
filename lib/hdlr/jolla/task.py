@@ -11,10 +11,9 @@ except ImportError:
 from .base import BaseHandler
 from lib.db.jolla import Source, User
 
-logger = logging.getLogger('tomorrow.jolla.task')
-
 
 class TaskHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.jolla.task')
 
     @tornado.web.authenticated
     def get(self):

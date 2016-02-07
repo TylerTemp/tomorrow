@@ -18,13 +18,12 @@ from lib.tool.md import md2html
 from lib.config.jolla import Config
 from lib.db.jolla import User
 
-logger = logging.getLogger('jolla')
-
 
 class BaseHandler(BaseHandler):
     p_re = re.compile(r'^<p>(.*?)</p>$')
 
     config = Config()
+    logging.getLogger('jolla')
 
     def render(self, template_name, **kwargs):
         kwargs.setdefault('user', self.current_user)
@@ -110,7 +109,7 @@ class BaseHandler(BaseHandler):
             return None
         expire = float(self.get_secure_cookie('expire_at'))
         if expire < time.time():
-            logger.debug('user %s expired', uid)
+            self.debug('user %s expired', uid)
             self.logout()
             return None
 

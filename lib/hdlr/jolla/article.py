@@ -15,10 +15,10 @@ from .base import BaseHandler
 
 from lib.db.jolla import Article, Author, User, Redirect
 
-logger = logging.getLogger('jolla.article')
 
 
 class ArticleHandler(BaseHandler):
+    logger = logging.getLogger('jolla.article')
 
     def get(self, slug):
         slug = unquote(slug)

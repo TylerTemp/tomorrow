@@ -2,13 +2,12 @@ import logging
 import json
 from weibo import Client
 
-from .base import BaseHandler, EnsureSsl
+from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.utiltiy.sina.home')
 
 class HomeHandler(BaseHandler):
 
-    @EnsureSsl(permanent=True)
+    logger = logging.getLogger('tomorrow.utiltiy.sina.home')
     def get(self):
         key, secret = self.get_app()
         error = self.get_argument('err', None)
@@ -19,7 +18,6 @@ class HomeHandler(BaseHandler):
             error=error
         )
 
-    @EnsureSsl(permanent=True)
     def post(self):
         app_key = self.get_argument('app-key')
         app_secret = self.get_argument('app-secret')

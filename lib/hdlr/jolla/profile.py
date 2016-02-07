@@ -13,10 +13,10 @@ from .base import BaseHandler
 from lib.tool.b64 import decode_data_url
 from lib.db.jolla import Article, User, Source, Author
 
-logger = logging.getLogger('tomorrow.jolla.translate')
 
 
 class ProfileHandler(BaseHandler):
+    logger = logging.getLogger('jolla.profile')
 
     @tornado.web.authenticated
     def get(self):
@@ -76,7 +76,7 @@ class ProfileHandler(BaseHandler):
             files = self.request.files
             if 'avatar' not in files:
                 return None, None
-            logger.debug('from form')
+            self.debug('from form')
             f = files['avatar'][0]
             content = f['body']
             name = f['filename']
@@ -84,8 +84,8 @@ class ProfileHandler(BaseHandler):
             if ext:
                 ext = ext[1:]
         else:
-            logger.debug('from js encode')
-            logger.debug(repr(direct))
+            self.debug('from js encode')
+            self.debug(repr(direct))
             content = decode_data_url(direct)
             mime, _ = mimetypes.guess_type(direct)
             if mime and '/' in mime:
@@ -99,7 +99,7 @@ class ProfileHandler(BaseHandler):
             name = '%s.%s' % (name, ext)
 
         fpath = os.path.join(self.config.root, 'static', 'avatar', name)
-        logger.info('save to %s', fpath)
+        self.info('save to %s', fpath)
         with open(fpath, 'wb') as f:
             f.write(content)
 

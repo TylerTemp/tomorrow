@@ -13,10 +13,10 @@ from lib.tool.mail import Email
 from lib.tool.tracemore import get_exc_plus
 from .base import BaseHandler
 
-logger = logging.getLogger('tomorrow.dash.secure')
 
 # todo: fix this so it can work again
 class SecureHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.dash.secure')
 
     ERROR_FAILED_SEND_EMAIL = 1
     ERROR_NOTHING_TO_SEND = 2
@@ -64,7 +64,7 @@ class SecureHandler(BaseHandler):
             for_ = verify['for']
         else:
             if verify:
-                 assert verify['for'] & user.NEWUSER
+                assert verify['for'] & user.NEWUSER
             email = user.email
             expire = time.time() + 60 * 60 * 24
             code = User.generate()
@@ -83,12 +83,12 @@ class SecureHandler(BaseHandler):
             if change_pwd:
                 for_ |= User.CHANGEPWD
 
-        logger.info('user: %s; email: %s; for: %s, expire: %s, code: %s',
-                    user, email, action, expire, code)
+        self.info('user: %s; email: %s; for: %s, expire: %s, code: %s',
+                  user, email, action, expire, code)
 
         user.set_code(for_=for_, code=code, expire=expire)
 
-        logger.error('not support')
+        self.error('not support')
         raise tornado.web.HTTPError(500, 'Not support so far')
         user.save()
 

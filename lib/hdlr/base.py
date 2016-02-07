@@ -17,11 +17,10 @@ except ImportError:
 
 from lib.tool.tracemore import get_exc_plus
 from lib.config.base import Config
+from lib import Log
 
-logger = logging.getLogger("tomorrow.base")
 
-
-class BaseHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler, Log):
     config = Config()
 
     def get(self, *a, **k):
@@ -102,8 +101,8 @@ class BaseHandler(tornado.web.RequestHandler):
 
     def write_error(self, status_code, **kwargs):
         r = self.request
-        logger.debug('%s - %s' % (r.remote_ip, r.host))
-        logging.error('%s' % get_exc_plus())
+        self.debug('%s - %s' % (r.remote_ip, r.host))
+        self.error('%s' % get_exc_plus())
 
         if self.is_ajax():
             self.clear()
@@ -165,3 +164,15 @@ class StaticFileHandler(tornado.web.StaticFileHandler):
         path, file = os.path.split(self.root)
         self.root = path
         return super(StaticFileHandler, self).get(path=file)
+
+
+class RedirectHandler(BaseHandler):
+
+    def initialize(self, to, permanently=False):
+        self._to = to
+        self._permanently = permanently
+
+    def get(self, *a, **k):
+        return self.redirect(self._to, self._permanently)
+
+    post = get

@@ -147,7 +147,7 @@ class Application(tornado.web.Application):
             (r'/utility/sina/', utility.sina.HomeHandler),
             (r'/utility/sina/callback/', utility.sina.CallbackHandler),
             (r'/utility/sina/exec/', utility.sina.ExecHandler),
-            (r'/utility/sina/[^/]+/', utility.sina.NotFoundHandler),
+            (r'/utility/sina/[^/]+/', utility.sina.BaseHandler),
             (r'/utility/woopse/(\d+)/', utility.WoopseHandler),
 
             (r'/brey/', brey.BreyHandler),

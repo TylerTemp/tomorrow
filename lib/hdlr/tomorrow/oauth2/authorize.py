@@ -9,10 +9,9 @@ try:
 except:
     from urlparse import urlencode, quote, urlsplit, parse_qs, urlunsplit
 
-logger = logging.getLogger('tomorrow.oauth.authorize')
-
 
 class AuthorizeHandler(BaseHandler):
+    logger = logging.getLogger('tomorrow.oauth.authorize')
 
     def get(self):
         self.key = self.get_argument('key')
@@ -21,7 +20,7 @@ class AuthorizeHandler(BaseHandler):
         if not self.auth:
             raise tornado.web.HTTPError(500, 'Unknown app %s' % self.key)
         if self.auth.callback != callback:
-            logger.debug('source: %s != db: %s', callback, self.auth.callback)
+            self.debug('source: %s != db: %s', callback, self.auth.callback)
             raise tornado.web.HTTPError(500, 'Callback unmatch %r' % callback)
 
         code = self.set_code()

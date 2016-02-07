@@ -14,8 +14,6 @@ from .base import BaseHandler
 from lib.db.tomorrow import User
 from lib.hdlr.base import EnsureSsl
 
-logger = logging.getLogger('tomorrow.blog.auth')
-
 
 class _Handler(BaseHandler):
     EMAIL_RE_STR = r'^[\w\d.+-]+@([\w\d.]+\.)+\w{2,}$'
@@ -50,6 +48,7 @@ class _Handler(BaseHandler):
 
 
 class LoginHandler(_Handler):
+    logger = logging.getLogger('tomorrow.blog.login')
 
     @EnsureSsl(permanent=True)
     def get(self):
@@ -109,11 +108,12 @@ class LoginHandler(_Handler):
 
         redirect = redirect or '/'
         result['redirect'] = redirect
-        logger.debug(result)
+        self.debug(result)
         return self.write(json.dumps(result))
 
 
 class SigninHandler(_Handler):
+    logger = logging.getLogger('tomorrow.blog.login')
 
     @EnsureSsl(permanent=True)
     def get(self):
@@ -193,6 +193,7 @@ class SigninHandler(_Handler):
 
 
 class LogoutHandler(_Handler):
+    logger = logging.getLogger('tomorrow.blog.logout')
 
     def get(self):
         self.logout()
