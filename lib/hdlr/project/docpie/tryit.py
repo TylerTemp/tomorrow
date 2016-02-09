@@ -90,7 +90,7 @@ class TryHandler(BaseHandler):
                     result['file_name'] = name
 
                 with StdoutRedirect() as stdout:
-                    args = shlex.split('pie.py ' + argv)
+                    args = shlex.split('pie.py ' + (argv or ''))
                     try:
                         pie = docpie.docpie(doc, args, **config)
                     except BaseException as e:
