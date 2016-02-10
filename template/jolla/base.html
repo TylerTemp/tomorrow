@@ -22,8 +22,8 @@
 {% block site_kwd %}Jolla,Jolla博客,Jolla中文博客,Jolla翻译,Jolla非官方中文博客{% end %}
 
 {% block head_end %}
-<link rel="stylesheet" href="{{ static_path('css/nav-icon.css') }}">
-<link rel="stylesheet" href="{{ static_path('css/jolla/base.css') }}">
+<link rel="stylesheet" href="/static/css/nav-icon.css">
+<link rel="stylesheet" href="/static/css/jolla/base.css">
   {% block neck %}
   {% end %}
 {% end %}
@@ -38,17 +38,15 @@
 
 <div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
 
-  <div class="am-cf" data-am-sticky="{top:40}">
-    <div class="am-fr">
-      <div class="am-padding-right">
-        <div class="nav-icon2" data-am-offcanvas="{target: '#nav-menu'}">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+  <div class="am-cf">
+    <div class="am-fr" data-am-sticky="{top:40}">
+      <div class="nav-icon2" data-am-offcanvas="{target: '#nav-menu'}">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </div>
@@ -130,6 +128,6 @@
 {% end %}
 
 {% block body_end %}
-<script src="{{ static_path('js/jolla/base.js') }}"></script>
+<script src="/static/js/jolla/base.js"></script>
   {% block leg %}{% end %}
 {% end %}

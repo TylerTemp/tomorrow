@@ -2,7 +2,7 @@ import re
 import logging
 import time
 from bson import ObjectId
-import tornado.locale
+import functools
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -129,3 +129,19 @@ class BaseHandler(BaseHandler):
             code=status_code,
             msg=msg
         )
+
+class EnsureUser(object):
+    DEACTIVE = User.DEACTIVE
+    NORMAL = User.NORMAL
+    ROOT = User.ROOT
+
+    def __init__(self, level=User.NORMAL):
+        self._level = level
+
+    def __call__(self, func):
+        @functools.wraps(func)
+        def wrapper(ins, *a, **k):
+            current_user = ins.current_user
+            
+
+        return wrapper

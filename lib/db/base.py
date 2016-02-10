@@ -74,8 +74,10 @@ class Base(Log):
         _id = self._id
 
         if _id is not None:
-            collection.replace_one({'_id': _id}, attrs)
-            return
+            result = collection.replace_one({'_id': _id}, attrs)
+            if result.matched_count >= 1:
+                return
+            self.warning('No id matched, save directly')
 
         insert_result = collection.insert_one(attrs)
         _id = insert_result.inserted_id
