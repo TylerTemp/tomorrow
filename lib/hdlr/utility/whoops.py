@@ -1,5 +1,4 @@
 import logging
-import tornado.web
 import os
 import cairocffi as cairo
 try:
@@ -10,8 +9,10 @@ except ImportError:
     except ImportError:
         from StringIO import StringIO as BytesIO
 
+from lib.hdlr.base import BaseHandler
 
-class WoopseHandler(tornado.web.RequestHandler):
+
+class WoopseHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.utiltiy.whoops')
 
     base = os.path.normpath(

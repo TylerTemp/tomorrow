@@ -1,0 +1,61 @@
+{% extends "../base.html" %}
+
+{% block main_title %}
+  {{ _("Manage User") }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'manage-user' %}
+{% end %}
+
+{% block neck %}
+<style>
+  #page {
+    background-color: white;
+    padding: 50px;
+  }
+  h6 {
+    margin: 0;
+    display: inline;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+<div id="page">
+  <h1 class="am-text-center">{{ _('Manage User') }}</h1>
+  <hr />
+
+  {% for each in users %}
+
+  <form class="am-panel {{
+    ['am-panel-warning', 'am-panel-default', 'am-panel-secondary', 'am-panel-primary'][each.type]
+    }}" method="post">
+    <div class="am-panel-hd" data-am-collapse="{target: '#{{ each._id }}'}">
+      <h6 class="am-panel-title">{{ each }}</h6>
+    </div>
+    <fieldset class="am-collapse" id="{{ each._id }}">
+      {% raw xsrf_form_html() %}
+      <div class="am-panel-bd">
+        <div class="am-text-center am-text-xl">
+          <i class="am-icon-spinner am-icon-pulse"></i>
+          {{ _('Loading...') }}
+        </div>
+      </div>
+      <div class="am-panel-footer am-cf">
+        <div class="am-fr">
+          <button class="am-btn am-btn-xs am-btn-danger" data-role="delete"><span class="am-icon-trash"></span></button>
+          <button class="am-btn am-btn-xs am-btn-primary" type="submit"><span class="am-icon-save"></span></button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  {% end %}
+
+</div>
+{% end %}

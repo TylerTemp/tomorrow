@@ -61,12 +61,20 @@
             {% end %}
             {% if user %}
             <li class="am-nav-header"><i class="am-icon-sticky-note"></i> {{ _('Post') }}</li>
-            <li class="{{ 'am-active' if active == 'task' else '' }}"><a href="/task/"><span class="iconfont icon-jolla"></span>
+            <li class="{{ 'am-active' if active == 'task' else '' }}"><a href="/task/"><i class="iconfont icon-jolla"></i>
               {{ _('New Translation') }}</a></li>
             <li class="{{ 'am-active' if active == 'list' else '' }}"><a href="/list/"><i class="am-icon-language am-icon-fw"> </i> {{ _('Translate') }}</a></li>
             <li class="{{ 'am-active' if active == 'edit' else '' }}"><a href="/edit/"><i class="am-icon-plus am-icon-fw"> </i> {{ _('New Post') }}</a></li>
             <li class="{{ 'am-active' if active == 'author' else '' }}"><a href="/author/"><i class="am-icon-paint-brush am-icon-fw"> </i> {{ _('Author') }}</a></li>
-            <li class="am-nav-header"><i class="am-icon-cogs"></i> {{ _('Account') }}</li>
+
+            {% if user.type >= user.ROOT %}
+            <li class="am-nav-header"><i class="am-icon-wrench"></i> {{ _('Manage') }}</li>
+            <li class="{{ 'am-active' if active == 'manage-user' else '' }}"><a href="/manage/user/"><i class="am-icon-user am-icon-fw"> </i> {{ _('User') }}</a></li>
+            <li class="{{ 'am-active' if active == 'manage-tr' else '' }}"><a href="/manage/tr/"><i class="iconfont icon-jolla"></i> {{ _('Translation') }}</a></li>
+            <li class="{{ 'am-active' if active == 'manage-post' else '' }}"><a href="/manage/post/"><i class="am-icon-sticky-note am-icon-fw"> </i> {{ _('Post') }}</a></li>
+            {% end %}
+
+            <li class="am-nav-header"><i class="am-icon-cog"></i> {{ _('Account') }}</li>
             <li class="{{ 'am-active' if active == 'posts' else '' }}"><a href="/posts/"><i class="am-icon-edit am-icon-fw"> </i> {{ _('My Posts') }}</a></li>
             <li class="{{ 'am-active' if active == 'profile' else '' }}"><a href="/profile/"><i class="am-icon-child am-icon-fw"> </i> {{ _('My Profile') }}</a></li>
             <li><a href="/logout/"><i class="am-icon-sign-out am-icon-fw"> </i> {{ _('Logout') }}</a></li>

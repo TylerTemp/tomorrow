@@ -5,7 +5,7 @@ try:
     from urllib.parse import quote
 except ImportError:
     from urllib import quote
-from .base import BaseHandler
+from .base import BaseHandler, EnsureUser
 
 from lib.db.jolla import Article, Source
 
@@ -13,7 +13,7 @@ from lib.db.jolla import Article, Source
 class PostsHandler(BaseHandler):
     logger = logging.getLogger('jolla.posts')
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.ADMIN)
     def get(self):
         return self.render(
             'jolla/posts.html',
@@ -32,7 +32,7 @@ class PostsHandler(BaseHandler):
 
             yield article
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.ADMIN)
     def post(self):
         article = Article(self.get_argument('slug'))
         if not article:

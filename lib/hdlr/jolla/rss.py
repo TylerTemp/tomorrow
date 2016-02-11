@@ -15,7 +15,6 @@ from lib.tool import md2html
 from .base import BaseHandler
 
 
-
 class RssHandler(BaseHandler):
     logger = logging.getLogger('jolla.rss')
 

@@ -121,6 +121,7 @@ class Application(tornado.web.Application):
             (r'/jolla/posts/', jolla.PostsHandler),
             (r'/jolla/profile/', jolla.ProfileHandler),
             (r'/jolla/author/', jolla.AuthorHandler),
+            (r'/jolla/manage/user/', jolla.manage.UserHandler),
             (r'/jolla/robots.txt', StaticFileHandler,
              {'path': os.path.join(self.config.root,
                                    'static', 'robots', 'jolla.txt')}),

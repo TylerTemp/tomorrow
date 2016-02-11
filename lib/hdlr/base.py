@@ -22,6 +22,7 @@ from lib import Log
 
 class BaseHandler(tornado.web.RequestHandler, Log):
     config = Config()
+    logger = logging.getLogger()
 
     def get(self, *a, **k):
         splited = urlsplit(self.request.uri)

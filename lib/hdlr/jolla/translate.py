@@ -9,17 +9,16 @@ except ImportError:
     from urllib import quote
     from urlparse import unquote
 
-from .base import BaseHandler
+from .base import BaseHandler, EnsureUser
 from lib.tool.md import html2md, md2html
 from lib.tool.md import escape
 from lib.db.jolla import Article, User, Source, Author
 
 
-
 class TranslateHandler(BaseHandler):
     logger = logging.getLogger('jolla.translate')
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def get(self, slug=None):
         if slug is not None:
             article = Article(slug)
@@ -46,7 +45,7 @@ class TranslateHandler(BaseHandler):
             size_limit=0,
         )
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def post(self):
         self.check_xsrf_cookie()
         if self.get_argument('action', None) == 'preview':

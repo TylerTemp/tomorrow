@@ -3,6 +3,7 @@ import logging
 import time
 from bson import ObjectId
 import functools
+import json
 try:
     from itertools import zip_longest
     from urllib.parse import urlsplit
@@ -130,9 +131,11 @@ class BaseHandler(BaseHandler):
             msg=msg
         )
 
+
 class EnsureUser(object):
     DEACTIVE = User.DEACTIVE
     NORMAL = User.NORMAL
+    ADMIN = User.ADMIN
     ROOT = User.ROOT
 
     def __init__(self, level=User.NORMAL):
@@ -142,6 +145,37 @@ class EnsureUser(object):
         @functools.wraps(func)
         def wrapper(ins, *a, **k):
             current_user = ins.current_user
-            
+            method = ins.request.method.lower()
+            if current_user is None:
+                if method == 'get':
+                    return ins.redirect('/login/')
+                else:    # 'post'
+                    ins.clear()
+                    ins.set_status(403)
+                    ins.write({
+                        'error': -1,
+                        'msg': 'Need login first'
+                    })
+                    return
+            elif current_user.type < self._level:
+                ins.clear()
+                ins.set_status(403)
+                if method == 'get':
+                    return ins.render(
+                        'jolla/error.html',
+                        msg=ins.locale.translate(
+                            'Your account group is not allowed to finish this '
+                            'request'
+                        ),
+                        code=403
+                    )
+                else:
+                    ins.write({
+                        'error': -1,
+                        'msg': ('Your account group is not allowed '
+                                'to finish this request')
+                    })
+
+            return func(ins, *a, **k)
 
         return wrapper

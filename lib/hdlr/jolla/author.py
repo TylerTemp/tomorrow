@@ -12,7 +12,7 @@ try:
 except ImportError:
     from itertools import izip_longest as zip_longest
 
-from .base import BaseHandler
+from .base import BaseHandler, EnsureUser
 
 from lib.db.jolla import Article, Author
 
@@ -20,6 +20,7 @@ from lib.db.jolla import Article, Author
 class AuthorHandler(BaseHandler):
     logger = logging.getLogger('jolla.article')
 
+    @EnsureUser(EnsureUser.NORMAL)
     def get(self):
         author = self.get_argument('load', None)
         if author:
@@ -54,7 +55,7 @@ class AuthorHandler(BaseHandler):
                     this_author._id = ObjectId()
                 yield this_author
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def post(self):
         self.check_xsrf_cookie()
 

@@ -1,21 +1,20 @@
 import tornado.web
 import logging
 import json
-import time
 try:
     from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
 except ImportError:
     from urllib import quote
     from urlparse import unquote, urljoin, urlsplit, urlunsplit
 
-from .base import BaseHandler
-from lib.db.jolla import Source, User
+from .base import BaseHandler, EnsureUser
+from lib.db.jolla import Source
 
 
 class TaskHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.jolla.task')
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def get(self):
         self.xsrf_token
 
@@ -33,7 +32,7 @@ class TaskHandler(BaseHandler):
             source=source
         )
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def post(self, urlslug=None):
         self.check_xsrf_cookie()
         url_link = self.get_argument('source', None)
@@ -79,4 +78,3 @@ class TaskHandler(BaseHandler):
 
         splited[4] = ''
         return urlunsplit(splited)
-

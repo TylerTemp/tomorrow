@@ -11,8 +11,6 @@ except ImportError:
 
 from .base import BaseHandler
 from lib.tool.b64 import decode_data_url
-from lib.db.jolla import Article, User, Source, Author
-
 
 
 class ProfileHandler(BaseHandler):

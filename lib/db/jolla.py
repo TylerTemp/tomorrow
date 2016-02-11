@@ -21,7 +21,8 @@ class User(Base):
 
     DEACTIVE = 0
     NORMAL = 1
-    ROOT = 2
+    ADMIN = 2
+    ROOT = 3
 
     _default = {
         '_id': None,
@@ -88,6 +89,10 @@ class User(Base):
             self.source = source
             self.uid = uid
         return self
+
+    @classmethod
+    def all(cls):
+        return cls.collection.find({})
 
 
 class Article(Base):

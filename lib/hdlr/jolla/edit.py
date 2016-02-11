@@ -8,7 +8,7 @@ except ImportError:
     from urllib import quote
     from urlparse import unquote
 
-from .base import BaseHandler
+from .base import BaseHandler, EnsureUser
 from lib.tool.md import md2html
 from lib.tool.md import escape
 from lib.db.jolla import Article, User, Source, Redirect
@@ -17,7 +17,7 @@ from lib.db.jolla import Article, User, Source, Redirect
 class EditHandler(BaseHandler):
     logger = logging.getLogger('jolla.translate')
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def get(self, slug=None):
         if self.get_argument('action', None) == 'preview':
             return self.preview()
@@ -31,7 +31,7 @@ class EditHandler(BaseHandler):
             article=article
         )
 
-    @tornado.web.authenticated
+    @EnsureUser(EnsureUser.NORMAL)
     def post(self, slug=None):
         if self.get_argument('action', None) == 'preview':
             return self.preview()
