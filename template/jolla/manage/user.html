@@ -23,6 +23,10 @@
     margin: 0;
     padding: 0;
   }
+
+  .avatar {
+    max-width: 100px;
+  }
 </style>
 {% end %}
 
@@ -40,12 +44,101 @@
       <h6 class="am-panel-title">{{ each }}</h6>
     </div>
     <fieldset class="am-collapse" id="{{ each._id }}">
-      {% raw xsrf_form_html() %}
       <div class="am-panel-bd">
-        <div class="am-text-center am-text-xl">
-          <i class="am-icon-spinner am-icon-pulse"></i>
-          {{ _('Loading...') }}
+      {% raw xsrf_form_html() %}
+
+      <div class="am-cf">
+        <div class="am-fl">
+          <img src="{{ each.photo or '/static/img/each.jpg' }}" class="am-img-responsive am-img-thumbnail am-circle avatar" />
         </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="name">{{ _('Name') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-user"></i>
+          <input type="text" class="am-form-field" id="name" name="name" value="{{ each.name }}" required="required"/>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="email">{{ _('Email') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-at"></i>
+          <input type="email" class="am-form-field" id="email" name="email" value="{{ each.email or '' }}"/>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="avatar">{{ _('Avatar') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-camera"></i>
+          {% if each.photo %}
+          <input type="text" class="am-form-field" id="avatar" name="avatar" value="{{ each.photo }}"/>
+          {% else %}
+          <input type="file" class="am-form-field" id="avatar" name="avatar" value=""/>
+          {% end %}
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="home">{{ _('Home') }}</label>
+        <div class="am-form-group am-form-icon">
+          <i class="am-icon-link"></i>
+          <input type="text" class="am-form-field" id="home" name="home" value="{{ each.home or '' }}"/>
+        </div>
+      </div>
+
+      <div class="am-tabs" data-am-tabs>
+        <ul class="am-tabs-nav am-nav am-nav-tabs am-nav-justify">
+          <li class="am-active"><a href="#chinese">{{ _('Chinese') }}</a></li>
+          <li><a href="#english">{{ _('English') }}</a></li>
+        </ul>
+
+        <div class="am-tabs-bd">
+          <div class="am-tab-panel am-active" id="chinese">
+
+            <div class="am-form-group">
+              <label for="zh-intro">{{ _('Introduction') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-child"></i>
+                <textarea class="am-form-field" id="zh-intro" name="zh-intro">{{ each.zh.get('intro', '') or '' }}</textarea>
+              </div>
+            </div>
+
+            <div class="am-form-group">
+              <label for="zh-donate">{{ _('Donation') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-money"></i>
+                <textarea class="am-form-field" id="zh-donate" name="zh-donate">{{ each.zh.get('donate', '') or '' }}</textarea>
+              </div>
+            </div>
+
+          </div>
+          <div class="am-tab-panel" id="english">
+
+
+            <div class="am-form-group">
+              <label for="en-intro">{{ _('Introduction') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-child"></i>
+                <textarea class="am-form-field" id="en-intro" name="en-intro">{{ each.en.get('intro', '') or '' }}</textarea>
+              </div>
+            </div>
+
+            <div class="am-form-group">
+              <label for="en-donate">{{ _('Donation') }}</label>
+              <div class="am-form-group am-form-icon">
+                <i class="am-icon-money"></i>
+                <textarea class="am-form-field" id="en-donate" name="en-donate">{{ each.en.get('donate', '') or '' }}</textarea>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+        
       </div>
       <div class="am-panel-footer am-cf">
         <div class="am-fr">
