@@ -1,0 +1,52 @@
+{% extends "../base.html" %}
+
+{% block main_title %}
+  {{ _("Manage Translation") }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'manage-tr' %}
+{% end %}
+
+{% block neck %}
+<style>
+  #page {
+    background-color: white;
+    padding: 50px;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+<div id="page">
+  <h1 class="am-text-center">{{ _('Manage Translation') }}</h1>
+  <hr />
+
+  {% for each, count in sources %}
+
+    <div class="am-panel {% if each.translated %}
+                          am-panel-default
+                         {% elif count == 0 %}
+                          am-panel-danger
+                         {% else %}
+                          am-panel-warning
+                         {% end %}">
+      <div class="am-panel-hd">
+        <h6 class="am-panel-title" data-am-collapse="{target: '#{{ each._id }}'}"><span class="am-badge">{{ count }}</span> {{ each.title or each.slug or each.link }}</h6>
+      </div>
+      <div id="{{ each._id }}" class="am-panel-collapse am-collapse">
+        <div class="am-panel-bd am-g">
+
+        </div>
+      </div>
+    </div>
+
+  {% end %}
+
+</div>
+{% end %}
+
+
+{% block leg %}
+<!-- <script src="/static/js/jolla/manage/translate.js"></script> -->
+{% end %}

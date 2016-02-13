@@ -91,6 +91,14 @@ class Base(Log):
             ins.update(result)
         return ins
 
+    @classmethod
+    def find(cls, *a, **k):
+        for each in cls.collection.find(*a, **k):
+            ins = cls()
+            ins.update(each)
+            yield ins
+
+
 client = pymongo.MongoClient()
 db = client['meta']
 

@@ -1,11 +1,13 @@
 from bson import ObjectId
 from bson.errors import InvalidId
+import logging
 import tornado.web
 from ..base import BaseHandler, EnsureUser
 from lib.db.jolla import User
 from lib.tool.b64 import decode_data_url
 
 class UserHandler(BaseHandler):
+    logger = logging.getLogger('jolla.manage.user')
 
     @EnsureUser(EnsureUser.ROOT)
     def get(self):
