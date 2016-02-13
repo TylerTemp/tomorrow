@@ -27,6 +27,28 @@
   .avatar {
     max-width: 100px;
   }
+
+  .photo-component {
+    position: relative;
+  }
+
+  .photo-component i {
+    position: absolute;
+    margin-top: 8px;
+    margin-left: 8px;
+  }
+
+  .photo-component input {
+    padding-left: 28px !important;
+    display: inline !important;
+    width: 70% !important;
+  }
+
+  .photo-component button {
+    margin-left: 10px;
+    display: inline;
+    width: auto;
+  }
 </style>
 {% end %}
 
@@ -39,17 +61,19 @@
 
   <form class="am-panel {{
     ['am-panel-warning', 'am-panel-default', 'am-panel-secondary', 'am-panel-primary'][each.type]
-    }}" method="post">
+    }}" method="post" enctype="multipart/form-data" method="post">
     <div class="am-panel-hd" data-am-collapse="{target: '#{{ each._id }}'}">
       <h6 class="am-panel-title">{{ each }}</h6>
     </div>
     <fieldset class="am-collapse" id="{{ each._id }}">
       <div class="am-panel-bd">
       {% raw xsrf_form_html() %}
+      <input name="_id" value="{{ each._id }}" style="display:none" />
+      <input name="action" value="" style="display:none" />
 
       <div class="am-cf">
         <div class="am-fl">
-          <img src="{{ each.photo or '/static/img/each.jpg' }}" class="am-img-responsive am-img-thumbnail am-circle avatar" />
+          <img src="{{ each.photo or '/static/img/user.jpg' }}" class="am-img-responsive am-img-thumbnail am-circle avatar" />
         </div>
       </div>
 
@@ -70,14 +94,26 @@
       </div>
 
       <div class="am-form-group">
-        <label for="avatar">{{ _('Avatar') }}</label>
+        <label for="group">{{ _('Group') }}</label>
         <div class="am-form-group am-form-icon">
+          <i class="am-icon-users"></i>
+
+          <select class="am-form-field" name="group">
+            <option value="{{ each.DEACTIVE }}" {{ 'selected' if each.type == each.DEACTIVE else '' }}>{{ _('Deactive') }}</option>
+            <option value="{{ each.NORMAL }}" {{ 'selected' if each.type == each.NORMAL else '' }}>{{ _('Normal User') }}</option>
+            <option value="{{ each.ADMIN }}" {{ 'selected' if each.type == each.ADMIN else '' }}>{{ _('Administor') }}</option>
+            <option value="{{ each.ROOT }}" {{ 'selected' if each.type == each.ROOT else '' }}>{{ _('Super User') }}</option>
+          </select>
+
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="avatar">{{ _('Avatar') }}</label>
+        <div class="am-form-group photo-component">
           <i class="am-icon-camera"></i>
-          {% if each.photo %}
-          <input type="text" class="am-form-field" id="avatar" name="avatar" value="{{ each.photo }}"/>
-          {% else %}
-          <input type="file" class="am-form-field" id="avatar" name="avatar" value=""/>
-          {% end %}
+          <input type="{{ 'text' if each.photo else 'file'}}" class="am-form-field" id="avatar" name="avatar" value="{{ each.photo or '' }}"/>
+          <button class="am-btn"><span class="am-icon-exchange"></span></button>
         </div>
       </div>
 
@@ -142,8 +178,12 @@
       </div>
       <div class="am-panel-footer am-cf">
         <div class="am-fr">
-          <button class="am-btn am-btn-xs am-btn-danger" data-role="delete"><span class="am-icon-trash"></span></button>
-          <button class="am-btn am-btn-xs am-btn-primary" type="submit"><span class="am-icon-save"></span></button>
+          <button class="am-btn am-btn-xs am-btn-danger" data-role="delete" data-am-loading="{spinner: 'times', loadingText: ''}">
+            <span class="am-icon-trash"></span>
+          </button>
+          <button class="am-btn am-btn-xs am-btn-primary" type="submit" data-am-loading="{spinner: 'refresh', loadingText: ''}">
+            <span class="am-icon-save"></span>
+          </button>
         </div>
       </div>
     </fieldset>
@@ -151,4 +191,9 @@
   {% end %}
 
 </div>
+{% end %}
+
+
+{% block leg %}
+<script src="/static/js/jolla/manage/user.js"></script>
 {% end %}

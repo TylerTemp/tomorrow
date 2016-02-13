@@ -145,7 +145,7 @@ $(function(){
           '<div class="am-u-sm-12 am-u-md-3 am-text-center">' +
             '<img src="' + (data.photo || '/static/img/user.jpg') + '" class="am-img-thumbnail am-circle" />' +
           '</div>' +
-          '<form class="am-form am-u-sm-12 am-u-md-9"  enctype="multipart/form-data" method="post">' +
+          '<form class="am-form am-u-sm-12 am-u-md-9" enctype="multipart/form-data" method="post">' +
             '<legend>' + data.name + '</legend>' +
             '<fieldset>' +
 

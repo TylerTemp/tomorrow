@@ -35,20 +35,12 @@ class ProfileHandler(BaseHandler):
         user.home = self.get_argument('home', '').strip() or None
 
         zh = user.zh
-        zh_intro = self.get_argument('zh-intro', '').rstrip() or None
-        zh_donate = self.get_argument('zh-donate', '').rstrip() or None
-        if zh_intro:
-            zh['intro'] = zh_intro
-        if zh_donate:
-            zh['donate'] = zh_donate
+        zh['intro'] = self.get_argument('zh-intro', '').rstrip() or None
+        zh['donate'] = self.get_argument('zh-donate', '').rstrip() or None
 
         en = user.en
-        en_intro = self.get_argument('en-intro', '').rstrip() or None
-        en_donate = self.get_argument('en-donate', '').rstrip() or None
-        if en_intro:
-            en['intro'] = en_intro
-        if en_donate:
-            en['donate'] = en_donate
+        en['intro'] = self.get_argument('en-intro', '').rstrip() or None
+        en['donate'] = self.get_argument('en-donate', '').rstrip() or None
 
         if avatar_raw:
             photo = self.save_avatar(avatar_raw, ext)
