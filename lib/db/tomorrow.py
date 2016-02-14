@@ -388,4 +388,3 @@ class Auth(Base):
             self.save()
 
         return True
-
