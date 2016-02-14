@@ -255,11 +255,11 @@ class Article(Base):
         return result[offset:offset + limit]
 
     @classmethod
-    def eject_except(cls, link, not_id):
+    def eject_except(cls, link, not_id, status=EJECTED):
         collect = cls.collection
         return collect.update_many(
             {'_id': {'$ne': not_id}, 'source.link': link},
-            {'$set': {'status': cls.EJECTED}}
+            {'$set': {'status': status}}
         )
 
 class Author(Base):

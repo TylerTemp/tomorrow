@@ -14,6 +14,11 @@
     background-color: white;
     padding: 50px;
   }
+
+  fieldset {
+    padding: 0;
+    margin: 0;
+  }
 </style>
 {% end %}
 
@@ -24,22 +29,29 @@
 
   {% for each, count in sources %}
 
-    <div class="am-panel {% if each.translated %}
+    <form class="am-panel {% if each.translated %}
                           am-panel-default
                          {% elif count == 0 %}
                           am-panel-danger
                          {% else %}
                           am-panel-warning
-                         {% end %}">
+                         {% end %}" method="post">
       <div class="am-panel-hd">
         <h6 class="am-panel-title" data-am-collapse="{target: '#{{ each._id }}'}"><span class="am-badge">{{ count }}</span> {{ each.title or each.slug or each.link }}</h6>
       </div>
-      <div id="{{ each._id }}" class="am-panel-collapse am-collapse">
-        <div class="am-panel-bd am-g">
-
+      <fieldset id="{{ each._id }}" class="am-panel-collapse am-collapse">
+        <div class="am-panel-bd">
+          <div class="content"></div>
+          <div class="delete"></div>
         </div>
-      </div>
-    </div>
+        <div class="am-panel-footer am-cf">
+          <div class="am-fr">
+            <button class="am-btn am-btn-xs am-btn-danger" data-role="delete"data-am-loading="{spinner: 'times', loadingText: ''}"><span class="am-icon-trash"></span></button>
+            <button class="am-btn am-btn-xs am-btn-primary" type="submit"  data-am-loading="{spinner: 'refresh', loadingText: ''}"><span class="am-icon-save"></span></button>
+          </div>
+        </div>
+      </fieldset>
+    </form>
 
   {% end %}
 
@@ -48,5 +60,5 @@
 
 
 {% block leg %}
-<!-- <script src="/static/js/jolla/manage/translate.js"></script> -->
+<script src="/static/js/jolla/manage/translate.js"></script>
 {% end %}

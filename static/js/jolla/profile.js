@@ -78,7 +78,7 @@ $(function(){
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
       $submit.button('reset');
-      $fieldset.prop('disabled',false);
+      $fieldset.prop('disabled', false);
     });
 
   });

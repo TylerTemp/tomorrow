@@ -1,5 +1,6 @@
 import pymongo
 from lib import Log
+import copy
 
 
 class Base(Log):
@@ -20,7 +21,7 @@ class Base(Log):
         if item in default:
             default_val = default[item]
             if isinstance(default_val, (dict, list)):
-                attrs[item] = default_val = default_val.copy()  # re-bind
+                attrs[item] = default_val = copy.deepcopy(default_val)  # re-bind
             return default_val
 
         raise AttributeError('%r object has no attribute %r' %
