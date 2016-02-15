@@ -66,6 +66,16 @@ class TranslateHandler(BaseHandler):
             'slug': article.slug
         }
 
+    def delete(self):
+        _id = self.get_argument('_id')
+        source = Source.find_one({'_id': ObjectId(_id)})
+        if not source:
+            raise tornado.web.HTTPError(404, 'Source %r not found' % _id)
+
+        Article.eject_except(source.link, None)
+        source.remove()
+        return self.write({'error': 0})
+
     def get_translate_of(self, link):
         for each in Article.collection.find({'source.link': link}):
             author = User(each['author'])
@@ -102,7 +112,6 @@ class TranslateHandler(BaseHandler):
 
         trans = self.get_argument('trans').strip()
         if not trans:
-            article = Article(source.translated)
             source.translated = None
             Article.eject_except(source.link, None, Article.AWAIT)
             source.save()
