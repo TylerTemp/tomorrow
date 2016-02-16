@@ -23,7 +23,7 @@ mainfile = os.path.join(cfg.root, 'main.py')
 
 
 def run(argv):    # won't wait
-    args = ['python', mainfile]
+    args = [sys.executable, mainfile]
     args.extend(argv)
     popen = subprocess.Popen(args, shell=False)
     pid = popen.pid
