@@ -100,7 +100,7 @@ class TryHandler(BaseHandler):
                         output = str(pie)
 
                     if not output.strip():
-                        output = stdout.read()
+                        output = stdout.getvalue()
 
                 result.update(config)
 
