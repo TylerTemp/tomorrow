@@ -13,17 +13,7 @@ from lib.db.tomorrow import User
 sys.path.pop(0)
 
 logger = stdoutlogger(None, DEBUG)
-config = Config()
-config.auto_clean = False
 
-def fix_my_account():
-    tu = User('TylerTemp')
-    _id = tu._id
-    ju = JUser.by_source_id(JUser.TOMORROW, _id)
-    assert ju, 'ju can not be new'
-    logger.debug(ju._id)
-    ju.type = ju.ROOT
-    ju.save()
 
 if __name__ == '__main__':
-    fix_my_account()
+    pass

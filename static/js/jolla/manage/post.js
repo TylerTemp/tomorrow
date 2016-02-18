@@ -1,69 +1,28 @@
 $(function()
 {
 
-  var fill_content = function($content, translate)
+  var adjust_height = function(element)
   {
-    if (!translate)
-      translate = {};
-    $content.find('[name="cover"]').val(translate.cover || '');
-    $content.find('[name="banner"]').val(translate.banner || '');
-    $content.find('[name="tag"]').val(translate.tag || '');
-    $content.find('[name="description"]').val(translate.description || '');
-    $content.find('[name="slug"]').val(translate.slug || '');
-    $content.find('[name="title"]').val(translate.title || '');
-    $content.find('[name="content"]').val(translate.content || '');
+    $(element).css({'height':'auto','overflow-y':'hidden'})
+              .height(element.scrollHeight - 10);
   };
 
-  var on_change_select = function(event)
+  var fill_content = function($content, article)
   {
-    var $select = $(this);
-    var $fieldset = $select.closest('form').find('fieldset');
-    var slug = $select.val();
-    if (!slug)
-    {
-      fill_content($fieldset);
-      return;
-    }
-    console.log(slug);
+    if (!article)
+      article = {};
+    $content.find('[name="status"]').val(article.status || '0');
+    $content.find('[name="cover"]').val(article.cover || '');
+    $content.find('[name="banner"]').val(article.banner || '');
+    $content.find('[name="tag"]').val(article.tag || '');
+    $content.find('[name="slug"]').val(article.slug || '');
 
-    $fieldset.prop('disabled', true);
-    $.ajax(settings={
-      data: {
-        action: 'load-article',
-        'slug': slug
-      },
-      type: 'get',
-      beforeSend: function(jqXHR, settings)
-      {
-        jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
-      }
-    }).done(function(data, textStatus, jqXHR)
-    {
-      console.log(data);
-      fill_content($fieldset, data);
-    }).fail(function(jqXHR, textStatus, errorThrown)
-    {
-      var msg;
-      try
-      {
-       var result = $.parseJSON(jqXHR.responseText);
-       if (result.message)
-         msg = result.message;
-      }
-      catch (e) {}
-      if (!msg)
-       msg = (
-         'Sorry, a server error occured, please refresh and retry' +
-         ' (' + jqXHR.status + ': ' + errorThrown + ')'
-       );
-
-      $('<div class="am-alert am-alert-warning" data-am-alert><button type="button" class="am-close">&times;</button><p>' +
-          _('Loading Translation Failed') + ': ' + msg +
-        '</p></div>').appendTo($fieldset.find('.content'));
-    }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
-    {
-      $fieldset.prop('disabled', false);
-    });
+    $content.find('[name="zh-description"]').val(article.zh.description || '');
+    $content.find('[name="zh-title"]').val(article.zh.title || '');
+    $content.find('[name="zh-content"]').val(article.zh.content || '');
+    $content.find('[name="en-description"]').val(article.en.description || '');
+    $content.find('[name="en-title"]').val(article.en.title || '');
+    $content.find('[name="en-content"]').val(article.en.content || '');
   };
 
   // <panel>
@@ -72,7 +31,7 @@ $(function()
     // <init>
     var $panel_collapse = $(this);
     var $form = $panel_collapse.closest('form.am-panel');
-    var source_id = $form.find('.am-collapse').prop('id');
+    var article_id = $form.find('.am-collapse').prop('id');
     // </init>
 
     // <delete>
@@ -89,7 +48,7 @@ $(function()
         settings={
           data: {
             action: 'delete',
-            id: source_id
+            id: article_id
           },
           type: 'post',
           beforeSend: function(jqXHR, settings)
@@ -140,7 +99,7 @@ $(function()
 
       // <init>
       var $body = $form.find('.content');
-      var source_id = $form.find('.am-collapse').prop('id');
+      var article_id = $form.find('.am-collapse').prop('id');
       // </init>
 
       // <prepare>
@@ -153,7 +112,7 @@ $(function()
       $.ajax(settings={
         data: {
           action: 'load',
-          id: source_id
+          id: article_id
         },
         type: 'get',
         beforeSend: function(jqXHR, settings)
@@ -165,59 +124,83 @@ $(function()
         console.log(data);
         $form.addClass('loaded');
 
-        var opts = ['<option value=""' + (data.translated? '': 'selected') + '>(' + _('Unset') + ')</option>'];
-        var transed = data.translated;
-        for (var index in data.translates)
-        {
-          var trans = data.translates[index];
-          opts.push(
-            '<option value="' + trans.slug + '" ' + (transed == trans.slug && 'selected' || '') + '>' +
-              trans.title + ' | ' + trans.translator +
-            '</option>'
-          );
-        }
-
         var $content = $(
-          '<a href="' + data.edit + '" target="_blank">' + _('Edit Source') + ': ' +  data.title + ' <span class="am-icon-external-link"></span></a>' +
-          '<input name="source" value="' + source_id + '" style="display: none;"/>' +
+          '<input name="id" value="' + article_id + '" style="display: none;"/>' +
           '<div class="am-form-group">' +
-            '<label for="trans-' + source_id + '">' + _('Translation') + '</label>' +
-            '<select name="trans" id="trans-' + source_id + '" class="am-form-field">' + opts.join('') + '</select>' +
+            '<label for="slug-' + article_id + '">' + _('SLUG') + '</label>' +
+            '<input name="slug" id="slug-' + article_id + '" class="am-form-field" />' +
+          '</div>' +
+          '<div class="am-form-group">' +
+            '<label for="status-' + article_id + '">' + _('Status') + '</label>' +
+            '<select class="am-form-field" name="status" id="status-' + article_id + '">' +
+              '<option value="0">' + _('Await') + '</option>' +
+              '<option value="1">' + _('Accepted') + '</option>' +
+              '<option value="2">' + _('Ejected') + '</option>' +
+            '</select>' +
             '<span class="am-form-caret"></span>' +
           '</div>' +
           '<div class="am-form-group">' +
-            '<label for="slug-' + source_id + '">' + _('SLUG') + '</label>' +
-            '<input name="slug" id="slug-' + source_id + '" class="am-form-field" />' +
+            '<label for="cover-' + article_id + '">' + _('Cover') + '</label>' +
+            '<input name="cover" id="cover-' + article_id + '" class="am-form-field" />' +
           '</div>' +
           '<div class="am-form-group">' +
-            '<label for="title-' + source_id + '">' + _('Title') + '</label>' +
-            '<input name="title" id="title-' + source_id + '" class="am-form-field" />' +
+            '<label for="banner-' + article_id + '">' + _('Banner') + '</label>' +
+            '<input name="banner" id="banner-' + article_id + '" class="am-form-field" />' +
           '</div>' +
           '<div class="am-form-group">' +
-            '<label for="cover-' + source_id + '">' + _('Cover') + '</label>' +
-            '<input name="cover" id="cover-' + source_id + '" class="am-form-field" />' +
+            '<label for="tag-' + article_id + '">' + _('Tag') + '</label>' +
+            '<input name="tag" id="tag-' + article_id + '" class="am-form-field" />' +
           '</div>' +
-          '<div class="am-form-group">' +
-            '<label for="banner-' + source_id + '">' + _('Banner') + '</label>' +
-            '<input name="banner" id="banner-' + source_id + '" class="am-form-field" />' +
-          '</div>' +
-          '<div class="am-form-group">' +
-            '<label for="tag-' + source_id + '">' + _('Tag') + '</label>' +
-            '<input name="tag" id="tag-' + source_id + '" class="am-form-field" />' +
-          '</div>' +
-          '<div class="am-form-group">' +
-            '<label for="description-' + source_id + '">' + _('Description') + '</label>' +
-            '<textarea name="description" id="description-' + source_id + '" class="am-form-field"></textarea>' +
-          '</div>' +
-          '<div class="am-form-group">' +
-            '<label for="content-' + source_id + '">' + _('Content') + '</label>' +
-            '<textarea name="content" id="content-' + source_id + '" class="am-form-field"></textarea>' +
+
+          '<div class="am-tabs" data-am-tabs>' +
+
+            '<ul class="am-tabs-nav am-nav am-nav-tabs am-nav-justify">' +
+              '<li class="am-active"><a href="#zh-' + article_id + '">' + _('Chinese') + '</a></li>' +
+              '<li><a href="#en-' + article_id + '">' + _('English') + '</a></li>' +
+            '</ul>' +
+
+            '<div class="am-tabs-bd">' +
+
+              '<div class="am-tab-panel am-active" id="zh-' + article_id + '">' +
+                '<div class="am-form-group">' +
+                  '<label for="zh-title-' + article_id + '">' + _('Title') + '</label>' +
+                  '<input name="zh-title" id="zh-title-' + article_id + '" class="am-form-field" />' +
+                '</div>' +
+                '<div class="am-form-group">' +
+                  '<label for="zh-description-' + article_id + '">' + _('Description') + '</label>' +
+                  '<textarea name="zh-description" id="zh-description-' + article_id + '" class="am-form-field"></textarea>' +
+                '</div>' +
+                '<div class="am-form-group">' +
+                  '<label for="zh-content-' + article_id + '">' + _('Content') + '</label>' +
+                  '<textarea name="zh-content" id="zh-content-' + article_id + '" class="am-form-field"></textarea>' +
+                '</div>' +
+              '</div>' +
+
+              '<div class="am-tab-panel" id="en-' + article_id + '">' +
+                '<div class="am-form-group">' +
+                  '<label for="en-title-' + article_id + '">' + _('Title') + '</label>' +
+                  '<input name="en-title" id="en-title-' + article_id + '" class="am-form-field" />' +
+                '</div>' +
+                '<div class="am-form-group">' +
+                  '<label for="en-description-' + article_id + '">' + _('Description') + '</label>' +
+                  '<textarea name="en-description" id="en-description-' + article_id + '" class="am-form-field"></textarea>' +
+                '</div>' +
+                '<div class="am-form-group">' +
+                  '<label for="en-content-' + article_id + '">' + _('Content') + '</label>' +
+                  '<textarea name="en-content" id="en-content-' + article_id + '" class="am-form-field"></textarea>' +
+                '</div>' +
+              '</div>' +
+
+            '</div>' +
           '</div>'
         );
-        fill_content($content, data.translate);
-        $content.find('select').on('change', on_change_select);
+        fill_content($content, data);
         $body.html('');
         $content.appendTo($body);
+        $content.find('textarea').each(function(index, elem)
+        {
+          adjust_height(elem);
+        });
       }).fail(function(jqXHR, textStatus, errorThrown)
       {
         var msg;
