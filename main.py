@@ -60,16 +60,18 @@ class Application(tornado.web.Application):
             (r'/edit/', tomorrow.blog.EditHandler),
             (r'/edit/(?P<urlslug>[^/]+)/', tomorrow.blog.EditHandler),
             # auth
-            (r'/login/', tomorrow.blog.LoginHandler),
-            (r'/signin/', tomorrow.blog.SigninHandler),
-            (r'/logout/', tomorrow.blog.LogoutHandler),
+            (r'/login/', tomorrow.blog.auth.LoginHandler),
+            (r'/signin/', tomorrow.blog.auth.SigninHandler),
+            (r'/logout/', tomorrow.blog.auth.LogoutHandler),
+            (r'/forget/', tomorrow.blog.auth.ForgetHandler),
+            (r'/verify/', tomorrow.blog.auth.VerifyHandler),
+            # oauth2
             (r'/oauth2/authorize/', tomorrow.oauth2.AuthorizeHandler),
             (r'/oauth2/confirm/(?P<app_key>[^/]+)/',
              tomorrow.oauth2.ConfirmHandler),
             (r'/oauth2/confirm/(?P<app_key>[^/]+)/(?P<temp_code>[^/]+)/',
              tomorrow.oauth2.ConfirmHandler),
             (r'/oauth2/token/', tomorrow.oauth2.GetTokenHandler),
-            (r'/verify/(?P<code>[^/]+)/', tomorrow.blog.VerifyHandler),
             (r'/(page|blog|edit|login|signin|logout|verify)/.*?',
              tomorrow.blog.BaseHandler),
             # dashboard

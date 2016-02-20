@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block main_title %}{{ _("Reset Password") }} | {% end %}
+
+
+{% block content %}
+<div class="am-g am-g-fixed">
+  <div class="am-u-sm-12 am-u-sm-centered">
+
+    <form method="post" class="am-form" autocomplete="off">
+      <fieldset>
+        <legend>{{ _('Reset Password') }}</legend>
+        {% raw xsrf_form_html() %}
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-user"></i> / <i class="am-icon-envelope"></i></span>
+            <input class="am-form-field" type="text" name="user" value="{{ user or '' }}" placeholder="{{ _('Your User Name or Email') }}" title="{{ _('User Name or Email') }}" autocomplete="off" required="required" />
+          </div>
+        </div>
+
+        <div class="am-form-group am-cf">
+          <button type="submit" class="am-btn am-btn-primary am-fr">
+            <span class="am-icon-paper-plane"> {{ _('Submit') }}</span>
+          </button>
+        </div>
+
+      </fieldset>
+    </form>
+
+  </div>
+</div>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/tomorrow/auth/forget.js"></script>
+{% end %}

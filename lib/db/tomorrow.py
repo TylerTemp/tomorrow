@@ -47,7 +47,7 @@ class User(Base):
         'photo': None,
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
-        'verify': {'for': 0, 'code': None, 'expire': None},
+        'verify': {'for': 0, 'code': 0, 'expire': None},
         '_id': None
     }
 
@@ -85,9 +85,6 @@ class User(Base):
 
         return super(User, self).__setattr__(item, value)
 
-    def verity(self, pwd):
-        sha256_crypt.verify(pwd, self.pwd)
-
     def _validate_attrs(self):
         for field, allowed in (
             (self.intro, {'zh', 'en', 'show_in_home', 'show_in_article'}),
@@ -102,7 +99,8 @@ class User(Base):
 
     def _before_save(self):
         attrs = self.__dict__['__info__']
-        if not attrs.get('verify', None):
+        if (not attrs.get('verify', None) or
+                ('verify' in attrs and not attrs['verify']['code'])):
             attrs.pop('verify', None)
         return super(User, self)._before_save()
 

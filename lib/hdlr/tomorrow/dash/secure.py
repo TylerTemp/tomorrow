@@ -14,7 +14,6 @@ from lib.tool.tracemore import get_exc_plus
 from .base import BaseHandler
 
 
-# todo: fix this so it can work again
 class SecureHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.dash.secure')
 
@@ -23,8 +22,6 @@ class SecureHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
-
-        self.xsrf_token
 
         user = self.current_user
 
@@ -38,14 +35,11 @@ class SecureHandler(BaseHandler):
         )
 
     @tornado.web.authenticated
-    # @tornado.web.asynchronous
-    # @tornado.gen.engine
     def post(self):
 
         user = self.current_user
 
         action = self.get_argument('action', None)  # resend/verify_email/None
-        flag = 0
         verify = user.verify
         if action == 'resend':
             if not verify or verify['for'] == 0:
@@ -63,7 +57,7 @@ class SecureHandler(BaseHandler):
             code = verify['code']
             for_ = verify['for']
         else:
-            if verify:
+            if verify and verify.get('code', None):
                 assert verify['for'] & user.NEWUSER
             email = user.email
             expire = time.time() + 60 * 60 * 24
@@ -87,8 +81,37 @@ class SecureHandler(BaseHandler):
                   user, email, action, expire, code)
 
         user.set_code(for_=for_, code=code, expire=expire)
-
-        self.error('not support')
-        raise tornado.web.HTTPError(500, 'Not support so far')
         user.save()
+        result = self.send_mail(user)
+        if result:
+            error = 0
+        else:
+            error = 1
+        return self.write({'error': error})
 
+    def send_mail(self, user):
+        verify = user.verify
+        code = verify['code']
+        mail = Email()._with_logger(self.logger)
+
+        title = '{name}, {title}'.format(
+            name=user.name,
+            title=self.locale.translate(
+                'Please confirm the changes on tomorrow.comes.today'),
+        )
+
+        content = mail.render(
+            'code.html',
+            self.locale.code[:2].lower(),
+            name=user.name,
+            code=code,
+            quoted_code=quote(code, '')
+        )
+
+        try:
+            mail.send(user.email, title, content)
+        except BaseException:
+            self.critical(get_exc_plus())
+            return False
+        else:
+            return True

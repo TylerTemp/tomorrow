@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block main_title %}{{ _("Verify") }} | {% end %}
+
+
+{% block content %}
+<div class="am-g am-g-fixed">
+  <div class="am-u-sm-12 am-u-sm-centered">
+
+    <form method="post" class="am-form" autocomplete="off">
+      <fieldset>
+        <legend>{{ _('Finish Your Change') }}</legend>
+        {% raw xsrf_form_html() %}
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-code am-icon-fw"></i></span>
+            <input class="am-form-field" type="text" name="code" value="{{ code }}" placeholder="{{ _('Your Code') }}" title="{{ _('Code') }}" autocomplete="off" required="required" disabled="disabled"/>
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+            <input class="am-form-field" type="text" name="user" value="{{ '' if user.verify['for'] & user.CHANGEUSER else (user.name or '') }}" placeholder="{{ user.name or _('Your User Name') }}" title="{{ _('User Name') }}" autocomplete="off" {{ 'required' if not user.name or user.verify['for'] & user.CHANGEUSER else 'disabled' }} />
+          </div>
+        </div>
+
+        <input type="text" style="display: none;" />
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-asterisk am-icon-fw"></i></span>
+            <input class="am-form-field" type="password" name="pwd" value="{{ '********' if user.pwd and not (user.verify['for'] & user.CHANGEPWD) else '' }}" placeholder="{{ '********' if user.pwd else _('Your Password') }}" title="{{ _('Password') }}" autocomplete="off" {{ 'required' if not user.pwd or user.verify['for'] & user.CHANGEPWD else 'disabled' }} />
+            <span class="am-input-group-label"><i class="am-icon-history am-icon-fw"></i></span>
+            <input class="am-form-field" type="password" name="repwd" value="{{ '********' if user.pwd and not (user.verify['for'] & user.CHANGEPWD) else '' }}" placeholder="{{ '********' if user.pwd else _('Repeat Your Password') }}" title="{{ _('Repeat Password') }}" autocomplete="off"  {{ 'required' if not user.pwd or user.verify['for'] & user.CHANGEPWD else 'disabled' }} />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-envelope am-icon-fw"></i></span>
+            <input class="am-form-field" type="email" name="email" value="{{ user.email if user.email and not (user.verify['for'] & user.CHANGEEMAIL) else '' }}" placeholder="{{ _('Your Email') if not (user.verify['for'] & user.CHANGEEMAIL) else user.email }}" title="{{ _('Email') }}" autocomplete="off" {{ 'required' if not user.email or user.verify['for'] & user.CHANGEEMAIL else 'disabled' }} />
+          </div>
+        </div>
+
+        <div class="am-form-group am-cf">
+          <button type="submit" class="am-btn am-btn-primary am-fr">
+            <span class="am-icon-paper-plane"> {{ _('Submit') }}</span>
+          </button>
+        </div>
+
+      </fieldset>
+    </form>
+
+  </div>
+</div>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/tomorrow/auth/signin.js"></script>
+{% end %}

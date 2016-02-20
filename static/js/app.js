@@ -156,18 +156,6 @@ var unitSatisfy = function(size, unit, accuracy)
   return [appropriate_size, appropriate_unit.toUpperCase()];
 };
 
-
-var logout = function(evt)
-{
-  var cookie = $.AMUI.utils.cookie;
-  cookie.unset('user', '/');
-  cookie.unset('type', '/');
-  cookie.unset('email', '/');
-  cookie.unset('active', '/');
-  cookie.unset('service', '/');
-  // cookie.unset('lang', '/');
-};
-
 var change_lang = function(lang)
 {
   var cookie = $.AMUI.utils.cookie;
@@ -177,43 +165,6 @@ var change_lang = function(lang)
   cookie.set('lang', lang, undefined, '/');
 };
 
-
-// for login/signin
-var MASK_USER_NOT_EXISTS = 64;
-var USER_MAX_LEN = 100;
-var USER_MIN_LEN = 2;
-var MASK_USER_TOO_SHORT = 32;
-var MASK_EMAIL_NOT_EXISTS = 128;
-var USER_RE = /^[a-zA-Z0-9\u4e00-\u9fa5_\ \-][a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-][a-zA-Z0-9\u4e00-\u9fa5_\ \-]|[a-zA-Z0-9\u4e00-\u9fa5_\.\ \-]{3,100}$/;
-var EMAIL_RE = /^[\w\d.+-]+@([\w\d.]+\.)+\w{2,}$/;
-var MASK_USER_TOO_LONG = 2;
-var MASK_USER_EXISTS = 64;
-var MASK_PWD_TOO_SHORT = 256;
-var MASK_USER_EMPTY = 1;
-var MASK_EMAIL_EMPTY = 8;
-var MASK_EMAIL_EXISTS = 128;
-var MASK_EMAIL_FORMAT_WRONG = 16;
-var MASK_USER_FORMAT_WRONG = 4;
-var MASK_SEND_EMAIL_FAILED = 256;
-var PWD_MIN_LENGTH = 8;
-var MASK_PWD_WRONG = 512;
-
-// for upload files
-var MASK_NO_PERMISSION = 1;
-var MASK_FILE_TOO_BIG = 2;
-var MASK_FILE_DUPLICATED_NAME = 4;
-var MASK_FILE_DECODE_ERROR = 8;
-
-var IMG_ALLOW = ['jpg', 'jpeg', 'png', 'gif'];
-
-(function($) {
-  if ($.AMUI && $.AMUI.validator) {
-    $.AMUI.validator.patterns = $.extend($.AMUI.validator.patterns, {
-      user: USER_RE,
-      email: EMAIL_RE
-    });
-  }
-})(window.jQuery);
 
 $(function(){
   var codeblocks = $('pre code');

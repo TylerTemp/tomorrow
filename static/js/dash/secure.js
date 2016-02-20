@@ -38,12 +38,11 @@ $(document).ready(function(evt)
       }
     ).done(function(data, textStatus, jqXHR)
     {
-      var obj = $.parseJSON(data);
-      if (obj.error == 0)
+      if (data.error == 0)
         set_error(_('A verify email has been sent to "{0}"').format(obj.email), false);
-      else if (obj.error == 1)
+      else if (data.error == 1)
         set_error(_('Oops, we failed to send email to "{0}", sorry for that').format(obj.email), true);
-      else if (obj.error == 2)
+      else if (data.error == 2)
         set_error(_('Nothing to resend'), false);
       else
         set_error(_('Oops, unexpected error ({0}), sorry for that').format(obj.error), true);

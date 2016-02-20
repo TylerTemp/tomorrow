@@ -90,10 +90,10 @@
             <button class="am-btn am-dropdown-toggle am-btn-sm {{ 'am-btn-primary' if nav_active in ('login', 'signin') else 'am-btn-default' }}"><span class="am-icon-user"></span></button>
             <ul class="am-dropdown-content">
               <li class="{{ 'am-active' if nav_active == 'login' else '' }}">
-                <a href="/login/"><span class="am-icon-sign-in am-icon-fw"> {{ _('Login') }}</span></a>
+                <a href="/login/" rel="nofollow"><span class="am-icon-sign-in am-icon-fw"> {{ _('Login') }}</span></a>
               </li>
               <li class="{{ 'am-active' if nav_active == 'signin' else '' }}">
-                <a href="/signin/"><span class="am-icon-user-plus am-icon-fw"> {{ _('Signin') }}</span></a>
+                <a href="/signin/" rel="nofollow"><span class="am-icon-user-plus am-icon-fw"> {{ _('Signin') }}</span></a>
               </li>
             </ul>
           </div>

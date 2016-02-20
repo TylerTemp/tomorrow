@@ -99,6 +99,11 @@ class Config(Base):
             'ports': [8001, 8002, 8003, 8004],
             'port': 8001,
 
+            'zh_mail_list': ['126.com', '163.com', 'sina.com', '21cn.com',
+                             'sohu.com', 'yahoo.com.cn', 'tom.com', 'qq.com',
+                             'etang.com', 'eyou.com', '56.com', 'x.cn',
+                             'chinaren.com', 'sogou.com', 'citiz.com'],
+
             'mail':  {
                 'zh': {
                   'user': '<your-email-username>',

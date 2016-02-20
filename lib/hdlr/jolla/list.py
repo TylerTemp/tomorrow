@@ -80,7 +80,7 @@ class ListHandler(BaseHandler):
             length -= 1
 
         if length <= 0:
-            yield self.raise_if_true(is_empty)
+            self.raise_if_true(is_empty)
             return
 
         if start > self.untrans_total:
@@ -97,7 +97,7 @@ class ListHandler(BaseHandler):
             is_empty = False
             yield source
 
-        yield self.raise_if_true(is_empty)
+        self.raise_if_true(is_empty)
 
     def raise_if_true(self, true):
         if true:

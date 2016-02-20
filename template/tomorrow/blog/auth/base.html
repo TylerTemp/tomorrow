@@ -1,0 +1,17 @@
+{% extends "../base.html" %}
+{% block main_title %}{{ _("Login") }} | {% end %}
+
+{% block nav_active %}
+  {% set nav_active = 'login' %}
+{% end %}
+
+{% block shoulder %}
+<div class="header">
+  <div class="am-g">
+    <a href="/"><h1>{{ _('Tomorrow Comes Today') }}</h1></a>
+  </div>
+  <hr class="am-divider am-divider-default"/>
+</div>
+  {% block content %}
+  {% end %}
+{% end %}

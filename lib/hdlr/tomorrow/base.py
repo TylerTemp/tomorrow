@@ -10,6 +10,7 @@ except ImportError:
     from urlparse import quote, urljoin
 from lib.config.tomorrow import Config
 
+
 class BaseHandler(BaseHandler):
     config = Config()
 
@@ -26,6 +27,13 @@ class BaseHandler(BaseHandler):
         if user is None:
             return None
         return User.by_id(user.decode('utf-8'))
+
+    def login(self, user, temp=False):
+        if temp:
+            kwd = {'expires_days': None}
+        else:
+            kwd = {}
+        self.set_secure_cookie('user', str(user._id), **kwd)
 
     def logout(self):
         self.clear_cookie('user')

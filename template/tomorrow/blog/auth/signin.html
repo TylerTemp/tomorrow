@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block main_title %}{{ _("Sign in") }} | {% end %}
+
+{% block nav_active %}
+  {% set nav_active = 'signin' %}
+{% end %}
+
+{% block content %}
+<div class="am-g am-g-fixed">
+  <div class="am-u-sm-12 am-u-sm-centered">
+
+    <form method="post" class="am-form">
+      <fieldset>
+        <legend>{{ _('Sign in') }}</legend>
+        {% raw xsrf_form_html() %}
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-user am-icon-fw"></i></span>
+            <input class="am-form-field" type="text" name="user" value="{{ user or '' }}" placeholder="{{ _('Your User Name') }}" title="{{ _('User Name') }}" required="required" />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-asterisk am-icon-fw"></i></span>
+            <input class="am-form-field" type="password" name="pwd" value="" placeholder="{{ _('Your Password') }}" title="{{ _('Password') }}" required="required" />
+            <span class="am-input-group-label"><i class="am-icon-history am-icon-fw"></i></span>
+            <input class="am-form-field" type="password" name="repwd" value="" placeholder="{{ _('Repeat Your Password') }}" title="{{ _('Repeat Password') }}" required="required" />
+          </div>
+        </div>
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-envelope am-icon-fw"></i></span>
+            <input class="am-form-field" type="email" name="email" value="{{ email or '' }}" placeholder="{{ _('Your Email') }}" title="{{ _('Email') }}" required="required" />
+          </div>
+        </div>
+
+        <div class="am-form-group am-cf">
+          <button type="submit" class="am-btn am-btn-primary am-fr">
+            <span class="am-icon-edit"> {{ _('Sign in') }}</span>
+          </button>
+          <a href="/login/{{ '?' + query if query else '' }}" class="am-btn am-btn-default am-fr" data-am-loading="{spinner: 'circle-o-notch', loadingText: ''}">
+            <span class="am-icon-sign-in"> {{ _('Login') }}</span>
+          </a>
+        </div>
+
+      </fieldset>
+    </form>
+
+  </div>
+</div>
+{% end %}
+
+{% block butt %}
+<script src="/static/js/tomorrow/auth/signin.js"></script>
+{% end %}

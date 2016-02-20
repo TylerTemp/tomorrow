@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block main_title %}{{ _("Verify") }} | {% end %}
+
+
+{% block content %}
+<div class="am-g am-g-fixed">
+  <div class="am-u-sm-12 am-u-sm-centered">
+
+    <form method="get" class="am-form">
+      <fieldset>
+        <legend>{{ _('Input Your Code') }}</legend>
+
+        <div class="am-form-group">
+          <div class="am-input-group am-input-group-primary">
+            <span class="am-input-group-label"><i class="am-icon-code am-icon-fw"></i></span>
+            <input class="am-form-field" type="text" name="code" value="" placeholder="{{ _('Your Code') }}" title="{{ _('Code') }}" required="required" />
+          </div>
+        </div>
+
+        <div class="am-form-group am-cf">
+          <button type="submit" class="am-btn am-btn-primary am-fr">
+            <span class="am-icon-edit"> {{ _('Submit') }}</span>
+          </button>
+        </div>
+
+      </fieldset>
+    </form>
+
+  </div>
+</div>
+{% end %}
+
+{% block butt %}
+{% end %}

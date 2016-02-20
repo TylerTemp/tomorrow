@@ -1,24 +1,28 @@
 import logging
-try:
-    Str = basestring
-except NameError:
-    Str = str
 
 
 class Log(object):
 
     logger = logging.getLogger()
 
-    def __init__(self):
-        super(Log, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super(Log, self).__init__(*args, **kwargs)
         log = self.logger
 
-        for attr in ('debug', 'info', 'warning', 'error'):
+        for attr in ('debug', 'info', 'warning', 'error', 'critical'):
             if hasattr(log, attr):
                 self.__dict__[attr] = getattr(log, attr)
             else:
                 logging.warning('%r has not %r in logger',
                                 self.__class__.__name__, attr)
+
+    def _with_logger(self, logger):
+        self.__dict__['logger'] = logger
+        for attr in ('debug', 'info', 'warning', 'error', 'critical'):
+
+            self.__dict__['attr'] = getattr(logger, attr)
+
+        return self
 
 
 # def with_logger(logger=None):
