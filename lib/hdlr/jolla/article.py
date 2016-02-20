@@ -23,13 +23,13 @@ class ArticleHandler(BaseHandler):
     def get(self, slug):
         slug = unquote(slug)
 
+        red = Redirect(slug)
+        if red:
+            return self.redirect('/%s/' % red.target, red.permanent)
+
         lang = self.locale.code[:2].lower()
         article = Article(slug, lang)
         if not article:
-            red = Redirect(slug)
-            if red:
-                return self.redirect('/%s/' % red.target)
-
             raise tornado.web.HTTPError(404, "article %s not found" % slug)
 
         if not article.lang_fit():

@@ -374,6 +374,7 @@ class Redirect(Base):
         '_id': None,
         'source': None,
         'target': None,
+        'permanent': False,
     }
 
     def __init__(self, source=None):

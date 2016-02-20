@@ -30,6 +30,7 @@ $(function(evt)
   var $case_sensitive = $('input[name="case_sensitive"]');
   var $optionsfirst = $('input[name="optionsfirst"]');
   var $appearedonly = $('input[name="appearedonly"]');
+  var $namedoptions = $('input[name="namedoptions"]');
     // </element>
     // <update-ui>
   var refresh = function()
@@ -37,7 +38,7 @@ $(function(evt)
     var all_elements = [];
     order = ['help', 'version', 'stdopt', 'attachopt', 'attachvalue',
              'auto2dashes', 'name', 'case_sensitive', 'optionsfirst',
-             'appearedonly'];
+             'appearedonly', 'namedoptions'];
     for (var index in order)
     {
       var arg_name = order[index];
@@ -135,6 +136,11 @@ $(function(evt)
     var value = $(this).filter(':checked').val();
     set_value('appearedonly', value, '');
   });
+  $namedoptions.change(function(event)
+  {
+    var value = $(this).filter(':checked').val();
+    set_value('namedoptions', value, '');
+  });
     // </bind>
   // </monitor-config>
   // <form>
@@ -170,8 +176,8 @@ $(function(evt)
       }
     ).done(function(data, textStatus, jqXHR)
     {
-      var obj = $.parseJSON(data);
-      $code.text(obj.output);
+      console.log(data);
+      $code.text(data.output);
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
       var msg = _("Sorry, a server error occured, please refresh and retry") +

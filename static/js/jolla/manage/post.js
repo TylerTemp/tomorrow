@@ -265,6 +265,7 @@ $(function()
       ).done(function(data, textStatus, jqXHR)
       {
         console.log(data);
+        fill_content($form, data);
         $form.find('.content').append('<div class="am-alert am-alert-success" data-am-alert><button type="button" class="am-close">&times;</button><p>' +
           _('Done') +
           '</p></div>');

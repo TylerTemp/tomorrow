@@ -1,0 +1,98 @@
+{% extends "../base.html" %}
+
+{% block main_title %}
+  {{ _("Manage Redirect") }} |
+{% end %}
+
+{% block active %}
+  {% set active = 'manage-redirect' %}
+{% end %}
+
+{% block neck %}
+<style>
+  #page {
+    background-color: white;
+    padding: 50px;
+  }
+
+  .am-form-icon input {
+    padding-left: 28px !important;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+<div id="page">
+  <h1 class="am-text-center">{{ _('Manage Redirect') }}</h1>
+  <hr />
+
+  <form class="am-form am-form-horizontal" method="post">
+    <fieldset>
+      {% raw xsrf_form_html() %}
+      <input name="action" value="" style="display: none;"/>
+
+      <div class="am-form-group">
+        <label for="source" class="am-u-sm-2 am-form-label">{{ _('Source') }} </label>
+        <div class="am-u-sm-10">
+          <div class="am-form-icon">
+            <i class="am-icon-link"></i>
+            <input type="text" id="source" name="source" placeholder="{{ _('Source SLUG') }}" required="required" />
+          </div>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <label for="target" class="am-u-sm-2 am-form-label">{{ _('To') }} </label>
+        <div class="am-u-sm-10">
+          <div class="am-form-icon">
+            <i class="am-icon-mail-forward"></i>
+            <input type="text" id="target" name="target" placeholder="{{ _('Redirect to') }}" />
+          </div>
+        </div>
+      </div>
+
+      <div class="am-form-group">
+        <div class="am-u-sm-2">&nbsp;</div>
+        <div class="am-u-sm-10 am-u-end">
+          <label>
+            <input type="checkbox" name="permanent"/> {{ _('Permanent') }}
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group am-cf">
+        <div class="am-fr">
+          <button class="am-btn am-btn-sm am-btn-danger" data-role="delete" title="{{ _('delete') }}" data-am-loading="{spinner: 'times', loadingText: ''}"><span class="am-icon-trash"></span></button>
+          <button class="am-btn am-btn-sm am-btn-primary" type="submit" title="{{ _('save') }}" data-am-loading="{spinner: 'refresh', loadingText: ''}"><span class="am-icon-save"></span></button>
+        </div>
+      </div>
+
+    </fieldset>
+  </form>
+
+  <table class="am-table am-table-striped am-table-hover">
+    <thead>
+      <tr>
+        <th>{{ _('Source') }}</th>
+        <th>{{ _('To') }}</th>
+        <th>{{ _('Permanent') }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for each in redirects %}
+      <tr>
+        <td>{{ each.source }}</td>
+        <td>{{ each.target }}</td>
+        <td><span class="am-icon-{{ 'check-square-o' if each.permanent else 'square-o' }}"></span></td>
+        <td><button class="am-btn am-btn-default am-btn-sm am-icon-edit" title="{{ _('edit') }}"></button></td>
+      </tr>
+      {% end %}
+    </tbody>
+  </table>
+</div>
+{% end %}
+
+{% block leg %}
+<script src="/static/js/jolla/manage/redirect.js"></script>
+{% end %}

@@ -21,7 +21,6 @@ from lib.db.jolla import User
 
 
 class BaseHandler(BaseHandler):
-    p_re = re.compile(r'^<p>(.*?)</p>$')
 
     config = Config()
     logging.getLogger('jolla')
@@ -87,13 +86,6 @@ class BaseHandler(BaseHandler):
         else:
             return '<span class="am-badge am-badge-secondary">%s</span>' % name
 
-    def md_description_to_html(self, content):
-        result = md2html(content)
-        search = self.p_re.match(result)
-        if search:
-            return search.group(1)
-        return result
-
     def login(self, uid, token, expire_at):
         self.set_secure_cookie('uid', uid)
         self.set_secure_cookie('token', token)
@@ -142,6 +134,7 @@ class EnsureUser(object):
         self._level = level
 
     def __call__(self, func):
+
         @functools.wraps(func)
         def wrapper(ins, *a, **k):
             current_user = ins.current_user

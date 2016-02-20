@@ -105,7 +105,7 @@ class TryHandler(BaseHandler):
                 result.update(config)
 
         if self.is_ajax():
-            return self.write(json.dumps({'output': output}))
+            return self.write({'output': output})
 
         return self.render(
             'project/docpie/try.html',

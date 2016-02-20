@@ -191,6 +191,18 @@
       </div>
 
       <div class="am-form-group">
+        <label class="am-u-sm-3 am-u-md-2 am-form-label">namedoptions:</label>
+        <div class="am-u-sm-9 am-u-md-10">
+          <label class="am-radio-inline">
+            <input type="radio" name="namedoptions" value="on" {{'checked' if config.get('namedoptions', False) else ''}} data-am-ucheck> True
+          </label>
+          <label class="am-radio-inline">
+            <input type="radio" name="namedoptions" value="" {{'checked' if not config.get('namedoptions', False) else ''}} data-am-ucheck> False
+          </label>
+        </div>
+      </div>
+
+      <div class="am-form-group">
         <label for="extra" class="am-u-sm-3 am-u-md-2 am-form-label"><del>extra:</del></label>
         <div class="am-u-sm-9 am-u-md-10">
           <input class="am-form-field" id="extra" value="" placeholder="{{ _('Not support here') }}" disabled="disabled">
