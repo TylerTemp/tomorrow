@@ -18,6 +18,7 @@ $(function()
     }
     $submit.button('loading');
     $fieldset.prop('disabled', true);
+    $form.find('.am-alert').remove();
     $.ajax(
       settings={
         data: values,
@@ -29,7 +30,10 @@ $(function()
       }
     ).done(function(data, textStatus, jqXHR)
     {
-      alert(data);
+      console.log(data);
+      $('<div class="am-alert am-alert-success" data-am-alert><button type="button" class="am-close">&times;</button><p>' +
+        _('An email has been send to "{0}"').format(data.address) +
+      '</p></div>').appendTo($form);
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
       var error = -1;
@@ -49,7 +53,15 @@ $(function()
          'Sorry, a server error occured, please refresh and retry' +
          ' (' + jqXHR.status + ': ' + errorThrown + ')'
        );
-      alert(msg);
+      if (error == 1)
+        msg = _('User "{0}" not exists').format(values['user']);
+      else if (error == 2)
+        msg = _('User "{0}" has no email').format(values['user']);
+      else if (error == 3)
+        msg = _('Oops... Sending email to "{0}" failed').format(values['user']);
+      $('<div class="am-alert am-alert-danger" data-am-alert><button type="button" class="am-close">&times;</button><p>' +
+        msg +
+      '</p></div>').appendTo($form);
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
       $submit.button('reset');

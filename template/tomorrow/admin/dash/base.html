@@ -73,13 +73,5 @@ Hi, {{ user }}{% block subtitle %}{% end %}
 <!-- side_bar | end-->
 
 {% block butt %}
-  <script>
-    $("#signout").click(function(evt)
-    {
-      evt.preventDefault();
-      logout();
-      return window.location.href = '/';
-    });
-  </script>
   {% block leg %}{% end %}
 {% end %}
