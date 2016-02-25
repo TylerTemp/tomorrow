@@ -14,7 +14,7 @@
   <!-- horizontal blog box -->
   <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
     <div class="am-margin-horizontal-xs am-margin-vertical-sm">
-      <div class="white am-u-sm-12 am-u-md-{{ 6 if first.cover else 12 }}">
+      <div class="white am-u-sm-12 am-u-md-{{ 6 if first.cover or first.banner else 12 }}">
         <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
           <div class="am-article-hd">
             <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-text-xl">{{ first.get('title') }}</h2></a>
@@ -35,9 +35,9 @@
           <a class="am-btn am-btn-success am-fr" href="/{{ quote(first.slug) }}/">{{ _("Continue reading") }}</a>
         </div>
       </div>
-      {% if first.cover %}
+      {% if first.cover or first.banner %}
       <div class="am-u-sm-12 am-u-md-6">
-        <a href="/{{ quote(first.slug) }}/"><img class="cover-img" src="{{ first.cover }}"></a>
+        <a href="/{{ quote(first.slug) }}/"><img class="cover-img" src="{{ first.cover or first.banner }}"></a>
       </div>
       {% end %}
     </div>
@@ -49,8 +49,8 @@
 
     <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
       <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
-        {% if each.cover %}
-        <a href="/{{ quote(each.slug)  }}/"><img class="cover-img" src="{{ each.cover }}"></a>
+        {% if each.cover or each.banner %}
+        <a href="/{{ quote(each.slug)  }}/"><img class="cover-img" src="{{ each.cover or each.banner }}"></a>
         {% end %}
         <div class="title-box">
           <article class="am-article  am-margin-horizontal-lg">
