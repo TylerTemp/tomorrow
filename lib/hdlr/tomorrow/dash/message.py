@@ -26,7 +26,7 @@ class MessageHandler(BaseHandler):
         self.xsrf_token
 
         return self.render(
-            'tomorrow/admin/dash/message.html',
+            'tomorrow/dash/message.html',
             msg=self.msgs(self.current_user['user']),
         )
 

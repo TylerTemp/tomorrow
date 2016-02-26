@@ -29,7 +29,7 @@ class BaseHandler(BaseHandler):
         msg = self.get_error(status_code, **kwargs)
 
         return self.render(
-            'tomorrow/admin/dash/error.html',
+            'tomorrow/dash/error.html',
             code=status_code,
             msg=msg
         )

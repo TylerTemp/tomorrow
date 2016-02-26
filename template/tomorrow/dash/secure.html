@@ -76,43 +76,43 @@
     <fieldset>
       <table class="am-table am-table-bordered box-shadow am-table-striped am-table-hover">
         <thead>
-            <tr>
-              <th class="am-text-middle">
-                <label class="am-checkbox am-secondary">
-                  <input type="checkbox" name="check-all" data-am-ucheck> <b>{{ _('Modify') }}</b>
-                </label>
-              </th>
-              <th class="am-text-middle">{{ _('Value') }}</th>
-            </tr>
+          <tr>
+            <th class="am-text-middle">
+              <label class="am-checkbox am-secondary">
+                <input type="checkbox" name="check-all" data-am-ucheck> <b>{{ _('Modify') }}</b>
+              </label>
+            </th>
+            <th class="am-text-middle">{{ _('Value') }}</th>
+          </tr>
         </thead>
         <tbody>
-            <tr>
-              <td>
-                <label class="am-checkbox">
-                  <input type="checkbox" name="name" data-am-ucheck> {{ _("Name") }}
-                </label>
-              </td>
-              <td class="am-text-middle">
-                <span class="am-icon-user"> {{ user }}</span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label class="am-checkbox">
-                  <input type="checkbox" name="email" data-am-ucheck> {{ _("Email") }}
-                </label>
-              </td>
-              <td class="am-text-middle"><span class="am-icon-envelope"> {{ user.email }}</span></td>
-            </tr>
-            <tr>
-              <td>
-                <label class="am-checkbox">
-                  <input type="checkbox" name="pwd" data-am-ucheck> {{ _("Password") }}
-                </label>
-              </td>
-              <td class="am-text-middle"><span class="am-icon-key"> ********</span></td>
-            </tr>
-            <tr {% if not user.active %} class="am-danger" {% end %}>
+          <tr>
+            <td>
+              <label class="am-checkbox">
+                <input type="checkbox" name="name" data-am-ucheck> {{ _("Name") }}
+              </label>
+            </td>
+            <td class="am-text-middle">
+              <span class="am-icon-user"> {{ user }}</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label class="am-checkbox">
+                <input type="checkbox" name="email" data-am-ucheck> {{ _("Email") }}
+              </label>
+            </td>
+            <td class="am-text-middle"><span class="am-icon-envelope"> {{ user.email }}</span></td>
+          </tr>
+          <tr>
+            <td>
+              <label class="am-checkbox">
+                <input type="checkbox" name="pwd" data-am-ucheck> {{ _("Password") }}
+              </label>
+            </td>
+            <td class="am-text-middle"><span class="am-icon-key"> ********</span></td>
+          </tr>
+          <tr {% if not user.active %} class="am-danger" {% end %}>
               <td><span class="am-icon-child">&nbsp;&nbsp;</span>{{ _("Active") }}</td>
               <td><span class="{{ 'am-text-success am-icon-check' if user.active else 'am-text-danger am-icon-times' }}"></span></td>
             </tr>

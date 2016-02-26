@@ -31,7 +31,7 @@ class DashboardHandler(BaseHandler):
             img_num = 0
 
         return self.render(
-            'tomorrow/admin/dash/home.html',
+            'tomorrow/dash/home.html',
             user=user,
             article_num=Article.by(user.name).count(),
             file_num=file_num,

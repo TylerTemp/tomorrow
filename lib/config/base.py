@@ -179,4 +179,4 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     config = Config()
     config.auto_clean = False
-    logger.debug(config.__dict__)
+    logging.debug(config.__dict__)

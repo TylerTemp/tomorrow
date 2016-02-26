@@ -22,7 +22,7 @@ class ArticleHandler(BaseHandler):
     def get(self, user):
 
         return self.render(
-            'tomorrow/admin/dash/article.html',
+            'tomorrow/dash/article.html',
             articles=self.get_articles(self.current_user['user']),
             md2html=self.md2html,
             xsrf_token=self.xsrf_token,

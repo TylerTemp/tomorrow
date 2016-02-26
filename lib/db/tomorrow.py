@@ -22,8 +22,7 @@ class User(Base):
     logger = logging.getLogger('tomorrow.db.user')
 
     NORMAL = 0
-    ADMIN = 1
-    ROOT = 2
+    ROOT = 1
 
     NEWUSER = 1
     CHANGEEMAIL = 2

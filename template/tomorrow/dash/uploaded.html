@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block subtitle %} | {{ _('Uploaded') }}{% end %}
+
+{% block guide %}<span class="am-icon-cloud"> <strong class="am-text-primary am-text-lg">{{ _("Uploaded") }}</strong></span> / <small>{{ _("All files you uploaded") }}</small>{% end %}
+
+{% block highlight %}
+  {% set highlight = ['uploaded'] %}
+{% end %}
+
+{% block content %}
+
+<p class="am-padding am-text-sm">Server will not check the path. You can even perform a path traversal attack,
+   because you're super user.
+</p>
+
+<div class="am-tabs" data-am-tabs="{noSwipe: 1}">
+  <ul class="am-tabs-nav am-nav am-nav-tabs">
+    <li class="am-active"><a href="#upload">{{ _('Upload') }}</a></li>
+    <li><a href="#move">{{ _('Move') }}</a></li>
+  </ul>
+
+  <div class="am-tabs-bd">
+    <form class="am-form am-tab-panel am-active" method="post" id="upload" enctype="multipart/form-data">
+      <fieldset>
+        {% raw xsrf_form_html() %}
+        <input name="action" value="upload" style="display: none"/>
+        <div class="am-u-sm-12 am-u-md-6">
+          <div class="am-input-group am-input-group-primary">
+            <label class="am-input-group-label" for="folder"><i class="am-icon-folder am-icon-fw"></i></label>
+            <input type="text" id="folder" name="folder" value="{{ path }}" placeholder="{{ _('Home of {user}').format(user=user.name) }}" class="am-form-field" />
+          </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6">
+          <div class="am-input-group am-input-group-primary">
+            <label class="am-input-group-label" for="file"><i class="am-icon-file am-icon-fw"></i></label>
+            <input type="file" id="file" name="file" class="am-form-field">
+          </div>
+        </div>
+        <div class="am-cf am-u-sm-12 am-padding-top">
+          <button type="submit" class="am-fr am-btn">
+            <span class="am-icon-paper-plane"></span>
+          </button>
+        </div>
+      </fieldset>
+    </form>
+
+    <form class="am-form am-tab-panel" method="post" id="move" enctype="multipart/form-data">
+      <fieldset>
+        {% raw xsrf_form_html() %}
+        <input name="action" value="move" style="display: none"/>
+        <div class="am-u-sm-12 am-u-md-6">
+          <div class="am-input-group am-input-group-warning">
+            <label class="am-input-group-label" for="src"><i class="am-icon-times am-icon-fw"></i></label>
+            <input type="text" id="src" name="src" value="{{ path }}" placeholder="{{ _('Home of {user}').format(user=user.name) }}" class="am-form-field" />
+          </div>
+        </div>
+        <div class="am-u-sm-12 am-u-md-6">
+          <div class="am-input-group am-input-group-success">
+            <label class="am-input-group-label" for="dist"><i class="am-icon-check am-icon-fw"></i></label>
+            <input type="text" id="dist" name="dist" placeholder="{{ _('Home of {user}').format(user=user.name) }}" class="am-form-field">
+          </div>
+        </div>
+        <div class="am-cf am-u-sm-12 am-padding-top">
+          <button type="submit" class="am-fr am-btn">
+            <span class="am-icon-mail-forward"></span>
+          </button>
+        </div>
+      </fieldset>
+    </form>
+
+  </div>
+
+</div>
+
+<hr />
+<div class="am-margin">
+  {% if path %}
+    {% for index, name in enumerate(('/' + path).split('/')[:-2]) %}
+      <a href="{{ '../' * (len(('/' + path).split('/')[:-2]) - index)  }}">{{ user.name if index == 0 else name }}</a> <span class="am-icon-angle-double-right"></span>
+    {% end %}
+    {{ path.split('/')[-2] if path else '' }}
+  {% else %}
+    {{ user.name }}
+  {% end %}
+  <ul class="am-avg-sm-2 am-avg-md-5 gallery-list" id="list">
+    {% for content in contents %}
+    <li>
+      <form class="am-panel am-panel-default" method="post">
+        {% raw xsrf_form_html() %}
+        <input name="action" value="delete" style="display: none"/>
+        <div class="am-panel-bd">
+          <a href="{{ ('./%s/' if content['folder'] else './%s') % quote(content['name']) }}"}}>
+            <span class="{{ content['icon'] }}"> {{ content['name'] }}</span>
+            {% if 'size' in content %}
+            /
+            <span class="am-text-xs">{{ content['size'] }}</span>
+            {% end %}
+          </a>
+        </div>
+        <div class="am-cf">
+          <button type="submit" class="am-btn am-btn-warning am-btn-xs am-fr delete"
+            data-am-loading="{spinner: 'times-circle-o', loadingText: ''}"
+            title="delete"
+            data-name="{{ content['name'] }}">
+              <span class="am-icon-trash"></span>
+          </button>
+        </div>
+      </form>
+    </li>
+    {% end %}
+  </ul>
+</div>
+{% end %}
+
+{% block js %}
+<script src="/static/js/dash/file.js"></script>
+{% end %}

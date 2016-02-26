@@ -1,23 +1,23 @@
 import tornado.web
 import logging
 import json
-import base64
 import binascii
 import mimetypes
 import os
 try:
-    from urllib.parse import unquote, quote, urljoin
+    from urllib.parse import unquote, quote, urljoin, urlsplit
 except ImportError:
     from urllib import unquote, quote
-    from urlparse import urljoin
+    from urlparse import urljoin, urlsplit
 
 from lib.db.tomorrow import User
-from lib.tool.minsix import open, py3
 from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
+from ..base import EnsureUser
 
 
-class FileHandler(BaseHandler):
+# root user is allowed to do ANYTHING, including path traversal attack
+class UploadedHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.dash.file')
 
     NO_PERMISSION = 1
@@ -29,6 +29,7 @@ class FileHandler(BaseHandler):
     DELETE_FAILED = 2
 
     type2icon = {
+        'folder': 'am-icon-folder-o',
         'text': 'am-icon-file-text-o',
         'word': 'am-icon-file-word-o',
         'zip': 'am-icon-file-archive-o',
@@ -38,84 +39,64 @@ class FileHandler(BaseHandler):
         'video': 'am-icon-file-video-o',
         'unknown': 'am-icon-file-o',
         'pdf': 'am-icon-file-pdf-o',
-        'ppt': 'am-icon-file-powerpoint-o'
+        'ppt': 'am-icon-file-powerpoint-o',
     }
 
-    def _is_myself(self, user):
-        url_user_name = unquote(user)
-        current_user = self.current_user
-        user_name = current_user['user']
-        user_type = current_user['type']
-        self.debug('user=%s, urluser=%s', user_name, url_user_name)
-        return (user_name == url_user_name or user_type < User.root)
+    @EnsureUser(EnsureUser.ROOT)
+    def get(self, path=None):
+        # AGAIN, there could be path attack
+        # BUT... tornado will prevent that?
+        if not path:
+            path = ''
 
-    def assert_get_myself(func):
+        self.debug('path %r', path)
+        folder = self.get_path_or_redirect(path)
+        if folder is None:
+            return
 
-        def wrapper(self, user, to):
-            if not self._is_myself(user):
-                self.set_status(403)
-                self.write(
-                    '''<!doctype html>
-                    <html>
-                      <head>
-                        <meta charset="utf-8">
-                        <title>{title}</title>
-                      </head>
-                      <body>
-                        {body}
-                      </body>
-                    </html>'''.format(
-                        title=self.locale.translate('Permission Denied'),
-                        body=self.locale.translate(
-                            "Sorry, you're not allow to see others' "
-                            "uploaded files"),
-                    )
-                )
-                self.finish()
-                return
-            return func(self, user, to)
+        self.debug(folder)
 
-        return wrapper
-
-    def assert_post_myself(func):
-
-        def wrapper(self, user, to):
-            if not self._is_myself(user):
-                raise tornado.web.HTTPError(
-                    403, "%s is not allowed to upload here", user)
-            return func(self, user, to)
-
-        return wrapper
-
-    @tornado.web.authenticated
-    @assert_get_myself
-    def get(self, user, to):
-        self.xsrf_token
-        user_info = self.current_user
-        user_name = user_info['user']
-        folder = os.path.join(self.get_user_path(user_name), to)
-        url = ''.join((self.get_user_url(user_name), to, '/%s'))
-        size_limit = self.config.size_limit[user_info['type']]
         return self.render(
-            'tomorrow/admin/dash/image.html'
-            if to == 'img'
-            else 'tomorrow/admin/dash/file.html',
-            size_limit=size_limit,
-            files=self.file_attrs(folder, url) if os.path.isdir(folder) else (),
-            highlight=('uploaded', 'uploaded-' + to)
+            'tomorrow/dash/uploaded.html',
+            contents=self.folder_attrs(folder),
+            path=path,
+            quote=quote,
         )
 
-    def file_attrs(self, path, url_template):
+    def get_path_or_redirect(self, path):
+        user = self.current_user
+        name = user.name
+        folder = os.path.join(self.config.root, 'static', 'tomorrow',
+                                 name, path)
+        if os.path.isfile(folder):
+            self.redirect('/static/tomorrow/%s/%s' %
+                          (quote(name, ''), path))
+            return None
+        elif os.path.isdir(folder) and path and not path.endswith('/'):
+            self.redirect(urlsplit(self.request.uri).path + '/')
+            return None
+
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+        return folder
+
+    def folder_attrs(self, path):
         dirpath, dirnames, filenames = next(os.walk(path))
+        folder_icon = self.type2icon['folder']
+        for folder in dirnames:
+            yield  {'name': folder,
+                    'icon': folder_icon,
+                    'folder': True,
+                    }
+
         for file_name in filenames:
             icon = self.icon(file_name)
             size = os.path.getsize(os.path.join(path, file_name))
             size_str = '%.2f %s' % unit_satisfy(size)
-            url = url_template % quote(file_name)
             yield {'name': file_name,
                    'icon': icon,
                    'size': size_str,
-                   'url': url
+                   'folder': False,
                   }
 
     def icon(self, filename):
@@ -142,12 +123,11 @@ class FileHandler(BaseHandler):
                     tp = main
         return icons[tp]
 
-    @tornado.web.authenticated
-    @assert_post_myself
-    @tornado.web.asynchronous
-    @tornado.gen.coroutine
-    def post(self, user, to):
+    @EnsureUser(EnsureUser.ROOT)
+    def post(self, path=None):
         self.check_xsrf_cookie()
+        if not path:
+            path = ''
 
         userinfo = self.current_user
         user = userinfo['user']
@@ -183,7 +163,7 @@ class FileHandler(BaseHandler):
         self.debug('deleted %s', filename)
         return
 
-    @tornado.gen.coroutine
+    @EnsureUser(EnsureUser.ROOT)
     def upload(self, to):
         user = self.current_user['user']
         urldata = self.get_argument('urldata')
@@ -226,17 +206,3 @@ class FileHandler(BaseHandler):
         self.finish()
         self.info('saved %s', filename)
         return
-
-    @tornado.gen.coroutine
-    def decode(self, dataurl):
-        _, data64 = dataurl.split(',', 1)
-        if py3:
-            data64 = data64.encode()
-        bindata = base64.b64decode(data64)
-        raise tornado.gen.Return(value=bindata)
-
-    @tornado.gen.coroutine
-    def save_file(self, path, data):
-        with open(path, 'wb') as f:
-            f.write(data)
-        raise tornado.gen.Return()

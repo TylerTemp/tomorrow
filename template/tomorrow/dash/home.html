@@ -7,9 +7,7 @@
 {% end %}
 
 {% block content %}
-{% if user.type == user.ADMIN %}
-  {% set type_name = _("Administor") %}
-{% elif user.type == user.ROOT %}
+{% if user.type == user.ROOT %}
   {% set type_name = _("Super User") %}
 {% else %}
   {% set type_name = _("friend") %}

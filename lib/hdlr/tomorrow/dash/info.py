@@ -18,7 +18,7 @@ class InfoHandler(BaseHandler):
         user = self.current_user
 
         return self.render(
-            'tomorrow/admin/dash/info.html',
+            'tomorrow/dash/info.html',
             user=user,
             size_limit=0,
         )

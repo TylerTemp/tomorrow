@@ -42,12 +42,10 @@ class BaseHandler(BaseHandler):
 class EnsureUser(object):
     level2name = {
         User.NORMAL: 'registered user',
-        User.ADMIN: 'administrator',
         User.ROOT: 'super user'
     }
 
     NORMAL = User.NORMAL
-    ADMIN = User.ADMIN
     ROOT = User.ROOT
 
     def __init__(self, level=ROOT, active=True):

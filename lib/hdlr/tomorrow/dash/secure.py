@@ -29,7 +29,7 @@ class SecureHandler(BaseHandler):
                        user.verify['for'] & user.NEWUSER)
 
         return self.render(
-            'tomorrow/admin/dash/secure.html',
+            'tomorrow/dash/secure.html',
             verify_mail=verify_mail,
             user=user
         )

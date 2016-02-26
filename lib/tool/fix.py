@@ -3,11 +3,13 @@
 
 import sys
 import os
-import re
+import shutil
 
 sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..')))
 from lib.tool.bashlog import stdoutlogger, DEBUG
 from lib.db.jolla import Source, Article
+from lib.db.tomorrow import User
+from lib.config.base import Config
 sys.path.pop(0)
 
 logger = stdoutlogger(None, DEBUG)
@@ -25,5 +27,22 @@ def fix_source():
             each.save()
 
 
+def fix_to_root():
+    u = User('TylerTemp')
+    assert u
+    u.type = u.ROOT
+    u.save()
+
+def fix_tomorrow_uploader():
+    Config().auto_clean = False
+    root = Config().root
+    static = os.path.join(root, 'static')
+    source = os.path.join(static, 'upload')
+    target = os.path.join(static, 'tomorrow')
+    shutil.move(source, target)
+
+
 if __name__ == '__main__':
     fix_source()
+    fix_to_root()
+    fix_tomorrow_uploader()
