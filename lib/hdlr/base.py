@@ -36,8 +36,8 @@ class BaseHandler(tornado.web.RequestHandler, Log):
         if self.is_ajax():
             self.clear()
             self.set_status(405)
-            self.write(json.dumps({'code': -1, 'message': 'Method Not Allowed',
-                                   'error': -1}))
+            self.write({'code': -1, 'message': 'Method Not Allowed',
+                        'error': -1})
             return
 
         raise tornado.web.HTTPError(405, 'Method Not Allowed')

@@ -1,16 +1,14 @@
 import tornado.web
 import logging
-import json
-import binascii
 import mimetypes
 import os
+import shutil
 try:
     from urllib.parse import unquote, quote, urljoin, urlsplit
 except ImportError:
     from urllib import unquote, quote
     from urlparse import urljoin, urlsplit
 
-from lib.db.tomorrow import User
 from lib.tool.unitsatisfy import unit_satisfy
 from .base import BaseHandler
 from ..base import EnsureUser
@@ -19,11 +17,6 @@ from ..base import EnsureUser
 # root user is allowed to do ANYTHING, including path traversal attack
 class UploadedHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.dash.file')
-
-    NO_PERMISSION = 1
-    SIZE_TOO_BIG = 2
-    DUPLICATED_NAME = 4
-    DECODE_ERROR = 8
 
     NOT_FOUND = 1
     DELETE_FAILED = 2
@@ -126,83 +119,72 @@ class UploadedHandler(BaseHandler):
     @EnsureUser(EnsureUser.ROOT)
     def post(self, path=None):
         self.check_xsrf_cookie()
-        if not path:
-            path = ''
 
-        userinfo = self.current_user
-        user = userinfo['user']
-        type = userinfo['type']
-
-        if type < User.admin:
-            self.write(json.dumps({'error': self.NO_PERMISSION}))
-            self.finish()
-            return
-
-        action = self.get_argument('action', 'upload')
-
-        if action == 'upload':
-            yield self.upload(to)
+        action = self.get_argument('action')
+        if action == 'delete':
+            return self.delete()
+        elif action == 'move':
+            return self.move()
         else:
-            self.delete(to)
+            return self.save()
 
-    def delete(self, to):
-        user = self.current_user['user']
-        filename = self.get_argument('name')
-        path = os.path.join(self.get_user_path(user), to, filename)
-        error = 0
-        if not os.path.isfile(path):
-            error = self.NOT_FOUND
-        else:
-            try:
-                os.remove(path)
-            except BaseException as e:
-                self.error(e)
-                error = self.DELETE_FAILED
-        self.write(json.dumps({'error': error, 'name': filename}))
-        self.finish()
-        self.debug('deleted %s', filename)
-        return
+    def delete(self):
+        path = self.get_argument('path')
+        folder = os.path.join(self.config.root, 'static', 'tomorrow',
+                              self.current_user.name, path)
+        self.info('delete: %s', folder)
 
-    @EnsureUser(EnsureUser.ROOT)
-    def upload(self, to):
-        user = self.current_user['user']
-        urldata = self.get_argument('urldata')
-        filename = self.get_argument('name')
-        folder = os.path.join(self.get_user_path(user), to)
-        if not os.path.isdir(folder):
-            os.makedirs(folder)
-        mainurl = self.get_user_url(user)
-
-        if os.path.exists(os.path.join(folder, filename)):
-            self.write(json.dumps({'error': self.DUPLICATED_NAME}))
-            self.finish()
-            return
-            # ext = os.path.splitext(filename)[-1]
-            # mainname = time.strftime('%y-%m-%d-%H-%M-%S',
-            #                          time.localtime(time.time()))
-            # filename = mainname + ext
-            #
-            # if os.path.exists(os.path.join(folder, filename)):
-            #     self.write(json.dumps({'error': self.DUPLICATED_NAME}))
-            #     self.finish()
-            #     return
         try:
-            bindata = yield self.decode(urldata)
-        except binascii.Error as e:
-            self.error(e)
-            self.write(json.dumps({'error': self.DECODE_ERROR}))
-            self.finish()
-            return
+            shutil.rmtree(folder)
+        except BaseException as e:
+            msg = str(e)
+            error = 1
+        else:
+            msg = None
+            error = 0
 
-        yield self.save_file(os.path.join(folder, filename), bindata)
+        return self.write({'error': error, 'msg': msg})
 
-        self.write(json.dumps({
-            'error': 0,
-            'name': filename,
-            'icon': self.icon(filename),
-            'size': len(bindata),
-            'url': urljoin(mainurl, quote('%s/%s' % (to, filename)))
-        }))
-        self.finish()
-        self.info('saved %s', filename)
-        return
+    def move(self):
+        src = self.get_argument('src')
+        dist = self.get_argument('dist')
+        root = os.path.join(self.config.root, 'static', 'tomorrow',
+                            self.current_user.name)
+
+        source = os.path.join(root, src)
+        destination = os.path.join(root, dist)
+        self.info('move: %s -> %s', source, destination)
+
+        try:
+            shutil.move(source, destination)
+        except BaseException as e:
+            message = str(e)
+            error = 1
+        else:
+            message = None
+            error = 0
+
+        return self.write({'error': error, 'message': message})
+
+    def save(self):
+        path = self.get_argument('folder')
+        file_bodys = self.request.files['file']
+        status = []
+        errors = []
+        for each in file_bodys:
+            name = each['filename']
+            content = each['body']
+            this_error = None
+            try:
+                with open(os.path.join(path, name), 'wb') as f:
+                    f.write(content)
+            except BaseException as e:
+                this_error = str(e)
+                errors.append((name, str(e)))
+            size = len(content)
+
+
+        error = 1 if errors else 0
+        message = '; '.join('%s: %s' % x for x in errors)
+        return self.write({'error': error, 'message': message,
+                           errors: errors})

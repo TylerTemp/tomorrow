@@ -11,7 +11,9 @@
 {% block content %}
 
 <p class="am-padding am-text-sm">Server will not check the path. You can even perform a path traversal attack,
-   because you're super user.
+  because you're super user.
+  <br />
+  Duplicate-named files will be override.
 </p>
 
 <div class="am-tabs" data-am-tabs="{noSwipe: 1}">
@@ -34,11 +36,11 @@
         <div class="am-u-sm-12 am-u-md-6">
           <div class="am-input-group am-input-group-primary">
             <label class="am-input-group-label" for="file"><i class="am-icon-file am-icon-fw"></i></label>
-            <input type="file" id="file" name="file" class="am-form-field">
+            <input type="file" id="file" name="file" class="am-form-field" multiple="multiple" />
           </div>
         </div>
         <div class="am-cf am-u-sm-12 am-padding-top">
-          <button type="submit" class="am-fr am-btn">
+          <button type="submit" class="am-fr am-btn" data-am-loading="{spinner: 'cog', loadingText: ''}">
             <span class="am-icon-paper-plane"></span>
           </button>
         </div>
@@ -52,7 +54,7 @@
         <div class="am-u-sm-12 am-u-md-6">
           <div class="am-input-group am-input-group-warning">
             <label class="am-input-group-label" for="src"><i class="am-icon-times am-icon-fw"></i></label>
-            <input type="text" id="src" name="src" value="{{ path }}" placeholder="{{ _('Home of {user}').format(user=user.name) }}" class="am-form-field" />
+            <input type="text" id="src" name="src" value="{{ path }}" placeholder="Source (relative path)" class="am-form-field" required="required"/>
           </div>
         </div>
         <div class="am-u-sm-12 am-u-md-6">
@@ -62,7 +64,7 @@
           </div>
         </div>
         <div class="am-cf am-u-sm-12 am-padding-top">
-          <button type="submit" class="am-fr am-btn">
+          <button type="submit" class="am-fr am-btn" data-am-loading="{spinner: 'refresh', loadingText: ''}">
             <span class="am-icon-mail-forward"></span>
           </button>
         </div>
@@ -89,6 +91,7 @@
       <form class="am-panel am-panel-default" method="post">
         {% raw xsrf_form_html() %}
         <input name="action" value="delete" style="display: none"/>
+        <input name="path" value="{{ path }}{{ content['name'] }}" style="display: none" />
         <div class="am-panel-bd">
           <a href="{{ ('./%s/' if content['folder'] else './%s') % quote(content['name']) }}"}}>
             <span class="{{ content['icon'] }}"> {{ content['name'] }}</span>
@@ -101,8 +104,7 @@
         <div class="am-cf">
           <button type="submit" class="am-btn am-btn-warning am-btn-xs am-fr delete"
             data-am-loading="{spinner: 'times-circle-o', loadingText: ''}"
-            title="delete"
-            data-name="{{ content['name'] }}">
+            title="delete">
               <span class="am-icon-trash"></span>
           </button>
         </div>
@@ -114,5 +116,5 @@
 {% end %}
 
 {% block js %}
-<script src="/static/js/dash/file.js"></script>
+<script src="/static/js/dash/uploaded.js"></script>
 {% end %}
