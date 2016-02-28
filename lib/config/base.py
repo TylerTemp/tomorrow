@@ -79,7 +79,7 @@ class Config(Base):
 
     def _get_default(self):
         return {
-            'debug': True,
+            'DEBUG': True,
 
             'wait_bootup': 0,
 

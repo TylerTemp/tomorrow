@@ -174,7 +174,7 @@ class Application(tornado.web.Application):
 
         settings = {
             'template_path': os.path.join(self.config.root, 'template'),
-            'debug': self.config.debug,
+            'debug': self.config.DEBUG,
             'login_url': '/login/',
             'ui_modules': {
                 'WysBar': WysBarModule,
@@ -207,7 +207,7 @@ class Application(tornado.web.Application):
             logger.info('set secret')
             settings['cookie_secret'] = secret
 
-        if self.config.debug:
+        if self.config.DEBUG:
             logger.warning('debug is on')
 
         super(Application, self).__init__(handlers, **settings)
