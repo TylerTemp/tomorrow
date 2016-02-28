@@ -47,7 +47,7 @@
       </fieldset>
     </form>
 
-    <form class="am-form am-tab-panel" method="post" id="move" enctype="multipart/form-data">
+    <form class="am-form am-tab-panel" method="post" id="move">
       <fieldset>
         {% raw xsrf_form_html() %}
         <input name="action" value="move" style="display: none"/>
@@ -93,7 +93,7 @@
         <input name="action" value="delete" style="display: none"/>
         <input name="path" value="{{ path }}{{ content['name'] }}" style="display: none" />
         <div class="am-panel-bd">
-          <a href="{{ ('./%s/' if content['folder'] else './%s') % quote(content['name']) }}"}}>
+          <a href="{{ ('./%s/' if content['folder'] else './%s') % quote(content['name']) }}">
             <span class="{{ content['icon'] }}"> {{ content['name'] }}</span>
             {% if 'size' in content %}
             /

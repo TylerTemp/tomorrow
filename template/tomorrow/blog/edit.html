@@ -32,7 +32,7 @@ i.am-icon-unchecked {
 
 
 {% block nav_active %}
-  {% set nav_active == 'new_post' %}
+  {% set nav_active = 'new' %}
 {% end %}
 
 
@@ -123,7 +123,7 @@ i.am-icon-unchecked {
     <!-- Toolbar -->
     <div class="am-g">
       <div class="am-btn-toolbar am-u-sm-12" id="mdEditorToolbar">
-        {% module MdBar(upload_img=imgs, upload_file=files) %}
+        {% module MdBar() %}
         <div class="am-btn-group">
           <!-- local preview -->
           <button type="button" class="am-btn am-btn-primary am-radius" id='hide-preview' data-am-button data-am-popover="{content: '{{ _('Hide Preview') }}', trigger: 'hover focus'}"><span class="am-icon-eye-slash" data-am-button></span></button>
@@ -175,10 +175,6 @@ i.am-icon-unchecked {
 {% end %}
 {% block butt %}
 
-<script>
-  var IMGUPLOADURL = "{{ img_upload_url }}";
-  var FILEUPLOADURL = "{{ file_upload_url }}";
-</script>
 <script src="https://dn-tomorrow.qbox.me/jquery-textrange.min.js"></script>
 <script src="https://dn-tomorrow.qbox.me/showdown.min.js"></script>
 <script src="/static/js/amazeui.tagsinput.min.js"></script>

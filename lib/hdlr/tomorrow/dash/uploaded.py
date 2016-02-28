@@ -129,21 +129,30 @@ class UploadedHandler(BaseHandler):
             return self.save()
 
     def delete(self):
+
         path = self.get_argument('path')
         folder = os.path.join(self.config.root, 'static', 'tomorrow',
                               self.current_user.name, path)
         self.info('delete: %s', folder)
 
-        try:
-            shutil.rmtree(folder)
-        except BaseException as e:
-            msg = str(e)
-            error = 1
+        errors = []
+        if os.path.isfile(folder):
+            try:
+                os.unlink(folder)
+            except BaseException as e:
+                errors.append({'path': folder, 'message': str(e)})
         else:
-            msg = None
-            error = 0
+            shutil.rmtree(
+                folder,
+                onerror=lambda function, path, excinfo: errors.append(
+                    {'path': path, 'message': str(excinfo[1])}))
 
-        return self.write({'error': error, 'msg': msg})
+        if errors:
+            self.set_status(500)
+
+        return self.write({'error': 1 if errors else 0,
+                           'message': '; '.join(x['message'] for x in errors),
+                           'errors': errors})
 
     def move(self):
         src = self.get_argument('src')
@@ -160,6 +169,7 @@ class UploadedHandler(BaseHandler):
         except BaseException as e:
             message = str(e)
             error = 1
+            self.set_status(500, message)
         else:
             message = None
             error = 0
@@ -168,23 +178,32 @@ class UploadedHandler(BaseHandler):
 
     def save(self):
         path = self.get_argument('folder')
+        folder = os.path.join(self.config.root, 'static', 'tomorrow',
+                              self.current_user.name, path)
+
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
         file_bodys = self.request.files['file']
-        status = []
+        success = []
         errors = []
         for each in file_bodys:
             name = each['filename']
             content = each['body']
-            this_error = None
+            this_file = {'name': name, 'size': len(content)}
             try:
-                with open(os.path.join(path, name), 'wb') as f:
+                with open(os.path.join(folder, name), 'wb') as f:
                     f.write(content)
             except BaseException as e:
-                this_error = str(e)
-                errors.append((name, str(e)))
-            size = len(content)
-
+                this_file['error'] = str(e)
+                errors.append(this_file)
+            else:
+                success.append(this_file)
 
         error = 1 if errors else 0
-        message = '; '.join('%s: %s' % x for x in errors)
+        message = '; '.join('{name}: {error}'.format(**x) for x in errors)
+        if error:
+            self.set_status(500, message)
         return self.write({'error': error, 'message': message,
-                           errors: errors})
+                           'errors': errors,
+                           'success': success})

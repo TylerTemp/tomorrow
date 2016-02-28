@@ -22,12 +22,6 @@ class EditHandler(BaseHandler):
             return self.check_slug(self.get_argument('slug'), urlslug)
 
         user = self.current_user
-        user_name = user.name
-        user_slug = quote(user_name)
-        if user.type >= user.ADMIN:
-            imgs, files = self.get_imgs_and_files(user_name)
-        else:
-            imgs, files = None, None
 
         source = self.get_argument('source', 'zh')
 
@@ -40,11 +34,6 @@ class EditHandler(BaseHandler):
 
         return self.render(
             'tomorrow/blog/edit.html',
-            nav_active='new_post',
-            imgs=imgs,
-            files=files,
-            img_upload_url='/am/%s/img/' % user_slug,
-            file_upload_url='/am/%s/file/' % user_slug,
             article=article,
             user=user
         )

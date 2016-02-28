@@ -22,3 +22,18 @@ class ArticleHandler(BaseHandler):
             author=User(article.author),
             md2html=md2html
         )
+
+
+class ArticleAttachmentHandler(BaseHandler):
+
+    logger = logging.getLogger('tomorrow.blog.post.attach')
+
+    def get(self, from_, slug, attach):
+        article = Article(slug)
+        assert article
+        author = User(article.author)
+        assert author
+        return self.redirect(
+            '/static/tomorrow/%s/%s/%s' %
+            (author.name, article.slug, attach)
+        )

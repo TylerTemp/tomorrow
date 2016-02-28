@@ -43,9 +43,7 @@ $(function(evt)
   // var toHtml = markdown.toHtml;
   var converter = new showdown.Converter();
   var $mdEditor = $('#mdEditor').markdownEditor({
-    toHtml: converter.makeHtml,
-    uploadImageUrl: IMGUPLOADURL,
-    uploadFileUrl: FILEUPLOADURL
+    toHtml: converter.makeHtml
   });
 
   timer = setTimeout(function(){preview($mdEditor.getHtml()); count_timer()}, 0);

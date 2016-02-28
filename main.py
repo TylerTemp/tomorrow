@@ -57,6 +57,8 @@ class Application(tornado.web.Application):
             (r'/page/1/?', RedirectHandler, {'to': '/', 'permanently': True}),
             (r'/page/(?P<page>\d+)/', tomorrow.blog.HomeHandler),
             (r'/blog/(?P<slug>[^/]+)/', tomorrow.blog.ArticleHandler),
+            (r'/(?P<from_>blog|edit)/(?P<slug>[^/]+)/(?P<attach>.+)',
+             tomorrow.blog.ArticleAttachmentHandler),
             (r'/edit/', tomorrow.blog.EditHandler),
             (r'/edit/(?P<urlslug>[^/]+)/', tomorrow.blog.EditHandler),
             # auth
