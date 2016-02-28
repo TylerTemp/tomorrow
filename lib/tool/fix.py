@@ -39,7 +39,7 @@ def fix_tomorrow_uploader():
     static = os.path.join(root, 'static')
     source = os.path.join(static, 'upload')
     target = os.path.join(static, 'tomorrow')
-    shutil.move(source, target)
+    shutil.move(os.path.join(root, source), os.path.join(root, target))
 
 
 if __name__ == '__main__':
