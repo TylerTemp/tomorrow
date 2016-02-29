@@ -6,139 +6,38 @@
   {% set highlight = ['article'] %}
 {% end %}
 
+{% block css %}
+<style>
+  h6 {
+    margin: 0;
+    display: inline;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 5px 10px 5px 10px;
+  }
+</style>
+{% end %}
+
 {% block guide %}<span class="am-icon-edit"> <strong class="am-text-primary am-text-lg">{{ _("Article") }}</strong></span> / <small>{{ _("All your posts") }}</small>{% end %}
 
 {% block content %}
 <hr class="am-divider am-divider-default"/>
 
-<div class="am-panel-group">
-  {% for article in articles %}
-  <div class="am-panel am-panel-default">
-    <div class="am-panel-hd am-cf am-g">
-      <h4 class="am-panel-title" data-am-collapse="{parent: '#articles', target: '#{{ article['id'] }}'}">
-        {{ article['title'] }}
-      </h4>
-    </div>
-    <div id="{{ article['id'] }}" class="am-panel-collapse am-collapse">
-      <div class="am-panel-bd">
-        <div data-role="info-panel">
-          <table class="am-table">
-            <thead>
-              <tr>
-                <th>{{ _("info") }}</th>
-                <th>{{ _("detail") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ _("title") }}</td>
-                <td data-role="title">
-                  <a href="{{ article['url'] }}">{{ article['title'] }}</a>
-                </td>
-              </tr>
-              <tr>
-                <td>{{ _('introduction') if article['description'] else _('preview') }}</td>
-                <td>
-                  {% if article['description'] %}
-                    {% raw md2html(article['description']) %}
-                  {% else %}
-                    {{ article['content'][:40] }}...
-                  {% end %}
-                </td>
-              </tr>
-              {% if 'source_url' in article %}
-              <tr>
-                <td>{{ _('source') }}</td>
-                <td><a href="{{ article['source_url'] }}">{{ article['source_title'] }}</a></td>
-              </tr>
-              {% end %}
-              <tr>
-                <td>{{ _("board") }}</td>
-                <td>{{ article['board'] }}</td>
-              </tr>
-
-              {% if 'lang' in article %}
-              <tr>
-                <td>{{ _("language") }}</td>
-                <td>
-                  <span class="{{ 'am-icon-check-square-o' if article['lang']['zh'] else 'am-icon-square-o' }}"> {{ _('Chinese') }}</span>
-                  <span class="{{ 'am-icon-check-square-o' if article['lang']['en'] else 'am-icon-square-o' }}"> {{ _('English') }}</span>
-                </td>
-              </tr>
-              {% end %}
-
-              <tr>
-                <td>{{ _("create time") }}</td>
-                <td>{{ article['create_time'] }}</td>
-              </tr>
-              <tr>
-                <td>{{ _("edit time") }}</td>
-                <td>{{ article['edit_time'] }}</td>
-              </tr>
-              <tr>
-                <tr>
-                  <td>{{ _("show email") }}</td>
-                  <td
-                      data-role="show-email"
-                      {{ 'data-true' if article['show_email'] else ''}}>
-                    <span>&#{{ '10004' if article['show_email'] else '10060' }};</span>
-                  </td>
-                </tr>
-
-            </tbody>
-          </table>
-
-          <div data-role="error-panel">
-          </div>
-
-          <div class="am-cf">
-            <div class="am-fr">
-              {% if 'transinfo' in article %}
-              <form method="post" style="display:inline">
-                <fieldset style="display:inline">
-                  <input name="id" value="{{ article['id'] }}" style="display:none" />
-                  <input name="_xsrf" value="{{ xsrf_token }}" style="display:none" />
-                  <button
-                      type="submit"
-                      class="am-btn am-btn-link am-text-warning am-btn-sm"
-                      data-role="delete"
-                      data-am-loading="{spinner: 'times-circle', loadingText: ''}">
-                    <span class="am-icon-trash"></span>
-                  </button>
-                </fieldset>
-              </form>
-              {% else %}
-                {% for lang in filter(lambda x: article['lang'][x], article['lang']) %}
-                <form method="post" style="display:inline">
-                  <fieldset style="display:inline">
-                    <input name="id" value="{{ article['id'] }}" style="display:none" />
-                    <input name="_xsrf" value="{{ xsrf_token }}" style="display:none" />
-                    <input name="language" value="{{ lang }}" style="display:none" />
-                    <button
-                        type="submit"
-                        class="am-btn am-btn-link am-text-warning am-btn-sm"
-                        data-role="delete"
-                        data-am-loading="{spinner: 'times-circle', loadingText: ''}">
-                      <span class="am-icon-trash"> {{ lang.upper() }}</span>
-                    </button>
-                  </fieldset>
-                </form>
-                {% end %}
-              {% end %}
-              |
-              {% if 'transinfo' in article %}
-                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}"></a>
-                <a class="iconfont icon-md-solid am-link-muted" href="{{ article['edit'] }}?md=true"></a>
-              {% else %}
-                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}?source=zh">ZH</a>
-                <a class="am-icon-edit am-link-muted" href="{{ article['edit'] }}?source=en">EN</a>
-              {% end %}
-            </div>
-          </div>
-        </div>
+<div class="am-padding">
+  {% for each in articles %}
+  <form class="am-panel am-panel-default" method="post">
+    <fieldset>
+      {% raw xsrf_form_html() %}
+      <input style="display: none" value="{{ each._id }}" name="_id" />
+      <div class="am-cf">
+        <a href="/blog/{{ each.slug }}/"><h6>{{ each.get('title') }}</h6></a>
+        <button class="am-btn am-btn-sm am-btn-danger am-fr" type="submit" title="{{ _('Delete') }}" data-am-loading="{spinner: 'slack', loadingText: ''}"><span class="am-icon-trash"> {{ _('Delete') }}</span></button>
+        <a class="am-btn am-btn-sm am-btn-default am-fr am-icon-edit" title="{{ _('Edit') }}" href="/edit/{{ each.slug }}/">{{ _('Edit') }}</a>
       </div>
-    </div>
-  </div>
+    </fieldset>
+  </form>
   {% end %}
 </div>
 
