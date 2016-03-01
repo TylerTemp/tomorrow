@@ -157,6 +157,7 @@ class Application(tornado.web.Application):
             (r'/utility/sina/exec/', utility.sina.ExecHandler),
             (r'/utility/sina/[^/]+/', utility.sina.BaseHandler),
             (r'/utility/woopse/(\d+)/', utility.WoopseHandler),
+            (r'/utility/fetch/', utility.fetch.FetchHandler),
 
             (r'/brey/', brey.BreyHandler),
             (r'/brey/robots\.txt', StaticFileHandler,
