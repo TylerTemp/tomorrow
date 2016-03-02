@@ -11,15 +11,14 @@ $(document).ready(function()
         '<p>' + msg + '</p>' +
       '</div>'
     ).appendTo(container);
-  }
-
+  };
 
   $('form').submit(function(evt)
   {
     evt.preventDefault();
     var $form = $(this);
     var $fieldset = $form.find('fieldset');
-    var $submit = $form.find('button[type="submit"]');
+    var $submit = $form.find('[type="submit"]');
 
     var values = {};
     $.each($form.serializeArray(), function(i, field)
@@ -41,24 +40,22 @@ $(document).ready(function()
       }
     ).done(function(data, textStatus, jqXHR)
     {
-      var obj = $.parseJSON(data);
-      if (obj.full_delete)
-        return $form.closest('.am-panel').hide(300, function(evt){ $(this).remove(); });
-      else
-        return $form.hide(300, function(evt){ $form.remove(); });
+      console.log(data);
+      return $form.hide(300, function(){ $(this).remove(); });
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
       var msg = undefined;
-      if (jqXHR == 404)
-        msg = _("Article not found");
-      else
-        msg = _("Sorry, a server error occured, please refresh and retry") +
-              " ({0}: {1})".format(jqXHR.status, errorThrown);
-      return set_info(
-        $form.closest('.am-panel').find('[data-role="error-panel"]'),
-        msg,
-        'danger'
-      )
+      try
+      {
+        var result = $.parseJSON(jqXHR.responseText);
+        msg = result.message;
+      }
+      catch (e)
+      {
+        msg = (_("Sorry, a server error occured, please refresh and retry") +
+               " (" + jqXHR.status + ": " + errorThrown + ")");
+      }
+      return set_info($form, msg, 'danger');
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
       $fieldset.prop('disabled', false);
