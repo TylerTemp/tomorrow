@@ -1,24 +1,37 @@
 """
 Usage:
-    login <user> <pwd> <site>
+    login [options] <user> <pwd>
+    login [options] <user> <pwd>
+
+Options:
+    -l --local    local test
+    -j --jolla    login to jolla
 """
 import json
 import logging
 import requests
+import sys
+import os
+from bs4 import BeautifulSoup
 
 try:
     from urllib.parse import urljoin
 except ImportError:
     from urlparse import urljoin
 
+root = os.path.normpath(os.path.join(__file__, '..', '..', '..', '..'))
+sys.path.insert(0, root)
+from lib.tool import url
+sys.path.pop(0)
+
 logger = logging.getLogger('login')
 
 
-def login_tomorrow(user, pwd, site=None, session=None):
+def login_tomorrow(user, pwd, base, session=None):
     if session is None:
         session = requests.session()
 
-    login = urljoin(site, 'login/')
+    login = urljoin(base, 'login/')
     logger.info('log in： %s', login)
     get = session.get(login, verify=False)
     logger.info(get)
@@ -38,10 +51,37 @@ def login_tomorrow(user, pwd, site=None, session=None):
     return session
 
 
+def login_jolla(user, pwd, base, tbase, session=None):
+    if session is None:
+        session = requests.session()
+
+    # get login auth link
+    resp = session.get(urljoin(base, 'login/'), verify=False)
+    soup = BeautifulSoup(resp.content, 'html5lib')
+    link_tag = soup.find('a', {'class': 'site'})
+    link = link_tag.get('href')
+
+    # pre login: tomorrow
+    session = login_tomorrow(user, pwd, tbase, session=session)
+
+    # do login
+    session.get(link, verify=False)
+
+    logger.debug(
+        session.get(
+            urljoin(base, 'task/'),
+            allow_redirects=False).status_code)
+
+    return session
+
+
 if __name__ == '__main__':
     import docpie
     import sys
     import os
+    from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
     sys.path.insert(0, os.path.normpath(os.path.join(__file__, '..', '..', '..', '..')))
     from lib.tool.bashlog import stdoutlogger
@@ -54,15 +94,20 @@ if __name__ == '__main__':
     args = docpie.docpie(__doc__)
     user = args['<user>']
     pwd = args['<pwd>']
-    site = args['<site>']
+    local = args['--local']
+    to_jolla = args['--jolla']
 
-    if site in ('tomorrow', None):
-        site = 'https://tomorrow.comes.today'
-    if not site.endswith('/'):
-        site += '/'
-    if not site.startswith('https://'):
-        site = 'https://' + site
-
-    func = login_tomorrow
-
-    func(user, pwd, site=site)
+    if to_jolla:
+        if local:
+            base = 'https://jolla.fake.today/'
+            tbase = 'https://tomorrow.fake.today/'
+        else:
+            base = 'https://jolla.comes.today/'
+            tbase = 'https://tomorrow.comes.today/'
+        login_jolla(user, pwd, base, tbase)
+    else:
+        if local:
+            base = 'https://tomorrow.fake.today/'
+        else:
+            base = 'https://tomorrow.comes.today/'
+        login_tomorrow(user, pwd, base)

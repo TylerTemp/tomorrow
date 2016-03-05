@@ -4,6 +4,7 @@ except ImportError:
     from urlparse import urlparse, parse_qs
     from urllib import urlencode
 
+
 def get_query(url):
     parsed = urlparse(url)
     return parsed.query
