@@ -1,9 +1,10 @@
 """
 Usage:
-    login [options] <user> <pwd>
-    login [options] <user> <pwd>
+    login [options] [--user=<user>] [--pwd=<pwd>]
 
 Options:
+    -u --user=<user>
+    -p --pwd=<pwd>
     -l --local    local test
     -j --jolla    login to jolla
 """
@@ -92,8 +93,16 @@ if __name__ == '__main__':
     logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
     args = docpie.docpie(__doc__)
-    user = args['<user>']
-    pwd = args['<pwd>']
+    user = args['--user']
+    pwd = args['--pwd']
+
+    if not user or not pwd:
+        conf = os.path.normpath(os.path.join(__file__, '..', 'config.conf'))
+        with open(conf, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        user = config['user']
+        pwd = config['pwd']
+
     local = args['--local']
     to_jolla = args['--jolla']
 
