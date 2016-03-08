@@ -14,6 +14,7 @@ Options:
 """
 
 import logging
+import os
 from bs4 import BeautifulSoup
 import requests
 from login import login_jolla
@@ -147,10 +148,51 @@ def _find_jolla_cover(url):
         page += 1
 
 
+def save(dic, folder):
+    url_to_path = []
+
+    for key in ('cover', 'banner'):
+        url = dic[key]
+        if not url:
+            continue
+        ext = os.path.splitext(url)[-1]
+        path = os.path.join(folder, key + ext)
+
+        url_to_path.append((url, path))
+
+    for small, big in dic['imgs']:
+
+        if big and big not in (dic['cover'], dic['banner']):
+            fname = _guess_fname(big)
+            url_to_path.append((big, os.path.join(folder, fname)))
+
+        if small and small not in (dic['cover'], dic['banner']):
+            fname = _guess_fname(small)
+            if big:
+                big_name = _guess_fname(big)
+                if big_name == fname:
+                    parts = os.path.splitext(fname)
+                    fname = '-small'.join(parts)
+
+            url_to_path.append((small, os.path.join(folder, fname)))
+
+    for url, path in url_to_path:
+        logger.debug('%s -> %s', url, path)
+        _fname, _headers = urlretrieve(url, path)
+        logger.info(_fname)
+
+
+def _guess_fname(url):
+    parts = url.split('/')
+    return parts[-1] if parts[-1] else parts[-2]
+
 if __name__ == '__main__':
     from pprint import pprint
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('docpie').setLevel(logging.CRITICAL)
+    logging.getLogger('requests').setLevel(logging.CRITICAL)
 
     url = 'https://blog.jolla.com/road-sailfish-os-2-0/'
-    pprint(parse_jolla(url))
+    result = parse_jolla(url)
+    pprint(result)
+    save(result, '/tmp')
