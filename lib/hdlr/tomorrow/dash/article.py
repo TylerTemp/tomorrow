@@ -29,9 +29,4 @@ class ArticleHandler(BaseHandler):
 
         _id = ObjectId(self.get_argument('_id'))
         article = Article.find_one({'_id': _id})
-        if not article:
-            raise tornado.web.HTTPError(404, 'article %s not exist' % _id)
-        title = article.get('title')
-        article.remove()
-
-        return self.write({'error': 0, 'title': title})
+        assert article, '%s does not exist' % _id

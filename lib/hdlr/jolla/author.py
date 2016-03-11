@@ -96,10 +96,10 @@ class AuthorHandler(BaseHandler):
 
     def save_photo(self, content, name):
 
-        path = os.path.join(self.config.root, 'static', 'jolla',
+        path = os.path.join(self.config.root, 'static',
                             'author', name)
 
         with open(path, 'wb') as f:
             f.write(content)
 
-        return '/static/jolla/author/%s' % name
+        return '/static/author/%s' % name

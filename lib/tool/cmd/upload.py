@@ -3,8 +3,8 @@ Usage:
     upload [options] (<dir> | <file>)...
 
 Options:
-    -b, --bucket=<name>    [default: jolla]
-    -p, --prefix=<name>
+    -p, --prefix=<name>    format: <bucket>/<dir>
+                           [default: jolla]
     -k, --key=<key>
     -s, --secret=<secret>
 """
@@ -53,16 +53,42 @@ def upload(data, name=None, bucket=None):
 if __name__ == '__main__':
     import json
     import os
+    from docpie import docpie
 
-    conf = os.path.normpath(os.path.join(__file__, '..', 'config.conf'))
-    with open(conf, 'r', encoding='utf-8') as f:
-        config = json.load(f)
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger('docpie').setLevel(logging.CRITICAL)
 
-    app = config['qiniu']
-    KEY = app['key']
-    SECRET = app['secret']
-    # bucket = get_bucket('jolla')
-    # with open(conf, 'r', encoding='utf-8') as f:
-    #     print(upload(bucket, conf, 'test/test.conf'))
-    with open(conf, 'r', encoding='utf-8') as f:
-        print(upload(f.read(), 'test/test.conf'))
+    args = docpie(__doc__)
+    key = args['--key']
+    sec = args['--secret']
+    bucket_with_dir = args['--prefix']
+    assert bucket_with_dir
+
+    if not (key and sec):
+        conf = os.path.normpath(os.path.join(__file__, '..', 'config.conf'))
+        with open(conf, 'r', encoding='utf-8') as f:
+            config = json.load(f)['qiniu']
+        key = config['key']
+        sec = config['secret']
+
+    bucket, prefix = bucket_with_dir.partition('/')
+    if not prefix:
+        prefix = None
+
+    f_list = set()
+    for each in args['<dir>']:
+        if os.path.isdir(each):
+            logger.info('find dir %s', each)
+            base, files, dirs = next(os.walk(each))
+            f_list.update(os.path.join(base, x) for x in files)
+
+        else:
+            logger.info('find file %s', each)
+            f_list.add(each)
+
+
+    for each in f_list:
+        logger.info('updating %s', each)
+
+        with open(each, 'rb') as f:
+            upload(f.read(), prefix, bucket)

@@ -15,12 +15,12 @@ import logging
 import os
 from bs4 import BeautifulSoup
 import requests
-from login import login_jolla
 
 try:
     from urllib.request import urlretrieve
+    from urllib.parse import urlparse
 except ImportError:
-    from urllib import urlretrieve
+    from urllib import urlretrieve, urlparse
 
 logger = logging.getLogger('new_trans')
 
@@ -184,6 +184,18 @@ def _guess_fname(url):
     parts = url.split('/')
     return parts[-1] if parts[-1] else parts[-2]
 
+
+def parse(url):
+    parsed = urlparse(url)
+    netloc = parsed.netloc
+    if netloc.startswith('blog.jolla.'):
+        return parse_jolla(url)
+    if netloc.startswith('reviewjolla.blogspot.'):
+        return parse_reviewjolla(url)
+
+    raise ValueError('%r not suport' % url)
+
+
 if __name__ == '__main__':
     from pprint import pprint
     logging.basicConfig(level=logging.DEBUG)
@@ -191,6 +203,6 @@ if __name__ == '__main__':
     logging.getLogger('requests').setLevel(logging.CRITICAL)
 
     url = 'https://blog.jolla.com/road-sailfish-os-2-0/'
-    result = parse_jolla(url)
+    result = parse(url)
     pprint(result)
-    save(result, '/tmp')
+    save(result, '/tmp/jolla')

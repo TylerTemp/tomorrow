@@ -88,10 +88,9 @@ class ProfileHandler(BaseHandler):
         if ext:
             name = '%s.%s' % (name, ext)
 
-        fpath = os.path.join(self.config.root, 'static', 'jolla', 'avatar',
-                             name)
+        fpath = os.path.join(self.config.root, 'static', 'avatar', name)
         self.info('save to %s', fpath)
         with open(fpath, 'wb') as f:
             f.write(content)
 
-        return '/static/jolla/avatar/%s' % name
+        return '/static/avatar/%s' % name
