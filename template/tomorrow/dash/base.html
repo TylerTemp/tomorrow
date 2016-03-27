@@ -52,12 +52,12 @@ Hi, {{ user }}{% block subtitle %}{% end %}
 
         <li><a class="{{ 'highlight' if 'home' in highlight else '' }}" data-act="home" href="/dashboard/"><span class="am-icon-home am-icon-fw"></span> {{ _("Main Page")}} </a></li>
         <li><a class="{{ 'highlight' if 'secure' in highlight else '' }}" href="/dashboard/secure/"><span class="am-icon-lock am-icon-fw"></span> {{ _("Security")}} </a></li>
-        {% if SERVICE %}
+        {% if user.service %}
         <!-- Service | start -->
         <li class="admin-parent">
           <a class="am-cf {{ 'highlight' if 'service' in highlight else '' }}" data-act="service" data-am-collapse="{target: '#service'}"><span class="am-icon-cloud"></span> {{ _('Service') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
           <ul class="am-list am-collapse admin-sidebar-sub am-in" id="service">
-            {% if 'ss' in SERVICE %}
+            {% if 'ss' in user.service %}
             <li><a class="{{ 'highlight' if 'service-ss' in highlight else '' }}" href="/dashboard/service/ss/"><span class="am-icon-send am-icon-fw"></span> {{ _('ShadowSocks')}}</a></li>
             {% end %}
           </ul>
@@ -69,17 +69,9 @@ Hi, {{ user }}{% block subtitle %}{% end %}
 
         {% if user.type > user.NORMAL %}
         <li><a class="{{ 'highlight' if 'uploaded' in highlight else '' }}" href="/dashboard/uploaded/"><span class="am-icon-cloud am-icon-fw"></span> {{ _('Uploaded') }} </a></li>
-        <!-- manage | start -->
-        <li class="admin-parent">
-        <a class="am-cf {{ 'highlight' if 'manage' in highlight else '' }}" data-am-collapse="{target: '#manage'}"><span class="am-icon-wrench"></span> {{ _('Manage') }} <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
-        <ul class="am-list am-collapse admin-sidebar-sub am-in" id="manage">
-            <li><a class="{{ 'highlight' if 'info' in highlight else '' }}" href="/dashboard/info/"><span class="am-icon-user am-icon-fw"></span> {{ _("Personal Info")}} </a></li>
-            <li><a class="{{ 'highlight' if 'manage-user' in highlight else '' }}" href="/dashboard/manage/user/"><span class="am-icon-user am-icon-fw"></span> {{ _('User') }}</a></li>
-            <li><a class="{{ 'highlight' if 'manage-message' in highlight else '' }}" href="/dashboard/manage/message/"><span class="am-icon-comment am-icon-fw"></span> {{ _('Message') }}</a></li>
-          </ul>
-        </li>
-        <!-- manage | end -->
+        <li><a class="{{ 'highlight' if 'users' in highlight else '' }}" href="/dashboard/users/"><span class="am-icon-user am-icon-fw"></span> {{ _('Users') }} </a></li>
         {% end %}
+
         <li><a href="/logout/" id="signout"><span class="am-icon-sign-out am-icon-fw"></span> {{ _("Logout")}} </a></li>
         <!-- side_bar | end-->
       </ul>

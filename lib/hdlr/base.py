@@ -46,22 +46,10 @@ class BaseHandler(tornado.web.RequestHandler, Log):
         kwargs.setdefault('JOLLA_HOST', self.config.jolla_host)
         kwargs.setdefault('TOMORROW_HOST', self.config.tomorrow_host)
 
-        # assert 'static_path' not in kwargs, kwargs['static_path']
-        kwargs['static_path'] = self.static_path
-
         return super(BaseHandler, self).render(
             template_name,
             **kwargs
         )
-
-    def static_path(self, url):
-        return '//%s/static/%s' % (self.config.tomorrow_host, quote(url))
-
-    def get_user_path(self, user):
-        return os.path.join(self.config.root, 'static', 'upload', user)
-
-    def get_user_url(self, user):
-        return '/static/upload/%s/' % quote(user)
 
     def is_ajax(self):
         return (self.request.headers.get('X-Requested-With', None) ==

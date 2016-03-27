@@ -1,14 +1,8 @@
 """
 Usage:
-    parse [options] <url>
+    parse [options] <url> [<save-dir>]
 
 Options:
-    --save=<dir>
-    -c, --cover=<img>
-    -b, --banner=<img>
-    -u, --user=<user>
-    -p, --pwd=<pwd>
-    -s, --slug=<slug>
 """
 
 import logging
@@ -197,12 +191,20 @@ def parse(url):
 
 
 if __name__ == '__main__':
-    from pprint import pprint
+    import docpie
+    from pprint import pformat
+    import os
+
     logging.basicConfig(level=logging.DEBUG)
     logging.getLogger('docpie').setLevel(logging.CRITICAL)
     logging.getLogger('requests').setLevel(logging.CRITICAL)
 
-    url = 'https://blog.jolla.com/road-sailfish-os-2-0/'
+    args = docpie.docpie(__doc__)
+    url = args['<url>']
     result = parse(url)
-    pprint(result)
-    save(result, '/tmp/jolla')
+
+    logger.info('\n' + pformat(result))
+
+    save_dir = args['<save-dir>']
+    if save_dir:
+        save(result, os.path.expanduser(save_dir))

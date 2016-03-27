@@ -38,22 +38,29 @@
           </div>
         </article>
 
-        <hr data-am-widget="divider" style="" class="am-divider am-divider-dashed" />
+        <hr data-am-widget="divider" class="am-divider am-divider-dashed" />
+
         <div class="am-container">
           <div class="am-cf author-container">
 
-            {% if author.photo %}
-            <a href="/hi/{{author}}/"><img src="{{ author.photo}}" class="am-fl author-avatar am-circle am-img-thumbnail" /></a>
-            {% end %}
 
-            <a href="/hi/{{author}}/"><h6 class="author-name">{{ author }}</h6></a>
+            <a href="https://github.com/TylerTemp/"><img src="https://dn-tyler.qbox.me/avatar/128x128.png" class="am-fl author-avatar am-circle am-img-thumbnail" /></a>
 
-            {% if 'show_in_article' in author.intro %}
-              {% raw author.get('intro') or '' %}
-            {% end %}
-            {% if 'show_in_article' in author.donate %}
-              {% raw author.get('donate') or '' %}
-            {% end %}
+            <a href="https://github.com/TylerTemp/"><h6 class="author-name">TylerTemp</h6></a>
+
+            <p>{{ 'TylerTemp是一只Python程序员。你可以在这些地方找到我哦：' if locale.code[:2].lower() == 'zh' else 'TylerTemp is a Phthon programmer. You can find me here:'}}
+              <a class="am-icon-github" href="https://github.com/TylerTemp/" target="_blank"></a>
+              <a class="am-icon-wechat" href="https://dn-tyler.qbox.me/mywechat.png" target="_black"></a> &nbsp;
+              <a class="am-icon-weibo" href="http://weibo.com/tylertemp" target="_black"></a> &nbsp;
+              <a class="am-icon-twitter" href="https://twitter.com/Tyler_Temp_" target="_black"></a> &nbsp;
+              <a class="am-icon-google-plus" href="https://plus.google.com/+TylerTemp" target="_black"></a>
+            </p>
+
+            <p>{{'如果你喜欢我的作品，你可以买我一杯啤酒，让我做的更好!' if locale.code[:2].lower() == 'zh' else 'If you like my work, you can buy me a cup of beer so I can make it better!'}}
+              <a href="https://dn-tyler.qbox.me/myalipay.png" target="_blank"><img src="https://dn-tyler.qbox.me/alipay.ico" style="display:inline"></a>&nbsp;
+              | &nbsp;
+              <a href="https://flattr.com/submit/auto?user_id=TylerTemp&url=https%3A%2F%2Ftomorrow.comes.today" target="_blank"><img src="//button.flattr.com/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a></p>
+
           </div>
         </div>
 

@@ -1,20 +1,16 @@
-import re
 import logging
 import time
 from bson import ObjectId
 import functools
-import json
 try:
-    from itertools import zip_longest
     from urllib.parse import urlsplit
 except ImportError:
-    from itertools import izip_longest as zip_longest
     from urlparse import urlsplit
 
 from lib.tool.amazedown_patched import \
     link_icon_tab, link_image_block, image_block, \
     list_gallery, list_avg_gallery, quote_by
-from lib.hdlr.base import BaseHandler, get_exc_plus
+from lib.hdlr.base import BaseHandler
 from lib.tool.md import md2html
 from lib.config.jolla import Config
 from lib.db.jolla import User
@@ -83,6 +79,8 @@ class BaseHandler(BaseHandler):
         elif name == 'jollausers':
             return ('<img src="https://dn-jolla.qbox.me/jollausers.ico" '
                     'style="display: inline">')
+        elif name == 'youtube':
+            return '<span class="am-icon-youtube-play"> </span>'
         else:
             return '<span class="am-badge am-badge-secondary">%s</span>' % name
 

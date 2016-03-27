@@ -22,6 +22,10 @@ class BaseHandler(BaseHandler):
             **kwargs
         )
 
+
+    def get_user_path(self, user):
+        return os.path.join(self.config.root, 'static', 'tomorrow', user)
+
     def get_current_user(self):
         user = self.get_secure_cookie('user')
         if user is None:

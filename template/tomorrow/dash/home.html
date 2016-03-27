@@ -52,10 +52,6 @@
           <td style="width:70%"><a class="am-link-muted" href="/dashboard/secure/">{{ user.email or '' }}</a></td>
         </tr>
         <tr>
-          <td class="am-primary" style="width:30%"><span class="am-icon-eye"> {{ _("Show My Email") }}</span></td>
-          <td style="width:70%"><a class="am-link-muted" href="/dashboard/info/"><span class="{{ 'am-icon-check' if user.show_email else 'am-icon-times' }}"></span></a></td>
-        </tr>
-        <tr>
           <td class="am-primary" style="width:30%"><span class="am-icon-instagram"> {{ _("Avatar") }}</span></td>
           <td style="width:70%"><a class="am-link-muted" href="/dashboard/info/">{% raw '<span class="am-icon-check"></span>' if user.photo else '<span class="am-icon-times"> (%s)</span>' % _('Not Set') %}</a></td>
         </tr>
@@ -64,11 +60,4 @@
   </div>
 </div>
 
-<!-- collection -->
-<ul class="am-avg-sm-1 am-avg-md-4 am-margin am-padding am-text-center admin-content-list ">
-  <li><a href="/dashboard/article/" class="am-text-success"><span class="am-icon-btn am-icon-file-text"></span><br/>{{ _("Articles") }}<br/>{{ article_num }}</a></li>
-  <li><a href="/dashboard/message/" class="am-text-warning"><span class="am-icon-btn am-icon-comments-o"></span><br/>{{ _("Messages") }}<br/>{{ msg_num }}</a></li>
-  <li><a href="/dashboard/img/" class="am-text-danger"><span class="am-icon-btn am-icon-image"></span><br/>{{ _("Images") }}<br/>{{ img_num }}</a></li>
-  <li><a href="/dashboard/file/" class="am-text-secondary"><span class="am-icon-btn am-icon-folder-o"></span><br/>{{ _("Files") }}<br/>{{ file_num }}</a></li>
-</ul>
 {% end %}

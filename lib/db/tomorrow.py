@@ -38,11 +38,11 @@ class User(Base):
         'name': None,
         'email': None,
         'pwd': None,
-        'show_email': False,
+        # 'show_email': False,
         'type': NORMAL,
         'active': False,
-        'intro': {},  # zh, en, show_in_home, show_in_article
-        'donate': {},  # zh, en, show_in_home, show_in_article
+        # 'intro': {},  # zh, en, show_in_home, show_in_article
+        # 'donate': {},  # zh, en, show_in_home, show_in_article
         'photo': None,
         'app': [],  # [{'key', 'scope'}]
         'service': [],  # ['ss', '..']
@@ -86,9 +86,9 @@ class User(Base):
 
     def _validate_attrs(self):
         for field, allowed in (
-            (self.intro, {'zh', 'en', 'show_in_home', 'show_in_article'}),
-            (self.donate, {'zh', 'en', 'show_in_home', 'show_in_article'}),
-            (self.verify, {'code', 'for', 'expire'})
+            # (self.intro, {'zh', 'en', 'show_in_home', 'show_in_article'}),
+            # (self.donate, {'zh', 'en', 'show_in_home', 'show_in_article'}),
+            (self.verify, {'code', 'for', 'expire'}),
         ):
             if not allowed.issuperset(field):
                 raise ValueError('%s contains unexpected field(s) %s' %
@@ -283,10 +283,6 @@ class Article(Base):
         if limit is None:
             return result[offset:]
         return result[offset:offset + limit]
-
-
-class Message(Base):
-    pass
 
 
 class Auth(Base):

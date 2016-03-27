@@ -3,7 +3,7 @@ Usage:
     upload [options] (<dir> | <file>)...
 
 Options:
-    -p, --prefix=<name>    format: <bucket>/<dir>
+    -p, --prefix=<name>    format: <bucket>/<dir>/
                            [default: jolla]
     -k, --key=<key>
     -s, --secret=<secret>
@@ -71,7 +71,10 @@ if __name__ == '__main__':
         key = config['key']
         sec = config['secret']
 
-    bucket, prefix = bucket_with_dir.partition('/')
+    logger.debug('key: %s; secret: %s', key, sec)
+    set_client(key, sec)
+
+    bucket, _, prefix = bucket_with_dir.partition('/')
     if not prefix:
         prefix = None
 
@@ -79,16 +82,26 @@ if __name__ == '__main__':
     for each in args['<dir>']:
         if os.path.isdir(each):
             logger.info('find dir %s', each)
-            base, files, dirs = next(os.walk(each))
+            base, dirs, files = next(os.walk(each))
             f_list.update(os.path.join(base, x) for x in files)
 
         else:
             logger.info('find file %s', each)
             f_list.add(each)
 
+    logger.info(f_list)
+    finished = []
 
     for each in f_list:
         logger.info('updating %s', each)
+        name = prefix + os.path.split(each)[-1]
 
         with open(each, 'rb') as f:
-            upload(f.read(), prefix, bucket)
+            key = upload(f.read(), name, bucket)
+            logger.info(key)
+        if bucket == 'jolla':
+            finished.append('https://dn-jolla.qbox.me/%s' % key)
+            logger.info(finished[-1])
+
+    for link in finished:
+        print(link)
