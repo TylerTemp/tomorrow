@@ -26,9 +26,6 @@ class BaseHandler(BaseHandler):
         kwargs.setdefault('HOST', self.config.host)
         kwargs.setdefault('TOMORROW_HOST', self.config.tomorrow_host)
 
-        assert 'static_path' not in kwargs
-        kwargs['static_path'] = self.static_path
-
         return super(BaseHandler, self).render(template_name, **kwargs)
 
     def md2html(self, md):
