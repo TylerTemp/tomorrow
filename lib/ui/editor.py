@@ -16,9 +16,7 @@ class WysBarModule(tornado.web.UIModule):
 
 class MdBarModule(tornado.web.UIModule):
 
-    def render(self, upload_img=None, upload_file=None):
+    def render(self):
         return self.render_string(
-            'uimodule/mdbar.html',
-            upload_img=upload_img,
-            upload_file=upload_file,
+            'uimodule/mdbar.html'
         )

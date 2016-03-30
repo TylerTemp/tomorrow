@@ -41,70 +41,12 @@
           <button class="am-btn am-btn-secondary" id="md-img-url-insert">{{ _("insert") }}</button>
           <button class="am-btn am-btn-success" id="md-img-url-preview">{{ _("preview") }}</button>
         </div>
-      {% if upload_img is not None %}
-        <!-- select an uploaded image -->
-        <div class="am-form-group">
-          <label for="md-img-select">{{ _("Select an uploaded file") }}</label>
-          <select id="md-img-select">
-          {% for name, link in upload_img.items() %}
-            <option value="{{ link }}">{{ name }}</option>
-          {% end %}
-          </select>
-          <button class="am-btn am-btn-secondary" id="md-img-select-insert">{{ _("insert") }}</button>
-        </div>
-        <!-- upload an image -->
-        <div class="am-form-group">
-          <label for="md-img-upload">{{ _("Upload an image") }}</label>
-          <input type="file" class="am-form-field" id="md-img-upload">
-          <div class="am-progress am-progress-striped nobottom">
-            <div class="am-progress-bar am-progress-bar-success" id="md-img-upload-bar" style="width: 0%"></div>
-          </div>
-          <button class="am-btn am-btn-secondary"
-              id="md-img-upload-insert"
-              data-am-loading="{spinner: 'gear', loadingText: '', resetText: '{{ _("insert") }}'}">
-            {{ _("insert") }}
-          </button>
-        </div>
-      {% end %}
       <div id="md-img-error-panel">
       </div>
       <div id="md-img-preview">
       </div>
     </div>
   </div>
-
-  {% if upload_file is not None %}
-
-  <div class="am-dropdown" id="md-file-dropdown" data-am-dropdown>
-    <button class="am-btn am-btn-primary am-dropdown-toggle" data-role='upload' data-am-popover="{content: '{{ _('Upload File') }}', trigger: 'hover focus'}"><i class="am-icon-upload"></i></button>
-
-    <div class="am-dropdown-content">
-
-      <div class="am-form-group">
-        <label for="md-file-upload">{{ _("Upload a file") }}</label>
-        <input type="file" class="am-form-field" id="md-file-upload">
-        <div class="am-progress am-progress-striped nobottom">
-          <div class="am-progress-bar am-progress-bar-success" id="md-file-bar" style="width: 0%"></div>
-        </div>
-        <div id="md-file-error-panel">
-        </div>
-      </div>
-
-      <div class="am-form-group">
-        <label for="md-file-select">{{ _("Select an uploaded file") }}</label>
-        <select id="md-file-select">
-        {% for name, link in upload_file.items() %}
-          <option value="{{ link }}">{{ name }}</option>
-        {% end %}
-        </select>
-        <p class="am-form-field" id="md-file-show">
-        {{ _('Select a file above to show the url') }}
-        </p>
-      </div>
-
-    </div>
-  </div>
-  {% end %}
 
 </div>
 <div class='am-btn-group'>

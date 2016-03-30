@@ -120,7 +120,7 @@ class UploadedHandler(BaseHandler):
     def post(self, path=None):
         self.check_xsrf_cookie()
 
-        action = self.get_argument('action')
+        action = self.get_argument('action', None)
         if action == 'delete':
             return self.delete()
         elif action == 'move':

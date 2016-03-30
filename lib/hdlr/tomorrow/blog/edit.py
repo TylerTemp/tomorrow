@@ -76,7 +76,6 @@ class EditHandler(BaseHandler):
         article.content = content
         article.description = description
         article.author = self.current_user.name
-        article.show_email = self.get_argument('show_email', False) or False
         article.tag = tag
         article.banner = self.get_argument('banner', None)
         article.cover = self.get_argument('cover', None)

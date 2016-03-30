@@ -1,4 +1,4 @@
-$(function(evt)
+$(function()
 {
   var _adjust_width = function(element, width)
   {
@@ -208,7 +208,7 @@ $(function(evt)
     });
   });
 
-  $('form').submit(function(evt)
+  $('form#content').submit(function(evt)
   {
     evt.preventDefault();
     $form = $(this);
@@ -246,7 +246,46 @@ $(function(evt)
 
   });
 
-  console.log('edit.js actived');
-});
+  $('#upload-file').find('form').submit(function(event)
+  {
+    event.preventDefault();
+    var $form = $(this);
+    var $submit= $form.find('[type="submit"]');
+    var $fieldset = $form.find('fieldset');
 
-console.log('edit.js loaded');
+    var values = new FormData(this);
+    $.each($form.find('input[type="file"]')[0].files, function(i, file) {
+     values.append('file-' + i, file);
+    });
+
+    $submit.button('loading');
+    $fieldset.prop('disabled', true);
+
+    $.ajax(
+      $form.prop('action'),
+      settings={
+        type: $form.prop('method'),
+        processData: false,
+        contentType: false,
+        beforeSend: function(jqXHR, settings)
+        {
+          jqXHR.setRequestHeader('X-Xsrftoken', $.AMUI.utils.cookie.get('_xsrf'));
+        }
+    }).done(function(data, textStatus, jqXHR)
+    {
+      // TODO: handle this
+      console.log(data);
+      window.location.href = $.parseJSON(data).redirect;
+    }).fail(function(jqXHR, textStatus, errorThrown)
+    {
+      // TODO: handle this
+      alert(jqXHR.status + ': ' + errorThrown);
+    }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
+    {
+      $fieldset.prop('disabled', false);
+      $submit.button('reset');
+    });
+
+  })
+
+});
