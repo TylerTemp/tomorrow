@@ -1,3 +1,7 @@
+String.prototype.endsWith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
 $(function()
 {
   var _adjust_width = function(element, width)
@@ -248,10 +252,32 @@ $(function()
 
   $('#upload-file').find('form').submit(function(event)
   {
+
     event.preventDefault();
     var $form = $(this);
     var $submit= $form.find('[type="submit"]');
     var $fieldset = $form.find('fieldset');
+
+    var set_status = function(name, error)
+    {
+      console.log(name + ': ' + error);
+      var $elem;
+      if(error)
+        $elem = $(
+          '<div class="am-alert am-alert-warning" data-am-alert>' +
+            '<button type="button" class="am-close">&times;</button>' +
+            '<p>' + name + ': ' + _('Upload failed') + '</p>' +
+          '</div>');
+      else
+        $elem = $(
+          '<div class="am-input-group">' +
+            '<input type="text" class="am-form-field" value="' + name + '"/>' +
+            '<a class="am-input-group-label" href="' + name + '"><i class="am-link-external"></i></a>' +
+          '</div>'
+        );
+
+      $elem.appendTo($('#upload-file').find('.am-modal-dialog'));
+    };
 
     var values = new FormData(this);
     $.each($form.find('input[type="file"]')[0].files, function(i, file) {
@@ -265,6 +291,7 @@ $(function()
       $form.prop('action'),
       settings={
         type: $form.prop('method'),
+        data: values,
         processData: false,
         contentType: false,
         beforeSend: function(jqXHR, settings)
@@ -273,13 +300,52 @@ $(function()
         }
     }).done(function(data, textStatus, jqXHR)
     {
-      // TODO: handle this
       console.log(data);
-      window.location.href = $.parseJSON(data).redirect;
+      var prefix = '/static/tomorrow/TylerTemp/';
+      folder = values['folder'];
+      if(folder)
+      {
+        prefix += folder;
+        if (!prefix.endsWith('/'))
+          prefix += '/';
+      }
+
+      $.each(data.success, function(_, value){ set_status(prefix + value.name) });
     }).fail(function(jqXHR, textStatus, errorThrown)
     {
-      // TODO: handle this
-      alert(jqXHR.status + ': ' + errorThrown);
+      console.log(jqXHR);
+      console.log(jqXHR.status + ': ' + errorThrown);
+      var msg;
+      try
+      {
+        var result = $.parseJSON(jqXHR.responseText);
+        msg = result.message;
+        if (result.error == -1)
+          throw "Server Error";
+
+        var prefix = '/static/tomorrow/TylerTemp/';
+        folder = values['folder'];
+        if(folder)
+        {
+          prefix += folder;
+          if (!prefix.endsWith('/'))
+            prefix += '/';
+        }
+
+        $.each(result.success, function(_, value){ set_status(prefix + value.name); });
+        $.each(result.errors, function(_, value){ set_status(value.name, true); });
+      }
+      catch (e)
+      {
+        if (!msg)
+          msg = _('Sorry, a server error occured, please refresh and retry') +
+               ' (' + jqXHR.status + ': ' + errorThrown + ')';
+      }
+
+      $('<div class="am-alert am-alert-danger" data-am-alert>' +
+            '<button type="button" class="am-close">&times;</button>' +
+            '<p>' + msg + '</p>' +
+          '</div>').appendTo($('#upload-file').find('.am-modal-dialog'));
     }).always(function(data_jqXHR, textStatus, jqXHR_errorThrown)
     {
       $fieldset.prop('disabled', false);

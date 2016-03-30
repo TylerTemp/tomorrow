@@ -20,6 +20,7 @@ class BaseHandler(BaseHandler):
 
     config = Config()
     logging.getLogger('jolla')
+    error_template = 'jolla/error.html'
 
     def render(self, template_name, **kwargs):
         kwargs.setdefault('user', self.current_user)
@@ -106,17 +107,6 @@ class BaseHandler(BaseHandler):
             self.logout()
             return None
         return u
-
-    def write_error(self, status_code, **kwargs):
-        msg = self.get_error(status_code, **kwargs)
-        if self.is_ajax():
-            return self.write({'error': -1, 'code': -1, 'message': msg})
-
-        return self.render(
-            'jolla/error.html',
-            code=status_code,
-            msg=msg
-        )
 
 
 class EnsureUser(object):

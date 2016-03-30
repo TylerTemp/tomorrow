@@ -13,6 +13,8 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 
 class BaseHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.utiltiy.sina')
+    error_template = 'utility/sina/error.html'
+
 
     def check_xsrf_cookie(self):
         return True
@@ -47,13 +49,3 @@ class BaseHandler(BaseHandler):
         protocol = request.protocol
         split_result = (protocol, host, '/utility/sina/callback/', '', '')
         return urlunsplit(split_result)
-
-    def write_error(self, status_code, **kwargs):
-        logging.info('%s' % get_exc_plus())
-        err, ins, trace = kwargs['exc_info']
-        message = str(ins)
-        return self.render(
-            'utility/sina/error.html',
-            code=status_code,
-            message=message
-        )

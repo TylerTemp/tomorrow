@@ -177,7 +177,7 @@ class UploadedHandler(BaseHandler):
         return self.write({'error': error, 'message': message})
 
     def save(self):
-        path = self.get_argument('folder')
+        path = self.get_argument('folder', '')
         folder = os.path.join(self.config.root, 'static', 'tomorrow',
                               self.current_user.name, path)
 

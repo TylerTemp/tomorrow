@@ -23,6 +23,7 @@ from lib import Log
 class BaseHandler(tornado.web.RequestHandler, Log):
     config = Config()
     logger = logging.getLogger()
+    error_template = 'error.html'
 
     def get(self, *a, **k):
         splited = urlsplit(self.request.uri)
@@ -64,21 +65,6 @@ class BaseHandler(tornado.web.RequestHandler, Log):
         for dirpath, dirnames, filenames in os.walk(path):
             return list(filenames)
 
-    def get_imgs_and_files(self, user):
-        path = self.get_user_path(user)
-        link = self.get_user_url(user)
-        imgs = self._list_path(os.path.join(path, 'img'))
-        files = self._list_path(os.path.join(path, 'file'))
-        img_name_and_link = {
-            name: urljoin(link, 'img/%s' % quote(name))
-            for name in imgs}
-
-        file_name_and_link = {
-            name: urljoin(link, 'file/%s' % quote(name))
-            for name in files}
-
-        return img_name_and_link, file_name_and_link
-
     def get_user_locale(self):
         arg = self.get_argument('lang', None)
         if arg is not None:
@@ -93,23 +79,24 @@ class BaseHandler(tornado.web.RequestHandler, Log):
         self.debug('%s - %s' % (r.remote_ip, r.host))
         self.error('%s' % get_exc_plus())
 
+        self.clear()
+        self.set_status(status_code)
+        message = self.get_error(status_code, **kwargs)
+
         if self.is_ajax():
-            self.clear()
-            self.set_status(status_code)
-            self.write(
-                json.dumps({'code': -1, 'message': 'Unknown Error',
-                            'error': -1}))
+            self.debug('render error of ajax')
+            self.write({'code': -1, 'message': message, 'error': -1})
             return
 
-        msg = self.get_error(status_code, **kwargs)
+        self.debug('render error of html')
         return self.render(
-            'error.html',
+            self.error_template,
             code=status_code,
-            msg=msg,
+            msg=message,
         )
 
     def get_error(self, status_code, **kwargs):
-        msg = None
+        msg = 'Unknown Error'
 
         if self.settings['debug']:
             if self.is_ajax():
@@ -117,8 +104,7 @@ class BaseHandler(tornado.web.RequestHandler, Log):
                 return (getattr(exc_info[1], 'log_message', None) or
                         str(exc_info[1]))
 
-            msg = ('<pre><code>%s</code></pre>' %
-                   tornado.escape.xhtml_escape(get_exc_plus()))
+            return get_exc_plus()
 
         elif status_code == 404:
             msg = 'Page Not Found'

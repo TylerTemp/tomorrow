@@ -12,6 +12,7 @@ from lib.hdlr.tomorrow.base import BaseHandler
 
 class BaseHandler(BaseHandler):
     logger = logging.getLogger('tomorrow.dash')
+    error_template = 'tomorrow/dash/error.html'
 
     def render(self, template_name, **kwargs):
         if 'user' not in kwargs:
@@ -23,13 +24,4 @@ class BaseHandler(BaseHandler):
         return super(BaseHandler, self).render(
             template_name,
             **kwargs
-        )
-
-    def write_error(self, status_code, **kwargs):
-        msg = self.get_error(status_code, **kwargs)
-
-        return self.render(
-            'tomorrow/dash/error.html',
-            code=status_code,
-            msg=msg
         )
