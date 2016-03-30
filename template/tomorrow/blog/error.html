@@ -6,7 +6,9 @@
   <div class="am-g am-g-fixed">
     <h1 class="am-center" style="text-align: center">It's dead, Jim!</h1>
     {% module ErrorImage(code) %}
-    {% raw msg or 'Unknown Error' %}
+    <pre>
+      {% raw msg or 'Unknown Error' %}
+    </pre>
     <hr />
     <p class="am-padding-horizontal-lg">
       {{ _("My blog is broken, could you please tell me by") }}:

@@ -14,5 +14,5 @@
 
 {% block content %}
   {% module ErrorImage(code) %}
-  <div class="am-padding">{% raw msg or 'Unknown Error'  %}</div>
+  <pre class="am-padding">{% raw msg or 'Unknown Error'  %}</pre>
 {% end %}

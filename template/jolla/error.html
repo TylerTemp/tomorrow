@@ -30,9 +30,9 @@
     <div class="shadow am-padding-xl">
       <h1>{{ _('Oops, I just swallowed a bug') }} :(</h1>
       {% module ErrorImage(code) %}
-      <p class="content">
+      <pre class="content">
         {% raw msg or "Unknown Error" %}
-      </p>
+      </pre>
       <hr />
 
       <p class="am-padding-horizontal-lg">

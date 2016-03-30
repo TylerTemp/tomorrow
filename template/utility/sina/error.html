@@ -8,6 +8,6 @@
 <div class="am-g am-g-fixed am-padding-xl" style="text-align: center">
   <h1>Oops, error {{ code }}</h1>
   {% module ErrorImage(code) %}
-  <p>{{ message }}</p>
+  <pre>{% raw message %}</pre>
 </div>
 {% end %}

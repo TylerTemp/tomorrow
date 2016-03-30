@@ -9,5 +9,7 @@
 
 {% block content %}
   {% module ErrorImage(code) %}
-  {% raw msg or 'Unknown Error' %}
+  <pre>
+    {% raw msg or 'Unknown Error' %}
+  </pre>
 {% end %}
