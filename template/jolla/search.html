@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block main_title %}
+  {{ _('Search for {key}').format(key=key) }} |
+{% end %}
+
+{% block neck %}
+<style>
+  b.match {
+    background-color: yellow;
+  }
+  .box {
+    background-color: white;
+  }
+  pre.am-panel-bd {
+    background-color: unset;
+    border: unset;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+</style>
+{% end %}
+
+{% block stomach %}
+
+<div class="am-g am-g-fixed">
+  <div class="am-padding box">
+    <h1 class="am-text-center">Search for <mark>{{ key }}</mark></h1>
+    <hr />
+
+    {% for each in result %}
+
+    <div class="am-panel am-panel-default">
+      <div class="am-panel-hd">
+        <a href="//{{ HOST }}/{{ each.slug }}/" target="_blank">
+          <h2 class="am-panel-title">面板标题</h2>
+        </a>
+      </div>
+      <pre class="am-panel-bd">
+        {% raw each.highlights('content') or each.get('content')[:120] %}
+      </pre>
+      {% if each.tag %}
+      <div class="am-panel-footer">{% module Tag(each.tag) %}</div>
+      {% end %}
+    </div>
+    {% end %}
+  </div>
+</div>
+{% end %}
+
+{% block leg %}
+{% end %}

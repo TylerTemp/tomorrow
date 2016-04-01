@@ -75,8 +75,6 @@ if __name__ == '__main__':
     set_client(key, sec)
 
     bucket, _, prefix = bucket_with_dir.partition('/')
-    if not prefix:
-        prefix = None
 
     f_list = set()
     for each in args['<dir>']:

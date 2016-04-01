@@ -23,6 +23,28 @@ $(function()
     }
   });
 
+  var $search = $('form.search');
+  var $search_input = $search.find('[name="search"]');
+  var $submit = $search.find('[type="submit"]');
+  $search_input.focus(function(event){
+    $search.css('opacity', '1');
+  }).blur(function(event){
+    $search.css('opacity', '0.3');
+  });
+  $search.submit(function(event)
+  {
+    $submit.button('loading');
+    event.preventDefault();
+    var search = $search_input.val();
+    var plus_search = search.replace(/\s/g, '+');
+    var url = $search.prop('action');
+    if (url[url.length - 1] != '/')
+        url += '/';
+    url += (encodeURI(plus_search) + '/');
+    window.open(url, $search.prop('target')).focus();
+    $submit.button('reset');
+  });
+
   $('.nav-icon1,.nav-icon2,.nav-icon3,.nav-icon4').click(function(){
     $(this).toggleClass('open');
   });

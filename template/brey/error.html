@@ -9,7 +9,5 @@
 
 {% block content %}
   {% module ErrorImage(code) %}
-  <pre>
-    {% raw msg or 'Unknown Error' %}
-  </pre>
+  {% raw ('<pre><code>%s</code></pre>' % msg) if msg and msg.startswith('Traceback') else '<p class="content">%s</p>' % (msg or "Unknown Error") %}
 {% end %}

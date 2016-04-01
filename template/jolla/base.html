@@ -39,6 +39,7 @@
 <div class="am-u-sm-centered am-g-fixed am-g-collapse" id="blog">
 
   <div class="am-cf">
+
     <div class="am-fr" data-am-sticky="{top:40}">
       <div class="nav-icon2" data-am-offcanvas="{target: '#nav-menu'}">
         <span></span>
@@ -49,7 +50,21 @@
         <span></span>
       </div>
     </div>
+
+    <form class="am-form-inline am-fr search" action="/search/" target="_blank" method="get" style="margin-top: -8px; opacity: 0.3">
+      <fieldset style="display: inline">
+        <div class="am-input-group am-input-group-primary am-input-group-sm">
+          <input type="text" name="search" class="am-form-field" placeholder="{{ _('Search') }}" required="required">
+          <span class="am-input-group-btn">
+            <button class="am-btn am-btn-primary" type="submit" data-am-loading="{spinner: 'spinner', loadingText: ''}"><span class="am-icon-search"></span></button>
+          </span>
+        </div>
+      </fieldset>
+    </form>
+
   </div>
+
+
 
   <div class="am-u-sm-12">
     <div id="nav-menu" class="am-offcanvas">
@@ -87,6 +102,8 @@
             <li class="{{ 'am-active' if locale.code[:2] == 'zh' else '' }}"><a href="./?lang=zh" data-lang="zh"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'zh' else '' }}">ZH</span> {{ _('Chinese') }}</a></li>
             <li class="{{ 'am-active' if locale.code[:2] == 'en' else '' }}"><a href="./?lang=en" data-lang="en"><span class="am-badge {{ 'am-badge-warning' if locale.code[:2] == 'en' else '' }}">EN</span> {{ _('English') }}</a></li>
             <li class="am-nav-header"></li>
+            <li>
+            </li>
             <li><a href="//{{ TOMORROW_HOST }}">« tomorrow</a></li>
           </ul>
         </div>

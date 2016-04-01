@@ -12,20 +12,19 @@ sys.path.pop(0)
 
 logger = stdoutlogger(None, DEBUG)
 
-u = re.compile(r'<u>(?P<content>.+?)</u>')
-
-def fix_u():
+def fix_empty_tag():
     for each in Article.collection.find({}):
-        content = each['content']
-        result, times = u.subn(r'__\1__', content)
-        if times:
-            logger.info(each['slug'])
-            each['content'] = result
-            db_result = Article.collection.replace_one({'_id': each['_id']}, each)
-            logger.info(db_result.matched_count)
-        # if u:
-        #     print(u)
-        #     print(each['slug'])
+        old_tag = each.get('tag', [])
+        tag = list(filter(lambda x: bool(x), old_tag))
+        if old_tag != tag:
+            logger.info('%s: %s -> %s', each['slug'], old_tag, tag)
+            if not tag:
+                each.pop('tag', None)
+            else:
+                each['tag'] = tag
+
+            Article.collection.replace_one({'_id': each['_id']}, each)
+
 
 if __name__ == '__main__':
-    fix_u()
+    fix_empty_tag()
