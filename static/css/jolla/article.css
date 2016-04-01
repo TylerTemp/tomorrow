@@ -89,3 +89,8 @@ ruby > rt {
 .admonition p:last-child {
   margin-bottom: 0;
 }
+
+strong.underline {
+  font-weight: normal;
+  text-decoration: underline;
+}

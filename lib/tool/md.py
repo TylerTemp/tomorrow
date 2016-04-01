@@ -6,6 +6,7 @@ import markdown
 # import markdown_newtab
 import nlcontinuous
 import md_video
+import underline
 # from ..markdown_gridtables import mdx_grid_tables
 
 logger = logging.getLogger('MARKDOWN')

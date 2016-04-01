@@ -13,3 +13,4 @@ git+git://github.com/TylerTemp/docpie.git
 git+git://github.com/TylerTemp/md-nlcontinuous.git
 git+git://github.com/TylerTemp/amazedown.git
 git+git://github.com/TylerTemp/md-video.git
+git+git://github.com/TylerTemp/md-underline.git
