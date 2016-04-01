@@ -2,7 +2,7 @@
 
 website code for [tomorrow.comes.today](http://tomorrow.comes.today) and [jolla.comes.today](http://jolla.comes.today)
 
-Note it's developing and hasn't finished.
+Note it's developing and hasn't finished yet.
 
 # Install
 
@@ -27,18 +27,11 @@ python3 main.py -p 8000
 
 # Configuration & multiprocess
 
-run the following command to generate a `config.conf` file in the main folder
+all default configurations are under source code of
+`lib/config/`, please read the source code of that part to change the
+configuration by creating a `.conf` file
 
-```bash
-python lib/config.py
-```
-
-(this `config.conf` is in json format. Read the comment for details)
-
-open `config.conf`, change `"ports": [8001, 8002, 8003, 8004]` to
-any ports you want to run
-
-then run multiprocess by
+To run multi-processes:
 
 ```bash
 python3 lib/tool/reboot.py
@@ -55,12 +48,16 @@ use `python main.py --help` for more detail
 
 *   [python3](http://python.org) - A programming language that lets you work quickly and integrate systems more effectively
 *   [python-tornado](http://www.tornadoweb.org/en/stable/) - A Python web framework and asynchronous networking library
-*   [python-docopt](https://github.com/docopt/docopt) - A easy way to create beautiful Python command-line interfaces
+*   [python-docpie](https://github.com/TylerTemp/docpie.git) - An easy and Pythonic way to create your POSIX command line
 *   [MongoDB](https://www.mongodb.org/) & [python-pymongo](https://api.mongodb.org/python/current/) - A powerful NoSQL database and its python interact implement
 *   [python-passlib](https://bitbucket.org/ecollins/passlib) - A python encrypt/decrypt module
 *   [python-bleach](https://github.com/jsocol/bleach) - an HTML sanitizing library that escapes or strips markup and attributes based on a white list
 *   [python-html2text](https://github.com/aaronsw/html2text) - A Python script that converts a page of HTML into clean, easy-to-read plain ASCII text(MarkDown format)
 *   [python-markdown](https://pythonhosted.org/Markdown/) - A Python implementation of John Gruber’s Markdown
+*   [python-markdown-nlcontinuous](https://github.com/TylerTemp/md-nlcontinuous.git) - Python Markdown extension which prevents white space after line break in Chinese
+*   [python-markdown-amazedown](https://github.com/TylerTemp/amazedown.git) - Python-Markdown plug-in to support Amaze-UI style HTML UI Framework
+*   [python-markdown-video](https://github.com/TylerTemp/md-video) - video block(tag) extension for Python-Markdown
+*   [python-markdown-underline](https://github.com/TylerTemp/md-underline) - underline plugin for python markdown
 *   [python-BeautifulSoup4](http://www.crummy.com/software/BeautifulSoup/bs4/) - A Python library designed for quick turnaround projects like screen-scraping
 *   [weibo](https://pypi.python.org/pypi/weibo/0.2.2) - Sina Weibo API for python
 *   [amazeUI](http://amazeui.org/) - A Chinese friendly lightweight mobile first web frame
