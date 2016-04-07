@@ -1,10 +1,10 @@
 body {
-    background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),
-                      url("https://dn-jolla.qbox.me/blog_bg_base.jpg");
-    background-repeat: no-repeat, repeat;
-    background-size: 100% auto, auto auto;
-    background-position: right top;
-    background-color: #5BA2A1;
+    /*background-image: url("https://dn-jolla.qbox.me/blog_bg_top.jpg"),*/
+                      /*url("https://dn-jolla.qbox.me/blog_bg_base.jpg");*/
+    /*background-repeat: no-repeat, repeat;*/
+    /*background-size: 100% auto, auto auto;*/
+    /*background-position: right top;*/
+    background-color: #3a7ba2;
 }
 
 header img {

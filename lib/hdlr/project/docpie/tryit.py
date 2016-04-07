@@ -67,7 +67,10 @@ class TryHandler(BaseHandler):
             result.update(target_example)
         else:
             doc = self.get_argument('doc', None)
-            result['doc'] = doc or None
+            if doc:
+                result['doc'] = self.replace(doc)
+            else:
+                result['doc'] = doc
             argv = self.get_argument('argv', None)
             result['argv'] = argv
             if self.get_argument('run', False):
@@ -95,7 +98,7 @@ class TryHandler(BaseHandler):
                         pie = docpie.docpie(doc, args, **config)
                     except BaseException as e:
                         # in pypy3, sys.exit() gives e.args[0] = None
-                        output = e.args[0] or ''
+                        output = (e.args[0] if e.args else '') or ''
                     else:
                         output = str(pie)
 
@@ -161,3 +164,10 @@ class TryHandler(BaseHandler):
 
         return False
 
+    def replace(self, doc):
+        # Firefox will replace '%0D%0A' ('\r\n') as '%20' (' ') in url
+        # in GET, which will cause format problem
+        # So the trick is use '\\n' and replace it as '\n'
+        if self.get_argument('replace', True):
+            return doc.replace('\\n', '\n')
+        return doc
