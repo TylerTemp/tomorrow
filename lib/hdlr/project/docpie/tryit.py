@@ -68,9 +68,9 @@ class TryHandler(BaseHandler):
         else:
             doc = self.get_argument('doc', None)
             if doc:
-                result['doc'] = self.replace(doc)
-            else:
-                result['doc'] = doc
+                doc = self.replace(doc)
+
+            result['doc'] = doc
             argv = self.get_argument('argv', None)
             result['argv'] = argv
             if self.get_argument('run', False):
