@@ -37,9 +37,11 @@ def parse_reviewjolla(url):
     body = soup.find(None, {'class': 'post-body'})
     # logger.debug(body.text)
 
-    h2_tag = body.find('h2')
-    banner = h2_tag.find('img').get('src')
-    cover = h2_tag.find('a').get('href')
+    banner_img = body.find('img')
+    banner = banner_img.get('src')
+    a = banner_img.parent
+    assert a.name == 'a'
+    cover = a.get('href')
     logger.debug(banner)
     logger.debug(cover)
     result['banner'] = banner
