@@ -9,6 +9,10 @@ import logging
 import os
 from bs4 import BeautifulSoup
 import requests
+import socks
+import socket
+socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 8000)
+socket.socket = socks.socksocket
 
 try:
     from urllib.request import urlretrieve

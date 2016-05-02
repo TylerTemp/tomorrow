@@ -1,6 +1,6 @@
 $(function()
 {
-  var $form = $('form');
+  var $form = $('form#redirect');
 
   var edit_handler = function(event)
   {

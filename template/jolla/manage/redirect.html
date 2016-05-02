@@ -26,7 +26,7 @@
   <h1 class="am-text-center">{{ _('Manage Redirect') }}</h1>
   <hr />
 
-  <form class="am-form am-form-horizontal" method="post">
+  <form class="am-form am-form-horizontal" method="post" id="redirect">
     <fieldset>
       {% raw xsrf_form_html() %}
       <input name="action" value="" style="display: none;"/>
