@@ -29,7 +29,7 @@ from lib.config.base import Config
 
 from lib.hdlr import BlackListHandler, RedirectHandler,\
                      StaticFileHandler, BaseHandler
-from lib.hdlr import brey, jolla, tomorrow, api, utility
+from lib.hdlr import brey, jolla, tomorrow, api, utility, mail
 from lib.hdlr.project import docpie, wordz
 
 from lib.ui import WysBarModule, MdBarModule, ErrorImageModule, \
@@ -166,6 +166,7 @@ class Application(tornado.web.Application):
             (r'/brey/(?P<slug>[^/]+)/', brey.BreyHandler),
 
             (r'/utility/pts/', utility.TakeOutCalculateHandler),
+            (r'/mail/', mail.MailHandler),
 
             (r'.*?\.php$(?i)', BlackListHandler),
             (r'.*', BaseHandler),

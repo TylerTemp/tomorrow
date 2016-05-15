@@ -1,0 +1,46 @@
+{% extends "../amaze_jquery_base.html" %}
+
+{% block head_end %}
+<style>
+  fieldset {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+</style>
+{% end %}
+
+{% block body %}
+<div class="am-g am-g-fixed am-padding">
+  <div class="am-panel am-panel-default">
+    <form class="am-form am-panel-bd" action="https://exmail.qq.com/cgi-bin/login" method="post">
+      <fieldset>
+        <legend>Login</legend>
+        <!--<input name="firstlogin" value="false" type="hidden">-->
+        <!--<input name="errtemplate" value="dm_loginpage" type="hidden">-->
+        <input name="aliastype" value="other" type="hidden">
+        <!--<input name="dmtype" value="bizmail" type="hidden">-->
+        <!--<input name="p" type="hidden">-->
+        <input name="domain" value="comes.today" type="hidden">
+
+        <div class="am-form-group">
+          <div class="am-input-group">
+            <span class="am-input-group-label"><i class="am-icon-fw am-icon-envelope"></i></span>
+            <input type="text" class="am-form-field" name="uin" placeholder="{{ _('Account') }}" title="{{ _('Email Address') }}" required="required" />
+            <span class="am-input-group-label am-icon-at "> comes.today</span>
+          </div>
+        </div>
+        <div class="am-form-group">
+          <div class="am-input-group">
+            <span class="am-input-group-label"><i class="am-icon-fw am-icon-lock"></i></span>
+            <input type="password" class="am-form-field" name="pwd" placeholder="{{ _('Password') }}" title="{{ _('Password') }}" required="required" />
+            <a class="am-input-group-label am-icon-question-circle" title="{{ _('Find my password') }}" href="https://exmail.qq.com/cgi-bin/readtemplate?check=false&amp;t=bizmail_orz"></a>
+          </div>
+        </div>
+        <div class="am-form-group am-cf">
+          <button class="am-fr am-btn am-btn-primary am-icon-paper-plane" title="{{ _('Login') }}"></button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
+{% end %}
