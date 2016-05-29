@@ -12,3 +12,6 @@ def generate():
     if py3:
         result = result.decode('utf-8')
     return re.sub(r'[/#=?%\+]', '-', result)
+
+if __name__ == '__main__':
+    print(generate())

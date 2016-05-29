@@ -7,6 +7,7 @@ Options:
 
 import logging
 import os
+import json
 from bs4 import BeautifulSoup
 import requests
 import socks
@@ -148,6 +149,8 @@ def _find_jolla_cover(url):
 
 def save(dic, folder):
     url_to_path = []
+    with open(os.path.join(folder, 'meta.json'), 'w', encoding='utf-8') as f:
+        json.dump(dic, f)
 
     for key in ('cover', 'banner'):
         url = dic[key]

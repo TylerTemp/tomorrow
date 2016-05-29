@@ -11,10 +11,11 @@ article h1 {
   text-align: center;
 }
 
-article p img {
+.am-article-bd p img {
   max-width: 100%;
   height: auto;
-  /*margin: 0em 0em 0em -2em;*/
+  display: inline !important;
+  margin: 0 2px 0 2px;
 }
 
 #page-box {
