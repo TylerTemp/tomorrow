@@ -2,7 +2,7 @@ import os
 import tempfile
 import logging
 import jieba
-from jieba.analyse import ChineseAnalyzer
+from jieba.analyse.analyzer import ChineseAnalyzer
 import whoosh.highlight
 from whoosh.highlight import FIRST
 from whoosh.fields import Schema, TEXT, ID, KEYWORD

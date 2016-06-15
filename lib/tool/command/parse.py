@@ -6,12 +6,12 @@ Options:
 """
 
 import logging
-import os
 import json
 from bs4 import BeautifulSoup
 import requests
 import socks
 import socket
+import html2text
 socks.setdefaultproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 8000)
 socket.socket = socks.socksocket
 
@@ -69,6 +69,7 @@ def parse_reviewjolla(url):
         imgs.append((small, big))
 
     result['author'] = 'Simo Ruoho'
+    result['content'] = html2text.html2text(str(body))
 
     return result
 
@@ -79,7 +80,7 @@ def parse_jolla(url):
     #     soup = BeautifulSoup(f.read(), 'html5lib')
     #     # f.write(soup.prettify())
 
-    result = {}
+    result = {'url': url}
 
     img_div = soup.find(None, {'class': 'blog-img-wrap'})
     banner = img_div.find('img').get('src')
@@ -91,6 +92,7 @@ def parse_jolla(url):
     for a_tag in tags_tag.find_all('a'):
         tags.add(a_tag.text.lower().strip())
     logger.debug(tags)
+    result['tags'] = list(tags)
 
     author = soup.find(None, {'class': 'author-name'}).text.strip()
     logger.debug(author)
@@ -119,6 +121,7 @@ def parse_jolla(url):
     result['imgs'] = imgs
 
     result['cover'] = _find_jolla_cover(url)
+    result['content'] = html2text.html2text(str(blog))
     return result
 
 
@@ -149,8 +152,13 @@ def _find_jolla_cover(url):
 
 def save(dic, folder):
     url_to_path = []
+    content = dic.pop('content')
     with open(os.path.join(folder, 'meta.json'), 'w', encoding='utf-8') as f:
-        json.dump(dic, f)
+        json.dump(dic, f, indent=2, ensure_ascii=False)
+        f.write('\n\n\n\n')
+        f.write(', '.join(dic['tags']))
+        f.write('\n')
+        f.write(content)
 
     for key in ('cover', 'banner'):
         url = dic[key]
