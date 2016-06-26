@@ -1,11 +1,11 @@
 import logging
-import datetime
 try:
     from urllib.parse import quote
 except ImportError:
     from urllib import quote
 
 from lib.db.jolla import Article, User
+from lib.tool.time import w3c_datetime_full
 from .base import BaseHandler
 
 
@@ -17,8 +17,7 @@ class SiteMapHandler(BaseHandler):
         return self.render(
             'jolla/sitemap.xml',
             host=self.config.jolla_host,
-            time_str=lambda t: datetime.datetime.fromtimestamp(
-                t).strftime('%Y-%m-%dT%H:%M:%S'),
+            time_str=w3c_datetime_full,
             articles=self.get_articles(Article.all_shown()),
             quote=quote
         )
