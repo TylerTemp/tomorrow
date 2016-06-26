@@ -5,7 +5,7 @@ except ImportError:
     from urllib import quote
 
 from lib.db.jolla import Article, User
-from lib.tool.time import w3c_datetime_full
+from lib.tool.timetool import w3c_datetime_full
 from .base import BaseHandler
 
 
