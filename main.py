@@ -130,6 +130,7 @@ class Application(tornado.web.Application):
             (r'/jolla/robots.txt', StaticFileHandler,
              {'path': os.path.join(self.config.root,
                                    'static', 'robots', 'jolla.txt')}),
+            (r'/jolla/sitemap/', jolla.SiteMapHandler),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/.*', jolla.BaseHandler),
             # project
@@ -188,8 +189,9 @@ class Application(tornado.web.Application):
         if self.config.set_secret:
             sec_file = self.config.secret_file
             if sec_file is None:
-                logger.warning("Can't share cookie secret without secret_file, "
-                               "multi processes will not work as expected")
+                logger.warning(
+                    "Can't share cookie secret without secret_file, "
+                    "multi processes will not work as expected")
                 secret = generate()
             else:
                 with FileLock(sec_file), \

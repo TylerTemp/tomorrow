@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  {% for each in articles %}
+  <url>
+    <loc>https://{{ host }}/{{ quote(each.slug) }}/</loc>
+    <lastmod>{{ time_str(each.edit_time) }}</lastmod>
+  </url>
+  {% end %}
+</urlset>

@@ -7,6 +7,7 @@ from .home import HomeHandler
 from .article import ArticleHandler
 from .home import HomeHandler
 from .rss import RssHandler
+from .sitemap import SiteMapHandler
 from .login import LoginHandler, LogoutHandler
 from .oauth import OAuthHandler
 from .posts import PostsHandler
@@ -18,4 +19,5 @@ from . import manage
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
            'LoginHandler', 'OAuthHandler', 'EditHandler', 'PostsHandler',
-           'ProfileHandler', 'AuthorHandler', 'SearchHandler', 'manage']
+           'ProfileHandler', 'AuthorHandler', 'SearchHandler', 'manage',
+           'SiteMapHandler']
