@@ -208,4 +208,36 @@ $(function(){
     };
     highlight_timerepeat();
   }
+
+  if ($('video track'))
+  {
+    console.log('inject video track');
+
+    var $jsref = document.createElement('script');
+    $jsref.setAttribute('type', 'text/javascript');
+    $jsref.setAttribute('src', 'https://dn-tomorrow.qbox.me/js/captionator-min.js');
+
+    document.getElementsByTagName("head")[0].appendChild($jsref);
+
+    var tried_time = 0;
+    var tried_max_time = 6;
+    var tried_interval = 5000;
+    var video_trace_timer_repeat = function()
+    {
+      if (!window.captionator)
+      {
+        tried_time += 1;
+        if (tried_time > tried_max_time)
+          return console.log('max retry of video trace reached, give up');
+        setTimeout(video_trace_timer_repeat, tried_interval);
+        console.log('try video tracked ' + tried_time);
+      }
+      else
+      {
+        captionator.captionify();
+        console.log('video tracked');
+      }
+    };
+    video_trace_timer_repeat();
+  }
 });

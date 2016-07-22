@@ -1,8 +1,6 @@
 """
 Usage:
-    parse [options] <url> [<save-dir>]
-
-Options:
+    parse <url> [<save-dir>]
 """
 
 import logging
@@ -186,6 +184,9 @@ def save(dic, folder):
             url_to_path.append((small, os.path.join(folder, fname)))
 
     for url, path in url_to_path:
+        if os.path.isfile(path):
+            logger.info('%s exists, skip', path)
+            continue
         logger.debug('%s -> %s', url, path)
         _fname, _headers = urlretrieve(url, path)
         logger.info(_fname)

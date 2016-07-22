@@ -9,9 +9,12 @@ except ImportError:
         from StringIO import StringIO
 
 if sys.version_info[0] < 3:
+
     def u(strs):
         return strs.decode('utf-8')
+
 else:
+
     def u(strs):
         return strs
 
@@ -32,14 +35,6 @@ def print_exc_plus(stream=sys.stdout):
         stack.append(f)
         f = f.f_back
     stack.reverse()
-    try:
-        traceback.print_exc(None, stream)
-    except BaseException as e:
-        write(u("FAILED PRINTING TRACE\n\n"))
-        write(u(str(value)))
-        write(u('\n\n'))
-    finally:
-        flush()
 
     write(u('Locals by frame, innermost last\n'))
     for frame in stack:
@@ -50,10 +45,18 @@ def print_exc_plus(stream=sys.stdout):
         write(u('\t%20s = ' % key))
         try:
             write(u('%s\n' % value))
-        except:
+        except BaseException:
             write(u('<ERROR WHILE PRINTING VALUE>\n'))
     flush()
 
+    try:
+        traceback.print_exc(None, stream)
+    except BaseException as e:
+        write(u("FAILED PRINTING TRACE: %s\n\n") % e)
+        write(u(str(value)))
+        write(u('\n\n'))
+    finally:
+        flush()
 
 def get_exc_plus():
     _tmp_stream.seek(0)
@@ -67,7 +70,7 @@ if __name__ == '__main__':
     def zero_error():
         local_1 = range(5)
         local_2 = 'a local arg'
-        1/0
+        1 / 0
 
     stream = StringIO()
     try:
