@@ -16,7 +16,7 @@ __all__ = ['md2html', 'html2md', 'escape']
 
 extend = [
     nlcontinuous.makeExtension(),
-    md_video.makeExtension(),
+    md_video.makeExtension(crossorigin="anonymous"),
     # define attributes, {: #someid .someclass somekey='some value' }
     # 'markdown.extensions.attr_list',
     # use fenced code block by 3 back quotes
