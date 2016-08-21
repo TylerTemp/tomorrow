@@ -34,15 +34,15 @@ class Record(Meta):
 
 
 class TransProcessHandler(BaseHandler):
-    record = Record(_title='trans_process', _group='jolla')
     logger = logging.getLogger('jolla.trans_process')
 
     def get(self):
+        record = Record(_title='trans_process', _group='jolla')
         # self.info(self.record.__dict__['__info__'])
         attrs = sorted(
             (
                 (k, v)
-                for k, v in self.record.__info__.items()
+                for k, v in record.__info__.items()
                 if not k.startswith('_')
             ),
             key=lambda k_v: k_v[-1])
@@ -55,7 +55,7 @@ class TransProcessHandler(BaseHandler):
 
     def post(self):
         ip = self.request.remote_ip
-        record = self.record
+        record = Record(_title='trans_process', _group='jolla')
         if not record._ips:
             record._ips = set()
         elif isinstance(record._ips, list):
