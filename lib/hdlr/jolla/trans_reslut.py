@@ -58,6 +58,8 @@ class TransProcessHandler(BaseHandler):
         record = self.record
         if not record._ips:
             record._ips = set()
+        elif isinstance(record._ips, list):
+            record._ips = set(record._ips)
         ips = record._ips
         # self.info(ip)
         # self.info(record._ips)
