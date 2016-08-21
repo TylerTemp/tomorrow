@@ -11,7 +11,7 @@ from whoosh.qparser import MultifieldParser
 from lib.db.jolla import Article
 from .base import BaseHandler
 
-# jieba.initialize()
+jieba.initialize()
 
 
 class MookHightlighter(whoosh.highlight.Highlighter):
