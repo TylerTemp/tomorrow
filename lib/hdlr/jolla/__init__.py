@@ -15,7 +15,7 @@ from .profile import ProfileHandler
 from .author import AuthorHandler
 from .search import SearchHandler
 from . import manage
-from .trans_reslut import TransProcessHandler
+from .trans_result import TransProcessHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',

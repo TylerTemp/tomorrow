@@ -3,6 +3,7 @@
 {% block main_title %}{{ article.get('title') }} | {% end %}
 
 {% block neck %}
+<link rel="stylesheet" href="https://dn-tomorrow.qbox.me/duoshuo/embed.default.css" />
 <link rel="stylesheet" href="/static/css/tomorrow/article.css" />
 {% end %}
 
@@ -85,7 +86,7 @@
   {
     var ds = document.createElement('script');
     ds.type = 'text/javascript';ds.async = true;
-    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.src = 'https://dn-tomorrow.qbox.me/duoshuo/embed.js';
     ds.charset = 'UTF-8';
     (document.getElementsByTagName('head')[0]
      || document.getElementsByTagName('body')[0]
