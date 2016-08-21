@@ -44,9 +44,14 @@ def print_exc_plus(stream=sys.stdout):
     for key, value, in frame.f_locals.items():
         write(u('\t%20s = ' % key))
         try:
-            write(u('%s\n' % value))
+            value = u(str(value))
         except BaseException:
-            write(u('<ERROR WHILE PRINTING VALUE>\n'))
+            value = u('<ERROR WHILE PRINTING VALUE>')
+        else:
+            if len(value) > 100:
+                value = value[:100] + '...'
+        write(value)
+        write('\n')
     flush()
 
     try:

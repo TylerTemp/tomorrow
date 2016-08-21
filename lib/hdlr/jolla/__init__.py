@@ -15,9 +15,10 @@ from .profile import ProfileHandler
 from .author import AuthorHandler
 from .search import SearchHandler
 from . import manage
+from .trans_reslut import TransProcessHandler
 
 __all__ = ['ListHandler', 'TaskHandler', 'TranslateHandler', 'LogoutHandler',
            'ArticleHandler', 'HomeHandler', 'RssHandler', 'BaseHandler',
            'LoginHandler', 'OAuthHandler', 'EditHandler', 'PostsHandler',
            'ProfileHandler', 'AuthorHandler', 'SearchHandler', 'manage',
-           'SiteMapHandler']
+           'SiteMapHandler', 'TransProcessHandler']

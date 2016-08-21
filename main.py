@@ -130,6 +130,7 @@ class Application(tornado.web.Application):
             (r'/jolla/robots.txt', StaticFileHandler,
              {'path': os.path.join(self.config.root,
                                    'static', 'robots', 'jolla.txt')}),
+            (r'/jolla/trans_process/', jolla.TransProcessHandler),
             (r'/jolla/sitemap/', jolla.SiteMapHandler),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/.*', jolla.BaseHandler),
