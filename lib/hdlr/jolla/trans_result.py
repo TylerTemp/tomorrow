@@ -7,15 +7,15 @@ from tornado.escape import xhtml_escape
 class Record(Meta):
     _default = {
         '_id': None,
-        '_ips': set(),
+        '_ips': [],
     }
 
-    def __init__(self, *a, **k):
-        super(Record, self).__init__(*a, **k)
-        attrs = self.__dict__['__info__']
-        for k, v in attrs.items():
-            if isinstance(v, list):
-                attrs[k] = set(v)
+    # def __init__(self, *a, **k):
+    #     super(Record, self).__init__(*a, **k)
+    #     attrs = self.__dict__['__info__']
+    #     for k, v in attrs.items():
+    #         if isinstance(v, list):
+    #             attrs[k] = set(v)
 
     def _before_save(self):
         attrs = self.__dict__['__info__']
@@ -57,14 +57,15 @@ class TransProcessHandler(BaseHandler):
         ip = self.request.remote_ip
         record = Record(_title='trans_process', _group='jolla')
         if not record._ips:
-            record._ips = set()
+            record._ips = []
         elif isinstance(record._ips, list):
-            record._ips = set(record._ips)
+            record._ips = record._ips
         ips = record._ips
         # self.info(ip)
         # self.info(record._ips)
 
-        if ip in ips:
+        # if ip in ips:
+        if False:
             self.debug('dup ip')
         else:
             video = set(x.decode('utf-8') for x in self.request.arguments.get('video', []))
@@ -76,7 +77,7 @@ class TransProcessHandler(BaseHandler):
                 app = set()
             if video or text or app:
                 self.debug('add ip %s', ip)
-                ips.add(ip)
+                ips.append(ip)
                 # self.info(record._ips)
                 # self.info(Record(_title='trans_process', _group='jolla')._ips)
             
