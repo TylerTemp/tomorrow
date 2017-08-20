@@ -6,7 +6,7 @@
   <description>最新最及时最权威Jolla中文资讯</description>
   <link>https://{{ host }}</link>
   <language>zh-CN</language>
-  <copyright>2015 TylerTemp. All rights reserved.</copyright>
+  <copyright>2015 - 2017 TylerTemp. All rights reserved.</copyright>
   <webMaster>tylertempdev@gmail.com (TylerTemp)</webMaster>
   <image>
     <url>https://tomorrow.comes.today/static/i/favicon.png</url>

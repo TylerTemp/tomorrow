@@ -62,7 +62,6 @@ use `python main.py --help` for more detail
 *   [weibo](https://pypi.python.org/pypi/weibo/0.2.2) - Sina Weibo API for python
 *   [amazeUI](http://amazeui.org/) - A Chinese friendly lightweight mobile first web frame
 *   [QiNiu](http://qiniu.com) - A fast, free and powerful CDN service
-*   [DuoShuo](http://duoshuo.com) - A popular Chinese comment service
 *   [iconfont](http://www.iconfont.cn) - A web icon font maker
 *   [github:dwieeb/jquery-textrange](https://github.com/dwieeb/jquery-textrange) - a JS tool that can select text in `input` and `textarea` conveniently
 *   `lib/tracemore.py` from [*Python Cockbook*](http://www.amazon.com/Python-Cookbook-Third-David-Beazley/dp/1449340377/ref=sr_1_1?ie=UTF8&qid=1430528366&sr=8-1&keywords=python+cookbook)

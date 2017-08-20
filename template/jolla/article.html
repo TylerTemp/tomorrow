@@ -5,7 +5,6 @@
 {% end %}
 
 {% block neck %}
-<link rel="stylesheet" href="https://dn-tomorrow.qbox.me/duoshuo/embed.default.css" />
 <link rel="stylesheet" href="/static/css/jolla/article.css">
 {% end %}
 
@@ -110,7 +109,7 @@
       <div class="am-padding-top">
 
         <div class="am-g am-u-sm-centered">
-          
+
           {% if author.photo %}
           <div class="am-u-sm-3">
               {% if author.home %}
@@ -141,13 +140,6 @@
 
       </div>
       <hr class="am-divider am-divider-dotted" />
-      <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default" data-ds-short-name="tmr" id="comment">
-        <div class="ds-thread"
-             data-thread-key="{{ article._id }}"
-             data-title="{{ article.title }}"
-             {% if article.banner %}data-image="{{ article.banner }}"{% end %}
-             data-form-position="top"></div>
-      </div>
 
     </div>
   </div>
@@ -155,19 +147,4 @@
 
 {% end %}
 {% block leg %}
-<script type="text/javascript">
-var duoshuoQuery = {short_name:"tmr"};
-  $(function(){
-  (function()
-  {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'https://dn-tomorrow.qbox.me/duoshuo/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0]
-     || document.getElementsByTagName('body')[0]
-    ).appendChild(ds);
-  })();
-});
-</script>
 {% end %}

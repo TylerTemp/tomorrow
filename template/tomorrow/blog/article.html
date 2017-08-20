@@ -3,7 +3,6 @@
 {% block main_title %}{{ article.get('title') }} | {% end %}
 
 {% block neck %}
-<link rel="stylesheet" href="https://dn-tomorrow.qbox.me/duoshuo/embed.default.css" />
 <link rel="stylesheet" href="/static/css/tomorrow/article.css" />
 {% end %}
 
@@ -27,7 +26,7 @@
             <div class="am-article-meta am-fr">
             {% raw _('这篇文章有{tag} 中文版{tag_end}').format(
               tag='<a href="./?lang=%s" class="am-icon-link">' % article.other_lang(),
-              tag_end='</a>' 
+              tag_end='</a>'
             ) %}
             </div>
             {% end %}
@@ -65,32 +64,10 @@
           </div>
         </div>
 
-        <div data-am-widget="duoshuo" class="am-duoshuo am-duoshuo-default am-padding" data-ds-short-name="tyler" id="comment">
-          <div class="ds-thread"
-               data-thread-key="{{ article._id }}"
-               data-title="{{ article.title }}"
-               {% if article.banner %}data-image="{{ article.banner }}"{% end %}
-               data-form-position="top">
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
 
 </div>
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tyler"};
-  (function()
-  {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = 'https://dn-tomorrow.qbox.me/duoshuo/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0]
-     || document.getElementsByTagName('body')[0]
-    ).appendChild(ds);
-  })();
-</script>
 {% end %}
