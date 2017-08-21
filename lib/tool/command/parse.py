@@ -151,11 +151,12 @@ def _find_jolla_cover(url):
 def save(dic, folder):
     url_to_path = []
     content = dic.pop('content')
+    tag_raw = ', '.join(dic['tags'])
+    dic['tag_raw'] = tag_raw
     with open(os.path.join(folder, 'meta.json'), 'w', encoding='utf-8') as f:
         json.dump(dic, f, indent=2, ensure_ascii=False)
-        f.write('\n\n\n\n')
-        f.write(', '.join(dic['tags']))
-        f.write('\n')
+
+    with open(os.path.join(folder, 'content.md'), 'w', encoding='utf-8') as f:
         f.write(content)
 
     for key in ('cover', 'banner'):
@@ -225,4 +226,7 @@ if __name__ == '__main__':
 
     save_dir = args['<save-dir>']
     if save_dir:
-        save(result, os.path.expanduser(save_dir))
+        folder = os.path.expanduser(save_dir)
+        if not os.path.isdir(folder):
+            os.makedirs(folder)
+        save(result, folder)
