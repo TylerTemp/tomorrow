@@ -12,6 +12,7 @@ import tornado.web
 import cairocffi as cairo
 
 from lib.config.tomorrow import Config
+from lib.tool import b64
 # from lib.hdlr.utility.whoops import WoopseHandler
 
 logger = logging.getLogger('tomorrow.ui.editor')
@@ -28,8 +29,9 @@ class ErrorImageModule(tornado.web.UIModule):
     def render(self, code):
         # host = config.tomorrow_host
         img = self.mk_img(str(code))
-        b64_string = base64.b64encode(img).decode('utf-8')
-        data_url = 'data:image/gif;base64,' + b64_string
+        # b64_string = base64.b64encode(img).decode('utf-8')
+        # data_url = 'data:image/gif;base64,' + b64_string
+        data_url = b64.gen_data_url(img, is_byte=True)
         return (
             '<div class="am-cf">'
             '<img src="{src}" '

@@ -132,6 +132,8 @@ class Application(tornado.web.Application):
                                    'static', 'robots', 'jolla.txt')}),
             (r'/jolla/trans_process/', jolla.TransProcessHandler),
             (r'/jolla/sitemap/', jolla.SiteMapHandler),
+            (r'/jolla/avatar/(?P<avatar_slug>[^/]+)\.png', jolla.AvatarHandler),
+            (r'/jolla/comment/(?P<article_slug>[^/]+)/', jolla.CommentHandler),
             (r'/jolla/(?P<slug>[^/]+)/', jolla.ArticleHandler),
             (r'/jolla/.*', jolla.BaseHandler),
             # project

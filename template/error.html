@@ -64,7 +64,19 @@
           <span class="am-icon-bug bug am-u-sm-12 am-u-md-2" data-am-scrollspy="{animation: 'scale-down'}"></span>
           <div class="am-u-sm-12 am-u-md-10">
             You get this page because:
-            {% raw msg or 'of an unknown reason' %}
+
+            {% if msg %}
+            <pre>
+              <code>
+                {{ msg }}
+              </code>
+            </pre>
+            {% else %}
+              <p class="content">
+                {{ msg or "Unknown Error" }}
+              </p>
+            {% end %}
+
             <br />
             You can go back to:
             <ul>

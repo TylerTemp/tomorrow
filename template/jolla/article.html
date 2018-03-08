@@ -141,10 +141,53 @@
       </div>
       <hr class="am-divider am-divider-dotted" />
 
+      <form class="am-form am-form-horizontal" id="comment-form" method="POST" action="/jolla/comment/{{ article.slug }}/">
+        <fieldset>
+          <legend>我有话要讲</legend>
+          <div class="am-form-group">
+            <div class="am-u-sm-6 am-form-icon">
+              <i class="am-icon am-icon-user"></i>
+              <input type="text" class="am-form-field am-u-sm-6" id="comment-nickname" name="nickname" class="am-form-field" placeholder="* 怎么称呼您呐_(:з」∠)_" required="required">
+            </div>
+            <div class="am-u-sm-6 am-form-icon">
+              <i class="am-icon am-icon-envelope-o"></i>
+              <input type="email" class="am-form-field am-u-sm-6" id="comment-email" name="email" placeholder="电子邮箱，不会被显示和公布">
+            </div>
+          </div>
+
+          <div class="am-form-group">
+            <textarea class="am-form-field" rows="5" id="comment-content" name="content" placeholder="* 来都来了不说说都不好意思直接走..."></textarea>
+          </div>
+
+          <p><button type="submit" class="am-btn am-btn-default">我要讲话了</button></p>
+        </fieldset>
+      </form>
+
+      <ul class="am-comments-list">
+        {% for comment in comments %}
+        <li class="am-comment" id="{{ comment._id }}">
+          <img class="am-comment-avatar" alt="{{ comment.nickname }}" src="/jolla/avatar/{{ comment.avatar_slug }}.png"/> <!-- 评论者头像 -->
+
+          <div class="am-comment-main">
+            <header class="am-comment-hd">
+              <!--<h3 class="am-comment-title">评论标题</h3>-->
+              <div class="am-comment-meta">
+                <!-- <a href="#link-to-user" class="am-comment-author"></a> -->
+                <span class="am-comment-author">{{ comment.nickname }}</span>
+                评论于 <time datetime="{{ F_w3c_datetime_full(comment.create_time) }}">{{ F_timestamp_readable(comment.create_time) }}</time>
+              </div>
+            </header>
+
+            <div class="am-comment-bd">{{ comment.content }}</div> <!-- 评论内容 -->
+          </div>
+        </li>
+        {% end %}
+      </ul>
     </div>
   </div>
 </div>
 
 {% end %}
 {% block leg %}
+<script src="/static/js/jolla/article.js">
 {% end %}

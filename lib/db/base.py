@@ -94,7 +94,11 @@ class Base(Log):
 
     @classmethod
     def find(cls, *a, **k):
-        for each in cls.collection.find(*a, **k):
+        sort = k.pop('_sort', None)
+        cur = cls.collection.find(*a, **k)
+        if sort:
+            cur = cur.sort(sort)
+        for each in cur:
             ins = cls()
             ins.update(each)
             yield ins

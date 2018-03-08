@@ -262,6 +262,7 @@ class Article(Base):
             {'$set': {'status': status}}
         )
 
+
 class Author(Base):
     collection = db.author
     logger = logging.getLogger('jolla.db.author')
@@ -390,6 +391,45 @@ class Redirect(Base):
         if not (self.source and self.target):
             raise ValueError('Miss ' + ('source' if self.target else 'target'))
         return super(Redirect, self)._validate_attrs()
+
+
+class Comment(Base):
+    collection = db.comment
+    logger = logging.getLogger('jolla.db.comment')
+
+    _default = {
+        '_id': None,
+        'nickname': None,
+        'ip': None,
+        'email': None,
+        'content': None,
+        'ip': None,
+        'user_agent': None,
+        'status': 1,
+        'article_id': None,
+        'create_time': None,
+        'update_time': None,
+    }
+
+    def __init__(self, comment_id=None):
+        super(Comment, self).__init__()
+        if comment_id is not None:
+            result = self.collection.find_one({'_id': comment_id})
+            if result is None:
+                self._id = comment_id
+            else:
+                self.update(result)
+
+    def __str__(self):
+        content = self.content
+        # if content:
+        return '%s (%s): %s' % (
+            self.ip, self.name, content
+        )
+
+    @classmethod
+    def all(cls):
+        return cls.collection.find({})
 
 
 if __name__ == '__main__':
