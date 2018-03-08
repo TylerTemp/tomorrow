@@ -6,7 +6,17 @@
   <div class="am-g am-g-fixed">
     <h1 class="am-center" style="text-align: center">It's dead, Jim!</h1>
     {% module ErrorImage(code) %}
-    {% raw ('<pre><code>%s</code></pre>' % msg) if msg and msg.startswith('Traceback') else '<p class="content">%s</p>' % (msg or "Unknown Error") %}
+    {% if msg %}
+    <pre>
+      <code>
+        {{ msg }}
+      </code>
+    </pre>
+    {% else %}
+      <p class="content">
+        {{ msg or "Unknown Error" }}
+      </p>
+    {% end %}
     <hr />
     <p class="am-padding-horizontal-lg">
       {{ _("My blog is broken, could you please tell me by") }}:

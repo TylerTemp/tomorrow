@@ -9,7 +9,7 @@ except ImportError:
     from urlparse import urlsplit
 
 from .base import BaseHandler
-  
+
 import sys
 import os
 
@@ -40,7 +40,7 @@ class HomeHandler(BaseHandler):
 
         result = Article.all_shown(skip, limit)
         total = result.count()
-        if total <= skip:
+        if total <= skip and page > 1:
             raise tornado.web.HTTPError(404, 'Empty page')
         # current_rest_articles = (total - ahead_num)
 

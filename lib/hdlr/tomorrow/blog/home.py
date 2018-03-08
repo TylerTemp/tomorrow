@@ -27,7 +27,7 @@ class HomeHandler(BaseHandler):
         collected = Article.all(offset, limit)
 
         total = collected.count()
-        if total <= offset:
+        if total <= offset and this_page > 1:
             raise tornado.web.HTTPError(404, 'Empty page %s' % page)
         has_next_page = (this_page * limit < total)
 
@@ -58,9 +58,9 @@ class HomeHandler(BaseHandler):
             alternative_lang = article.other_lang()
             if alternative_lang != current_lang:
                 article.alternative_lang = alternative_lang
-            else: 
+            else:
                 article.alternative_lang = None
-                
+
             article.current_lang = current_lang
 
             yield article, User(article.author, lang)

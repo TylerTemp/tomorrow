@@ -9,75 +9,81 @@
 {% end %}
 
 {% block stomach %}
-  <!-- first article -->
-  {% set first = next(articles) %}
-  <!-- horizontal blog box -->
-  <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
-    <div class="am-margin-horizontal-xs am-margin-vertical-sm">
-      <div class="white am-u-sm-12 am-u-md-{{ 6 if first.cover or first.banner else 12 }}">
-        <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
-          <div class="am-article-hd">
-            <a href="/{{ quote(first.slug) }}/"><h2 class="am-article-title am-text-xl">{{ first.get('title') }}</h2></a>
-          </div>
-          <div>
-            {% raw make_source(first.source['link'] if first.source else None) %}
 
-            {% if first.tag %}
-              |
-              {% module Tag(first.tag) %}
-            {% end %}
-          </div>
-          <div class="am-article-bd">
-            {% raw md2html(first.get('description')) if first.get('description') else escape(first.get('content')[:100]) %}
-          </div>
-        </article>
-        <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
-          <a class="am-btn am-btn-success am-fr" href="/{{ quote(first.slug) }}/">{{ _("Continue reading") }}</a>
-        </div>
-      </div>
-      {% if first.cover or first.banner %}
-      <div class="am-u-sm-12 am-u-md-6">
-        <a href="/{{ quote(first.slug) }}/"><img class="cover-img" src="{{ first.cover or first.banner }}"></a>
-      </div>
-      {% end %}
-    </div>
-  </div>
-  <!-- first article | end -->
-
-  <ul class="am-avg-sm-1 am-avg-md-2">
   {% for idx, each in enumerate(articles) %}
-
-    <li data-am-scrollspy="{animation:'{{ ['slide-left', 'slide-right'][idx % 2] }}', repeat: false}">
-      <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
-        {% if each.cover or each.banner %}
-        <a href="/{{ quote(each.slug)  }}/"><img class="cover-img" src="{{ each.cover or each.banner }}"></a>
-        {% end %}
-        <div class="title-box">
-          <article class="am-article  am-margin-horizontal-lg">
+    {% if idx == 0 %}
+    <!-- first article -->
+    <!-- horizontal blog box -->
+    <div class="am-g" data-am-scrollspy="{animation:'scale-down', repeat: false}">
+      <div class="am-margin-horizontal-xs am-margin-vertical-sm">
+        <div class="white am-u-sm-12 am-u-md-{{ 6 if each.cover or each.banner else 12 }}">
+          <article class="am-article am-margin-horizontal-lg am-margin-top-lg">
             <div class="am-article-hd">
-              <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.get('title') }}</h2></a>
+              <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-text-xl">{{ each.get('title') }}</h2></a>
             </div>
             <div>
-            {% raw make_source(each.source['link'] if each.source else None) %}
+              {% raw make_source(each.source['link'] if each.source else None) %}
 
-            {% if each.tag %}
-              |
-              {% module Tag(each.tag) %}
-            {% end %}
+              {% if each.tag %}
+                |
+                {% module Tag(each.tag) %}
+              {% end %}
             </div>
             <div class="am-article-bd">
               {% raw md2html(each.get('description')) if each.get('description') else escape(each.get('content')[:100]) %}
             </div>
           </article>
-          <div class="am-cf">
-            <a class="am-btn am-btn-success am-fr am-margin-bottom am-margin-right-lg" href="/{{ quote(each.slug) }}/">{{ _("Continue reading") }}</a>
+          <div class="am-cf am-margin-horizontal-lg am-margin-bottom-sm">
+            <a class="am-btn am-btn-success am-fr" href="/{{ quote(each.slug) }}/">{{ _("Continue reading") }}</a>
           </div>
         </div>
+        {% if each.cover or each.banner %}
+        <div class="am-u-sm-12 am-u-md-6">
+          <a href="/{{ quote(each.slug) }}/"><img class="cover-img" src="{{ each.cover or each.banner }}"></a>
+        </div>
+        {% end %}
       </div>
-    </li>
+    </div>
+    <!-- first article | end -->
+    {% else %}
+      {% if idx == 1 %}
+      <ul class="am-avg-sm-1 am-avg-md-2">
+      {% end %}
+      <li data-am-scrollspy="{animation:'{{ ['slide-right', 'slide-left'][idx % 2] }}', repeat: false}">
+        <div class="am-margin-horizontal-xs white am-margin-vertical-sm">
+          {% if each.cover or each.banner %}
+          <a href="/{{ quote(each.slug)  }}/"><img class="cover-img" src="{{ each.cover or each.banner }}"></a>
+          {% end %}
+          <div class="title-box">
+            <article class="am-article  am-margin-horizontal-lg">
+              <div class="am-article-hd">
+                <a href="/{{ quote(each.slug) }}/"><h2 class="am-article-title am-margin-top">{{ each.get('title') }}</h2></a>
+              </div>
+              <div>
+              {% raw make_source(each.source['link'] if each.source else None) %}
+
+              {% if each.tag %}
+                |
+                {% module Tag(each.tag) %}
+              {% end %}
+              </div>
+              <div class="am-article-bd">
+                {% raw md2html(each.get('description')) if each.get('description') else escape(each.get('content')[:100]) %}
+              </div>
+            </article>
+            <div class="am-cf">
+              <a class="am-btn am-btn-success am-fr am-margin-bottom am-margin-right-lg" href="/{{ quote(each.slug) }}/">{{ _("Continue reading") }}</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      {% end %}
+  {% else %}
+    {% if idx != 0 %}
+    </ul>
+    {% end %}
   {% end %}
 
-  </ul>
 <div class="am-cf am-margin-horizontal-xs">
   {% if this_page != 1 %}
   <a href="/page/{{ this_page - 1}}/" class="am-fl am-btn-link white-text">&laquo; {{ _('Prev Page') }}</a>

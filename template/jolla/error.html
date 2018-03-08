@@ -30,7 +30,18 @@
     <div class="shadow am-padding-xl">
       <h1>{{ _('Oops, I just swallowed a bug') }} :(</h1>
       {% module ErrorImage(code) %}
-      {% raw ('<pre><code>%s</code></pre>' % msg) if msg and msg.startswith('Traceback') else '<p class="content">%s</p>' % (msg or "Unknown Error") %}
+      {% if msg %}
+      <pre>
+        <code>
+          {{ msg }}
+        </code>
+      </pre>
+      {% else %}
+        <p class="content">
+          {{ msg or "Unknown Error" }}
+        </p>
+      {% end %}
+
       <hr />
 
       <p class="am-padding-horizontal-lg">
