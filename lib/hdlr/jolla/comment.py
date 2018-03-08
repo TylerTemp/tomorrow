@@ -51,4 +51,4 @@ class CommentHandler(BaseHandler):
             'article_id': article._id,
         })
         comment.save()
-        return self.redirect('/' + article_slug)
+        return self.redirect('/%s/#%s' % (article_slug, comment._id))
