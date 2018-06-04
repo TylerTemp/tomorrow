@@ -366,8 +366,8 @@ class Auth(Base):
     def clear_token(self, token, save=False):
         self.debug('clear token %s', token)
         to_delete = []
-        for index, each in enumerate(self.codes):
-            if each['code'] == token:
+        for index, each in enumerate(self.tokens):
+            if each['token'] == token:
                 to_delete.append(index)
 
         if not to_delete:
@@ -381,3 +381,12 @@ class Auth(Base):
             self.save()
 
         return True
+
+    @classmethod
+    def clean_codes_and_tokens(cls):
+        for auth in cls.find():
+            for attr in ('codes', 'tokens'):
+                exists = getattr(auth, attr)
+                fresh = [each for each in exists if each['expire_at'] > time.time()]
+                getattr(auth, attr, fresh)
+            auth.save()

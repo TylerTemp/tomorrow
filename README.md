@@ -42,6 +42,12 @@ Note you can shadow those settings by passing args to `main.py` or `lib/tool/reb
 `reboot.py` accept the same command line args except `-p`,
 use `python main.py --help` for more detail
 
+## clean code ##
+
+```
+python -c 'from lib.db.tomorrow import Auth; Auth.clean_codes_and_tokens()'
+```
+
 ## Project & Service
 
 `tomorrow` uses the following projects & services. Much thanks to these awesome work!
