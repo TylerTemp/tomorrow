@@ -161,7 +161,7 @@ $(function(evt)
     });
 
     $code.html(
-      '<i class="am-icon-spinner am-icon-pulse am-text-xxxl am-center"></i>'
+      '<i class="am-icon-spinner am-icon-pulse am-text-xxxl"></i>'
     );
 
     $button.button('loading');
